@@ -69,6 +69,8 @@ void D_DrawSkyScans8 (espan_t *pspan)
 	fixed16_t		s, t, snext, tnext, sstep, tstep;
 	int				spancountminus1;
 
+	snext = 0;
+	tnext = 0;
 	sstep = 0;	// keep compiler happy
 	tstep = 0;	// ditto
 

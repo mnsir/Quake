@@ -299,7 +299,6 @@ void Sys_Init (void)
 {
 	LARGE_INTEGER	PerformanceFreq;
 	unsigned int	lowpart, highpart;
-	OSVERSIONINFO	vinfo;
 
 	MaskExceptions ();
 	Sys_SetFPCW ();
@@ -325,21 +324,7 @@ void Sys_Init (void)
 
 	Sys_InitFloatTime ();
 
-	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
-	if (!GetVersionEx (&vinfo))
-		Sys_Error ("Couldn't get OS info");
-
-	if ((vinfo.dwMajorVersion < 4) ||
-		(vinfo.dwPlatformId == VER_PLATFORM_WIN32s))
-	{
-		Sys_Error ("WinQuake requires at least Win95 or NT 4.0");
-	}
-
-	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		WinNT = true;
-	else
-		WinNT = false;
+	WinNT = true;
 }
 
 

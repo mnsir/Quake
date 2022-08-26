@@ -1,29 +1,20 @@
-﻿//{{NO_DEPENDENCIES}}
-// Включаемый файл, созданный в Microsoft Visual C++.
-// Используется QuakeHW.rc
-
-#define IDS_APP_TITLE			103
-
-#define IDR_MAINFRAME			128
-#define IDD_QUAKEHW_DIALOG	102
-#define IDD_ABOUTBOX			103
-#define IDM_ABOUT				104
-#define IDM_EXIT				105
-#define IDI_QUAKEHW			107
-#define IDC_QUAKEHW			109
-#define IDC_MYICON				2
-#ifndef IDC_STATIC
-#define IDC_STATIC				-1
-#endif
-// Следующие стандартные значения для новых объектов
+//{{NO_DEPENDENCIES}}
+// Microsoft Developer Studio generated include file.
+// Used by winquake.rc
 //
+#define IDS_STRING1                     1
+#define IDI_ICON2                       1
+#define IDD_DIALOG1                     108
+#define IDD_PROGRESS                    109
+#define IDC_PROGRESS                    1000
+
+// Next default values for new objects
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-
-#define _APS_NO_MFC					130
-#define _APS_NEXT_RESOURCE_VALUE	129
-#define _APS_NEXT_COMMAND_VALUE		32771
-#define _APS_NEXT_CONTROL_VALUE		1000
-#define _APS_NEXT_SYMED_VALUE		110
+#define _APS_NEXT_RESOURCE_VALUE        111
+#define _APS_NEXT_COMMAND_VALUE         40001
+#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

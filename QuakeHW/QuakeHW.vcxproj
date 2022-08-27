@@ -44,11 +44,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)common;$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)common;$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -87,57 +87,6 @@
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="adivtab.h" />
-    <ClInclude Include="anorms.h" />
-    <ClInclude Include="bspfile.h" />
-    <ClInclude Include="cdaudio.h" />
-    <ClInclude Include="client.h" />
-    <ClInclude Include="cmd.h" />
-    <ClInclude Include="common.h" />
-    <ClInclude Include="conproc.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="crc.h" />
-    <ClInclude Include="cvar.h" />
-    <ClInclude Include="draw.h" />
-    <ClInclude Include="d_iface.h" />
-    <ClInclude Include="d_local.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="keys.h" />
-    <ClInclude Include="mathlib.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="modelgen.h" />
-    <ClInclude Include="net.h" />
-    <ClInclude Include="net_dgrm.h" />
-    <ClInclude Include="net_loop.h" />
-    <ClInclude Include="net_vcr.h" />
-    <ClInclude Include="net_wins.h" />
-    <ClInclude Include="net_wipx.h" />
-    <ClInclude Include="progdefs.h" />
-    <ClInclude Include="progs.h" />
-    <ClInclude Include="protocol.h" />
-    <ClInclude Include="pr_comp.h" />
-    <ClInclude Include="quakedef.h" />
-    <ClInclude Include="render.h" />
-    <ClInclude Include="r_local.h" />
-    <ClInclude Include="r_shared.h" />
-    <ClInclude Include="sbar.h" />
-    <ClInclude Include="screen.h" />
-    <ClInclude Include="server.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="spritegn.h" />
-    <ClInclude Include="sys.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="vid.h" />
-    <ClInclude Include="view.h" />
-    <ClInclude Include="wad.h" />
-    <ClInclude Include="winquake.h" />
-    <ClInclude Include="world.h" />
-    <ClInclude Include="zone.h" />
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cd_win.c" />
     <ClCompile Include="chase.c" />
@@ -221,7 +170,56 @@
     <Image Include="quake.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="progdefs.q1" />
+    <ClInclude Include="..\common\adivtab.h" />
+    <ClInclude Include="..\common\anorms.h" />
+    <ClInclude Include="..\common\bspfile.h" />
+    <ClInclude Include="..\common\cdaudio.h" />
+    <ClInclude Include="..\common\client.h" />
+    <ClInclude Include="..\common\cmd.h" />
+    <ClInclude Include="..\common\common.h" />
+    <ClInclude Include="..\common\conproc.h" />
+    <ClInclude Include="..\common\console.h" />
+    <ClInclude Include="..\common\crc.h" />
+    <ClInclude Include="..\common\cvar.h" />
+    <ClInclude Include="..\common\draw.h" />
+    <ClInclude Include="..\common\input.h" />
+    <ClInclude Include="..\common\keys.h" />
+    <ClInclude Include="..\common\mathlib.h" />
+    <ClInclude Include="..\common\menu.h" />
+    <ClInclude Include="..\common\model.h" />
+    <ClInclude Include="..\common\modelgen.h" />
+    <ClInclude Include="..\common\net.h" />
+    <ClInclude Include="..\common\net_dgrm.h" />
+    <ClInclude Include="..\common\net_loop.h" />
+    <ClInclude Include="..\common\net_vcr.h" />
+    <ClInclude Include="..\common\net_wins.h" />
+    <ClInclude Include="..\common\net_wipx.h" />
+    <ClInclude Include="..\common\progdefs.h" />
+    <ClInclude Include="..\common\progs.h" />
+    <ClInclude Include="..\common\protocol.h" />
+    <ClInclude Include="..\common\pr_comp.h" />
+    <ClInclude Include="..\common\quakedef.h" />
+    <ClInclude Include="..\common\render.h" />
+    <ClInclude Include="..\common\resource.h" />
+    <ClInclude Include="..\common\r_local.h" />
+    <ClInclude Include="..\common\r_shared.h" />
+    <ClInclude Include="..\common\sbar.h" />
+    <ClInclude Include="..\common\screen.h" />
+    <ClInclude Include="..\common\server.h" />
+    <ClInclude Include="..\common\sound.h" />
+    <ClInclude Include="..\common\spritegn.h" />
+    <ClInclude Include="..\common\sys.h" />
+    <ClInclude Include="..\common\vid.h" />
+    <ClInclude Include="..\common\view.h" />
+    <ClInclude Include="..\common\wad.h" />
+    <ClInclude Include="..\common\winquake.h" />
+    <ClInclude Include="..\common\world.h" />
+    <ClInclude Include="..\common\zone.h" />
+    <ClInclude Include="d_iface.h" />
+    <ClInclude Include="d_local.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\common\progdefs.q1" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

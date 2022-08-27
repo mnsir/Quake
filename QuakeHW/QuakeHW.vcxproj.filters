@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="diff">
+      <UniqueIdentifier>{9c6037d9-3b84-4e71-8224-9cf0e9284b10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -206,45 +209,6 @@
     <ClCompile Include="cvar.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="d_edge.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_fill.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_init.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_modech.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_part.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_polyse.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_scan.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_sky.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_sprite.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_surf.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_vars.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="d_zpoint.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="draw.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="host.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -261,9 +225,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="menu.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="model.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="net_dgrm.c">
@@ -299,52 +260,10 @@
     <ClCompile Include="pr_exec.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="r_aclip.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_alias.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_bsp.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_draw.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_edge.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_efrag.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_light.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_main.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_misc.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="r_part.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="r_sky.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_sprite.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_surf.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="r_vars.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="sbar.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="screen.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="snd_dma.c">
@@ -371,9 +290,6 @@
     <ClCompile Include="sv_user.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="vid_win.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="view.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -385,6 +301,93 @@
     </ClCompile>
     <ClCompile Include="zone.c">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="d_fill.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_edge.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_init.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_modech.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_part.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_polyse.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_scan.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_sky.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_sprite.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_surf.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_vars.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="d_zpoint.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="draw.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="model.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_aclip.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_alias.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_bsp.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_draw.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_edge.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_efrag.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_light.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_main.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_misc.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_sky.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_sprite.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_surf.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="r_vars.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="screen.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="vid_win.c">
+      <Filter>diff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

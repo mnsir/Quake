@@ -215,8 +215,6 @@
     <ClInclude Include="crc.h" />
     <ClInclude Include="cvar.h" />
     <ClInclude Include="draw.h" />
-    <ClInclude Include="d_iface.h" />
-    <ClInclude Include="d_local.h" />
     <ClInclude Include="glquake.h" />
     <ClInclude Include="gl_model.h" />
     <ClInclude Include="gl_warp_sin.h" />

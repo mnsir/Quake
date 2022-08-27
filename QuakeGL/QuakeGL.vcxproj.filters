@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="diff">
+      <UniqueIdentifier>{3cd3c075-040f-4673-890e-0dae391d2de6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sys_win.c">
@@ -147,44 +150,44 @@
     <ClCompile Include="zone.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="gl_draw.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_mesh.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_model.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_refrag.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_rlight.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_rmain.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_rmisc.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_rsurf.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_screen.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_test.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_vidnt.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="gl_warp.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="r_part.c">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_draw.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_mesh.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_model.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_refrag.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_rlight.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_rmain.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_rmisc.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_rsurf.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_screen.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_test.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_vidnt.c">
+      <Filter>diff</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_warp.c">
+      <Filter>diff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,12 +222,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="cvar.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="d_iface.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="d_local.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="draw.h">
@@ -329,17 +326,17 @@
     <ClInclude Include="zone.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="anorm_dots.h">
+      <Filter>diff</Filter>
+    </ClInclude>
     <ClInclude Include="gl_model.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>diff</Filter>
     </ClInclude>
     <ClInclude Include="gl_warp_sin.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>diff</Filter>
     </ClInclude>
     <ClInclude Include="glquake.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="anorm_dots.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>diff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -88,19 +88,51 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cd_win.c" />
-    <ClCompile Include="chase.c" />
-    <ClCompile Include="cl_demo.c" />
-    <ClCompile Include="cl_input.c" />
-    <ClCompile Include="cl_main.c" />
-    <ClCompile Include="cl_parse.c" />
-    <ClCompile Include="cl_tent.c" />
-    <ClCompile Include="cmd.c" />
-    <ClCompile Include="common.c" />
-    <ClCompile Include="conproc.c" />
-    <ClCompile Include="console.c" />
-    <ClCompile Include="crc.c" />
-    <ClCompile Include="cvar.c" />
+    <ClCompile Include="..\common\cd_win.c" />
+    <ClCompile Include="..\common\chase.c" />
+    <ClCompile Include="..\common\cl_demo.c" />
+    <ClCompile Include="..\common\cl_input.c" />
+    <ClCompile Include="..\common\cl_main.c" />
+    <ClCompile Include="..\common\cl_parse.c" />
+    <ClCompile Include="..\common\cl_tent.c" />
+    <ClCompile Include="..\common\cmd.c" />
+    <ClCompile Include="..\common\common.c" />
+    <ClCompile Include="..\common\conproc.c" />
+    <ClCompile Include="..\common\console.c" />
+    <ClCompile Include="..\common\crc.c" />
+    <ClCompile Include="..\common\cvar.c" />
+    <ClCompile Include="..\common\host.c" />
+    <ClCompile Include="..\common\host_cmd.c" />
+    <ClCompile Include="..\common\in_win.c" />
+    <ClCompile Include="..\common\keys.c" />
+    <ClCompile Include="..\common\mathlib.c" />
+    <ClCompile Include="..\common\menu.c" />
+    <ClCompile Include="..\common\net_dgrm.c" />
+    <ClCompile Include="..\common\net_loop.c" />
+    <ClCompile Include="..\common\net_main.c" />
+    <ClCompile Include="..\common\net_vcr.c" />
+    <ClCompile Include="..\common\net_win.c" />
+    <ClCompile Include="..\common\net_wins.c" />
+    <ClCompile Include="..\common\net_wipx.c" />
+    <ClCompile Include="..\common\nonintel.c" />
+    <ClCompile Include="..\common\pr_cmds.c" />
+    <ClCompile Include="..\common\pr_edict.c" />
+    <ClCompile Include="..\common\pr_exec.c" />
+    <ClCompile Include="..\common\r_part.c" />
+    <ClCompile Include="..\common\sbar.c" />
+    <ClCompile Include="..\common\snd_dma.c" />
+    <ClCompile Include="..\common\snd_mem.c" />
+    <ClCompile Include="..\common\snd_mix.c" />
+    <ClCompile Include="..\common\snd_win.c" />
+    <ClCompile Include="..\common\sv_main.c" />
+    <ClCompile Include="..\common\sv_move.c" />
+    <ClCompile Include="..\common\sv_phys.c" />
+    <ClCompile Include="..\common\sv_user.c" />
+    <ClCompile Include="..\common\sys_win.c" />
+    <ClCompile Include="..\common\view.c" />
+    <ClCompile Include="..\common\wad.c" />
+    <ClCompile Include="..\common\world.c" />
+    <ClCompile Include="..\common\zone.c" />
     <ClCompile Include="draw.c" />
     <ClCompile Include="d_edge.c" />
     <ClCompile Include="d_fill.c" />
@@ -114,24 +146,7 @@
     <ClCompile Include="d_surf.c" />
     <ClCompile Include="d_vars.c" />
     <ClCompile Include="d_zpoint.c" />
-    <ClCompile Include="host.c" />
-    <ClCompile Include="host_cmd.c" />
-    <ClCompile Include="in_win.c" />
-    <ClCompile Include="keys.c" />
-    <ClCompile Include="mathlib.c" />
-    <ClCompile Include="menu.c" />
     <ClCompile Include="model.c" />
-    <ClCompile Include="net_dgrm.c" />
-    <ClCompile Include="net_loop.c" />
-    <ClCompile Include="net_main.c" />
-    <ClCompile Include="net_vcr.c" />
-    <ClCompile Include="net_win.c" />
-    <ClCompile Include="net_wins.c" />
-    <ClCompile Include="net_wipx.c" />
-    <ClCompile Include="nonintel.c" />
-    <ClCompile Include="pr_cmds.c" />
-    <ClCompile Include="pr_edict.c" />
-    <ClCompile Include="pr_exec.c" />
     <ClCompile Include="r_aclip.c" />
     <ClCompile Include="r_alias.c" />
     <ClCompile Include="r_bsp.c" />
@@ -141,33 +156,12 @@
     <ClCompile Include="r_light.c" />
     <ClCompile Include="r_main.c" />
     <ClCompile Include="r_misc.c" />
-    <ClCompile Include="r_part.c" />
     <ClCompile Include="r_sky.c" />
     <ClCompile Include="r_sprite.c" />
     <ClCompile Include="r_surf.c" />
     <ClCompile Include="r_vars.c" />
-    <ClCompile Include="sbar.c" />
     <ClCompile Include="screen.c" />
-    <ClCompile Include="snd_dma.c" />
-    <ClCompile Include="snd_mem.c" />
-    <ClCompile Include="snd_mix.c" />
-    <ClCompile Include="snd_win.c" />
-    <ClCompile Include="sv_main.c" />
-    <ClCompile Include="sv_move.c" />
-    <ClCompile Include="sv_phys.c" />
-    <ClCompile Include="sv_user.c" />
-    <ClCompile Include="sys_win.c" />
     <ClCompile Include="vid_win.c" />
-    <ClCompile Include="view.c" />
-    <ClCompile Include="wad.c" />
-    <ClCompile Include="world.c" />
-    <ClCompile Include="zone.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="winquake.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="quake.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\adivtab.h" />
@@ -182,6 +176,7 @@
     <ClInclude Include="..\common\crc.h" />
     <ClInclude Include="..\common\cvar.h" />
     <ClInclude Include="..\common\draw.h" />
+    <ClInclude Include="..\common\d_iface.h" />
     <ClInclude Include="..\common\input.h" />
     <ClInclude Include="..\common\keys.h" />
     <ClInclude Include="..\common\mathlib.h" />
@@ -215,11 +210,16 @@
     <ClInclude Include="..\common\winquake.h" />
     <ClInclude Include="..\common\world.h" />
     <ClInclude Include="..\common\zone.h" />
-    <ClInclude Include="d_iface.h" />
     <ClInclude Include="d_local.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\common\progdefs.q1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\common\winquake.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\common\quake.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

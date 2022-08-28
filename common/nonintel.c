@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
-#if	!id386
+#if !id386
 
 /*
 ================
@@ -33,7 +33,7 @@ R_Surf8Patch
 */
 void R_Surf8Patch ()
 {
-	// we only patch code on Intel
+ // we only patch code on Intel
 }
 
 
@@ -44,7 +44,7 @@ R_Surf16Patch
 */
 void R_Surf16Patch ()
 {
-	// we only patch code on Intel
+ // we only patch code on Intel
 }
 
 
@@ -55,9 +55,9 @@ R_SurfacePatch
 */
 void R_SurfacePatch (void)
 {
-	// we only patch code on Intel
+ // we only patch code on Intel
 }
 
 
-#endif	// !id386
+#endif // !id386
 

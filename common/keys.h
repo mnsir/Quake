@@ -130,3 +130,5 @@ void Key_Init(void);
 void Key_WriteBindings(FILE* f);
 void Key_SetBinding(int keynum, char* binding);
 void Key_ClearStates(void);
+
+char* Key_KeynumToString(int keynum);

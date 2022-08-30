@@ -20,6 +20,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_dgrm.h
 #pragma once
 
+#define NET_HEADERSIZE (2 * sizeof(unsigned int))
+#define NET_DATAGRAMSIZE (MAX_DATAGRAM + NET_HEADERSIZE)
+
+// NetHeader flags
+#define NETFLAG_LENGTH_MASK 0x0000ffff
+#define NETFLAG_DATA 0x00010000
+#define NETFLAG_ACK 0x00020000
+#define NETFLAG_NAK 0x00040000
+#define NETFLAG_EOM 0x00080000
+#define NETFLAG_UNRELIABLE 0x00100000
+#define NETFLAG_CTL 0x80000000
+
+
+#define NET_PROTOCOL_VERSION 3
+
 int Datagram_Init(void);
 void Datagram_Listen(qboolean state);
 void Datagram_SearchForHosts(qboolean xmit);

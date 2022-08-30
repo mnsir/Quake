@@ -16,6 +16,51 @@
     <Filter Include="diff">
       <UniqueIdentifier>{3cd3c075-040f-4673-890e-0dae391d2de6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{f986d414-a105-4637-b75d-77032950b83f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{693e9e0a-17ce-403f-b081-8e653c826bf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="client">
+      <UniqueIdentifier>{50ff0bb0-cdf1-4794-858f-ad52264b3b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cdaudio">
+      <UniqueIdentifier>{c369e236-fa08-497d-8af3-6ccbd3602181}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="draw">
+      <UniqueIdentifier>{5bd5fa3b-08f2-4533-8287-945192a711ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="model">
+      <UniqueIdentifier>{ad096074-2e9a-42bc-a038-f3b41383f6b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="host">
+      <UniqueIdentifier>{b1830f1e-1d9a-4758-89f1-9b796608a4cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="screen">
+      <UniqueIdentifier>{f7978704-7f05-46c9-aa01-2a2b03406a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sys">
+      <UniqueIdentifier>{9c3a4a60-7a6c-4673-b288-d696a8d1bc2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vid">
+      <UniqueIdentifier>{ec3f461c-3e82-4f20-9864-c52f723bd939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{d6f1e594-7035-442d-9c73-10982b6f75e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="progs">
+      <UniqueIdentifier>{346a5984-11ca-4667-818c-e24d0b3ab77b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{fb9e7319-7f8d-4628-8bcf-2051b469c924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="server">
+      <UniqueIdentifier>{482804ed-1e46-417b-96d7-0a89291b2d07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="other">
+      <UniqueIdentifier>{0f323aa4-1fe9-45ee-baa4-38acb203e260}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gl_draw.c">
@@ -54,270 +99,153 @@
     <ClCompile Include="gl_warp.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cd_win.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\chase.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\cl_demo.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\cl_input.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\cl_main.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\cl_parse.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\cl_tent.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\cmd.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\common.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\conproc.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\console.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\crc.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\cvar.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\host.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\host_cmd.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\in_win.c">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="..\common\crc.c">
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\keys.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\mathlib.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\conproc.c">
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\menu.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_dgrm.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_loop.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_main.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_vcr.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_win.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_wins.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\net_wipx.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\nonintel.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\pr_cmds.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\pr_edict.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\pr_exec.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\r_part.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sbar.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\snd_dma.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\snd_mem.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\snd_mix.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\snd_win.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sv_main.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sv_move.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sv_phys.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sv_user.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\sys_win.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\view.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\wad.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\world.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
     </ClCompile>
     <ClCompile Include="..\common\zone.c">
-      <Filter>Исходные файлы</Filter>
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sbar.c">
+      <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cd_win.c">
+      <Filter>cdaudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_dgrm.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_loop.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_main.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_vcr.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_win.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_wins.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\net_wipx.c">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cl_demo.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cl_input.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cl_main.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cl_parse.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cl_tent.c">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sv_main.c">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sv_user.c">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sv_phys.c">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sv_move.c">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\snd_dma.c">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\snd_mem.c">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\snd_mix.c">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\snd_win.c">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\pr_cmds.c">
+      <Filter>progs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\pr_edict.c">
+      <Filter>progs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\pr_exec.c">
+      <Filter>progs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\r_part.c">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\nonintel.c">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\in_win.c">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\sys_win.c">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\host.c">
+      <Filter>host</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\host_cmd.c">
+      <Filter>host</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\chase.c">
+      <Filter>other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\bspfile.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\cdaudio.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\client.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\cmd.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\common.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\conproc.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\console.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\crc.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\cvar.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\draw.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\input.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\keys.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\mathlib.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\menu.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\model.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\modelgen.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net_dgrm.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net_loop.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net_vcr.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net_wins.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\net_wipx.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\pr_comp.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\progdefs.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\progs.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\protocol.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\common\quakedef.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\r_local.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\r_shared.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\render.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\resource.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\sbar.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\screen.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\server.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\sound.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\spritegn.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\sys.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\vid.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\view.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\wad.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\winquake.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\world.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\zone.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\common\glquake.h">
@@ -325,6 +253,162 @@
     </ClInclude>
     <ClInclude Include="..\common\gl_model.h">
       <Filter>diff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cmd.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\common.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\console.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\crc.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cvar.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\keys.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\mathlib.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\menu.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\conproc.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\world.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\zone.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\wad.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sbar.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\view.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cdaudio.h">
+      <Filter>cdaudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_dgrm.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_loop.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_vcr.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_wins.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_wipx.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\client.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\server.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sound.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\progs.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\pr_comp.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\r_local.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\r_shared.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\render.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\progdefs.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\input.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\modelgen.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\model.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\spritegn.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\bspfile.h">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\vid.h">
+      <Filter>vid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sys.h">
+      <Filter>sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\screen.h">
+      <Filter>screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\draw.h">
+      <Filter>draw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\chase.h">
+      <Filter>other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\host.h">
+      <Filter>host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cl_demo.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cl_input.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cl_main.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cl_parse.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cl_tent.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_main.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_win.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\pr_cmds.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\pr_edict.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\pr_exec.h">
+      <Filter>progs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\entity_state.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

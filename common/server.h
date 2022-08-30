@@ -20,15 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // server.h
 #pragma once
 
-typedef struct
-{
-	int maxclients;
-	int maxclientslimit;
-	struct client_s* clients; // [maxclients]
-	int serverflags; // episode completion information
-	qboolean changelevel_issued; // cleared when at SV_SpawnServer
-} server_static_t;
-
 //=============================================================================
 
 typedef enum { ss_loading, ss_active } server_state_t;
@@ -46,9 +37,7 @@ typedef struct
 	double lastchecktime;
 
 	char name[64]; // map name
-#ifdef QUAKE2
-	char startspot[64];
-#endif
+
 	char modelname[64]; // maps/<name>.bsp, for model_precache[0]
 	struct model_s* worldmodel;
 	char* model_precache[MAX_MODELS]; // NULL terminated
@@ -71,7 +60,6 @@ typedef struct
 	sizebuf_t signon;
 	byte signon_buf[8192];
 } server_t;
-
 
 #define NUM_PING_TIMES 16
 #define NUM_SPAWN_PARMS 16
@@ -110,8 +98,6 @@ typedef struct client_s
 } client_t;
 
 
-//=============================================================================
-
 // edict->movetype values
 #define MOVETYPE_NONE 0 // never moves
 #define MOVETYPE_ANGLENOCLIP 1
@@ -124,10 +110,6 @@ typedef struct client_s
 #define MOVETYPE_NOCLIP 8
 #define MOVETYPE_FLYMISSILE 9 // extra size to monsters
 #define MOVETYPE_BOUNCE 10
-#ifdef QUAKE2
-#define MOVETYPE_BOUNCEMISSILE 11 // bounce w/o gravity
-#define MOVETYPE_FOLLOW 12 // track movement of aiment
-#endif
 
 // edict->solid values
 #define SOLID_NOT 0 // no interaction with other objects
@@ -160,10 +142,6 @@ typedef struct client_s
 #define FL_PARTIALGROUND 1024 // not all corners are valid
 #define FL_WATERJUMP 2048 // player jumping out of water
 #define FL_JUMPRELEASED 4096 // for jump debouncing
-#ifdef QUAKE2
-#define FL_FLASHLIGHT 8192
-#define FL_ARCHIVE_OVERRIDE 1048576
-#endif
 
 // entity effects
 
@@ -171,88 +149,53 @@ typedef struct client_s
 #define EF_MUZZLEFLASH  2
 #define EF_BRIGHTLIGHT  4
 #define EF_DIMLIGHT  8
-#ifdef QUAKE2
-#define EF_DARKLIGHT 16
-#define EF_DARKFIELD 32
-#define EF_LIGHT 64
-#define EF_NODRAW 128
-#endif
 
 #define SPAWNFLAG_NOT_EASY 256
 #define SPAWNFLAG_NOT_MEDIUM 512
 #define SPAWNFLAG_NOT_HARD 1024
 #define SPAWNFLAG_NOT_DEATHMATCH 2048
 
-#ifdef QUAKE2
-// server flags
-#define SFL_EPISODE_1 1
-#define SFL_EPISODE_2 2
-#define SFL_EPISODE_3 4
-#define SFL_EPISODE_4 8
-#define SFL_NEW_UNIT 16
-#define SFL_NEW_EPISODE 32
-#define SFL_CROSS_TRIGGERS 65280
-#endif
-
 //============================================================================
+// sv_main.h
 
-extern cvar_t teamplay;
-extern cvar_t skill;
-extern cvar_t deathmatch;
-extern cvar_t coop;
-extern cvar_t fraglimit;
-extern cvar_t timelimit;
+typedef struct
+{
+	int maxclients;
+	int maxclientslimit;
+	struct client_s* clients; // [maxclients]
+	int serverflags; // episode completion information
+	qboolean changelevel_issued; // cleared when at SV_SpawnServer
+} server_static_t;
 
 extern server_static_t svs; // persistant server info
 extern server_t sv; // local server
 
-extern client_t* host_client;
-
-extern jmp_buf host_abortserver;
-
-extern double host_time;
-
-extern edict_t* sv_player;
-
-//===========================================================
-
 void SV_Init(void);
-
 void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
-void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
-                   float attenuation);
-
-void SV_DropClient(qboolean crash);
-
+void SV_StartSound(edict_t* entity, int channel, char* sample, int volume, float attenuation);
 void SV_SendClientMessages(void);
 void SV_ClearDatagram(void);
-
 int SV_ModelIndex(char* name);
+void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg);
+void SV_CheckForNewClients(void);
+void SV_SaveSpawnparms();
+void SV_SpawnServer(char* server);
+
+//=============================================================================
+// sv_user.h
+extern edict_t* sv_player;
 
 void SV_SetIdealPitch(void);
-
-void SV_AddUpdates(void);
-
 void SV_ClientThink(void);
-void SV_AddClientToServer(struct qsocket_s* ret);
+void SV_RunClients(void);
 
-void SV_ClientPrintf(char* fmt, ...);
-void SV_BroadcastPrintf(char* fmt, ...);
-
+//=============================================================================
+// sv_phys.h
 void SV_Physics(void);
 
+//=============================================================================
+// sv_move.h
 qboolean SV_CheckBottom(edict_t* ent);
 qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink);
-
-void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg);
-
 void SV_MoveToGoal(void);
 
-void SV_CheckForNewClients(void);
-void SV_RunClients(void);
-void SV_SaveSpawnparms();
-#ifdef QUAKE2
-void SV_SpawnServer(char* server, char* startspot);
-#else
-void SV_SpawnServer(char* server);
-#endif

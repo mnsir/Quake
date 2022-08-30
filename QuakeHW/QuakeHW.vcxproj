@@ -164,8 +164,6 @@
     <ClCompile Include="vid_win.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\adivtab.h" />
-    <ClInclude Include="..\common\anorms.h" />
     <ClInclude Include="..\common\bspfile.h" />
     <ClInclude Include="..\common\cdaudio.h" />
     <ClInclude Include="..\common\client.h" />
@@ -211,9 +209,6 @@
     <ClInclude Include="..\common\world.h" />
     <ClInclude Include="..\common\zone.h" />
     <ClInclude Include="d_local.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\common\progdefs.q1" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\common\winquake.rc" />

@@ -242,12 +242,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\adivtab.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\anorms.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\bspfile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -383,9 +377,6 @@
     <ClInclude Include="..\common\model.h">
       <Filter>diff</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\common\progdefs.q1" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\common\winquake.rc">

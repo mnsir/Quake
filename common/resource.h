@@ -2,6 +2,8 @@
 // Microsoft Developer Studio generated include file.
 // Used by winquake.rc
 //
+#pragma once
+
 #define IDS_STRING1                     1
 #define IDI_ICON2                       1
 #define IDD_DIALOG1                     108

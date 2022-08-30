@@ -17,14 +17,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#pragma once
+
 #ifndef GLQUAKE
 // r_shared.h: general refresh-related stuff shared between the refresh and the
 // driver
 
 // FIXME: clean up and move into d_iface.h
-
-#ifndef _R_SHARED_H_
-#define _R_SHARED_H_
 
 #define MAXVERTS 16 // max points in a surface polygon
 #define MAXWORKINGVERTS (MAXVERTS+4) // max points in an intermediate
@@ -153,5 +152,3 @@ typedef struct edge_s
 } edge_t;
 
 #endif // _R_SHARED_H_
-
-#endif // GLQUAKE

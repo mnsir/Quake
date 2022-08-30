@@ -82,6 +82,7 @@ Zone block
 
 
 */
+#pragma once
 
 void Memory_Init(void* buf, int size);
 

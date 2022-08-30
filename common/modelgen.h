@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // modelgen.h: header file for model generation program
 //
+#pragma once
 
 // *********************************************************
 // * This file must be identical in the modelgen directory *

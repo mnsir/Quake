@@ -191,7 +191,7 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 		tex = surf->texinfo;
 
 		s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
-		t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];;
+		t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] ||
 			t < surf->texturemins[1])
@@ -213,11 +213,10 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 		r = 0;
 		if (lightmap)
 		{
-
 			lightmap += dt * ((surf->extents[0] >> 4) + 1) + ds;
 
 			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-				maps++)
+			     maps++)
 			{
 				scale = d_lightstylevalue[surf->styles[maps]];
 				r += *lightmap * scale;
@@ -257,4 +256,3 @@ int R_LightPoint(vec3_t p)
 
 	return r;
 }
-

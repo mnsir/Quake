@@ -59,7 +59,7 @@ int StripLength(int starttri, int startv)
 {
 	int m1, m2;
 	int j;
-	mtriangle_t* last, * check;
+	mtriangle_t *last, *check;
 	int k;
 
 	used[starttri] = 2;
@@ -128,7 +128,7 @@ int FanLength(int starttri, int startv)
 {
 	int m1, m2;
 	int j;
-	mtriangle_t* last, * check;
+	mtriangle_t *last, *check;
 	int k;
 
 	used[starttri] = 2;
@@ -199,7 +199,7 @@ void BuildTris(void)
 {
 	int i, j, k;
 	int startv;
-	mtriangle_t* last, * check;
+	mtriangle_t *last, *check;
 	int m1, m2;
 	int striplength;
 	trivertx_t* v;
@@ -225,7 +225,7 @@ void BuildTris(void)
 
 		bestlen = 0;
 		for (type = 0; type < 2; type++)
-			// type = 1;
+		// type = 1;
 		{
 			for (startv = 0; startv < 3; startv++)
 			{
@@ -293,7 +293,7 @@ void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 	maliasgroup_t* paliasgroup;
 	int* cmds;
 	trivertx_t* verts;
-	char cache[MAX_QPATH], fullpath[MAX_OSPATH], * c;
+	char cache[MAX_QPATH], fullpath[MAX_OSPATH], *c;
 	FILE* f;
 	int len;
 	byte* data;
@@ -357,4 +357,3 @@ void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 		for (j = 0; j < numorder; j++)
 			*verts++ = poseverts[i][vertexorder[j]];
 }
-

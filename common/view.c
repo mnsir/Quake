@@ -31,38 +31,38 @@ when crossing a water boudnary.
 
 */
 
-cvar_t lcd_x = { "lcd_x","0" };
-cvar_t lcd_yaw = { "lcd_yaw","0" };
+cvar_t lcd_x = {"lcd_x", "0"};
+cvar_t lcd_yaw = {"lcd_yaw", "0"};
 
-cvar_t scr_ofsx = { "scr_ofsx","0", false };
-cvar_t scr_ofsy = { "scr_ofsy","0", false };
-cvar_t scr_ofsz = { "scr_ofsz","0", false };
+cvar_t scr_ofsx = {"scr_ofsx", "0", false};
+cvar_t scr_ofsy = {"scr_ofsy", "0", false};
+cvar_t scr_ofsz = {"scr_ofsz", "0", false};
 
-cvar_t cl_rollspeed = { "cl_rollspeed", "200" };
-cvar_t cl_rollangle = { "cl_rollangle", "2.0" };
+cvar_t cl_rollspeed = {"cl_rollspeed", "200"};
+cvar_t cl_rollangle = {"cl_rollangle", "2.0"};
 
-cvar_t cl_bob = { "cl_bob","0.02", false };
-cvar_t cl_bobcycle = { "cl_bobcycle","0.6", false };
-cvar_t cl_bobup = { "cl_bobup","0.5", false };
+cvar_t cl_bob = {"cl_bob", "0.02", false};
+cvar_t cl_bobcycle = {"cl_bobcycle", "0.6", false};
+cvar_t cl_bobup = {"cl_bobup", "0.5", false};
 
-cvar_t v_kicktime = { "v_kicktime", "0.5", false };
-cvar_t v_kickroll = { "v_kickroll", "0.6", false };
-cvar_t v_kickpitch = { "v_kickpitch", "0.6", false };
+cvar_t v_kicktime = {"v_kicktime", "0.5", false};
+cvar_t v_kickroll = {"v_kickroll", "0.6", false};
+cvar_t v_kickpitch = {"v_kickpitch", "0.6", false};
 
-cvar_t v_iyaw_cycle = { "v_iyaw_cycle", "2", false };
-cvar_t v_iroll_cycle = { "v_iroll_cycle", "0.5", false };
-cvar_t v_ipitch_cycle = { "v_ipitch_cycle", "1", false };
-cvar_t v_iyaw_level = { "v_iyaw_level", "0.3", false };
-cvar_t v_iroll_level = { "v_iroll_level", "0.1", false };
-cvar_t v_ipitch_level = { "v_ipitch_level", "0.3", false };
+cvar_t v_iyaw_cycle = {"v_iyaw_cycle", "2", false};
+cvar_t v_iroll_cycle = {"v_iroll_cycle", "0.5", false};
+cvar_t v_ipitch_cycle = {"v_ipitch_cycle", "1", false};
+cvar_t v_iyaw_level = {"v_iyaw_level", "0.3", false};
+cvar_t v_iroll_level = {"v_iroll_level", "0.1", false};
+cvar_t v_ipitch_level = {"v_ipitch_level", "0.3", false};
 
-cvar_t v_idlescale = { "v_idlescale", "0", false };
+cvar_t v_idlescale = {"v_idlescale", "0", false};
 
-cvar_t crosshair = { "crosshair", "0", true };
-cvar_t cl_crossx = { "cl_crossx", "0", false };
-cvar_t cl_crossy = { "cl_crossy", "0", false };
+cvar_t crosshair = {"crosshair", "0", true};
+cvar_t cl_crossx = {"cl_crossx", "0", false};
+cvar_t cl_crossy = {"cl_crossy", "0", false};
 
-cvar_t gl_cshiftpercent = { "gl_cshiftpercent", "100", false };
+cvar_t gl_cshiftpercent = {"gl_cshiftpercent", "100", false};
 
 float v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -99,7 +99,6 @@ float V_CalcRoll(vec3_t angles, vec3_t velocity)
 		side = value;
 
 	return side * sign;
-
 }
 
 
@@ -132,15 +131,14 @@ float V_CalcBob(void)
 	else if (bob < -7)
 		bob = -7;
 	return bob;
-
 }
 
 
 //=============================================================================
 
 
-cvar_t v_centermove = { "v_centermove", "0.15", false };
-cvar_t v_centerspeed = { "v_centerspeed","500" };
+cvar_t v_centermove = {"v_centermove", "0.15", false};
+cvar_t v_centerspeed = {"v_centerspeed", "500"};
 
 
 void V_StartPitchDrift(void)
@@ -239,9 +237,6 @@ void V_DriftPitch(void)
 }
 
 
-
-
-
 /*
 ==============================================================================
 
@@ -251,12 +246,12 @@ void V_DriftPitch(void)
 */
 
 
-cshift_t cshift_empty = { {130,80,50}, 0 };
-cshift_t cshift_water = { {130,80,50}, 128 };
-cshift_t cshift_slime = { {0,25,5}, 150 };
-cshift_t cshift_lava = { {255,80,0}, 150 };
+cshift_t cshift_empty = {{130, 80, 50}, 0};
+cshift_t cshift_water = {{130, 80, 50}, 128};
+cshift_t cshift_slime = {{0, 25, 5}, 150};
+cshift_t cshift_lava = {{255, 80, 0}, 150};
 
-cvar_t v_gamma = { "gamma", "1", true };
+cvar_t v_gamma = {"gamma", "1", true};
 
 byte gammatable[256]; // palette is sent through this
 
@@ -305,7 +300,6 @@ qboolean V_CheckGamma(void)
 
 	return true;
 }
-
 
 
 /*
@@ -528,7 +522,7 @@ void V_UpdatePalette(void)
 {
 	int i, j;
 	qboolean new;
-	byte* basepal, * newpal;
+	byte *basepal, *newpal;
 	byte pal[768];
 	float r, g, b, a;
 	int ir, ig, ib;
@@ -822,9 +816,7 @@ void V_CalcViewRoll(void)
 	if (cl.stats[STAT_HEALTH] <= 0)
 	{
 		r_refdef.viewangles[ROLL] = 80; // dead view angle
-		return;
 	}
-
 }
 
 
@@ -836,7 +828,7 @@ V_CalcIntermissionRefdef
 */
 void V_CalcIntermissionRefdef(void)
 {
-	entity_t* ent, * view;
+	entity_t *ent, *view;
 	float old;
 
 	// ent is the player model (visible when out of body)
@@ -863,7 +855,7 @@ V_CalcRefdef
 */
 void V_CalcRefdef(void)
 {
-	entity_t* ent, * view;
+	entity_t *ent, *view;
 	int i;
 	vec3_t forward, right, up;
 	vec3_t angles;
@@ -913,8 +905,8 @@ void V_CalcRefdef(void)
 
 	for (i = 0; i < 3; i++)
 		r_refdef.vieworg[i] += scr_ofsx.value * forward[i]
-		+ scr_ofsy.value * right[i]
-		+ scr_ofsz.value * up[i];
+			+ scr_ofsy.value * right[i]
+			+ scr_ofsz.value * up[i];
 
 
 	V_BoundOffsets();
@@ -941,14 +933,14 @@ void V_CalcRefdef(void)
 #if 0
 	if (cl.model_precache[cl.stats[STAT_WEAPON]] && strcmp(cl.model_precache[cl.stats[STAT_WEAPON]]->name, "progs/v_shot2.mdl"))
 #endif
-		if (scr_viewsize.value == 110)
-			view->origin[2] += 1;
-		else if (scr_viewsize.value == 100)
-			view->origin[2] += 2;
-		else if (scr_viewsize.value == 90)
-			view->origin[2] += 1;
-		else if (scr_viewsize.value == 80)
-			view->origin[2] += 0.5;
+	if (scr_viewsize.value == 110)
+		view->origin[2] += 1;
+	else if (scr_viewsize.value == 100)
+		view->origin[2] += 2;
+	else if (scr_viewsize.value == 90)
+		view->origin[2] += 1;
+	else if (scr_viewsize.value == 80)
+		view->origin[2] += 0.5;
 
 	view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
 	view->frame = cl.stats[STAT_WEAPONFRAME];
@@ -1006,7 +998,8 @@ void V_RenderView(void)
 	}
 
 	if (cl.intermission)
-	{ // intermission / finale rendering
+	{
+		// intermission / finale rendering
 		V_CalcIntermissionRefdef();
 	}
 	else
@@ -1058,7 +1051,6 @@ void V_RenderView(void)
 		Draw_Character(scr_vrect.x + scr_vrect.width / 2 + cl_crossx.value,
 			scr_vrect.y + scr_vrect.height / 2 + cl_crossy.value, '+');
 #endif
-
 }
 
 //============================================================================
@@ -1109,5 +1101,3 @@ void V_Init(void)
 	BuildGammaTable(1.0); // no gamma yet
 	Cvar_RegisterVariable(&v_gamma);
 }
-
-

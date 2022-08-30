@@ -27,9 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern unsigned char d_15to8table[65536];
 
-cvar_t gl_nobind = { "gl_nobind", "0" };
-cvar_t gl_max_size = { "gl_max_size", "1024" };
-cvar_t gl_picmip = { "gl_picmip", "0" };
+cvar_t gl_nobind = {"gl_nobind", "0"};
+cvar_t gl_max_size = {"gl_max_size", "1024"};
+cvar_t gl_picmip = {"gl_picmip", "0"};
 
 byte* draw_chars; // 8*8 graphic characters
 qpic_t* draw_disc;
@@ -129,7 +129,8 @@ int Scrap_AllocBlock(int w, int h, int* x, int* y)
 					best2 = scrap_allocated[texnum][i + j];
 			}
 			if (j == w)
-			{ // this is a valid spot
+			{
+				// this is a valid spot
 				*x = i;
 				*y = best = best2;
 			}
@@ -155,7 +156,8 @@ void Scrap_Upload(void)
 
 	scrap_uploads++;
 
-	for (texnum = 0; texnum < MAX_SCRAPS; texnum++) {
+	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
+	{
 		GL_Bind(scrap_texnum + texnum);
 		GL_Upload8(scrap_texels[texnum], BLOCK_WIDTH, BLOCK_HEIGHT, false, true);
 	}
@@ -294,7 +296,6 @@ void Draw_CharToConback(int num, byte* dest)
 		source += 128;
 		dest += 320;
 	}
-
 }
 
 typedef struct
@@ -304,12 +305,12 @@ typedef struct
 } glmode_t;
 
 glmode_t modes[] = {
- {"GL_NEAREST", GL_NEAREST, GL_NEAREST},
- {"GL_LINEAR", GL_LINEAR, GL_LINEAR},
- {"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
- {"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
- {"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
- {"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
+	{"GL_NEAREST", GL_NEAREST, GL_NEAREST},
+	{"GL_LINEAR", GL_LINEAR, GL_LINEAR},
+	{"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
+	{"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
+	{"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
+	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
 /*
@@ -369,7 +370,7 @@ void Draw_Init(void)
 {
 	int i;
 	qpic_t* cb;
-	byte* dest, * src;
+	byte *dest, *src;
 	int x, y;
 	char ver[40];
 	glpic_t* gl;
@@ -484,7 +485,6 @@ void Draw_Init(void)
 }
 
 
-
 /*
 ================
 Draw_Character
@@ -567,7 +567,7 @@ Draw_AlphaPic
 */
 void Draw_AlphaPic(int x, int y, qpic_t* pic, float alpha)
 {
-	byte* dest, * source;
+	byte *dest, *source;
 	unsigned short* pusdest;
 	int v, u;
 	glpic_t* gl;
@@ -604,7 +604,7 @@ Draw_Pic
 */
 void Draw_Pic(int x, int y, qpic_t* pic)
 {
-	byte* dest, * source;
+	byte *dest, *source;
 	unsigned short* pusdest;
 	int v, u;
 	glpic_t* gl;
@@ -634,7 +634,7 @@ Draw_TransPic
 */
 void Draw_TransPic(int x, int y, qpic_t* pic)
 {
-	byte* dest, * source, tbyte;
+	byte *dest, *source, tbyte;
 	unsigned short* pusdest;
 	int v, u;
 
@@ -658,7 +658,7 @@ Only used for the player color selection menu
 void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 {
 	int v, u, c;
-	unsigned trans[64 * 64], * dest;
+	unsigned trans[64 * 64], *dest;
 	byte* src;
 	int p;
 
@@ -752,8 +752,8 @@ void Draw_Fill(int x, int y, int w, int h, int c)
 {
 	glDisable(GL_TEXTURE_2D);
 	glColor3f(host_basepal[c * 3] / 255.0,
-		host_basepal[c * 3 + 1] / 255.0,
-		host_basepal[c * 3 + 2] / 255.0);
+	          host_basepal[c * 3 + 1] / 255.0,
+	          host_basepal[c * 3 + 2] / 255.0);
 
 	glBegin(GL_QUADS);
 
@@ -766,6 +766,7 @@ void Draw_Fill(int x, int y, int w, int h, int c)
 	glColor3f(1, 1, 1);
 	glEnable(GL_TEXTURE_2D);
 }
+
 //=============================================================================
 
 /*
@@ -909,7 +910,8 @@ void GL_ResampleTexture(unsigned* in, int inwidth, int inheight, unsigned* out, 
 GL_Resample8BitTexture -- JACK
 ================
 */
-void GL_Resample8BitTexture(unsigned char* in, int inwidth, int inheight, unsigned char* out, int outwidth, int outheight)
+void GL_Resample8BitTexture(unsigned char* in, int inwidth, int inheight, unsigned char* out, int outwidth,
+                            int outheight)
 {
 	int i, j;
 	unsigned char* inrow;
@@ -972,8 +974,8 @@ Mipping for 8 bit textures
 void GL_MipMap8Bit(byte* in, int width, int height)
 {
 	int i, j;
-	unsigned short     r, g, b;
-	byte* out, * at1, * at2, * at3, * at4;
+	unsigned short r, g, b;
+	byte *out, *at1, *at2, *at3, *at4;
 
 	// width <<=2;
 	height >>= 1;
@@ -987,9 +989,12 @@ void GL_MipMap8Bit(byte* in, int width, int height)
 			at3 = (byte*)(d_8to24table + in[width + 0]);
 			at4 = (byte*)(d_8to24table + in[width + 1]);
 
-			r = (at1[0] + at2[0] + at3[0] + at4[0]); r >>= 5;
-			g = (at1[1] + at2[1] + at3[1] + at4[1]); g >>= 5;
-			b = (at1[2] + at2[2] + at3[2] + at4[2]); b >>= 5;
+			r = (at1[0] + at2[0] + at3[0] + at4[0]);
+			r >>= 5;
+			g = (at1[1] + at2[1] + at3[1] + at4[1]);
+			g >>= 5;
+			b = (at1[2] + at2[2] + at3[2] + at4[2]);
+			b >>= 5;
 
 			out[0] = d_15to8table[(r << 0) + (g << 5) + (b << 10)];
 		}
@@ -1007,10 +1012,8 @@ void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolea
 	static unsigned scaled[1024 * 512]; // [512*256];
 	int scaled_width, scaled_height;
 
-	for (scaled_width = 1; scaled_width < width; scaled_width <<= 1)
-		;
-	for (scaled_height = 1; scaled_height < height; scaled_height <<= 1)
-		;
+	for (scaled_width = 1; scaled_width < width; scaled_width <<= 1);
+	for (scaled_height = 1; scaled_height < height; scaled_height <<= 1);
 
 	scaled_width >>= (int)gl_picmip.value;
 	scaled_height >>= (int)gl_picmip.value;
@@ -1059,7 +1062,7 @@ void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolea
 		miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
-			GL_MipMap((byte*)scaled, scaled_width, scaled_height);
+			GL_MipMap(scaled, scaled_width, scaled_height);
 			scaled_width >>= 1;
 			scaled_height >>= 1;
 			if (scaled_width < 1)
@@ -1067,7 +1070,8 @@ void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolea
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			glTexImage2D(GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+			glTexImage2D(GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+			             scaled);
 		}
 	}
 done:;
@@ -1111,10 +1115,8 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 		if (alpha && noalpha)
 			alpha = false;
 	}
-	for (scaled_width = 1; scaled_width < width; scaled_width <<= 1)
-		;
-	for (scaled_height = 1; scaled_height < height; scaled_height <<= 1)
-		;
+	for (scaled_width = 1; scaled_width < width; scaled_width <<= 1);
+	for (scaled_height = 1; scaled_height < height; scaled_height <<= 1);
 
 	scaled_width >>= (int)gl_picmip.value;
 	scaled_height >>= (int)gl_picmip.value;
@@ -1135,7 +1137,8 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 	{
 		if (!mipmap)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX,
+			             GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
 		memcpy(scaled, data, width * height);
@@ -1143,7 +1146,8 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 	else
 		GL_Resample8BitTexture(data, width, height, scaled, scaled_width, scaled_height);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX,
+	             GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
 	{
 		int miplevel;
@@ -1151,7 +1155,7 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 		miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
-			GL_MipMap8Bit((byte*)scaled, scaled_width, scaled_height);
+			GL_MipMap8Bit(scaled, scaled_width, scaled_height);
 			scaled_width >>= 1;
 			scaled_height >>= 1;
 			if (scaled_width < 1)
@@ -1159,7 +1163,8 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			glTexImage2D(GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
+			glTexImage2D(GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX,
+			             GL_UNSIGNED_BYTE, scaled);
 		}
 	}
 done:;
@@ -1219,7 +1224,8 @@ void GL_Upload8(byte* data, int width, int height, qboolean mipmap, qboolean alp
 		}
 	}
 
-	if (VID_Is8bit() && !alpha && (data != scrap_texels[0])) {
+	if (VID_Is8bit() && !alpha && (data != scrap_texels[0]))
+	{
 		GL_Upload8_EXT(data, width, height, mipmap, alpha);
 		return;
 	}
@@ -1250,7 +1256,8 @@ int GL_LoadTexture(char* identifier, int width, int height, byte* data, qboolean
 			}
 		}
 	}
-	else {
+	else
+	{
 		glt = &gltextures[numgltextures];
 		numgltextures++;
 	}

@@ -59,7 +59,6 @@ void W_CleanupName(char* in, char* out)
 }
 
 
-
 /*
 ====================
 W_LoadWadFile
@@ -128,7 +127,7 @@ void* W_GetLumpName(char* name)
 
 	lump = W_GetLumpinfo(name);
 
-	return (void*)(wad_base + lump->filepos);
+	return wad_base + lump->filepos;
 }
 
 void* W_GetLumpNum(int num)
@@ -140,7 +139,7 @@ void* W_GetLumpNum(int num)
 
 	lump = wad_lumps + num;
 
-	return (void*)(wad_base + lump->filepos);
+	return wad_base + lump->filepos;
 }
 
 /*

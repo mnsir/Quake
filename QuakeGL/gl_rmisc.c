@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 
-
 /*
 ==================
 R_InitTextures
@@ -58,15 +57,16 @@ void R_InitTextures(void)
 
 byte dottexture[8][8] =
 {
- {0,1,1,0,0,0,0,0},
- {1,1,1,1,0,0,0,0},
- {1,1,1,1,0,0,0,0},
- {0,1,1,0,0,0,0,0},
- {0,0,0,0,0,0,0,0},
- {0,0,0,0,0,0,0,0},
- {0,0,0,0,0,0,0,0},
- {0,0,0,0,0,0,0,0},
+	{0, 1, 1, 0, 0, 0, 0, 0},
+	{1, 1, 1, 1, 0, 0, 0, 0},
+	{1, 1, 1, 1, 0, 0, 0, 0},
+	{0, 1, 1, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
 };
+
 void R_InitParticleTexture(void)
 {
 	int x, y;
@@ -236,7 +236,7 @@ void R_TranslatePlayerSkin(int playernum)
 	model_t* model;
 	aliashdr_t* paliashdr;
 	byte* original;
-	unsigned pixels[512 * 256], * out;
+	unsigned pixels[512 * 256], *out;
 	unsigned scaled_width, scaled_height;
 	int inwidth, inheight;
 	byte* inrow;
@@ -276,7 +276,8 @@ void R_TranslatePlayerSkin(int playernum)
 
 	paliashdr = (aliashdr_t*)Mod_Extradata(model);
 	s = paliashdr->skinwidth * paliashdr->skinheight;
-	if (currententity->skinnum < 0 || currententity->skinnum >= paliashdr->numskins) {
+	if (currententity->skinnum < 0 || currententity->skinnum >= paliashdr->numskins)
+	{
 		Con_Printf("(%d): Invalid player skin #%d\n", playernum, currententity->skinnum);
 		original = (byte*)paliashdr + paliashdr->texels[0];
 	}
@@ -314,7 +315,9 @@ void R_TranslatePlayerSkin(int playernum)
 	scaled_width >>= (int)gl_playermip.value;
 	scaled_height >>= (int)gl_playermip.value;
 
-	if (VID_Is8bit()) { // 8bit texture upload
+	if (VID_Is8bit())
+	{
+		// 8bit texture upload
 		byte* out2;
 
 		out2 = (byte*)pixels;
@@ -368,7 +371,6 @@ void R_TranslatePlayerSkin(int playernum)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #endif
-
 }
 
 
@@ -452,5 +454,3 @@ void R_TimeRefresh_f(void)
 void D_FlushCaches(void)
 {
 }
-
-

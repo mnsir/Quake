@@ -51,7 +51,7 @@ Call when removing an object from the world or moving it to another position
 */
 void R_RemoveEfrags(entity_t* ent)
 {
-	efrag_t* ef, * old, * walk, ** prev;
+	efrag_t *ef, *old, *walk, **prev;
 
 	ef = ent->efrag;
 
@@ -64,12 +64,12 @@ void R_RemoveEfrags(entity_t* ent)
 			if (!walk)
 				break;
 			if (walk == ef)
-			{ // remove this fragment
+			{
+				// remove this fragment
 				*prev = ef->leafnext;
 				break;
 			}
-			else
-				prev = &walk->leafnext;
+			prev = &walk->leafnext;
 		}
 
 		old = ef;
@@ -272,5 +272,3 @@ void R_StoreEfrags(efrag_t** ppefrag)
 		}
 	}
 }
-
-

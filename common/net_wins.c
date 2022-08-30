@@ -38,21 +38,21 @@ qboolean winsock_lib_initialized;
 int (PASCAL FAR* pWSAStartup)(WORD wVersionRequired, LPWSADATA lpWSAData);
 int (PASCAL FAR* pWSACleanup)(void);
 int (PASCAL FAR* pWSAGetLastError)(void);
-SOCKET(PASCAL FAR* psocket)(int af, int type, int protocol);
+SOCKET (PASCAL FAR* psocket)(int af, int type, int protocol);
 int (PASCAL FAR* pioctlsocket)(SOCKET s, long cmd, u_long FAR* argp);
 int (PASCAL FAR* psetsockopt)(SOCKET s, int level, int optname,
-	const char FAR* optval, int optlen);
+                              const char FAR* optval, int optlen);
 int (PASCAL FAR* precvfrom)(SOCKET s, char FAR* buf, int len, int flags,
-	struct sockaddr FAR* from, int FAR* fromlen);
+                            struct sockaddr FAR* from, int FAR* fromlen);
 int (PASCAL FAR* psendto)(SOCKET s, const char FAR* buf, int len, int flags,
-	const struct sockaddr FAR* to, int tolen);
+                          const struct sockaddr FAR* to, int tolen);
 int (PASCAL FAR* pclosesocket)(SOCKET s);
 int (PASCAL FAR* pgethostname)(char FAR* name, int namelen);
 struct hostent FAR* (PASCAL FAR* pgethostbyname)(const char FAR* name);
 struct hostent FAR* (PASCAL FAR* pgethostbyaddr)(const char FAR* addr,
-	int len, int type);
+                                                 int len, int type);
 int (PASCAL FAR* pgetsockname)(SOCKET s, struct sockaddr FAR* name,
-	int FAR* namelen);
+                               int FAR* namelen);
 
 #include "net_wins.h"
 
@@ -75,10 +75,11 @@ BOOL PASCAL FAR BlockingHook(void)
 	}
 
 	/* get the next message, if any */
-	ret = (BOOL)PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+	ret = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 
 	/* if we got one, process it */
-	if (ret) {
+	if (ret)
+	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
@@ -236,7 +237,7 @@ int WINS_Init(void)
 
 	((struct sockaddr_in*)&broadcastaddr)->sin_family = AF_INET;
 	((struct sockaddr_in*)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
-	((struct sockaddr_in*)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
+	((struct sockaddr_in*)&broadcastaddr)->sin_port = htons(net_hostport);
 
 	Con_Printf("Winsock TCP/IP Initialized\n");
 	tcpipAvailable = true;
@@ -292,8 +293,8 @@ int WINS_OpenSocket(int port)
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = myAddr;
-	address.sin_port = htons((unsigned short)port);
-	if (bind(newsocket, (void*)&address, sizeof(address)) == 0)
+	address.sin_port = htons(port);
+	if (bind(newsocket, &address, sizeof(address)) == 0)
 		return newsocket;
 
 	Sys_Error("Unable to bind to %s", WINS_AddrToString((struct qsockaddr*)&address));
@@ -364,11 +365,12 @@ static int PartialIPAddress(char* in, struct qsockaddr* hostaddr)
 		port = net_hostport;
 
 	hostaddr->sa_family = AF_INET;
-	((struct sockaddr_in*)hostaddr)->sin_port = htons((short)port);
+	((struct sockaddr_in*)hostaddr)->sin_port = htons(port);
 	((struct sockaddr_in*)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
+
 //=============================================================================
 
 int WINS_Connect(int socket, struct qsockaddr* addr)
@@ -406,7 +408,6 @@ int WINS_Read(int socket, byte* buf, int len, struct qsockaddr* addr)
 
 		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
 			return 0;
-
 	}
 	return ret;
 }
@@ -469,7 +470,8 @@ char* WINS_AddrToString(struct qsockaddr* addr)
 	int haddr;
 
 	haddr = ntohl(((struct sockaddr_in*)addr)->sin_addr.s_addr);
-	sprintf(buffer, "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff, ntohs(((struct sockaddr_in*)addr)->sin_port));
+	sprintf(buffer, "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
+	        ntohs(((struct sockaddr_in*)addr)->sin_port));
 	return buffer;
 }
 
@@ -485,7 +487,7 @@ int WINS_StringToAddr(char* string, struct qsockaddr* addr)
 
 	addr->sa_family = AF_INET;
 	((struct sockaddr_in*)addr)->sin_addr.s_addr = htonl(ipaddr);
-	((struct sockaddr_in*)addr)->sin_port = htons((unsigned short)hp);
+	((struct sockaddr_in*)addr)->sin_port = htons(hp);
 	return 0;
 }
 
@@ -514,7 +516,7 @@ int WINS_GetNameFromAddr(struct qsockaddr* addr, char* name)
 	hostentry = pgethostbyaddr((char*)&((struct sockaddr_in*)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
 	if (hostentry)
 	{
-		Q_strncpy(name, (char*)hostentry->h_name, NET_NAMELEN - 1);
+		Q_strncpy(name, hostentry->h_name, NET_NAMELEN - 1);
 		return 0;
 	}
 
@@ -536,7 +538,7 @@ int WINS_GetAddrFromName(char* name, struct qsockaddr* addr)
 		return -1;
 
 	addr->sa_family = AF_INET;
-	((struct sockaddr_in*)addr)->sin_port = htons((unsigned short)net_hostport);
+	((struct sockaddr_in*)addr)->sin_port = htons(net_hostport);
 	((struct sockaddr_in*)addr)->sin_addr.s_addr = *(int*)hostentry->h_addr_list[0];
 
 	return 0;
@@ -568,7 +570,7 @@ int WINS_GetSocketPort(struct qsockaddr* addr)
 
 int WINS_SetSocketPort(struct qsockaddr* addr, int port)
 {
-	((struct sockaddr_in*)addr)->sin_port = htons((unsigned short)port);
+	((struct sockaddr_in*)addr)->sin_port = htons(port);
 	return 0;
 }
 

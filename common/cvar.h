@@ -63,11 +63,11 @@ typedef struct cvar_s
 	struct cvar_s* next;
 } cvar_t;
 
-void  Cvar_RegisterVariable(cvar_t* variable);
+void Cvar_RegisterVariable(cvar_t* variable);
 // registers a cvar that allready has the name, string, and optionally the
 // archive elements set.
 
-void  Cvar_Set(char* var_name, char* value);
+void Cvar_Set(char* var_name, char* value);
 // equivelant to "<name> <variable>" typed at the console
 
 void Cvar_SetValue(char* var_name, float value);
@@ -88,7 +88,7 @@ qboolean Cvar_Command(void);
 // command.  Returns true if the command was a variable reference that
 // was handled. (print or change)
 
-void  Cvar_WriteVariables(FILE* f);
+void Cvar_WriteVariables(FILE* f);
 // Writes lines containing "set variable value" for all variables
 // with the archive flag set to true.
 

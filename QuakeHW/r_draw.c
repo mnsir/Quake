@@ -39,7 +39,6 @@ zpointdesc_t r_zpointdesc;
 polydesc_t r_polydesc;
 
 
-
 clipplane_t* entity_clipplanes;
 clipplane_t view_clipplanes[4];
 clipplane_t world_clipplanes[16];
@@ -79,7 +78,7 @@ R_EmitEdge
 */
 void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 {
-	edge_t* edge, * pcheck;
+	edge_t *edge, *pcheck;
 	int u_check;
 	float u, u_step;
 	vec3_t local, transformed;
@@ -304,48 +303,46 @@ void R_ClipEdge(mvertex_t* pv0, mvertex_t* pv1, clipplane_t* clip)
 				R_ClipEdge(pv0, &clipvert, clip->next);
 				return;
 			}
-			else
+			// point 0 is clipped
+			if (d1 < 0)
 			{
-				// point 0 is clipped
-				if (d1 < 0)
-				{
-					// both points are clipped
-					// we do cache fully clipped edges
-					if (!r_leftclipped)
-						cacheoffset = FULLY_CLIPPED_CACHED |
+				// both points are clipped
+				// we do cache fully clipped edges
+				if (!r_leftclipped)
+					cacheoffset = FULLY_CLIPPED_CACHED |
 						(r_framecount & FRAMECOUNT_MASK);
-					return;
-				}
-
-				// only point 0 is clipped
-				r_lastvertvalid = false;
-
-				// we don't cache partially clipped edges
-				cacheoffset = 0x7FFFFFFF;
-
-				f = d0 / (d0 - d1);
-				clipvert.position[0] = pv0->position[0] +
-					f * (pv1->position[0] - pv0->position[0]);
-				clipvert.position[1] = pv0->position[1] +
-					f * (pv1->position[1] - pv0->position[1]);
-				clipvert.position[2] = pv0->position[2] +
-					f * (pv1->position[2] - pv0->position[2]);
-
-				if (clip->leftedge)
-				{
-					r_leftclipped = true;
-					r_leftenter = clipvert;
-				}
-				else if (clip->rightedge)
-				{
-					r_rightclipped = true;
-					r_rightenter = clipvert;
-				}
-
-				R_ClipEdge(&clipvert, pv1, clip->next);
 				return;
 			}
-		} while ((clip = clip->next) != NULL);
+
+			// only point 0 is clipped
+			r_lastvertvalid = false;
+
+			// we don't cache partially clipped edges
+			cacheoffset = 0x7FFFFFFF;
+
+			f = d0 / (d0 - d1);
+			clipvert.position[0] = pv0->position[0] +
+				f * (pv1->position[0] - pv0->position[0]);
+			clipvert.position[1] = pv0->position[1] +
+				f * (pv1->position[1] - pv0->position[1]);
+			clipvert.position[2] = pv0->position[2] +
+				f * (pv1->position[2] - pv0->position[2]);
+
+			if (clip->leftedge)
+			{
+				r_leftclipped = true;
+				r_leftenter = clipvert;
+			}
+			else if (clip->rightedge)
+			{
+				r_rightclipped = true;
+				r_rightenter = clipvert;
+			}
+
+			R_ClipEdge(&clipvert, pv1, clip->next);
+			return;
+		}
+		while ((clip = clip->next) != NULL);
 	}
 
 	// add the edge
@@ -390,7 +387,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 	mplane_t* pplane;
 	float distinv;
 	vec3_t p_normal;
-	medge_t* pedges, tedge;
+	medge_t *pedges, tedge;
 	clipplane_t* pclip;
 
 	// skip out if no more surfs
@@ -452,7 +449,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 				else
 				{
 					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
-						r_pedge->cachededgeoffset) &&
+							r_pedge->cachededgeoffset) &&
 						(((edge_t*)((unsigned long)r_edges +
 							r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
@@ -467,8 +464,8 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 			cacheoffset = (byte*)edge_p - (byte*)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge(&r_pcurrentvertbase[r_pedge->v[0]],
-				&r_pcurrentvertbase[r_pedge->v[1]],
-				pclip);
+			           &r_pcurrentvertbase[r_pedge->v[1]],
+			           pclip);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -498,7 +495,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 					// it's cached if the cached edge is valid and is owned
 					// by this medge_t
 					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
-						r_pedge->cachededgeoffset) &&
+							r_pedge->cachededgeoffset) &&
 						(((edge_t*)((unsigned long)r_edges +
 							r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
@@ -513,8 +510,8 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 			cacheoffset = (byte*)edge_p - (byte*)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge(&r_pcurrentvertbase[r_pedge->v[1]],
-				&r_pcurrentvertbase[r_pedge->v[0]],
-				pclip);
+			           &r_pcurrentvertbase[r_pedge->v[0]],
+			           pclip);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -754,7 +751,7 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	{
 		lastvert = lnumverts - 1;
 		lastdist = DotProduct(verts[vertpage][lastvert].position,
-			pclip->normal) - pclip->dist;
+		                      pclip->normal) - pclip->dist;
 
 		visible = false;
 		newverts = 0;
@@ -905,4 +902,3 @@ void R_ZDrawSubmodelPolys(model_t* pmodel)
 		}
 	}
 }
-

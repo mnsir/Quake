@@ -34,18 +34,18 @@ typedef struct
 
 typedef struct sfx_s
 {
-	char  name[MAX_QPATH];
+	char name[MAX_QPATH];
 	cache_user_t cache;
 } sfx_t;
 
 // !!! if this is changed, it much be changed in asm_i386.h too !!!
 typedef struct
 {
-	int  length;
-	int  loopstart;
-	int  speed;
-	int  width;
-	int  stereo;
+	int length;
+	int loopstart;
+	int speed;
+	int width;
+	int stereo;
 	byte data[1]; // variable sized
 } sfxcache_t;
 
@@ -70,7 +70,7 @@ typedef struct
 	int leftvol; // 0-255 volume
 	int rightvol; // 0-255 volume
 	int end; // end time in global paintsamples
-	int  pos; // sample position in sfx
+	int pos; // sample position in sfx
 	int looping; // where to loop, -1 = no looping
 	int entnum; // to allow overriding a specific sound
 	int entchannel; //
@@ -131,7 +131,7 @@ void SNDDMA_Shutdown(void);
 #define MAX_DYNAMIC_CHANNELS 8
 
 
-extern channel_t   channels[MAX_CHANNELS];
+extern channel_t channels[MAX_CHANNELS];
 // 0 to MAX_DYNAMIC_CHANNELS-1 = normal entity sounds
 // MAX_DYNAMIC_CHANNELS to MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS -1 = water, etc
 // MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds
@@ -144,8 +144,8 @@ extern int total_channels;
 // number of times S_Update() is called per second.
 //
 
-extern qboolean  fakedma;
-extern int  fakedma_updates;
+extern qboolean fakedma;
+extern int fakedma_updates;
 extern int paintedtime;
 extern vec3_t listener_origin;
 extern vec3_t listener_forward;

@@ -38,7 +38,7 @@ void D_SpriteDrawSpans(sspan_t* pspan)
 {
 	int count, spancount, izistep;
 	int izi;
-	byte* pbase, * pdest;
+	byte *pbase, *pdest;
 	fixed16_t s, t, snext, tnext, sstep, tstep;
 	float sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float sdivz8stepu, tdivz8stepu, zi8stepu;
@@ -59,7 +59,7 @@ void D_SpriteDrawSpans(sspan_t* pspan)
 
 	do
 	{
-		pdest = (byte*)d_viewbuffer + (screenwidth * pspan->v) + pspan->u;
+		pdest = d_viewbuffer + (screenwidth * pspan->v) + pspan->u;
 		pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
 
 		count = pspan->count;
@@ -175,17 +175,18 @@ void D_SpriteDrawSpans(sspan_t* pspan)
 				pz++;
 				s += sstep;
 				t += tstep;
-			} while (--spancount > 0);
+			}
+			while (--spancount > 0);
 
 			s = snext;
 			t = tnext;
-
-		} while (count > 0);
+		}
+		while (count > 0);
 
 	NextSpan:
 		pspan++;
-
-	} while (pspan->count != DS_SPAN_LIST_END);
+	}
+	while (pspan->count != DS_SPAN_LIST_END);
 }
 
 #endif
@@ -199,7 +200,7 @@ D_SpriteScanLeftEdge
 void D_SpriteScanLeftEdge(void)
 {
 	int i, v, itop, ibottom, lmaxindex;
-	emitpoint_t* pvert, * pnext;
+	emitpoint_t *pvert, *pnext;
 	sspan_t* pspan;
 	float du, dv, vtop, vbottom, slope;
 	fixed16_t u, u_step;
@@ -248,8 +249,8 @@ void D_SpriteScanLeftEdge(void)
 		i--;
 		if (i == 0)
 			i = r_spritedesc.nump;
-
-	} while (i != lmaxindex);
+	}
+	while (i != lmaxindex);
 }
 
 
@@ -261,7 +262,7 @@ D_SpriteScanRightEdge
 void D_SpriteScanRightEdge(void)
 {
 	int i, v, itop, ibottom;
-	emitpoint_t* pvert, * pnext;
+	emitpoint_t *pvert, *pnext;
 	sspan_t* pspan;
 	float du, dv, vtop, vbottom, slope, uvert, unext, vvert, vnext;
 	fixed16_t u, u_step;
@@ -328,8 +329,8 @@ void D_SpriteScanRightEdge(void)
 		i++;
 		if (i == r_spritedesc.nump)
 			i = 0;
-
-	} while (i != maxindex);
+	}
+	while (i != maxindex);
 
 	pspan->count = DS_SPAN_LIST_END; // mark the end of the span list 
 }
@@ -426,7 +427,7 @@ void D_DrawSprite(void)
 
 	cachewidth = r_spritedesc.pspriteframe->width;
 	sprite_height = r_spritedesc.pspriteframe->height;
-	cacheblock = (byte*)&r_spritedesc.pspriteframe->pixels[0];
+	cacheblock = &r_spritedesc.pspriteframe->pixels[0];
 
 	// copy the first vertex to the last vertex, so we don't have to deal with
 	// wrapping
@@ -439,4 +440,3 @@ void D_DrawSprite(void)
 	D_SpriteScanRightEdge();
 	D_SpriteDrawSpans(sprite_spans);
 }
-

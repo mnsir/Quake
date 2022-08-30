@@ -39,11 +39,11 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t sv_friction = { "sv_friction","4",false,true };
-cvar_t sv_stopspeed = { "sv_stopspeed","100" };
-cvar_t sv_gravity = { "sv_gravity","800",false,true };
-cvar_t sv_maxvelocity = { "sv_maxvelocity","2000" };
-cvar_t sv_nostep = { "sv_nostep","0" };
+cvar_t sv_friction = {"sv_friction", "4", false, true};
+cvar_t sv_stopspeed = {"sv_stopspeed", "100"};
+cvar_t sv_gravity = {"sv_gravity", "800", false, true};
+cvar_t sv_maxvelocity = {"sv_maxvelocity", "2000"};
+cvar_t sv_nostep = {"sv_nostep", "0"};
 
 #ifdef QUAKE2
 static vec3_t vec_origin = { 0.0, 0.0, 0.0 };
@@ -226,6 +226,7 @@ If steptrace is not NULL, the trace of any vertical wall hit will be stored
 ============
 */
 #define MAX_CLIP_PLANES 5
+
 int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 {
 	int bumpcount, numbumps;
@@ -260,13 +261,15 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 		trace = SV_Move(ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
 
 		if (trace.allsolid)
-		{ // entity is trapped in another solid
+		{
+			// entity is trapped in another solid
 			VectorCopy(vec3_origin, ent->v.velocity);
 			return 3;
 		}
 
 		if (trace.fraction > 0)
-		{ // actually covered some distance
+		{
+			// actually covered some distance
 			VectorCopy(trace.endpos, ent->v.origin);
 			VectorCopy(ent->v.velocity, original_velocity);
 			numplanes = 0;
@@ -306,7 +309,8 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 
 		// cliped to another plane
 		if (numplanes >= MAX_CLIP_PLANES)
-		{ // this shouldn't really happen
+		{
+			// this shouldn't really happen
 			VectorCopy(vec3_origin, ent->v.velocity);
 			return 3;
 		}
@@ -331,11 +335,13 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 		}
 
 		if (i != numplanes)
-		{ // go along this plane
+		{
+			// go along this plane
 			VectorCopy(new_velocity, ent->v.velocity);
 		}
 		else
-		{ // go along the crease
+		{
+			// go along the crease
 			if (numplanes != 2)
 			{
 				// Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
@@ -439,7 +445,7 @@ SV_PushMove
 void SV_PushMove(edict_t* pusher, float movetime)
 {
 	int i, e;
-	edict_t* check, * block;
+	edict_t *check, *block;
 	vec3_t mins, maxs, move;
 	vec3_t entorig, pushorig;
 	int num_moved;
@@ -517,11 +523,13 @@ void SV_PushMove(edict_t* pusher, float movetime)
 		// if it is still inside the pusher, block
 		block = SV_TestEntityPosition(check);
 		if (block)
-		{ // fail the move
+		{
+			// fail the move
 			if (check->v.mins[0] == check->v.maxs[0])
 				continue;
 			if (check->v.solid == SOLID_NOT || check->v.solid == SOLID_TRIGGER)
-			{ // corpse
+			{
+				// corpse
 				check->v.mins[0] = check->v.mins[1] = 0;
 				VectorCopy(check->v.mins, check->v.maxs);
 				continue;
@@ -552,8 +560,6 @@ void SV_PushMove(edict_t* pusher, float movetime)
 			return;
 		}
 	}
-
-
 }
 
 #ifdef QUAKE2
@@ -726,7 +732,7 @@ void SV_Physics_Pusher(edict_t* ent)
 			SV_PushRotate(ent, movetime);
 		else
 #endif
-			SV_PushMove(ent, movetime); // advances ent->v.ltime if not blocked
+		SV_PushMove(ent, movetime); // advances ent->v.ltime if not blocked
 	}
 
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
@@ -739,7 +745,6 @@ void SV_Physics_Pusher(edict_t* ent)
 		if (ent->free)
 			return;
 	}
-
 }
 
 
@@ -914,14 +919,30 @@ int SV_TryUnstick(edict_t* ent, vec3_t oldvel)
 		// try pushing a little in an axial direction
 		switch (i)
 		{
-		case 0: dir[0] = 2; dir[1] = 0; break;
-		case 1: dir[0] = 0; dir[1] = 2; break;
-		case 2: dir[0] = -2; dir[1] = 0; break;
-		case 3: dir[0] = 0; dir[1] = -2; break;
-		case 4: dir[0] = 2; dir[1] = 2; break;
-		case 5: dir[0] = -2; dir[1] = 2; break;
-		case 6: dir[0] = 2; dir[1] = -2; break;
-		case 7: dir[0] = -2; dir[1] = -2; break;
+		case 0: dir[0] = 2;
+			dir[1] = 0;
+			break;
+		case 1: dir[0] = 0;
+			dir[1] = 2;
+			break;
+		case 2: dir[0] = -2;
+			dir[1] = 0;
+			break;
+		case 3: dir[0] = 0;
+			dir[1] = -2;
+			break;
+		case 4: dir[0] = 2;
+			dir[1] = 2;
+			break;
+		case 5: dir[0] = -2;
+			dir[1] = 2;
+			break;
+		case 6: dir[0] = 2;
+			dir[1] = -2;
+			break;
+		case 7: dir[0] = -2;
+			dir[1] = -2;
+			break;
 		}
 
 		SV_PushEntity(ent, dir);
@@ -955,6 +976,7 @@ Only used by players
 ======================
 */
 #define STEPSIZE 18
+
 void SV_WalkMove(edict_t* ent)
 {
 	vec3_t upmove, downmove;
@@ -1018,7 +1040,8 @@ void SV_WalkMove(edict_t* ent)
 	{
 		if (fabs(oldorg[1] - ent->v.origin[1]) < 0.03125
 			&& fabs(oldorg[0] - ent->v.origin[0]) < 0.03125)
-		{ // stepping up didn't make any progress
+		{
+			// stepping up didn't make any progress
 			clip = SV_TryUnstick(ent, oldvel);
 		}
 	}
@@ -1209,7 +1232,8 @@ void SV_CheckWaterTransition(edict_t* ent)
 	cont = SV_PointContents(ent->v.origin);
 #endif
 	if (!ent->v.watertype)
-	{ // just spawned here
+	{
+		// just spawned here
 		ent->v.watertype = cont;
 		ent->v.waterlevel = 1;
 		return;
@@ -1218,7 +1242,8 @@ void SV_CheckWaterTransition(edict_t* ent)
 	if (cont <= CONTENTS_WATER)
 	{
 		if (ent->v.watertype == CONTENTS_EMPTY)
-		{ // just crossed into water
+		{
+			// just crossed into water
 			SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
 		}
 		ent->v.watertype = cont;
@@ -1227,7 +1252,8 @@ void SV_CheckWaterTransition(edict_t* ent)
 	else
 	{
 		if (ent->v.watertype != CONTENTS_EMPTY)
-		{ // just crossed into water
+		{
+			// just crossed into water
 			SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
 		}
 		ent->v.watertype = CONTENTS_EMPTY;

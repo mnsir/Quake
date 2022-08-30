@@ -147,6 +147,7 @@ Performance monitoring tool
 */
 #define MAX_TIMINGS 100
 extern float mouse_x, mouse_y;
+
 void R_TimeGraph(void)
 {
 	static int timex;
@@ -170,7 +171,7 @@ void R_TimeGraph(void)
 		x = r_refdef.vrect.width - 1;
 	else
 		x = r_refdef.vrect.width -
-		(r_refdef.vrect.width - MAX_TIMINGS) / 2;
+			(r_refdef.vrect.width - MAX_TIMINGS) / 2;
 	do
 	{
 		R_LineGraph(x, r_refdef.vrect.height - 2, r_timings[a]);
@@ -180,7 +181,8 @@ void R_TimeGraph(void)
 		a--;
 		if (a == -1)
 			a = MAX_TIMINGS - 1;
-	} while (a != timex);
+	}
+	while (a != timex);
 
 	timex = (timex + 1) % MAX_TIMINGS;
 }
@@ -201,7 +203,7 @@ void R_PrintTimes(void)
 	ms = 1000 * (r_time2 - r_time1);
 
 	Con_Printf("%5.1f ms %3i/%3i/%3i poly %3i surf\n",
-		ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
+	           ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
 	c_surf = 0;
 }
 
@@ -226,8 +228,8 @@ void R_PrintDSpeeds(void)
 	ms = (r_time2 - r_time1) * 1000;
 
 	Con_Printf("%3i %4.1fp %3iw %4.1fb %3is %4.1fe %4.1fv\n",
-		(int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
-		dv_time);
+	           (int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
+	           dv_time);
 }
 
 
@@ -332,7 +334,7 @@ R_SetUpFrustumIndexes
 */
 void R_SetUpFrustumIndexes(void)
 {
-	int i, j, * pindex;
+	int i, j, *pindex;
 
 	pindex = r_frustum_indexes;
 
@@ -385,7 +387,7 @@ void R_SetupFrame(void)
 			r_maxsurfsseen = surface_p - surfaces;
 
 		Con_Printf("Used %d of %d surfs; %d max\n", surface_p - surfaces,
-			surf_max - surfaces, r_maxsurfsseen);
+		           surf_max - surfaces, r_maxsurfsseen);
 	}
 
 	if (r_numedges.value)
@@ -396,7 +398,7 @@ void R_SetupFrame(void)
 			r_maxedgesseen = edgecount;
 
 		Con_Printf("Used %d of %d edges; %d max\n", edgecount,
-			r_numallocatededges, r_maxedgesseen);
+		           r_numallocatededges, r_maxedgesseen);
 	}
 
 	r_refdef.ambientlight = r_ambient.value;
@@ -475,9 +477,9 @@ void R_SetupFrame(void)
 				vrect.height = (int)h;
 
 				R_ViewChanged(&vrect,
-					(int)((float)sb_lines * (h / (float)vid.height)),
-					vid.aspect * (h / w) *
-					((float)vid.width / (float)vid.height));
+				              (int)((float)sb_lines * (h / (float)vid.height)),
+				              vid.aspect * (h / w) *
+				              ((float)vid.width / (float)vid.height));
 			}
 		}
 		else
@@ -520,4 +522,3 @@ void R_SetupFrame(void)
 
 	D_SetupFrame();
 }
-

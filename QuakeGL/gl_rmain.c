@@ -39,7 +39,7 @@ qboolean envmap; // true during envmap command capture
 
 int currenttexture = -1; // to avoid unnecessary texture sets
 
-int cnttextures[2] = { -1, -1 };     // cached
+int cnttextures[2] = {-1, -1}; // cached
 
 int particletexture; // little dot for particles
 int playertextures; // up to 16 color translated skins
@@ -64,7 +64,7 @@ float r_base_world_matrix[16];
 //
 refdef_t r_refdef;
 
-mleaf_t* r_viewleaf, * r_oldviewleaf;
+mleaf_t *r_viewleaf, *r_oldviewleaf;
 
 texture_t* r_notexture_mip;
 
@@ -73,31 +73,31 @@ int d_lightstylevalue[256]; // 8.8 fraction of base light value
 
 void R_MarkLeaves(void);
 
-cvar_t r_norefresh = { "r_norefresh","0" };
-cvar_t r_drawentities = { "r_drawentities","1" };
-cvar_t r_drawviewmodel = { "r_drawviewmodel","1" };
-cvar_t r_speeds = { "r_speeds","0" };
-cvar_t r_fullbright = { "r_fullbright","0" };
-cvar_t r_lightmap = { "r_lightmap","0" };
-cvar_t r_shadows = { "r_shadows","0" };
-cvar_t r_mirroralpha = { "r_mirroralpha","1" };
-cvar_t r_wateralpha = { "r_wateralpha","1" };
-cvar_t r_dynamic = { "r_dynamic","1" };
-cvar_t r_novis = { "r_novis","0" };
+cvar_t r_norefresh = {"r_norefresh", "0"};
+cvar_t r_drawentities = {"r_drawentities", "1"};
+cvar_t r_drawviewmodel = {"r_drawviewmodel", "1"};
+cvar_t r_speeds = {"r_speeds", "0"};
+cvar_t r_fullbright = {"r_fullbright", "0"};
+cvar_t r_lightmap = {"r_lightmap", "0"};
+cvar_t r_shadows = {"r_shadows", "0"};
+cvar_t r_mirroralpha = {"r_mirroralpha", "1"};
+cvar_t r_wateralpha = {"r_wateralpha", "1"};
+cvar_t r_dynamic = {"r_dynamic", "1"};
+cvar_t r_novis = {"r_novis", "0"};
 
-cvar_t gl_finish = { "gl_finish","0" };
-cvar_t gl_clear = { "gl_clear","0" };
-cvar_t gl_cull = { "gl_cull","1" };
-cvar_t gl_texsort = { "gl_texsort","1" };
-cvar_t gl_smoothmodels = { "gl_smoothmodels","1" };
-cvar_t gl_affinemodels = { "gl_affinemodels","0" };
-cvar_t gl_polyblend = { "gl_polyblend","1" };
-cvar_t gl_flashblend = { "gl_flashblend","1" };
-cvar_t gl_playermip = { "gl_playermip","0" };
-cvar_t gl_nocolors = { "gl_nocolors","0" };
-cvar_t gl_keeptjunctions = { "gl_keeptjunctions","0" };
-cvar_t gl_reporttjunctions = { "gl_reporttjunctions","0" };
-cvar_t gl_doubleeyes = { "gl_doubleeys", "1" };
+cvar_t gl_finish = {"gl_finish", "0"};
+cvar_t gl_clear = {"gl_clear", "0"};
+cvar_t gl_cull = {"gl_cull", "1"};
+cvar_t gl_texsort = {"gl_texsort", "1"};
+cvar_t gl_smoothmodels = {"gl_smoothmodels", "1"};
+cvar_t gl_affinemodels = {"gl_affinemodels", "0"};
+cvar_t gl_polyblend = {"gl_polyblend", "1"};
+cvar_t gl_flashblend = {"gl_flashblend", "1"};
+cvar_t gl_playermip = {"gl_playermip", "0"};
+cvar_t gl_nocolors = {"gl_nocolors", "0"};
+cvar_t gl_keeptjunctions = {"gl_keeptjunctions", "0"};
+cvar_t gl_reporttjunctions = {"gl_reporttjunctions", "0"};
+cvar_t gl_doubleeyes = {"gl_doubleeys", "1"};
 
 extern cvar_t gl_ztrick;
 
@@ -147,7 +147,7 @@ mspriteframe_t* R_GetSpriteFrame(entity_t* currententity)
 	mspritegroup_t* pspritegroup;
 	mspriteframe_t* pspriteframe;
 	int i, numframes, frame;
-	float* pintervals, fullinterval, targettime, time;
+	float *pintervals, fullinterval, targettime, time;
 
 	psprite = currententity->model->cache.data;
 	frame = currententity->frame;
@@ -198,7 +198,7 @@ void R_DrawSpriteModel(entity_t* e)
 {
 	vec3_t point;
 	mspriteframe_t* frame;
-	float* up, * right;
+	float *up, *right;
 	vec3_t v_forward, v_right, v_up;
 	msprite_t* psprite;
 
@@ -208,13 +208,15 @@ void R_DrawSpriteModel(entity_t* e)
 	psprite = currententity->model->cache.data;
 
 	if (psprite->type == SPR_ORIENTED)
-	{ // bullet marks on walls
+	{
+		// bullet marks on walls
 		AngleVectors(currententity->angles, v_forward, v_right, v_up);
 		up = v_up;
 		right = v_right;
 	}
 	else
-	{ // normal sprite
+	{
+		// normal sprite
 		up = vup;
 		right = vright;
 	}
@@ -273,7 +275,7 @@ float shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT 16
-float r_avertexnormal_dots[SHADEDOT_QUANT][256] =
+float r_avertexnormal_dots[SHADEDOT_QUANT][256] = 
 #include "anorm_dots.h"
 ;
 
@@ -289,10 +291,10 @@ GL_DrawAliasFrame
 void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 {
 	float s, t;
-	float  l;
+	float l;
 	int i, j;
 	int index;
-	trivertx_t* v, * verts;
+	trivertx_t *v, *verts;
 	int list;
 	int* order;
 	vec3_t point;
@@ -330,7 +332,8 @@ void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 			glColor3f(l, l, l);
 			glVertex3f(verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
-		} while (--count);
+		}
+		while (--count);
 
 		glEnd();
 	}
@@ -349,7 +352,7 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 	float s, t, l;
 	int i, j;
 	int index;
-	trivertx_t* v, * verts;
+	trivertx_t *v, *verts;
 	int list;
 	int* order;
 	vec3_t point;
@@ -398,12 +401,12 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 			glVertex3fv(point);
 
 			verts++;
-		} while (--count);
+		}
+		while (--count);
 
 		glEnd();
 	}
 }
-
 
 
 /*
@@ -436,7 +439,6 @@ void R_SetupAliasFrame(int frame, aliashdr_t* paliashdr)
 }
 
 
-
 /*
 =================
 R_DrawAliasModel
@@ -452,7 +454,7 @@ void R_DrawAliasModel(entity_t* e)
 	model_t* clmodel;
 	vec3_t mins, maxs;
 	aliashdr_t* paliashdr;
-	trivertx_t* verts, * v;
+	trivertx_t *verts, *v;
 	int index;
 	float s, t, an;
 	int anim;
@@ -484,11 +486,12 @@ void R_DrawAliasModel(entity_t* e)
 		if (cl_dlights[lnum].die >= cl.time)
 		{
 			VectorSubtract(currententity->origin,
-				cl_dlights[lnum].origin,
-				dist);
+			               cl_dlights[lnum].origin,
+			               dist);
 			add = cl_dlights[lnum].radius - Length(dist);
 
-			if (add > 0) {
+			if (add > 0)
+			{
 				ambientlight += add;
 				//ZOID models should be affected by dlights as well
 				shadelight += add;
@@ -538,12 +541,14 @@ void R_DrawAliasModel(entity_t* e)
 	glPushMatrix();
 	R_RotateForEntity(e);
 
-	if (!strcmp(clmodel->name, "progs/eyes.mdl") && gl_doubleeyes.value) {
+	if (!strcmp(clmodel->name, "progs/eyes.mdl") && gl_doubleeyes.value)
+	{
 		glTranslatef(paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2] - (22 + 8));
 		// double size of eyes, since they are really hard to see in gl
 		glScalef(paliashdr->scale[0] * 2, paliashdr->scale[1] * 2, paliashdr->scale[2] * 2);
 	}
-	else {
+	else
+	{
 		glTranslatef(paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2]);
 		glScalef(paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 	}
@@ -590,7 +595,6 @@ void R_DrawAliasModel(entity_t* e)
 		glColor4f(1, 1, 1, 1);
 		glPopMatrix();
 	}
-
 }
 
 //==================================================================================
@@ -732,8 +736,8 @@ void R_PolyBlend(void)
 
 	glLoadIdentity();
 
-	glRotatef(-90, 1, 0, 0);     // put Z going up
-	glRotatef(90, 0, 0, 1);     // put Z going up
+	glRotatef(-90, 1, 0, 0); // put Z going up
+	glRotatef(90, 0, 0, 1); // put Z going up
 
 	glColor4fv(v_blend);
 
@@ -802,7 +806,6 @@ void R_SetFrustum(void)
 }
 
 
-
 /*
 ===============
 R_SetupFrame
@@ -838,12 +841,11 @@ void R_SetupFrame(void)
 
 	c_brush_polys = 0;
 	c_alias_polys = 0;
-
 }
 
 
 void MYgluPerspective(GLdouble fovy, GLdouble aspect,
-	GLdouble zNear, GLdouble zFar)
+                      GLdouble zNear, GLdouble zFar)
 {
 	GLdouble xmin, xmax, ymin, ymax;
 
@@ -918,8 +920,8 @@ void R_SetupGL(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glRotatef(-90, 1, 0, 0);     // put Z going up
-	glRotatef(90, 0, 0, 1);     // put Z going up
+	glRotatef(-90, 1, 0, 0); // put Z going up
+	glRotatef(90, 0, 0, 1); // put Z going up
 	glRotatef(-r_refdef.viewangles[2], 1, 0, 0);
 	glRotatef(-r_refdef.viewangles[0], 0, 1, 0);
 	glRotatef(-r_refdef.viewangles[1], 0, 0, 1);
@@ -972,7 +974,6 @@ void R_RenderScene(void)
 #ifdef GLTEST
 	Test_Draw();
 #endif
-
 }
 
 
@@ -1105,7 +1106,7 @@ r_refdef must be set before the first call
 void R_RenderView(void)
 {
 	double time1, time2;
-	GLfloat colors[4] = { (GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20 };
+	GLfloat colors[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20};
 
 	if (r_norefresh.value)
 		return;
@@ -1130,13 +1131,13 @@ void R_RenderView(void)
 
 	// render normal view
 
-   /***** Experimental silly looking fog ******
-   ****** Use r_fullbright if you enable ******
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogfv(GL_FOG_COLOR, colors);
-	glFogf(GL_FOG_END, 512.0);
-	glEnable(GL_FOG);
-   ********************************************/
+	/***** Experimental silly looking fog ******
+	****** Use r_fullbright if you enable ******
+	 glFogi(GL_FOG_MODE, GL_LINEAR);
+	 glFogfv(GL_FOG_COLOR, colors);
+	 glFogf(GL_FOG_END, 512.0);
+	 glEnable(GL_FOG);
+	********************************************/
 
 	R_RenderScene();
 	R_DrawViewModel();
@@ -1146,7 +1147,7 @@ void R_RenderView(void)
 	// glDisable(GL_FOG);
 	//  End of all fog code...
 
-	 // render mirror view
+	// render mirror view
 	R_Mirror();
 
 	R_PolyBlend();

@@ -116,7 +116,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define K_MWHEELDOWN 240
 
 
-
 typedef enum { key_game, key_console, key_message, key_menu } keydest_t;
 
 extern keydest_t key_dest;
@@ -130,4 +129,3 @@ void Key_Init(void);
 void Key_WriteBindings(FILE* f);
 void Key_SetBinding(int keynum, char* binding);
 void Key_ClearStates(void);
-

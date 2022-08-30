@@ -24,13 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_PARTICLES 2048 // default max # of particles at one
 //  time
 #define ABSOLUTE_MIN_PARTICLES 512 // no fewer than this no matter what's
- //  on the command line
+//  on the command line
 
-int ramp1[8] = { 0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61 };
-int ramp2[8] = { 0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66 };
-int ramp3[8] = { 0x6d, 0x6b, 6, 5, 4, 3 };
+int ramp1[8] = {0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61};
+int ramp2[8] = {0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66};
+int ramp3[8] = {0x6d, 0x6b, 6, 5, 4, 3};
 
-particle_t* active_particles, * free_particles;
+particle_t *active_particles, *free_particles;
 
 particle_t* particles;
 int r_numparticles;
@@ -51,7 +51,7 @@ void R_InitParticles(void)
 
 	if (i)
 	{
-		r_numparticles = (int)(Q_atoi(com_argv[i + 1]));
+		r_numparticles = Q_atoi(com_argv[i + 1]);
 		if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
 			r_numparticles = ABSOLUTE_MIN_PARTICLES;
 	}
@@ -117,7 +117,7 @@ R_EntityParticles
 extern float r_avertexnormals[NUMVERTEXNORMALS][3];
 vec3_t avelocities[NUMVERTEXNORMALS];
 float beamlength = 16;
-vec3_t avelocity = { 23, 7, 3 };
+vec3_t avelocity = {23, 7, 3};
 float partstep = 0.01;
 float timescale = 0.01;
 
@@ -213,7 +213,7 @@ void R_ReadPointFile_f(void)
 
 	Con_Printf("Reading %s...\n", name);
 	c = 0;
-	for (;; )
+	for (;;)
 	{
 		r = fscanf(f, "%f %f %f\n", &org[0], &org[1], &org[2]);
 		if (r != 3)
@@ -412,7 +412,8 @@ void R_RunParticleEffect(vec3_t org, vec3_t dir, int color, int count)
 		active_particles = p;
 
 		if (count == 1024)
-		{ // rocket explosion
+		{
+			// rocket explosion
 			p->die = cl.time + 5;
 			p->color = ramp1[0];
 			p->ramp = rand() & 3;
@@ -443,7 +444,7 @@ void R_RunParticleEffect(vec3_t org, vec3_t dir, int color, int count)
 			for (j = 0; j < 3; j++)
 			{
 				p->org[j] = org[j] + ((rand() & 15) - 8);
-				p->vel[j] = dir[j] * 15;// + (rand()%300)-150;
+				p->vel[j] = dir[j] * 15; // + (rand()%300)-150;
 			}
 		}
 	}
@@ -648,7 +649,7 @@ extern cvar_t sv_gravity;
 
 void R_DrawParticles(void)
 {
-	particle_t* p, * kill;
+	particle_t *p, *kill;
 	float grav;
 	int i;
 	float time2, time3;
@@ -681,7 +682,7 @@ void R_DrawParticles(void)
 	grav = frametime * sv_gravity.value * 0.05;
 	dvel = 4 * frametime;
 
-	for (;; )
+	for (;;)
 	{
 		kill = active_particles;
 		if (kill && kill->die < cl.time)
@@ -696,7 +697,7 @@ void R_DrawParticles(void)
 
 	for (p = active_particles; p; p = p->next)
 	{
-		for (;; )
+		for (;;)
 		{
 			kill = p->next;
 			if (kill && kill->die < cl.time)
@@ -797,4 +798,3 @@ void R_DrawParticles(void)
 	D_EndParticles();
 #endif
 }
-

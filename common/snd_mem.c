@@ -64,7 +64,7 @@ void ResampleSfx(sfx_t* sfx, int inrate, int inwidth, byte* data)
 		// fast special case
 		for (i = 0; i < outcount; i++)
 			((signed char*)sc->data)[i]
-			= (int)((unsigned char)(data[i]) - 128);
+				= data[i] - 128;
 	}
 	else
 	{
@@ -78,7 +78,7 @@ void ResampleSfx(sfx_t* sfx, int inrate, int inwidth, byte* data)
 			if (inwidth == 2)
 				sample = LittleShort(((short*)data)[srcsample]);
 			else
-				sample = (int)((unsigned char)(data[srcsample]) - 128) << 8;
+				sample = data[srcsample] - 128 << 8;
 			if (sc->width == 2)
 				((short*)sc->data)[i] = sample;
 			else
@@ -152,7 +152,6 @@ sfxcache_t* S_LoadSound(sfx_t* s)
 }
 
 
-
 /*
 ===============================================================================
 
@@ -166,7 +165,7 @@ byte* data_p;
 byte* iff_end;
 byte* last_chunk;
 byte* iff_data;
-int  iff_chunk_len;
+int iff_chunk_len;
 
 
 short GetLittleShort(void)
@@ -196,7 +195,8 @@ void FindNextChunk(char* name)
 		data_p = last_chunk;
 
 		if (data_p >= iff_end)
-		{ // didn't find the chunk
+		{
+			// didn't find the chunk
 			data_p = NULL;
 			return;
 		}
@@ -237,7 +237,8 @@ void DumpChunks(void)
 		iff_chunk_len = GetLittleLong();
 		Con_Printf("0x%x : %s (%d)\n", (int)(data_p - 4), str, iff_chunk_len);
 		data_p += (iff_chunk_len + 1) & ~1;
-	} while (data_p < iff_end);
+	}
+	while (data_p < iff_end);
 }
 
 /*
@@ -248,8 +249,8 @@ GetWavinfo
 wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 {
 	wavinfo_t info;
-	int     i;
-	int     format;
+	int i;
+	int format;
 	int samples;
 
 	memset(&info, 0, sizeof(info));
@@ -299,12 +300,13 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 		info.loopstart = GetLittleLong();
 		// Con_Printf("loopstart=%d\n", sfx->loopstart);
 
-		 // if the next chunk is a LIST chunk, look for a cue length marker
+		// if the next chunk is a LIST chunk, look for a cue length marker
 		FindNextChunk("LIST");
 		if (data_p)
 		{
 			if (!strncmp(data_p + 28, "mark", 4))
-			{ // this is not a proper parse, but it works with cooledit...
+			{
+				// this is not a proper parse, but it works with cooledit...
 				data_p += 24;
 				i = GetLittleLong(); // samples in loop
 				info.samples = info.loopstart + i;
@@ -338,4 +340,3 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 
 	return info;
 }
-

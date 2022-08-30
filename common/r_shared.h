@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define MAXVERTS 16 // max points in a surface polygon
 #define MAXWORKINGVERTS (MAXVERTS+4) // max points in an intermediate
- //  polygon (while processing)
+//  polygon (while processing)
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define MAXHEIGHT 1024
 #define MAXWIDTH 1280
@@ -37,8 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SIN_BUFFER_SIZE (MAXDIMENSION+CYCLE)
 
 #define INFINITE_DISTANCE 0x10000 // distance that's always guaranteed to
- //  be farther away than anything in
- //  the scene
+//  be farther away than anything in
+//  the scene
 
 //===================================================================
 
@@ -98,7 +98,7 @@ typedef struct surf_s
 	int pad[2]; // to 64 bytes
 } surf_t;
 
-extern surf_t* surfaces, * surface_p, * surf_max;
+extern surf_t *surfaces, *surface_p, *surf_max;
 
 // surfaces are generated in back to front order by the bsp, so if a surf
 // pointer is greater than another one, it should be drawn in front
@@ -122,7 +122,7 @@ extern int d_lightstylevalue[256]; // 8.8 frac of base light value
 
 extern void TransformVector(vec3_t in, vec3_t out);
 extern void SetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
-	fixed8_t endvertu, fixed8_t endvertv);
+                             fixed8_t endvertu, fixed8_t endvertv);
 
 extern int r_skymade;
 extern void R_MakeSky(void);
@@ -137,7 +137,7 @@ extern int ubasestep, errorterm, erroradjustup, erroradjustdown;
 #define ALIAS_Z_CLIP 0x0010
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define ALIAS_ONSEAM 0x0020 // also defined in modelgen.h;
- //  must be kept in sync
+//  must be kept in sync
 #define ALIAS_XY_CLIP_MASK 0x000F
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -145,7 +145,7 @@ typedef struct edge_s
 {
 	fixed16_t u;
 	fixed16_t u_step;
-	struct edge_s* prev, * next;
+	struct edge_s *prev, *next;
 	unsigned short surfs[2];
 	struct edge_s* nextremove;
 	float nearzi;

@@ -35,7 +35,7 @@ unsigned* r_lightptr;
 int r_stepback;
 int r_lightwidth;
 int r_numhblocks, r_numvblocks;
-unsigned char* r_source, * r_sourcemax;
+unsigned char *r_source, *r_sourcemax;
 
 void R_DrawSurfaceBlock8_mip0(void);
 void R_DrawSurfaceBlock8_mip1(void);
@@ -43,12 +43,11 @@ void R_DrawSurfaceBlock8_mip2(void);
 void R_DrawSurfaceBlock8_mip3(void);
 
 static void (*surfmiptable[4])(void) = {
- R_DrawSurfaceBlock8_mip0,
- R_DrawSurfaceBlock8_mip1,
- R_DrawSurfaceBlock8_mip2,
- R_DrawSurfaceBlock8_mip3
+	R_DrawSurfaceBlock8_mip0,
+	R_DrawSurfaceBlock8_mip1,
+	R_DrawSurfaceBlock8_mip2,
+	R_DrawSurfaceBlock8_mip3
 };
-
 
 
 unsigned blocklights[18 * 18];
@@ -178,13 +177,13 @@ void R_BuildLightMap(void)
 	// add all the lightmaps
 	if (lightmap)
 		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-			maps++)
-	{
-		scale = r_drawsurf.lightadj[maps]; // 8.8 fraction 
-		for (i = 0; i < size; i++)
-			blocklights[i] += lightmap[i] * scale;
-		lightmap += size; // skip to next lightmap
-	}
+		     maps++)
+		{
+			scale = r_drawsurf.lightadj[maps]; // 8.8 fraction 
+			for (i = 0; i < size; i++)
+				blocklights[i] += lightmap[i] * scale;
+			lightmap += size; // skip to next lightmap
+		}
 
 	// add all the dynamic lights
 	if (surf->dlightframe == r_framecount)
@@ -343,7 +342,7 @@ R_DrawSurfaceBlock8_mip0
 void R_DrawSurfaceBlock8_mip0(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, * psource, * prowdest;
+	unsigned char pix, *psource, *prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -368,7 +367,7 @@ void R_DrawSurfaceBlock8_mip0(void)
 			for (b = 15; b >= 0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char*)vid.colormap)
+				prowdest[b] = vid.colormap
 					[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -393,7 +392,7 @@ R_DrawSurfaceBlock8_mip1
 void R_DrawSurfaceBlock8_mip1(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, * psource, * prowdest;
+	unsigned char pix, *psource, *prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -418,7 +417,7 @@ void R_DrawSurfaceBlock8_mip1(void)
 			for (b = 7; b >= 0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char*)vid.colormap)
+				prowdest[b] = vid.colormap
 					[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -443,7 +442,7 @@ R_DrawSurfaceBlock8_mip2
 void R_DrawSurfaceBlock8_mip2(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, * psource, * prowdest;
+	unsigned char pix, *psource, *prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -468,7 +467,7 @@ void R_DrawSurfaceBlock8_mip2(void)
 			for (b = 3; b >= 0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char*)vid.colormap)
+				prowdest[b] = vid.colormap
 					[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -493,7 +492,7 @@ R_DrawSurfaceBlock8_mip3
 void R_DrawSurfaceBlock8_mip3(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, * psource, * prowdest;
+	unsigned char pix, *psource, *prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -518,7 +517,7 @@ void R_DrawSurfaceBlock8_mip3(void)
 			for (b = 1; b >= 0; b--)
 			{
 				pix = psource[b];
-				prowdest[b] = ((unsigned char*)vid.colormap)
+				prowdest[b] = vid.colormap
 					[(light & 0xFF00) + pix];
 				light += lightstep;
 			}
@@ -650,13 +649,11 @@ void R_GenTile(msurface_t* psurf, void* pdest)
 	{
 		if (r_pixbytes == 1)
 		{
-			R_GenTurbTile((pixel_t*)
-				((byte*)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0]), pdest);
+			R_GenTurbTile((byte*)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0], pdest);
 		}
 		else
 		{
-			R_GenTurbTile16((pixel_t*)
-				((byte*)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0]), pdest);
+			R_GenTurbTile16((byte*)psurf->texinfo->texture + psurf->texinfo->texture->offsets[0], pdest);
 		}
 	}
 	else if (psurf->flags & SURF_DRAWSKY)
@@ -675,4 +672,3 @@ void R_GenTile(msurface_t* psurf, void* pdest)
 		Sys_Error("Unknown tile type");
 	}
 }
-

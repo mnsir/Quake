@@ -33,32 +33,33 @@ int pr_edict_size; // in bytes
 
 unsigned short pr_crc;
 
-int type_size[8] = { 1,sizeof(string_t) / 4,1,3,1,1,sizeof(func_t) / 4,sizeof(void*) / 4 };
+int type_size[8] = {1, sizeof(string_t) / 4, 1, 3, 1, 1, sizeof(func_t) / 4, sizeof(void*) / 4};
 
 ddef_t* ED_FieldAtOfs(int ofs);
 qboolean ED_ParseEpair(void* base, ddef_t* key, char* s);
 
-cvar_t nomonsters = { "nomonsters", "0" };
-cvar_t gamecfg = { "gamecfg", "0" };
-cvar_t scratch1 = { "scratch1", "0" };
-cvar_t scratch2 = { "scratch2", "0" };
-cvar_t scratch3 = { "scratch3", "0" };
-cvar_t scratch4 = { "scratch4", "0" };
-cvar_t savedgamecfg = { "savedgamecfg", "0", true };
-cvar_t saved1 = { "saved1", "0", true };
-cvar_t saved2 = { "saved2", "0", true };
-cvar_t saved3 = { "saved3", "0", true };
-cvar_t saved4 = { "saved4", "0", true };
+cvar_t nomonsters = {"nomonsters", "0"};
+cvar_t gamecfg = {"gamecfg", "0"};
+cvar_t scratch1 = {"scratch1", "0"};
+cvar_t scratch2 = {"scratch2", "0"};
+cvar_t scratch3 = {"scratch3", "0"};
+cvar_t scratch4 = {"scratch4", "0"};
+cvar_t savedgamecfg = {"savedgamecfg", "0", true};
+cvar_t saved1 = {"saved1", "0", true};
+cvar_t saved2 = {"saved2", "0", true};
+cvar_t saved3 = {"saved3", "0", true};
+cvar_t saved4 = {"saved4", "0", true};
 
 #define MAX_FIELD_LEN 64
 #define GEFV_CACHESIZE 2
 
-typedef struct {
+typedef struct
+{
 	ddef_t* pcache;
 	char field[MAX_FIELD_LEN];
 } gefv_cache;
 
-static gefv_cache gefvCache[GEFV_CACHESIZE] = { {NULL, ""}, {NULL, ""} };
+static gefv_cache gefvCache[GEFV_CACHESIZE] = {{NULL, ""}, {NULL, ""}};
 
 /*
 =================
@@ -596,7 +597,6 @@ void ED_Count(void)
 	Con_Printf("view      :%3i\n", models);
 	Con_Printf("touch     :%3i\n", solid);
 	Con_Printf("step      :%3i\n", step);
-
 }
 
 /*
@@ -677,7 +677,7 @@ void ED_ParseGlobals(char* data)
 			continue;
 		}
 
-		if (!ED_ParseEpair((void*)pr_globals, key, com_token))
+		if (!ED_ParseEpair(pr_globals, key, com_token))
 			Host_Error("ED_ParseGlobals: parse error");
 	}
 }
@@ -692,7 +692,7 @@ ED_NewString
 */
 char* ED_NewString(char* string)
 {
-	char* new, * new_p;
+	char *new, *new_p;
 	int i, l;
 
 	l = strlen(string) + 1;
@@ -730,7 +730,7 @@ qboolean ED_ParseEpair(void* base, ddef_t* key, char* s)
 	int i;
 	char string[128];
 	ddef_t* def;
-	char* v, * w;
+	char *v, *w;
 	void* d;
 	dfunction_t* func;
 
@@ -876,7 +876,7 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 			sprintf(com_token, "0 %s 0", temp);
 		}
 
-		if (!ED_ParseEpair((void*)&ent->v, key, com_token))
+		if (!ED_ParseEpair(&ent->v, key, com_token))
 			Host_Error("ED_ParseEdict: parse error");
 	}
 
@@ -1085,12 +1085,11 @@ void PR_Init(void)
 }
 
 
-
 edict_t* EDICT_NUM(int n)
 {
 	if (n < 0 || n >= sv.max_edicts)
 		Sys_Error("EDICT_NUM: bad number %i", n);
-	return (edict_t*)((byte*)sv.edicts + (n)*pr_edict_size);
+	return (edict_t*)((byte*)sv.edicts + (n) * pr_edict_size);
 }
 
 int NUM_FOR_EDICT(edict_t* e)

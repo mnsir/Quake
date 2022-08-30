@@ -104,4 +104,3 @@ void D_ViewChanged(void)
 
 	D_Patch();
 }
-

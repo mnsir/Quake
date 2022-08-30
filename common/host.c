@@ -49,37 +49,37 @@ int minimum_memory;
 
 client_t* host_client; // current client
 
-jmp_buf  host_abortserver;
+jmp_buf host_abortserver;
 
 byte* host_basepal;
 byte* host_colormap;
 
-cvar_t host_framerate = { "host_framerate","0" }; // set for slow motion
-cvar_t host_speeds = { "host_speeds","0" }; // set for running times
+cvar_t host_framerate = {"host_framerate", "0"}; // set for slow motion
+cvar_t host_speeds = {"host_speeds", "0"}; // set for running times
 
-cvar_t sys_ticrate = { "sys_ticrate","0.05" };
-cvar_t serverprofile = { "serverprofile","0" };
+cvar_t sys_ticrate = {"sys_ticrate", "0.05"};
+cvar_t serverprofile = {"serverprofile", "0"};
 
-cvar_t fraglimit = { "fraglimit","0",false,true };
-cvar_t timelimit = { "timelimit","0",false,true };
-cvar_t teamplay = { "teamplay","0",false,true };
+cvar_t fraglimit = {"fraglimit", "0", false, true};
+cvar_t timelimit = {"timelimit", "0", false, true};
+cvar_t teamplay = {"teamplay", "0", false, true};
 
-cvar_t samelevel = { "samelevel","0" };
-cvar_t noexit = { "noexit","0",false,true };
+cvar_t samelevel = {"samelevel", "0"};
+cvar_t noexit = {"noexit", "0", false, true};
 
 #ifdef QUAKE2
 cvar_t developer = { "developer","1" }; // should be 0 for release!
 #else
-cvar_t developer = { "developer","0" };
+cvar_t developer = {"developer", "0"};
 #endif
 
-cvar_t skill = { "skill","1" }; // 0 - 3
-cvar_t deathmatch = { "deathmatch","0" }; // 0, 1, or 2
-cvar_t coop = { "coop","0" }; // 0 or 1
+cvar_t skill = {"skill", "1"}; // 0 - 3
+cvar_t deathmatch = {"deathmatch", "0"}; // 0, 1, or 2
+cvar_t coop = {"coop", "0"}; // 0 or 1
 
-cvar_t pausable = { "pausable","1" };
+cvar_t pausable = {"pausable", "1"};
 
-cvar_t temp1 = { "temp1","0" };
+cvar_t temp1 = {"temp1", "0"};
 
 
 /*
@@ -442,7 +442,8 @@ void Host_ShutdownServer(qboolean crash)
 		}
 		if ((Sys_FloatTime() - start) > 3.0)
 			break;
-	} while (count);
+	}
+	while (count);
 
 	// make sure all the clients know we're disconnecting
 	buf.data = message;
@@ -510,7 +511,8 @@ qboolean Host_FilterTime(float time)
 	if (host_framerate.value > 0)
 		host_frametime = host_framerate.value;
 	else
-	{ // don't allow really long or short frames
+	{
+		// don't allow really long or short frames
 		if (host_frametime > 0.1)
 			host_frametime = 0.1;
 		if (host_frametime < 0.001)
@@ -719,7 +721,7 @@ void _Host_Frame(float time)
 		pass2 = (time2 - time1) * 1000;
 		pass3 = (time3 - time2) * 1000;
 		Con_Printf("%3i tot %3i server %3i gfx %3i snd\n",
-			pass1 + pass2 + pass3, pass1, pass2, pass3);
+		           pass1 + pass2 + pass3, pass1, pass2, pass3);
 	}
 
 	host_framecount++;
@@ -823,7 +825,6 @@ void Host_InitVCR(quakeparms_t* parms)
 			Sys_FileWrite(vcrFile, com_argv[i], len);
 		}
 	}
-
 }
 
 /*
@@ -833,7 +834,6 @@ Host_Init
 */
 void Host_Init(quakeparms_t* parms)
 {
-
 	if (standard_quake)
 		minimum_memory = MINIMUM_MEMORY;
 	else
@@ -874,10 +874,10 @@ void Host_Init(quakeparms_t* parms)
 
 	if (cls.state != ca_dedicated)
 	{
-		host_basepal = (byte*)COM_LoadHunkFile("gfx/palette.lmp");
+		host_basepal = COM_LoadHunkFile("gfx/palette.lmp");
 		if (!host_basepal)
 			Sys_Error("Couldn't load gfx/palette.lmp");
-		host_colormap = (byte*)COM_LoadHunkFile("gfx/colormap.lmp");
+		host_colormap = COM_LoadHunkFile("gfx/colormap.lmp");
 		if (!host_colormap)
 			Sys_Error("Couldn't load gfx/colormap.lmp");
 
@@ -954,4 +954,3 @@ void Host_Shutdown(void)
 		VID_Shutdown();
 	}
 }
-

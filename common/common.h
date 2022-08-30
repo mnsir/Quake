@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // comndef.h  -- general definitions
 
 #if !defined BYTE_DEFINED
-typedef unsigned char  byte;
+typedef unsigned char byte;
 #define BYTE_DEFINED 1
 #endif
 
@@ -51,7 +51,7 @@ void SZ_Print(sizebuf_t* buf, char* data); // strcats onto the sizebuf
 
 typedef struct link_s
 {
-	struct link_s* prev, * next;
+	struct link_s *prev, *next;
 } link_t;
 
 
@@ -87,12 +87,12 @@ void InsertLinkAfter(link_t* l, link_t* after);
 
 extern qboolean bigendien;
 
-extern short (*BigShort) (short l);
-extern short (*LittleShort) (short l);
-extern int (*BigLong) (int l);
-extern int (*LittleLong) (int l);
-extern float (*BigFloat) (float l);
-extern float (*LittleFloat) (float l);
+extern short (*BigShort)(short l);
+extern short (*LittleShort)(short l);
+extern int (*BigLong)(int l);
+extern int (*LittleLong)(int l);
+extern float (*BigFloat)(float l);
+extern float (*LittleFloat)(float l);
 
 //============================================================================
 

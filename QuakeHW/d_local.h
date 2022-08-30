@@ -107,5 +107,4 @@ extern short* zspantable[MAXHEIGHT];
 extern int d_minmip;
 extern float d_scalemip[3];
 
-extern void (*d_drawspans) (espan_t* pspan);
-
+extern void (*d_drawspans)(espan_t* pspan);

@@ -66,11 +66,12 @@ not apropriate.
 
 */
 
-typedef void (*xcommand_t) (void);
+typedef void (*xcommand_t)(void);
 
 typedef enum
 {
-	src_client, // came in over a net connection as a clc_stringcmd
+	src_client,
+	// came in over a net connection as a clc_stringcmd
 	// host_client will be valid during this state.
 	src_command // from the command buffer
 } cmd_source_t;
@@ -118,4 +119,3 @@ void Cmd_ForwardToServer(void);
 void Cmd_Print(char* text);
 // used by command functions to send output to either the graphics console or
 // passed as a print message to the client
-

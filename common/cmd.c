@@ -184,8 +184,9 @@ void Cbuf_Execute(void)
 		Cmd_ExecuteString(line, src_command);
 
 		if (cmd_wait)
-		{ // skip out while text still remains in buffer, leaving it
-		// for next frame
+		{
+			// skip out while text still remains in buffer, leaving it
+			// for next frame
 			cmd_wait = false;
 			break;
 		}
@@ -214,7 +215,7 @@ void Cmd_StuffCmds_f(void)
 {
 	int i, j;
 	int s;
-	char* text, * build, c;
+	char *text, *build, c;
 
 	if (Cmd_Argc() != 1)
 	{
@@ -254,8 +255,7 @@ void Cmd_StuffCmds_f(void)
 		{
 			i++;
 
-			for (j = i; (text[j] != '+') && (text[j] != '-') && (text[j] != 0); j++)
-				;
+			for (j = i; (text[j] != '+') && (text[j] != '-') && (text[j] != 0); j++);
 
 			c = text[j];
 			text[j] = 0;
@@ -498,7 +498,8 @@ void Cmd_TokenizeString(char* text)
 		}
 
 		if (*text == '\n')
-		{ // a newline seperates commands in the buffer
+		{
+			// a newline seperates commands in the buffer
 			text++;
 			break;
 		}
@@ -520,7 +521,6 @@ void Cmd_TokenizeString(char* text)
 			cmd_argc++;
 		}
 	}
-
 }
 
 
@@ -577,7 +577,6 @@ qboolean Cmd_Exists(char* cmd_name)
 
 	return false;
 }
-
 
 
 /*
@@ -646,7 +645,6 @@ void Cmd_ExecuteString(char* text, cmd_source_t src)
 	// check cvars
 	if (!Cvar_Command())
 		Con_Printf("Unknown command \"%s\"\n", Cmd_Argv(0));
-
 }
 
 

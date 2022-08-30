@@ -34,10 +34,10 @@ have a sentinal at both ends ?
 #endif
 
 
-edge_t * auxedges;
-edge_t* r_edges, * edge_p, * edge_max;
+edge_t* auxedges;
+edge_t *r_edges, *edge_p, *edge_max;
 
-surf_t* surfaces, * surface_p, * surf_max;
+surf_t *surfaces, *surface_p, *surf_max;
 
 // surfaces are generated in back to front order by the bsp, so if a surf
 // pointer is greater than another one, it should be drawn in front
@@ -46,7 +46,7 @@ surf_t* surfaces, * surface_p, * surf_max;
 edge_t* newedges[MAXHEIGHT];
 edge_t* removeedges[MAXHEIGHT];
 
-espan_t* span_p, * max_span_p;
+espan_t *span_p, *max_span_p;
 
 int r_currentkey;
 
@@ -68,9 +68,9 @@ float fv;
 void R_GenerateSpans(void);
 void R_GenerateSpansBackward(void);
 
-void R_LeadingEdge(edge_t * edge);
-void R_LeadingEdgeBackwards(edge_t * edge);
-void R_TrailingEdge(surf_t * surf, edge_t * edge);
+void R_LeadingEdge(edge_t* edge);
+void R_LeadingEdgeBackwards(edge_t* edge);
+void R_TrailingEdge(surf_t* surf, edge_t* edge);
 
 
 //=============================================================================
@@ -170,7 +170,7 @@ sentinel at the end (actually, this is the active edge table starting at
 edge_head.next).
 ==============
 */
-void R_InsertNewEdges(edge_t * edgestoadd, edge_t * edgelist)
+void R_InsertNewEdges(edge_t* edgestoadd, edge_t* edgelist)
 {
 	edge_t* next_edge;
 
@@ -198,7 +198,8 @@ void R_InsertNewEdges(edge_t * edgestoadd, edge_t * edgelist)
 		edgestoadd->prev = edgelist->prev;
 		edgelist->prev->next = edgestoadd;
 		edgelist->prev = edgestoadd;
-	} while ((edgestoadd = next_edge) != NULL);
+	}
+	while ((edgestoadd = next_edge) != NULL);
 }
 
 #endif // !id386
@@ -211,14 +212,14 @@ void R_InsertNewEdges(edge_t * edgestoadd, edge_t * edgelist)
 R_RemoveEdges
 ==============
 */
-void R_RemoveEdges(edge_t * pedge)
+void R_RemoveEdges(edge_t* pedge)
 {
-
 	do
 	{
 		pedge->next->prev = pedge->prev;
 		pedge->prev->next = pedge->next;
-	} while ((pedge = pedge->nextremove) != NULL);
+	}
+	while ((pedge = pedge->nextremove) != NULL);
 }
 
 #endif // !id386
@@ -231,9 +232,9 @@ void R_RemoveEdges(edge_t * pedge)
 R_StepActiveU
 ==============
 */
-void R_StepActiveU(edge_t * pedge)
+void R_StepActiveU(edge_t* pedge)
 {
-	edge_t* pnext_edge, * pwedge;
+	edge_t *pnext_edge, *pwedge;
 
 	while (1)
 	{
@@ -324,7 +325,8 @@ void R_CleanupSpan()
 	{
 		surf->spanstate = 0;
 		surf = surf->next;
-	} while (surf != &surfaces[1]);
+	}
+	while (surf != &surfaces[1]);
 }
 
 
@@ -333,10 +335,10 @@ void R_CleanupSpan()
 R_LeadingEdgeBackwards
 ==============
 */
-void R_LeadingEdgeBackwards(edge_t * edge)
+void R_LeadingEdgeBackwards(edge_t* edge)
 {
 	espan_t* span;
-	surf_t* surf, * surf2;
+	surf_t *surf, *surf2;
 	int iu;
 
 	// it's adding a new surface in, so find the correct place
@@ -366,7 +368,8 @@ void R_LeadingEdgeBackwards(edge_t * edge)
 		do
 		{
 			surf2 = surf2->next;
-		} while (surf->key < surf2->key);
+		}
+		while (surf->key < surf2->key);
 
 		if (surf->key == surf2->key)
 		{
@@ -413,7 +416,7 @@ void R_LeadingEdgeBackwards(edge_t * edge)
 R_TrailingEdge
 ==============
 */
-void R_TrailingEdge(surf_t * surf, edge_t * edge)
+void R_TrailingEdge(surf_t* surf, edge_t* edge)
 {
 	espan_t* span;
 	int iu;
@@ -457,10 +460,10 @@ void R_TrailingEdge(surf_t * surf, edge_t * edge)
 R_LeadingEdge
 ==============
 */
-void R_LeadingEdge(edge_t * edge)
+void R_LeadingEdge(edge_t* edge)
 {
 	espan_t* span;
-	surf_t* surf, * surf2;
+	surf_t *surf, *surf2;
 	int iu;
 	double fu, newzi, testzi, newzitop, newzibottom;
 
@@ -515,7 +518,8 @@ void R_LeadingEdge(edge_t * edge)
 			do
 			{
 				surf2 = surf2->next;
-			} while (surf->key > surf2->key);
+			}
+			while (surf->key > surf2->key);
 
 			if (surf->key == surf2->key)
 			{
@@ -718,7 +722,7 @@ void R_ScanEdges(void)
 			R_InsertNewEdges(newedges[iv], edge_head.next);
 		}
 
-		(*pdrawfunc) ();
+		(*pdrawfunc)();
 
 		// flush the span list if we can't be sure we have enough spans left for
 		// the next scan
@@ -762,7 +766,7 @@ void R_ScanEdges(void)
 	if (newedges[iv])
 		R_InsertNewEdges(newedges[iv], edge_head.next);
 
-	(*pdrawfunc) ();
+	(*pdrawfunc)();
 
 	// draw whatever's left in the span list
 	if (r_drawculledpolys)
@@ -770,5 +774,3 @@ void R_ScanEdges(void)
 	else
 		D_DrawSurfaces();
 }
-
-

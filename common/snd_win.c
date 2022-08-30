@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define iDirectSoundCreate(a,b,c) pDirectSoundCreate(a,b,c)
 
-HRESULT(WINAPI* pDirectSoundCreate)(GUID FAR* lpGUID, LPDIRECTSOUND FAR* lplpDS, IUnknown FAR* pUnkOuter);
+HRESULT (WINAPI* pDirectSoundCreate)(GUID FAR* lpGUID, LPDIRECTSOUND FAR* lplpDS, IUnknown FAR* pUnkOuter);
 
 // 64K is > 1 second at 16-bit, 22050 Hz
 #define WAV_BUFFERS 64
@@ -53,7 +53,7 @@ HPSTR lpData, lpData2;
 HGLOBAL hWaveHdr;
 LPWAVEHDR lpWaveHdr;
 
-HWAVEOUT    hWaveOut;
+HWAVEOUT hWaveOut;
 
 WAVEOUTCAPS wavecaps;
 
@@ -77,7 +77,6 @@ S_BlockSound
 */
 void S_BlockSound(void)
 {
-
 	// DirectSound takes care of blocking itself
 	if (snd_iswave)
 	{
@@ -98,7 +97,6 @@ S_UnblockSound
 */
 void S_UnblockSound(void)
 {
-
 	// DirectSound takes care of blocking itself
 	if (snd_iswave)
 	{
@@ -157,7 +155,6 @@ void FreeSound(void)
 			GlobalUnlock(hData);
 			GlobalFree(hData);
 		}
-
 	}
 
 	pDS = NULL;
@@ -237,10 +234,10 @@ sndinitstat SNDDMA_InitDirect(void)
 		}
 
 		if (MessageBox(NULL,
-			"The sound hardware is in use by another app.\n\n"
-			"Select Retry to try to start sound again or Cancel to run Quake with no sound.",
-			"Sound not available",
-			MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
+		               "The sound hardware is in use by another app.\n\n"
+		               "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
+		               "Sound not available",
+		               MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
 			Con_SafePrintf("DirectSoundCreate failure\n"
 				"  hardware already in use\n");
@@ -359,9 +356,9 @@ sndinitstat SNDDMA_InitDirect(void)
 
 	if (snd_firsttime)
 		Con_SafePrintf("   %d channel(s)\n"
-			"   %d bits/sample\n"
-			"   %d bytes/sec\n",
-			shm->channels, shm->samplebits, shm->speed);
+		               "   %d bits/sample\n"
+		               "   %d bytes/sec\n",
+		               shm->channels, shm->samplebits, shm->speed);
 
 	gSndBufSize = dsbcaps.dwBufferBytes;
 
@@ -383,7 +380,6 @@ sndinitstat SNDDMA_InitDirect(void)
 			FreeSound();
 			return SIS_FAILURE;
 		}
-
 	}
 
 	memset(lpData, 0, dwSize);
@@ -421,7 +417,7 @@ Crappy windows multimedia base
 */
 qboolean SNDDMA_InitWav(void)
 {
-	WAVEFORMATEX  format;
+	WAVEFORMATEX format;
 	int i;
 	HRESULT hr;
 
@@ -446,9 +442,9 @@ qboolean SNDDMA_InitWav(void)
 		* format.nBlockAlign;
 
 	/* Open a waveform device for output using window callback. */
-	while ((hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER,
-		&format,
-		0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
+	while ((hr = waveOutOpen(&hWaveOut, WAVE_MAPPER,
+	                         &format,
+	                         0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR)
 	{
 		if (hr != MMSYSERR_ALLOCATED)
 		{
@@ -457,10 +453,10 @@ qboolean SNDDMA_InitWav(void)
 		}
 
 		if (MessageBox(NULL,
-			"The sound hardware is in use by another app.\n\n"
-			"Select Retry to try to start sound again or Cancel to run Quake with no sound.",
-			"Sound not available",
-			MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
+		               "The sound hardware is in use by another app.\n\n"
+		               "Select Retry to try to start sound again or Cancel to run Quake with no sound.",
+		               "Sound not available",
+		               MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY)
 		{
 			Con_SafePrintf("waveOutOpen failure;\n"
 				"  hardware already in use\n");
@@ -497,7 +493,7 @@ qboolean SNDDMA_InitWav(void)
 	 * GMEM_SHARE flags.
 	 */
 	hWaveHdr = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE,
-		(DWORD)sizeof(WAVEHDR) * WAV_BUFFERS);
+	                       (DWORD)sizeof(WAVEHDR) * WAV_BUFFERS);
 
 	if (hWaveHdr == NULL)
 	{
@@ -570,7 +566,7 @@ int SNDDMA_Init(void)
 	{
 		if (snd_firsttime || snd_isdirect)
 		{
-			stat = SNDDMA_InitDirect();;
+			stat = SNDDMA_InitDirect();
 
 			if (stat == SIS_SUCCESS)
 			{
@@ -595,7 +591,6 @@ int SNDDMA_Init(void)
 	{
 		if (snd_firsttime || snd_iswave)
 		{
-
 			snd_iswave = SNDDMA_InitWav();
 
 			if (snd_iswave)
@@ -726,4 +721,3 @@ void SNDDMA_Shutdown(void)
 {
 	FreeSound();
 }
-

@@ -26,11 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
-#define DPS_MAXSPANS MAXHEIGHT+1 
- // 1 extra for spanpackage that marks end
+#define DPS_MAXSPANS MAXHEIGHT+1
+// 1 extra for spanpackage that marks end
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
-typedef struct {
+typedef struct
+{
 	void* pdest;
 	short* pz;
 	int count;
@@ -38,7 +39,8 @@ typedef struct {
 	int sfrac, tfrac, light, zi;
 } spanpackage_t;
 
-typedef struct {
+typedef struct
+{
 	int isflattop;
 	int numleftedges;
 	int* pleftedgevert0;
@@ -60,18 +62,18 @@ int d_xdenom;
 edgetable* pedgetable;
 
 edgetable edgetables[12] = {
- {0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
- {0, 2, r_p1, r_p0, r_p2,   1, r_p1, r_p2, NULL},
- {1, 1, r_p0, r_p2, NULL, 1, r_p1, r_p2, NULL},
- {0, 1, r_p1, r_p0, NULL, 2, r_p1, r_p2, r_p0 },
- {0, 2, r_p0, r_p2, r_p1,   1, r_p0, r_p1, NULL},
- {0, 1, r_p2, r_p1, NULL, 1, r_p2, r_p0, NULL},
- {0, 1, r_p2, r_p1, NULL, 2, r_p2, r_p0, r_p1 },
- {0, 2, r_p2, r_p1, r_p0,   1, r_p2, r_p0, NULL},
- {0, 1, r_p1, r_p0, NULL, 1, r_p1, r_p2, NULL},
- {1, 1, r_p2, r_p1, NULL, 1, r_p0, r_p1, NULL},
- {1, 1, r_p1, r_p0, NULL, 1, r_p2, r_p0, NULL},
- {0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL},
+	{0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2},
+	{0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL},
+	{1, 1, r_p0, r_p2, NULL, 1, r_p1, r_p2, NULL},
+	{0, 1, r_p1, r_p0, NULL, 2, r_p1, r_p2, r_p0},
+	{0, 2, r_p0, r_p2, r_p1, 1, r_p0, r_p1, NULL},
+	{0, 1, r_p2, r_p1, NULL, 1, r_p2, r_p0, NULL},
+	{0, 1, r_p2, r_p1, NULL, 2, r_p2, r_p0, r_p1},
+	{0, 2, r_p2, r_p1, r_p0, 1, r_p2, r_p0, NULL},
+	{0, 1, r_p1, r_p0, NULL, 1, r_p1, r_p2, NULL},
+	{1, 1, r_p2, r_p1, NULL, 1, r_p0, r_p1, NULL},
+	{1, 1, r_p1, r_p0, NULL, 1, r_p2, r_p0, NULL},
+	{0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL},
 };
 
 // FIXME: some of these can become statics
@@ -83,7 +85,7 @@ int d_aspancount, d_countextrastep;
 spanpackage_t* a_spans;
 spanpackage_t* d_pedgespanpackage;
 static int ystart;
-byte* d_pdest, * d_ptex;
+byte *d_pdest, *d_ptex;
 short* d_pz;
 int d_sfrac, d_tfrac, d_light, d_zi;
 int d_ptexextrastep, d_sfracextrastep;
@@ -93,7 +95,8 @@ int d_sfracbasestep, d_tfracbasestep;
 int d_ziextrastep, d_zibasestep;
 int d_pzextrastep, d_pzbasestep;
 
-typedef struct {
+typedef struct
+{
 	int quotient;
 	int remainder;
 } adivtab_t;
@@ -183,7 +186,7 @@ D_DrawSubdiv
 void D_DrawSubdiv(void)
 {
 	mtriangle_t* ptri;
-	finalvert_t* pfv, * index0, * index1, * index2;
+	finalvert_t *pfv, *index0, *index1, *index2;
 	int i;
 	int lnumtriangles;
 
@@ -244,7 +247,7 @@ D_DrawNonSubdiv
 void D_DrawNonSubdiv(void)
 {
 	mtriangle_t* ptri;
-	finalvert_t* pfv, * index0, * index1, * index2;
+	finalvert_t *pfv, *index0, *index1, *index2;
 	int i;
 	int lnumtriangles;
 
@@ -420,7 +423,6 @@ D_PolysetScanLeftEdge
 */
 void D_PolysetScanLeftEdge(int height)
 {
-
 	do
 	{
 		d_pedgespanpackage->pdest = d_pdest;
@@ -476,7 +478,8 @@ void D_PolysetScanLeftEdge(int height)
 			d_light += d_lightbasestep;
 			d_zi += d_zibasestep;
 		}
-	} while (--height);
+	}
+	while (--height);
 }
 
 #endif // !id386
@@ -488,7 +491,7 @@ D_PolysetSetUpForLineScan
 ====================
 */
 void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
-	fixed8_t endvertu, fixed8_t endvertv)
+                               fixed8_t endvertu, fixed8_t endvertv)
 {
 	double dm, dn;
 	int tm, tn;
@@ -668,11 +671,13 @@ void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 					lptex += r_affinetridesc.skinwidth;
 					ltfrac &= 0xFFFF;
 				}
-			} while (--lcount);
+			}
+			while (--lcount);
 		}
 
 		pspanpackage++;
-	} while (pspanpackage->count != -999999);
+	}
+	while (pspanpackage->count != -999999);
 }
 #endif // !id386
 
@@ -707,7 +712,8 @@ void D_PolysetFillSpans8(spanpackage_t* pspanpackage)
 			do
 			{
 				*lpdest++ = color;
-			} while (--lcount);
+			}
+			while (--lcount);
 		}
 
 		pspanpackage++;
@@ -722,7 +728,7 @@ D_RasterizeAliasPolySmooth
 void D_RasterizeAliasPolySmooth(void)
 {
 	int initialleftheight, initialrightheight;
-	int* plefttop, * prighttop, * pleftbottom, * prightbottom;
+	int *plefttop, *prighttop, *pleftbottom, *prightbottom;
 	int working_lstepx, originalcount;
 
 	plefttop = pedgetable->pleftedgevert0;
@@ -764,7 +770,7 @@ void D_RasterizeAliasPolySmooth(void)
 	d_light = plefttop[4];
 	d_zi = plefttop[5];
 
-	d_pdest = (byte*)d_viewbuffer +
+	d_pdest = d_viewbuffer +
 		ystart * screenwidth + plefttop[0];
 	d_pz = d_pzbuffer + ystart * d_zwidth + plefttop[0];
 
@@ -787,7 +793,7 @@ void D_RasterizeAliasPolySmooth(void)
 	else
 	{
 		D_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
-			pleftbottom[0], pleftbottom[1]);
+		                          pleftbottom[0], pleftbottom[1]);
 
 #if id386
 		d_pzbasestep = (d_zwidth + ubasestep) << 1;
@@ -863,7 +869,7 @@ void D_RasterizeAliasPolySmooth(void)
 		d_light = plefttop[4];
 		d_zi = plefttop[5];
 
-		d_pdest = (byte*)d_viewbuffer + ystart * screenwidth + plefttop[0];
+		d_pdest = d_viewbuffer + ystart * screenwidth + plefttop[0];
 		d_pz = d_pzbuffer + ystart * d_zwidth + plefttop[0];
 
 		if (height == 1)
@@ -885,7 +891,7 @@ void D_RasterizeAliasPolySmooth(void)
 		else
 		{
 			D_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
-				pleftbottom[0], pleftbottom[1]);
+			                          pleftbottom[0], pleftbottom[1]);
 
 			d_pdestbasestep = screenwidth + ubasestep;
 			d_pdestextrastep = d_pdestbasestep + 1;
@@ -939,7 +945,7 @@ void D_RasterizeAliasPolySmooth(void)
 	d_pedgespanpackage = a_spans;
 
 	D_PolysetSetUpForLineScan(prighttop[0], prighttop[1],
-		prightbottom[0], prightbottom[1]);
+	                          prightbottom[0], prightbottom[1]);
 	d_aspancount = 0;
 	d_countextrastep = ubasestep + 1;
 	originalcount = a_spans[initialrightheight].count;
@@ -963,7 +969,7 @@ void D_RasterizeAliasPolySmooth(void)
 		height = prightbottom[1] - prighttop[1];
 
 		D_PolysetSetUpForLineScan(prighttop[0], prighttop[1],
-			prightbottom[0], prightbottom[1]);
+		                          prightbottom[0], prightbottom[1]);
 
 		d_countextrastep = ubasestep + 1;
 		a_spans[initialrightheight + height].count = -999999;
@@ -985,10 +991,10 @@ void D_PolysetSetEdgeTable(void)
 	edgetableindex = 0; // assume the vertices are already in
 	//  top to bottom order
 
-   //
-   // determine which edges are right & left, and the order in which
-   // to rasterize them
-   //
+	//
+	// determine which edges are right & left, and the order in which
+	// to rasterize them
+	//
 	if (r_p0[1] >= r_p1[1])
 	{
 		if (r_p0[1] == r_p1[1])
@@ -1000,10 +1006,7 @@ void D_PolysetSetEdgeTable(void)
 
 			return;
 		}
-		else
-		{
-			edgetableindex = 1;
-		}
+		edgetableindex = 1;
 	}
 
 	if (r_p0[1] == r_p2[1])
@@ -1015,7 +1018,7 @@ void D_PolysetSetEdgeTable(void)
 
 		return;
 	}
-	else if (r_p1[1] == r_p2[1])
+	if (r_p1[1] == r_p2[1])
 	{
 		if (edgetableindex)
 			pedgetable = &edgetables[10];
@@ -1108,4 +1111,3 @@ split:
 }
 
 #endif
-

@@ -30,14 +30,14 @@ float scr_con_current;
 float scr_conlines; // lines of console to display
 
 float oldscreensize, oldfov;
-cvar_t scr_viewsize = { "viewsize","100", true };
-cvar_t scr_fov = { "fov","90" }; // 10 - 170
-cvar_t scr_conspeed = { "scr_conspeed","300" };
-cvar_t scr_centertime = { "scr_centertime","2" };
-cvar_t scr_showram = { "showram","1" };
-cvar_t scr_showturtle = { "showturtle","0" };
-cvar_t scr_showpause = { "showpause","1" };
-cvar_t scr_printspeed = { "scr_printspeed","8" };
+cvar_t scr_viewsize = {"viewsize", "100", true};
+cvar_t scr_fov = {"fov", "90"}; // 10 - 170
+cvar_t scr_conspeed = {"scr_conspeed", "300"};
+cvar_t scr_centertime = {"scr_centertime", "2"};
+cvar_t scr_showram = {"showram", "1"};
+cvar_t scr_showturtle = {"showturtle", "0"};
+cvar_t scr_showpause = {"showpause", "1"};
+cvar_t scr_printspeed = {"scr_printspeed", "8"};
 
 qboolean scr_initialized; // ready to draw
 
@@ -166,7 +166,8 @@ void SCR_DrawCenterString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	}
+	while (1);
 }
 
 void SCR_CheckDrawCenterString(void)
@@ -194,8 +195,8 @@ CalcFov
 */
 float CalcFov(float fov_x, float width, float height)
 {
-	float   a;
-	float   x;
+	float a;
+	float x;
 
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error("Bad fov: %f", fov_x);
@@ -337,7 +338,6 @@ void SCR_Init(void)
 }
 
 
-
 /*
 ==============
 SCR_DrawRam
@@ -411,9 +411,8 @@ void SCR_DrawPause(void)
 
 	pic = Draw_CachePic("gfx/pause.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
-		(vid.height - 48 - pic->height) / 2, pic);
+	         (vid.height - 48 - pic->height) / 2, pic);
 }
-
 
 
 /*
@@ -430,9 +429,8 @@ void SCR_DrawLoading(void)
 
 	pic = Draw_CachePic("gfx/loading.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
-		(vid.height - 48 - pic->height) / 2, pic);
+	         (vid.height - 48 - pic->height) / 2, pic);
 }
-
 
 
 //=============================================================================
@@ -468,7 +466,6 @@ void SCR_SetUpToDrawConsole(void)
 		scr_con_current -= scr_conspeed.value * host_frametime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
-
 	}
 	else if (scr_conlines > scr_con_current)
 	{
@@ -545,7 +542,7 @@ WritePCXfile
 ==============
 */
 void WritePCXfile(char* filename, byte* data, int width, int height,
-	int rowbytes, byte* palette)
+                  int rowbytes, byte* palette)
 {
 	int i, j, length;
 	pcx_t* pcx;
@@ -604,7 +601,6 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 }
 
 
-
 /*
 ==================
 SCR_ScreenShot_f
@@ -612,7 +608,7 @@ SCR_ScreenShot_f
 */
 void SCR_ScreenShot_f(void)
 {
-	int     i;
+	int i;
 	char pcxname[80];
 	char checkname[MAX_OSPATH];
 
@@ -642,7 +638,7 @@ void SCR_ScreenShot_f(void)
 	//  buffer
 
 	WritePCXfile(pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes,
-		host_basepal);
+	             host_basepal);
 
 	D_DisableBackBufferAccess(); // for adapters that can't stay mapped in
 	//  for linear writes all the time
@@ -732,7 +728,8 @@ void SCR_DrawNotifyString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	}
+	while (1);
 }
 
 /*
@@ -762,7 +759,8 @@ int SCR_ModalMessage(char* text)
 	{
 		key_count = -1; // wait for a key down and up
 		Sys_SendKeyEvents();
-	} while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
+	}
+	while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
 
 	scr_fullupdate = 0;
 	SCR_UpdateScreen();
@@ -873,7 +871,8 @@ void SCR_UpdateScreen(void)
 	D_EnableBackBufferAccess(); // of all overlay stuff if drawing directly
 
 	if (scr_fullupdate++ < vid.numpages)
-	{ // clear the entire screen
+	{
+		// clear the entire screen
 		scr_copyeverything = 1;
 		Draw_TileClear(0, 0, vid.width, vid.height);
 		Sbar_Changed();

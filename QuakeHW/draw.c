@@ -23,7 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
-typedef struct {
+typedef struct
+{
 	vrect_t rect;
 	int width;
 	int height;
@@ -101,7 +102,6 @@ qpic_t* Draw_CachePic(char* path)
 }
 
 
-
 /*
 ===============
 Draw_Init
@@ -120,7 +120,6 @@ void Draw_Init(void)
 	r_rectdesc.ptexbytes = draw_backtile->data;
 	r_rectdesc.rowbytes = draw_backtile->width;
 }
-
 
 
 /*
@@ -157,7 +156,8 @@ void Draw_Character(int x, int y, int num)
 	source = draw_chars + (row << 10) + (col << 3);
 
 	if (y < 0)
-	{ // clipped
+	{
+		// clipped
 		drawline = 8 + y;
 		source -= 128 * y;
 		y = 0;
@@ -196,7 +196,7 @@ void Draw_Character(int x, int y, int num)
 	{
 		// FIXME: pre-expand to native format?
 		pusdest = (unsigned short*)
-			((byte*)vid.conbuffer + y * vid.conrowbytes + (x << 1));
+			(vid.conbuffer + y * vid.conrowbytes + (x << 1));
 
 		while (drawline--)
 		{
@@ -288,7 +288,7 @@ Draw_Pic
 */
 void Draw_Pic(int x, int y, qpic_t* pic)
 {
-	byte* dest, * source;
+	byte *dest, *source;
 	unsigned short* pusdest;
 	int v, u;
 
@@ -339,7 +339,7 @@ Draw_TransPic
 */
 void Draw_TransPic(int x, int y, qpic_t* pic)
 {
-	byte* dest, * source, tbyte;
+	byte *dest, *source, tbyte;
 	unsigned short* pusdest;
 	int v, u;
 
@@ -356,7 +356,8 @@ void Draw_TransPic(int x, int y, qpic_t* pic)
 		dest = vid.buffer + y * vid.rowbytes + x;
 
 		if (pic->width & 7)
-		{ // general
+		{
+			// general
 			for (v = 0; v < pic->height; v++)
 			{
 				for (u = 0; u < pic->width; u++)
@@ -368,7 +369,8 @@ void Draw_TransPic(int x, int y, qpic_t* pic)
 			}
 		}
 		else
-		{ // unwound
+		{
+			// unwound
 			for (v = 0; v < pic->height; v++)
 			{
 				for (u = 0; u < pic->width; u += 8)
@@ -426,7 +428,7 @@ Draw_TransPicTranslate
 */
 void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 {
-	byte* dest, * source, tbyte;
+	byte *dest, *source, tbyte;
 	unsigned short* pusdest;
 	int v, u;
 
@@ -443,7 +445,8 @@ void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 		dest = vid.buffer + y * vid.rowbytes + x;
 
 		if (pic->width & 7)
-		{ // general
+		{
+			// general
 			for (v = 0; v < pic->height; v++)
 			{
 				for (u = 0; u < pic->width; u++)
@@ -455,7 +458,8 @@ void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 			}
 		}
 		else
-		{ // unwound
+		{
+			// unwound
 			for (v = 0; v < pic->height; v++)
 			{
 				for (u = 0; u < pic->width; u += 8)
@@ -527,7 +531,6 @@ void Draw_CharToConback(int num, byte* dest)
 		source += 128;
 		dest += 320;
 	}
-
 }
 
 /*
@@ -539,7 +542,7 @@ Draw_ConsoleBackground
 void Draw_ConsoleBackground(int lines)
 {
 	int x, y, v;
-	byte* src, * dest;
+	byte *src, *dest;
 	unsigned short* pusdest;
 	int f, fstep;
 	qpic_t* conback;
@@ -628,7 +631,7 @@ R_DrawRect8
 ==============
 */
 void R_DrawRect8(vrect_t* prect, int rowbytes, byte* psrc,
-	int transparent)
+                 int transparent)
 {
 	byte t;
 	int i, j, srcdelta, destdelta;
@@ -677,7 +680,7 @@ R_DrawRect16
 ==============
 */
 void R_DrawRect16(vrect_t* prect, int rowbytes, byte* psrc,
-	int transparent)
+                  int transparent)
 {
 	byte t;
 	int i, j, srcdelta, destdelta;
@@ -833,6 +836,7 @@ void Draw_Fill(int x, int y, int w, int h, int c)
 				pusdest[u] = uc;
 	}
 }
+
 //=============================================================================
 
 /*
@@ -854,7 +858,7 @@ void Draw_FadeScreen(void)
 	{
 		int t;
 
-		pbuf = (byte*)(vid.buffer + vid.rowbytes * y);
+		pbuf = vid.buffer + vid.rowbytes * y;
 		t = (y & 1) << 1;
 
 		for (x = 0; x < vid.width; x++)
@@ -881,7 +885,6 @@ Call before beginning any disc IO.
 */
 void Draw_BeginDisc(void)
 {
-
 	D_BeginDirectRect(vid.width - 24, 0, draw_disc->data, 24, 24);
 }
 
@@ -896,7 +899,5 @@ Call after completing any disc IO
 */
 void Draw_EndDisc(void)
 {
-
 	D_EndDirectRect(vid.width - 24, 0, 24, 24);
 }
-

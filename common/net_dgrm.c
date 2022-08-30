@@ -106,7 +106,7 @@ void NET_Ban_f(void)
 {
 	char addrStr[32];
 	char maskStr[32];
-	void (*print) (char* fmt, ...);
+	void (*print)(char* fmt, ...);
 
 	if (cmd_source == src_command)
 	{
@@ -288,7 +288,7 @@ qboolean Datagram_CanSendUnreliableMessage(qsocket_t* sock)
 
 int Datagram_SendUnreliableMessage(qsocket_t* sock, sizebuf_t* data)
 {
-	int  packetLen;
+	int packetLen;
 
 #ifdef DEBUG
 	if (data->cursize == 0)
@@ -452,7 +452,6 @@ int Datagram_GetMessage(qsocket_t* sock)
 
 			Q_memcpy(sock->receiveMessage + sock->receiveMessageLength, packetBuffer.data, length);
 			sock->receiveMessageLength += length;
-			continue;
 		}
 	}
 
@@ -517,7 +516,7 @@ static int testDriver;
 static int testSocket;
 
 static void Test_Poll(void);
-PollProcedure testPollProcedure = { NULL, 0.0, Test_Poll };
+PollProcedure testPollProcedure = {NULL, 0.0, Test_Poll};
 
 static void Test_Poll(void)
 {
@@ -561,7 +560,8 @@ static void Test_Poll(void)
 		connectTime = MSG_ReadLong();
 		Q_strcpy(address, MSG_ReadString());
 
-		Con_Printf("%s\n  frags:%3i  colors:%u %u  time:%u\n  %s\n", name, frags, colors >> 4, colors & 0x0f, connectTime / 60, address);
+		Con_Printf("%s\n  frags:%3i  colors:%u %u  time:%u\n  %s\n", name, frags, colors >> 4, colors & 0x0f,
+		           connectTime / 60, address);
 	}
 
 	testPollCount--;
@@ -645,7 +645,7 @@ static int test2Driver;
 static int test2Socket;
 
 static void Test2_Poll(void);
-PollProcedure test2PollProcedure = { NULL, 0.0, Test2_Poll };
+PollProcedure test2PollProcedure = {NULL, 0.0, Test2_Poll};
 
 static void Test2_Poll(void)
 {
@@ -702,7 +702,6 @@ Error:
 Done:
 	dfunc.CloseSocket(test2Socket);
 	test2InProgress = false;
-	return;
 }
 
 static void Test2_f(void)
@@ -1242,7 +1241,8 @@ static qsocket_t* _Datagram_Connect(char* host)
 		goto ErrorReturn;
 
 	// send the connection request
-	Con_Printf("trying...\n"); SCR_UpdateScreen();
+	Con_Printf("trying...\n");
+	SCR_UpdateScreen();
 	start_time = net_time;
 
 	for (reps = 0; reps < 3; reps++)
@@ -1299,13 +1299,14 @@ static qsocket_t* _Datagram_Connect(char* host)
 				if ((control & NETFLAG_LENGTH_MASK) != ret)
 				{
 					ret = 0;
-					continue;
 				}
 			}
-		} while (ret == 0 && (SetNetTime() - start_time) < 2.5);
+		}
+		while (ret == 0 && (SetNetTime() - start_time) < 2.5);
 		if (ret)
 			break;
-		Con_Printf("still trying...\n"); SCR_UpdateScreen();
+		Con_Printf("still trying...\n");
+		SCR_UpdateScreen();
 		start_time = SetNetTime();
 	}
 

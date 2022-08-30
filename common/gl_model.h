@@ -171,7 +171,6 @@ typedef struct mnode_s
 } mnode_t;
 
 
-
 typedef struct mleaf_s
 {
 	// common with node
@@ -281,14 +280,17 @@ typedef struct
 } maliasgroup_t;
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
-typedef struct mtriangle_s {
+typedef struct mtriangle_s
+{
 	int facesfront;
 	int vertindex[3];
 } mtriangle_t;
 
 
 #define MAX_SKINS 32
-typedef struct {
+
+typedef struct
+{
 	int ident;
 	int version;
 	vec3_t scale;
@@ -413,7 +415,6 @@ typedef struct model_s
 	// additional model data
 	//
 	cache_user_t cache; // only access through Mod_Extradata
-
 } model_t;
 
 //============================================================================

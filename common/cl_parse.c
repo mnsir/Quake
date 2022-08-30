@@ -23,48 +23,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 char* svc_strings[] =
 {
- "svc_bad",
- "svc_nop",
- "svc_disconnect",
- "svc_updatestat",
- "svc_version", // [long] server version
- "svc_setview", // [short] entity number
- "svc_sound", // <see code>
- "svc_time", // [float] server time
- "svc_print", // [string] null terminated string
- "svc_stufftext", // [string] stuffed into client's console buffer
- // the string should be \n terminated
- "svc_setangle", // [vec3] set the view angle to this absolute value
+	"svc_bad",
+	"svc_nop",
+	"svc_disconnect",
+	"svc_updatestat",
+	"svc_version", // [long] server version
+	"svc_setview", // [short] entity number
+	"svc_sound", // <see code>
+	"svc_time", // [float] server time
+	"svc_print", // [string] null terminated string
+	"svc_stufftext", // [string] stuffed into client's console buffer
+	// the string should be \n terminated
+	"svc_setangle", // [vec3] set the view angle to this absolute value
 
- "svc_serverinfo", // [long] version
- // [string] signon string
- // [string]..[0]model cache [string]...[0]sounds cache
- // [string]..[0]item cache
- "svc_lightstyle", // [byte] [string]
- "svc_updatename", // [byte] [string]
- "svc_updatefrags", // [byte] [short]
- "svc_clientdata", // <shortbits + data>
- "svc_stopsound", // <see code>
- "svc_updatecolors", // [byte] [byte]
- "svc_particle", // [vec3] <variable>
- "svc_damage", // [byte] impact [byte] blood [vec3] from
+	"svc_serverinfo", // [long] version
+	// [string] signon string
+	// [string]..[0]model cache [string]...[0]sounds cache
+	// [string]..[0]item cache
+	"svc_lightstyle", // [byte] [string]
+	"svc_updatename", // [byte] [string]
+	"svc_updatefrags", // [byte] [short]
+	"svc_clientdata", // <shortbits + data>
+	"svc_stopsound", // <see code>
+	"svc_updatecolors", // [byte] [byte]
+	"svc_particle", // [vec3] <variable>
+	"svc_damage", // [byte] impact [byte] blood [vec3] from
 
- "svc_spawnstatic",
- "OBSOLETE svc_spawnbinary",
- "svc_spawnbaseline",
+	"svc_spawnstatic",
+	"OBSOLETE svc_spawnbinary",
+	"svc_spawnbaseline",
 
- "svc_temp_entity", // <variable>
- "svc_setpause",
- "svc_signonnum",
- "svc_centerprint",
- "svc_killedmonster",
- "svc_foundsecret",
- "svc_spawnstaticsound",
- "svc_intermission",
- "svc_finale", // [string] music [string] text
- "svc_cdtrack", // [byte] track [byte] looptrack
- "svc_sellscreen",
- "svc_cutscene"
+	"svc_temp_entity", // <variable>
+	"svc_setpause",
+	"svc_signonnum",
+	"svc_centerprint",
+	"svc_killedmonster",
+	"svc_foundsecret",
+	"svc_spawnstaticsound",
+	"svc_intermission",
+	"svc_finale", // [string] music [string] text
+	"svc_cdtrack", // [byte] track [byte] looptrack
+	"svc_sellscreen",
+	"svc_cutscene"
 };
 
 //=============================================================================
@@ -100,12 +100,12 @@ CL_ParseStartSoundPacket
 */
 void CL_ParseStartSoundPacket(void)
 {
-	vec3_t  pos;
-	int  channel, ent;
-	int  sound_num;
-	int  volume;
-	int  field_mask;
-	float  attenuation;
+	vec3_t pos;
+	int channel, ent;
+	int sound_num;
+	int volume;
+	int field_mask;
+	float attenuation;
 	int i;
 
 	field_mask = MSG_ReadByte();
@@ -177,7 +177,8 @@ void CL_KeepaliveMessage(void)
 				Host_Error("CL_KeepaliveMessage: datagram wasn't a nop");
 			break;
 		}
-	} while (ret);
+	}
+	while (ret);
 
 	net_message = old;
 	memcpy(net_message.data, olddata, net_message.cursize);
@@ -240,7 +241,8 @@ void CL_ParseServerInfo(void)
 	strncpy(cl.levelname, str, sizeof(cl.levelname) - 1);
 
 	// seperate the printfs so the server message can have a color
-	Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
+	Con_Printf(
+		"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 	Con_Printf("%c%s\n", 2, str);
 
 	//
@@ -338,7 +340,8 @@ void CL_ParseUpdate(int bits)
 	int skin;
 
 	if (cls.signon == SIGNONS - 1)
-	{ // first update is the final signon stage
+	{
+		// first update is the final signon stage
 		cls.signon = SIGNONS;
 		CL_SignonReply();
 	}
@@ -420,7 +423,8 @@ void CL_ParseUpdate(int bits)
 		skin = MSG_ReadByte();
 	else
 		skin = ent->baseline.skin;
-	if (skin != ent->skinnum) {
+	if (skin != ent->skinnum)
+	{
 		ent->skinnum = skin;
 		if (num > 0 && num <= cl.maxclients)
 			R_TranslatePlayerSkin(num - 1);
@@ -474,7 +478,8 @@ void CL_ParseUpdate(int bits)
 		ent->forcelink = true;
 
 	if (forcelink)
-	{ // didn't have an update last message
+	{
+		// didn't have an update last message
 		VectorCopy(ent->msg_origins[0], ent->msg_origins[1]);
 		VectorCopy(ent->msg_origins[0], ent->origin);
 		VectorCopy(ent->msg_angles[0], ent->msg_angles[1]);
@@ -542,7 +547,8 @@ void CL_ParseClientdata(int bits)
 	i = MSG_ReadLong();
 
 	if (cl.items != i)
-	{ // set flash times
+	{
+		// set flash times
 		Sbar_Changed();
 		for (j = 0; j < 32; j++)
 			if ((i & (1 << j)) && !(cl.items & (1 << j)))
@@ -631,7 +637,7 @@ void CL_NewTranslation(int slot)
 {
 	int i, j;
 	int top, bottom;
-	byte* dest, * source;
+	byte *dest, *source;
 
 	if (slot > cl.maxclients)
 		Sys_Error("CL_NewTranslation: slot > cl.maxclients");
@@ -867,7 +873,7 @@ void CL_ParseServerMessage(void)
 
 		case svc_spawnbaseline:
 			i = MSG_ReadShort();
-			// must use CL_EntityNum() to force cl.num_entities up
+		// must use CL_EntityNum() to force cl.num_entities up
 			CL_ParseBaseline(CL_EntityNum(i));
 			break;
 		case svc_spawnstatic:
@@ -878,25 +884,25 @@ void CL_ParseServerMessage(void)
 			break;
 
 		case svc_setpause:
-		{
-			cl.paused = MSG_ReadByte();
+			{
+				cl.paused = MSG_ReadByte();
 
-			if (cl.paused)
-			{
-				CDAudio_Pause();
+				if (cl.paused)
+				{
+					CDAudio_Pause();
 #ifdef _WIN32
-				VID_HandlePause(true);
+					VID_HandlePause(true);
 #endif
-			}
-			else
-			{
-				CDAudio_Resume();
+				}
+				else
+				{
+					CDAudio_Resume();
 #ifdef _WIN32
-				VID_HandlePause(false);
+					VID_HandlePause(false);
 #endif
+				}
 			}
-		}
-		break;
+			break;
 
 		case svc_signonnum:
 			i = MSG_ReadByte();
@@ -918,7 +924,7 @@ void CL_ParseServerMessage(void)
 			i = MSG_ReadByte();
 			if (i < 0 || i >= MAX_CL_STATS)
 				Sys_Error("svc_updatestat: %i is invalid", i);
-			cl.stats[i] = MSG_ReadLong();;
+			cl.stats[i] = MSG_ReadLong();
 			break;
 
 		case svc_spawnstaticsound:
@@ -929,9 +935,9 @@ void CL_ParseServerMessage(void)
 			cl.cdtrack = MSG_ReadByte();
 			cl.looptrack = MSG_ReadByte();
 			if ((cls.demoplayback || cls.demorecording) && (cls.forcetrack != -1))
-				CDAudio_Play((byte)cls.forcetrack, true);
+				CDAudio_Play(cls.forcetrack, true);
 			else
-				CDAudio_Play((byte)cl.cdtrack, true);
+				CDAudio_Play(cl.cdtrack, true);
 			break;
 
 		case svc_intermission:
@@ -960,4 +966,3 @@ void CL_ParseServerMessage(void)
 		}
 	}
 }
-

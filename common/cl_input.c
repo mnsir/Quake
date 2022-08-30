@@ -93,7 +93,8 @@ void KeyUp(kbutton_t* b)
 	if (c[0])
 		k = atoi(c);
 	else
-	{ // typed manually at the console, assume for unsticking, so clear all
+	{
+		// typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
 		b->state = 4; // impulse up
 		return;
@@ -111,17 +112,20 @@ void KeyUp(kbutton_t* b)
 	if (!(b->state & 1))
 		return; // still up (this should not happen)
 	b->state &= ~1; // now up
-	b->state |= 4;  // impulse up
+	b->state |= 4; // impulse up
 }
 
 void IN_KLookDown(void) { KeyDown(&in_klook); }
 void IN_KLookUp(void) { KeyUp(&in_klook); }
 void IN_MLookDown(void) { KeyDown(&in_mlook); }
-void IN_MLookUp(void) {
+
+void IN_MLookUp(void)
+{
 	KeyUp(&in_mlook);
 	if (!(in_mlook.state & 1) && lookspring.value)
 		V_StartPitchDrift();
 }
+
 void IN_UpDown(void) { KeyDown(&in_up); }
 void IN_UpUp(void) { KeyUp(&in_up); }
 void IN_DownDown(void) { KeyDown(&in_down); }
@@ -205,21 +209,19 @@ float CL_KeyState(kbutton_t* key)
 }
 
 
-
-
 //==========================================================================
 
-cvar_t cl_upspeed = { "cl_upspeed","200" };
-cvar_t cl_forwardspeed = { "cl_forwardspeed","200", true };
-cvar_t cl_backspeed = { "cl_backspeed","200", true };
-cvar_t cl_sidespeed = { "cl_sidespeed","350" };
+cvar_t cl_upspeed = {"cl_upspeed", "200"};
+cvar_t cl_forwardspeed = {"cl_forwardspeed", "200", true};
+cvar_t cl_backspeed = {"cl_backspeed", "200", true};
+cvar_t cl_sidespeed = {"cl_sidespeed", "350"};
 
-cvar_t cl_movespeedkey = { "cl_movespeedkey","2.0" };
+cvar_t cl_movespeedkey = {"cl_movespeedkey", "2.0"};
 
-cvar_t cl_yawspeed = { "cl_yawspeed","140" };
-cvar_t cl_pitchspeed = { "cl_pitchspeed","150" };
+cvar_t cl_yawspeed = {"cl_yawspeed", "140"};
+cvar_t cl_pitchspeed = {"cl_pitchspeed", "150"};
 
-cvar_t cl_anglespeedkey = { "cl_anglespeedkey","1.5" };
+cvar_t cl_anglespeedkey = {"cl_anglespeedkey", "1.5"};
 
 
 /*
@@ -270,7 +272,6 @@ void CL_AdjustAngles(void)
 		cl.viewangles[ROLL] = 50;
 	if (cl.viewangles[ROLL] < -50)
 		cl.viewangles[ROLL] = -50;
-
 }
 
 /*
@@ -321,7 +322,6 @@ void CL_BaseMove(usercmd_t* cmd)
 	cmd->lightlevel = cl.light_level;
 #endif
 }
-
 
 
 /*
@@ -443,6 +443,4 @@ void CL_InitInput(void)
 	Cmd_AddCommand("-klook", IN_KLookUp);
 	Cmd_AddCommand("+mlook", IN_MLookDown);
 	Cmd_AddCommand("-mlook", IN_MLookUp);
-
 }
-

@@ -38,7 +38,7 @@ byte mod_novis[MAX_MAP_LEAFS / 8];
 model_t mod_known[MAX_MOD_KNOWN];
 int mod_numknown;
 
-cvar_t gl_subdivide_size = { "gl_subdivide_size", "128", true };
+cvar_t gl_subdivide_size = {"gl_subdivide_size", "128", true};
 
 /*
 ===============
@@ -123,7 +123,8 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 	memcpy(out, in, row);
 #else
 	if (!in)
-	{ // no vis info, so make all visible
+	{
+		// no vis info, so make all visible
 		while (row)
 		{
 			*out++ = 0xff;
@@ -147,7 +148,8 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 			*out++ = 0;
 			c--;
 		}
-	} while (out - decompressed < row);
+	}
+	while (out - decompressed < row);
 #endif
 
 	return decompressed;
@@ -257,7 +259,6 @@ model_t* Mod_LoadModel(model_t* mod, qboolean crash)
 	//
 	if (!crash)
 	{
-
 	}
 
 	//
@@ -285,7 +286,7 @@ model_t* Mod_LoadModel(model_t* mod, qboolean crash)
 	// call the apropriate loader
 	mod->needload = false;
 
-	switch (LittleLong(*(unsigned*)buf))
+	switch (LittleLong(*buf))
 	{
 	case IDPOLYHEADER:
 		Mod_LoadAliasModel(mod, buf);
@@ -340,7 +341,7 @@ void Mod_LoadTextures(lump_t* l)
 {
 	int i, j, pixels, num, max, altmax;
 	miptex_t* mt;
-	texture_t* tx, * tx2;
+	texture_t *tx, *tx2;
 	texture_t* anims[10];
 	texture_t* altanims[10];
 	dmiptexlump_t* m;
@@ -589,7 +590,8 @@ void Mod_LoadSubmodels(lump_t* l)
 	for (i = 0; i < count; i++, in++, out++)
 	{
 		for (j = 0; j < 3; j++)
-		{ // spread the mins / maxs by a pixel
+		{
+			// spread the mins / maxs by a pixel
 			out->mins[j] = LittleFloat(in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
 			out->origin[j] = LittleFloat(in->origin[j]);
@@ -611,7 +613,7 @@ void Mod_LoadEdges(lump_t* l)
 {
 	dedge_t* in;
 	medge_t* out;
-	int  i, count;
+	int i, count;
 
 	in = (void*)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -638,7 +640,7 @@ void Mod_LoadTexinfo(lump_t* l)
 {
 	texinfo_t* in;
 	mtexinfo_t* out;
-	int  i, j, count;
+	int i, j, count;
 	int miptex;
 	float len1, len2;
 
@@ -817,9 +819,7 @@ void Mod_LoadFaces(lump_t* l)
 				out->texturemins[i] = -8192;
 			}
 			GL_SubdivideSurface(out); // cut up polygon for warps
-			continue;
 		}
-
 	}
 }
 
@@ -946,7 +946,7 @@ Mod_LoadClipnodes
 */
 void Mod_LoadClipnodes(lump_t* l)
 {
-	dclipnode_t* in, * out;
+	dclipnode_t *in, *out;
 	int i, count;
 	hull_t* hull;
 
@@ -1000,7 +1000,7 @@ Deplicate the drawing hull structure as a clipping hull
 */
 void Mod_MakeHull0(void)
 {
-	mnode_t* in, * child;
+	mnode_t *in, *child;
 	dclipnode_t* out;
 	int i, j, count;
 	hull_t* hull;
@@ -1067,7 +1067,7 @@ Mod_LoadSurfedges
 void Mod_LoadSurfedges(lump_t* l)
 {
 	int i, count;
-	int* in, * out;
+	int *in, *out;
 
 	in = (void*)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -1211,7 +1211,8 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		mod->numleafs = bm->visleafs;
 
 		if (i < mod->numsubmodels - 1)
-		{ // duplicate the basic information
+		{
+			// duplicate the basic information
 			char name[10];
 
 			sprintf(name, "*%i", i + 1);
@@ -1251,7 +1252,7 @@ Mod_LoadAliasFrame
 */
 void* Mod_LoadAliasFrame(void* pin, maliasframedesc_t* frame)
 {
-	trivertx_t* pframe, * pinframe;
+	trivertx_t *pframe, *pinframe;
 	int i, j;
 	daliasframe_t* pdaliasframe;
 
@@ -1276,7 +1277,7 @@ void* Mod_LoadAliasFrame(void* pin, maliasframedesc_t* frame)
 
 	pinframe += pheader->numverts;
 
-	return (void*)pinframe;
+	return pinframe;
 }
 
 
@@ -1429,7 +1430,8 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 
 	for (i = 0; i < numskins; i++)
 	{
-		if (pskintype->type == ALIAS_SKIN_SINGLE) {
+		if (pskintype->type == ALIAS_SKIN_SINGLE)
+		{
 			Mod_FloodFillSkin(skin, pheader->skinwidth, pheader->skinheight);
 
 			// save 8 bit texels for the player model to remap
@@ -1444,10 +1446,11 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 				pheader->gl_texturenum[i][2] =
 				pheader->gl_texturenum[i][3] =
 				GL_LoadTexture(name, pheader->skinwidth,
-					pheader->skinheight, (byte*)(pskintype + 1), true, false);
+				               pheader->skinheight, (byte*)(pskintype + 1), true, false);
 			pskintype = (daliasskintype_t*)((byte*)(pskintype + 1) + s);
 		}
-		else {
+		else
+		{
 			// animating skin group.  yuck.
 			pskintype++;
 			pinskingroup = (daliasskingroup_t*)pskintype;
@@ -1459,7 +1462,8 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 			for (j = 0; j < groupskins; j++)
 			{
 				Mod_FloodFillSkin(skin, pheader->skinwidth, pheader->skinheight);
-				if (j == 0) {
+				if (j == 0)
+				{
 					texels = Hunk_AllocName(s, loadname);
 					pheader->texels[i] = texels - (byte*)pheader;
 					memcpy(texels, (byte*)(pskintype), s);
@@ -1467,17 +1471,17 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 				sprintf(name, "%s_%i_%i", loadmodel->name, i, j);
 				pheader->gl_texturenum[i][j & 3] =
 					GL_LoadTexture(name, pheader->skinwidth,
-						pheader->skinheight, (byte*)(pskintype), true, false);
-				pskintype = (daliasskintype_t*)((byte*)(pskintype)+s);
+					               pheader->skinheight, (byte*)(pskintype), true, false);
+				pskintype = (daliasskintype_t*)((byte*)(pskintype) + s);
 			}
 			k = j;
 			for (/* */; j < 4; j++)
 				pheader->gl_texturenum[i][j & 3] =
-				pheader->gl_texturenum[i][j - k];
+					pheader->gl_texturenum[i][j - k];
 		}
 	}
 
-	return (void*)pskintype;
+	return pskintype;
 }
 
 //=========================================================================
@@ -1506,7 +1510,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	version = LittleLong(pinmodel->version);
 	if (version != ALIAS_VERSION)
 		Sys_Error("%s has wrong version number (%i should be %i)",
-			mod->name, version, ALIAS_VERSION);
+		          mod->name, version, ALIAS_VERSION);
 
 	//
 	// allocate space for a working header, plus all the data except the frames,
@@ -1529,7 +1533,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 
 	if (pheader->skinheight > MAX_LBM_HEIGHT)
 		Sys_Error("model %s has a skin taller than %d", mod->name,
-			MAX_LBM_HEIGHT);
+		          MAX_LBM_HEIGHT);
 
 	pheader->numverts = LittleLong(pinmodel->numverts);
 
@@ -1687,7 +1691,7 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe, int framenum)
 	sprintf(name, "%s_%i", loadmodel->name, framenum);
 	pspriteframe->gl_texturenum = GL_LoadTexture(name, width, height, (byte*)(pinframe + 1), true, true);
 
-	return (void*)((byte*)pinframe + sizeof(dspriteframe_t) + size);
+	return (byte*)pinframe + sizeof(dspriteframe_t) + size;
 }
 
 
@@ -1710,7 +1714,7 @@ void* Mod_LoadSpriteGroup(void* pin, mspriteframe_t** ppframe, int framenum)
 	numframes = LittleLong(pingroup->numframes);
 
 	pspritegroup = Hunk_AllocName(sizeof(mspritegroup_t) +
-		(numframes - 1) * sizeof(pspritegroup->frames[0]), loadname);
+	                              (numframes - 1) * sizeof(pspritegroup->frames[0]), loadname);
 
 	pspritegroup->numframes = numframes;
 
@@ -1763,7 +1767,7 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 	version = LittleLong(pin->version);
 	if (version != SPRITE_VERSION)
 		Sys_Error("%s has wrong version number "
-			"(%i should be %i)", mod->name, version, SPRITE_VERSION);
+		          "(%i should be %i)", mod->name, version, SPRITE_VERSION);
 
 	numframes = LittleLong(pin->numframes);
 
@@ -1806,13 +1810,13 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 		{
 			pframetype = (dspriteframetype_t*)
 				Mod_LoadSpriteFrame(pframetype + 1,
-					&psprite->frames[i].frameptr, i);
+				                    &psprite->frames[i].frameptr, i);
 		}
 		else
 		{
 			pframetype = (dspriteframetype_t*)
 				Mod_LoadSpriteGroup(pframetype + 1,
-					&psprite->frames[i].frameptr, i);
+				                    &psprite->frames[i].frameptr, i);
 		}
 	}
 
@@ -1837,5 +1841,3 @@ void Mod_Print(void)
 		Con_Printf("%8p : %s\n", mod->cache.data, mod->name);
 	}
 }
-
-

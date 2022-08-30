@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAXIMUM_WIN_MEMORY 0x1000000
 
 #define CONSOLE_ERROR_TIMEOUT 60.0 // # of seconds to wait on Sys_Error running
- //  dedicated before exiting
+//  dedicated before exiting
 #define PAUSE_SLEEP 50 // sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP 20 // sleep time when not focus
 
@@ -264,15 +264,20 @@ Sys_MakeCodeWriteable
 */
 void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length)
 {
-	DWORD  flOldProtect;
+	DWORD flOldProtect;
 
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
 		Sys_Error("Protection change failed\n");
 }
 
 
-void Sys_LowFPPrecision(void) {}
-void Sys_HighFPPrecision(void) {}
+void Sys_LowFPPrecision(void)
+{
+}
+
+void Sys_HighFPPrecision(void)
+{
+}
 
 void Sys_SetFPCW(void)
 {
@@ -384,12 +389,12 @@ void Sys_Error(char* error, ...)
 			in_sys_error0 = 1;
 			VID_SetDefaultMode();
 			MessageBox(NULL, text, "Quake Error",
-				MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 		else
 		{
 			MessageBox(NULL, text, "Double Quake Error",
-				MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 	}
 
@@ -427,7 +432,6 @@ void Sys_Printf(char* fmt, ...)
 
 void Sys_Quit(void)
 {
-
 	VID_ForceUnlockedAndReturnState();
 
 	Host_Shutdown();
@@ -551,7 +555,7 @@ char* Sys_ConsoleInput(void)
 		return NULL;
 
 
-	for (;; )
+	for (;;)
 	{
 		if (!GetNumberOfConsoleInputEvents(hinput, &numevents))
 			Sys_Error("Error getting # of console events");
@@ -582,7 +586,7 @@ char* Sys_ConsoleInput(void)
 						len = 0;
 						return text;
 					}
-					else if (sc_return_on_enter)
+					if (sc_return_on_enter)
 					{
 						// special case to allow exiting from the error handler on Enter
 						text[0] = '\r';
@@ -609,7 +613,6 @@ char* Sys_ConsoleInput(void)
 					}
 
 					break;
-
 				}
 			}
 		}
@@ -626,7 +629,7 @@ void Sys_Sleep(void)
 
 void Sys_SendKeyEvents(void)
 {
-	MSG        msg;
+	MSG msg;
 
 	while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
 	{
@@ -658,7 +661,6 @@ WinMain
 */
 void SleepUntilInput(int time)
 {
-
 	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
 }
 
@@ -725,7 +727,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				*lpCmdLine = 0;
 				lpCmdLine++;
 			}
-
 		}
 	}
 
@@ -749,9 +750,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (rect.left > (rect.top * 2))
 				{
 					SetWindowPos(hwnd_dialog, 0,
-						(rect.left / 2) - ((rect.right - rect.left) / 2),
-						rect.top, 0, 0,
-						SWP_NOZORDER | SWP_NOSIZE);
+					             (rect.left / 2) - ((rect.right - rect.left) / 2),
+					             rect.top, 0, 0,
+					             SWP_NOZORDER | SWP_NOSIZE);
 				}
 			}
 
@@ -876,4 +877,3 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	/* return success of application */
 	return TRUE;
 }
-

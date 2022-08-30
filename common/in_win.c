@@ -27,11 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DINPUT_BUFFERSIZE           16
 #define iDirectInputCreate(a,b,c,d) pDirectInputCreate(a,b,c,d)
 
-HRESULT(WINAPI* pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
-	LPDIRECTINPUT* lplpDirectInput, LPUNKNOWN punkOuter);
+HRESULT (WINAPI* pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
+                                     LPDIRECTINPUT* lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
-cvar_t m_filter = { "m_filter","0" };
+cvar_t m_filter = {"m_filter", "0"};
 
 int mouse_buttons;
 int mouse_oldbuttonstate;
@@ -39,7 +39,7 @@ POINT current_pos;
 int mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
 static qboolean restore_spi;
-static int originalmouseparms[3], newmouseparms[3] = { 0, 0, 1 };
+static int originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
 
 unsigned int uiWheelMessage;
 qboolean mouseactive;
@@ -64,12 +64,16 @@ static unsigned int mstate_di;
 
 enum _ControlList
 {
-	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn
+	AxisNada = 0,
+	AxisForward,
+	AxisLook,
+	AxisSide,
+	AxisTurn
 };
 
 DWORD dwAxisFlags[JOY_MAX_AXES] =
 {
- JOY_RETURNX, JOY_RETURNY, JOY_RETURNZ, JOY_RETURNR, JOY_RETURNU, JOY_RETURNV
+	JOY_RETURNX, JOY_RETURNY, JOY_RETURNZ, JOY_RETURNR, JOY_RETURNU, JOY_RETURNV
 };
 
 DWORD dwAxisMap[JOY_MAX_AXES];
@@ -81,25 +85,25 @@ PDWORD pdwRawValue[JOY_MAX_AXES];
 // each time.  this avoids any problems with getting back to a default usage
 // or when changing from one controller to another.  this way at least something
 // works.
-cvar_t in_joystick = { "joystick","0", true };
-cvar_t joy_name = { "joyname", "joystick" };
-cvar_t joy_advanced = { "joyadvanced", "0" };
-cvar_t joy_advaxisx = { "joyadvaxisx", "0" };
-cvar_t joy_advaxisy = { "joyadvaxisy", "0" };
-cvar_t joy_advaxisz = { "joyadvaxisz", "0" };
-cvar_t joy_advaxisr = { "joyadvaxisr", "0" };
-cvar_t joy_advaxisu = { "joyadvaxisu", "0" };
-cvar_t joy_advaxisv = { "joyadvaxisv", "0" };
-cvar_t joy_forwardthreshold = { "joyforwardthreshold", "0.15" };
-cvar_t joy_sidethreshold = { "joysidethreshold", "0.15" };
-cvar_t joy_pitchthreshold = { "joypitchthreshold", "0.15" };
-cvar_t joy_yawthreshold = { "joyyawthreshold", "0.15" };
-cvar_t joy_forwardsensitivity = { "joyforwardsensitivity", "-1.0" };
-cvar_t joy_sidesensitivity = { "joysidesensitivity", "-1.0" };
-cvar_t joy_pitchsensitivity = { "joypitchsensitivity", "1.0" };
-cvar_t joy_yawsensitivity = { "joyyawsensitivity", "-1.0" };
-cvar_t joy_wwhack1 = { "joywwhack1", "0.0" };
-cvar_t joy_wwhack2 = { "joywwhack2", "0.0" };
+cvar_t in_joystick = {"joystick", "0", true};
+cvar_t joy_name = {"joyname", "joystick"};
+cvar_t joy_advanced = {"joyadvanced", "0"};
+cvar_t joy_advaxisx = {"joyadvaxisx", "0"};
+cvar_t joy_advaxisy = {"joyadvaxisy", "0"};
+cvar_t joy_advaxisz = {"joyadvaxisz", "0"};
+cvar_t joy_advaxisr = {"joyadvaxisr", "0"};
+cvar_t joy_advaxisu = {"joyadvaxisu", "0"};
+cvar_t joy_advaxisv = {"joyadvaxisv", "0"};
+cvar_t joy_forwardthreshold = {"joyforwardthreshold", "0.15"};
+cvar_t joy_sidethreshold = {"joysidethreshold", "0.15"};
+cvar_t joy_pitchthreshold = {"joypitchthreshold", "0.15"};
+cvar_t joy_yawthreshold = {"joyyawthreshold", "0.15"};
+cvar_t joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0"};
+cvar_t joy_sidesensitivity = {"joysidesensitivity", "-1.0"};
+cvar_t joy_pitchsensitivity = {"joypitchsensitivity", "1.0"};
+cvar_t joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
+cvar_t joy_wwhack1 = {"joywwhack1", "0.0"};
+cvar_t joy_wwhack2 = {"joywwhack2", "0.0"};
 
 qboolean joy_avail, joy_advancedinit, joy_haspov;
 DWORD joy_oldbuttonstate, joy_oldpovstate;
@@ -117,35 +121,36 @@ static HINSTANCE hInstDI;
 
 static qboolean dinput;
 
-typedef struct MYDATA {
-	LONG  lX;                   // X axis goes here
-	LONG  lY;                   // Y axis goes here
-	LONG  lZ;                   // Z axis goes here
-	BYTE  bButtonA;             // One button goes here
-	BYTE  bButtonB;             // Another button goes here
-	BYTE  bButtonC;             // Another button goes here
-	BYTE  bButtonD;             // Another button goes here
+typedef struct MYDATA
+{
+	LONG lX; // X axis goes here
+	LONG lY; // Y axis goes here
+	LONG lZ; // Z axis goes here
+	BYTE bButtonA; // One button goes here
+	BYTE bButtonB; // Another button goes here
+	BYTE bButtonC; // Another button goes here
+	BYTE bButtonD; // Another button goes here
 } MYDATA;
 
 static DIOBJECTDATAFORMAT rgodf[] = {
-  { &GUID_XAxis,    FIELD_OFFSET(MYDATA, lX),       DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
-  { &GUID_YAxis,    FIELD_OFFSET(MYDATA, lY),       DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
-  { &GUID_ZAxis,    FIELD_OFFSET(MYDATA, lZ),       0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,   0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonA), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonB), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonC), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
-  { 0,              FIELD_OFFSET(MYDATA, bButtonD), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+	{&GUID_XAxis, FIELD_OFFSET(MYDATA, lX), DIDFT_AXIS | DIDFT_ANYINSTANCE, 0,},
+	{&GUID_YAxis, FIELD_OFFSET(MYDATA, lY), DIDFT_AXIS | DIDFT_ANYINSTANCE, 0,},
+	{&GUID_ZAxis, FIELD_OFFSET(MYDATA, lZ), 0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE, 0,},
+	{0, FIELD_OFFSET(MYDATA, bButtonA), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+	{0, FIELD_OFFSET(MYDATA, bButtonB), DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+	{0, FIELD_OFFSET(MYDATA, bButtonC), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
+	{0, FIELD_OFFSET(MYDATA, bButtonD), 0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE, 0,},
 };
 
 #define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
 
 static DIDATAFORMAT df = {
- sizeof(DIDATAFORMAT),       // this structure
- sizeof(DIOBJECTDATAFORMAT), // size of object data format
- DIDF_RELAXIS,               // absolute axis coordinates
- sizeof(MYDATA),             // device data size
- NUM_OBJECTS,                // number of objects
- rgodf,                      // and here they are
+	sizeof(DIDATAFORMAT), // this structure
+	sizeof(DIOBJECTDATAFORMAT), // size of object data format
+	DIDF_RELAXIS, // absolute axis coordinates
+	sizeof(MYDATA), // device data size
+	NUM_OBJECTS, // number of objects
+	rgodf, // and here they are
 };
 
 // forward-referenced functions
@@ -172,7 +177,6 @@ IN_UpdateClipCursor
 */
 void IN_UpdateClipCursor(void)
 {
-
 	if (mouseinitialized && mouseactive && !dinput)
 	{
 		ClipCursor(&window_rect);
@@ -187,7 +191,6 @@ IN_ShowMouse
 */
 void IN_ShowMouse(void)
 {
-
 	if (!mouseshowtoggle)
 	{
 		ShowCursor(TRUE);
@@ -203,7 +206,6 @@ IN_HideMouse
 */
 void IN_HideMouse(void)
 {
-
 	if (mouseshowtoggle)
 	{
 		ShowCursor(FALSE);
@@ -219,7 +221,6 @@ IN_ActivateMouse
 */
 void IN_ActivateMouse(void)
 {
-
 	mouseactivatetoggle = true;
 
 	if (mouseinitialized)
@@ -273,7 +274,6 @@ IN_DeactivateMouse
 */
 void IN_DeactivateMouse(void)
 {
-
 	mouseactivatetoggle = false;
 
 	if (mouseinitialized)
@@ -332,13 +332,13 @@ qboolean IN_InitDInput(void)
 {
 	HRESULT hr;
 	DIPROPDWORD dipdw = {
-	{
-	sizeof(DIPROPDWORD),        // diph.dwSize
-	sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-	0,                          // diph.dwObj
-	DIPH_DEVICE,                // diph.dwHow
-	},
-	DINPUT_BUFFERSIZE,              // dwData
+		{
+			sizeof(DIPROPDWORD), // diph.dwSize
+			sizeof(DIPROPHEADER), // diph.dwHeaderSize
+			0, // diph.dwObj
+			DIPH_DEVICE, // diph.dwHow
+		},
+		DINPUT_BUFFERSIZE, // dwData
 	};
 
 	if (!hInstDI)
@@ -391,7 +391,7 @@ qboolean IN_InitDInput(void)
 
 	// set the cooperativity level.
 	hr = IDirectInputDevice_SetCooperativeLevel(g_pMouse, mainwindow,
-		DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+	                                            DISCL_EXCLUSIVE | DISCL_FOREGROUND);
 
 	if (FAILED(hr))
 	{
@@ -522,7 +522,6 @@ IN_Shutdown
 */
 void IN_Shutdown(void)
 {
-
 	IN_DeactivateMouse();
 	IN_ShowMouse();
 
@@ -599,7 +598,7 @@ void IN_MouseMove(usercmd_t* cmd)
 			dwElements = 1;
 
 			hr = IDirectInputDevice_GetDeviceData(g_pMouse,
-				sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
+			                                      sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
 
 			if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 			{
@@ -736,7 +735,6 @@ IN_Move
 */
 void IN_Move(usercmd_t* cmd)
 {
-
 	if (ActiveApp && !Minimized)
 	{
 		IN_MouseMove(cmd);
@@ -778,7 +776,6 @@ IN_ClearStates
 */
 void IN_ClearStates(void)
 {
-
 	if (mouseactive)
 	{
 		mx_accum = 0;
@@ -889,7 +886,6 @@ Joy_AdvancedUpdate_f
 */
 void Joy_AdvancedUpdate_f(void)
 {
-
 	// called once by IN_ReadJoystick and by user whenever an update is needed
 	// cvars are now available
 	int i;
@@ -1031,7 +1027,6 @@ IN_ReadJoystick
 */
 qboolean IN_ReadJoystick(void)
 {
-
 	memset(&ji, 0, sizeof(ji));
 	ji.dwSize = sizeof(ji);
 	ji.dwFlags = joy_flags;
@@ -1047,15 +1042,12 @@ qboolean IN_ReadJoystick(void)
 		}
 		return true;
 	}
-	else
-	{
-		// read error occurred
-		// turning off the joystick seems too harsh for 1 read error,\
+	// read error occurred
+	// turning off the joystick seems too harsh for 1 read error,\
 	    // but what should be done?
-		// Con_Printf ("IN_ReadJoystick: no response\n");
-		// joy_avail = false;
-		return false;
-	}
+	// Con_Printf ("IN_ReadJoystick: no response\n");
+	// joy_avail = false;
+	return false;
 }
 
 
@@ -1135,11 +1127,13 @@ void IN_JoyMove(usercmd_t* cmd)
 					// only absolute control support here (joy_advanced is false)
 					if (m_pitch.value < 0.0)
 					{
-						cl.viewangles[PITCH] -= (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
+						cl.viewangles[PITCH] -= (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.
+							value;
 					}
 					else
 					{
-						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
+						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.
+							value;
 					}
 					V_StopPitchDrift();
 				}
@@ -1192,7 +1186,6 @@ void IN_JoyMove(usercmd_t* cmd)
 					{
 						cl.viewangles[YAW] += (fAxisValue * joy_yawsensitivity.value) * speed * 180.0;
 					}
-
 				}
 			}
 			break;
@@ -1205,7 +1198,8 @@ void IN_JoyMove(usercmd_t* cmd)
 					// pitch movement detected and pitch movement desired by user
 					if (dwControlMap[i] == JOY_ABSOLUTE_AXIS)
 					{
-						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
+						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.
+							value;
 					}
 					else
 					{

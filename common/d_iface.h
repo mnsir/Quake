@@ -31,8 +31,16 @@ typedef struct
 	float zi;
 } emitpoint_t;
 
-typedef enum {
-	pt_static, pt_grav, pt_slowgrav, pt_fire, pt_explode, pt_explode2, pt_blob, pt_blob2
+typedef enum
+{
+	pt_static,
+	pt_grav,
+	pt_slowgrav,
+	pt_fire,
+	pt_explode,
+	pt_explode2,
+	pt_blob,
+	pt_blob2
 } ptype_t;
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
@@ -51,11 +59,13 @@ typedef struct particle_s
 
 #define PARTICLE_Z_CLIP 8.0
 
-typedef struct polyvert_s {
+typedef struct polyvert_s
+{
 	float u, v, zi, s, t;
 } polyvert_t;
 
-typedef struct polydesc_s {
+typedef struct polydesc_s
+{
 	int numverts;
 	float nearzi;
 	msurface_t* pcurrentface;
@@ -63,7 +73,8 @@ typedef struct polydesc_s {
 } polydesc_t;
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-typedef struct finalvert_s {
+typedef struct finalvert_s
+{
 	int v[6]; // u, v, s, t, l, 1/z
 	int flags;
 	float reserved;
@@ -84,7 +95,8 @@ typedef struct
 } affinetridesc_t;
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-typedef struct {
+typedef struct
+{
 	float u, v, zi, color;
 } screenpart_t;
 
@@ -226,4 +238,3 @@ extern int c_surf;
 extern vrect_t scr_vrect;
 
 extern byte* r_warpbuffer;
-

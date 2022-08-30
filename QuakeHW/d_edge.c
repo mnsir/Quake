@@ -89,27 +89,27 @@ void D_DrawSolidSurface(surf_t* surf, int color)
 	pix = (color << 24) | (color << 16) | (color << 8) | color;
 	for (span = surf->spans; span; span = span->pnext)
 	{
-		pdest = (byte*)d_viewbuffer + screenwidth * span->v;
+		pdest = d_viewbuffer + screenwidth * span->v;
 		u = span->u;
 		u2 = span->u + span->count - 1;
-		((byte*)pdest)[u] = pix;
+		pdest[u] = pix;
 
 		if (u2 - u < 8)
 		{
 			for (u++; u <= u2; u++)
-				((byte*)pdest)[u] = pix;
+				pdest[u] = pix;
 		}
 		else
 		{
 			for (u++; u & 3; u++)
-				((byte*)pdest)[u] = pix;
+				pdest[u] = pix;
 
 			u2 -= 4;
 			for (; u <= u2; u += 4)
-				*(int*)((byte*)pdest + u) = pix;
+				*(int*)(pdest + u) = pix;
 			u2 += 4;
 			for (; u <= u2; u++)
-				((byte*)pdest)[u] = pix;
+				pdest[u] = pix;
 		}
 	}
 }
@@ -237,9 +237,8 @@ void D_DrawSurfaces(void)
 			{
 				pface = s->data;
 				miplevel = 0;
-				cacheblock = (pixel_t*)
-					((byte*)pface->texinfo->texture +
-						pface->texinfo->texture->offsets[0]);
+				cacheblock = (byte*)pface->texinfo->texture +
+					pface->texinfo->texture->offsets[0];
 				cachewidth = 64;
 
 				if (s->insubmodel)
@@ -249,7 +248,7 @@ void D_DrawSurfaces(void)
 					currententity = s->entity; //FIXME: make this passed in to
 					// R_RotateBmodel ()
 					VectorSubtract(r_origin, currententity->origin,
-						local_modelorg);
+					               local_modelorg);
 					TransformVector(local_modelorg, transformed_modelorg);
 
 					R_RotateBmodel(); // FIXME: don't mess with the frustum,
@@ -269,7 +268,7 @@ void D_DrawSurfaces(void)
 					//
 					currententity = &cl_entities[0];
 					VectorCopy(world_transformed_modelorg,
-						transformed_modelorg);
+					           transformed_modelorg);
 					VectorCopy(base_vpn, vpn);
 					VectorCopy(base_vup, vup);
 					VectorCopy(base_vright, vright);
@@ -304,7 +303,7 @@ void D_DrawSurfaces(void)
 
 				D_CalcGradients(pface);
 
-				(*d_drawspans) (s->spans);
+				(*d_drawspans)(s->spans);
 
 				D_DrawZSpans(s->spans);
 
@@ -317,7 +316,7 @@ void D_DrawSurfaces(void)
 					//
 					currententity = &cl_entities[0];
 					VectorCopy(world_transformed_modelorg,
-						transformed_modelorg);
+					           transformed_modelorg);
 					VectorCopy(base_vpn, vpn);
 					VectorCopy(base_vup, vup);
 					VectorCopy(base_vright, vright);
@@ -328,4 +327,3 @@ void D_DrawSurfaces(void)
 		}
 	}
 }
-

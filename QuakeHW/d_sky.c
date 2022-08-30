@@ -76,8 +76,8 @@ void D_DrawSkyScans8(espan_t* pspan)
 
 	do
 	{
-		pdest = (unsigned char*)((byte*)d_viewbuffer +
-			(screenwidth * pspan->v) + pspan->u);
+		pdest = d_viewbuffer +
+			screenwidth * pspan->v + pspan->u;
 
 		count = pspan->count;
 
@@ -128,13 +128,13 @@ void D_DrawSkyScans8(espan_t* pspan)
 					((s & R_SKY_SMASK) >> 16)];
 				s += sstep;
 				t += tstep;
-			} while (--spancount > 0);
+			}
+			while (--spancount > 0);
 
 			s = snext;
 			t = tnext;
-
-		} while (count > 0);
-
-	} while ((pspan = pspan->pnext) != NULL);
+		}
+		while (count > 0);
+	}
+	while ((pspan = pspan->pnext) != NULL);
 }
-

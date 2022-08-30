@@ -80,15 +80,15 @@ float scr_con_current;
 float scr_conlines; // lines of console to display
 
 float oldscreensize, oldfov;
-cvar_t scr_viewsize = { "viewsize","100", true };
-cvar_t scr_fov = { "fov","90" }; // 10 - 170
-cvar_t scr_conspeed = { "scr_conspeed","300" };
-cvar_t scr_centertime = { "scr_centertime","2" };
-cvar_t scr_showram = { "showram","1" };
-cvar_t scr_showturtle = { "showturtle","0" };
-cvar_t scr_showpause = { "showpause","1" };
-cvar_t scr_printspeed = { "scr_printspeed","8" };
-cvar_t gl_triplebuffer = { "gl_triplebuffer", "1", true };
+cvar_t scr_viewsize = {"viewsize", "100", true};
+cvar_t scr_fov = {"fov", "90"}; // 10 - 170
+cvar_t scr_conspeed = {"scr_conspeed", "300"};
+cvar_t scr_centertime = {"scr_centertime", "2"};
+cvar_t scr_showram = {"showram", "1"};
+cvar_t scr_showturtle = {"showturtle", "0"};
+cvar_t scr_showpause = {"showpause", "1"};
+cvar_t scr_printspeed = {"scr_printspeed", "8"};
+cvar_t gl_triplebuffer = {"gl_triplebuffer", "1", true};
 
 extern cvar_t crosshair;
 
@@ -201,7 +201,8 @@ void SCR_DrawCenterString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	}
+	while (1);
 }
 
 void SCR_CheckDrawCenterString(void)
@@ -229,8 +230,8 @@ CalcFov
 */
 float CalcFov(float fov_x, float width, float height)
 {
-	float   a;
-	float   x;
+	float a;
+	float x;
 
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error("Bad fov: %f", fov_x);
@@ -293,7 +294,8 @@ static void SCR_CalcRefdef(void)
 	else
 		sb_lines = 24 + 16 + 8;
 
-	if (scr_viewsize.value >= 100.0) {
+	if (scr_viewsize.value >= 100.0)
+	{
 		full = true;
 		size = 100.0;
 	}
@@ -370,7 +372,6 @@ SCR_Init
 */
 void SCR_Init(void)
 {
-
 	Cvar_RegisterVariable(&scr_fov);
 	Cvar_RegisterVariable(&scr_viewsize);
 	Cvar_RegisterVariable(&scr_conspeed);
@@ -394,7 +395,6 @@ void SCR_Init(void)
 
 	scr_initialized = true;
 }
-
 
 
 /*
@@ -470,9 +470,8 @@ void SCR_DrawPause(void)
 
 	pic = Draw_CachePic("gfx/pause.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
-		(vid.height - 48 - pic->height) / 2, pic);
+	         (vid.height - 48 - pic->height) / 2, pic);
 }
-
 
 
 /*
@@ -489,9 +488,8 @@ void SCR_DrawLoading(void)
 
 	pic = Draw_CachePic("gfx/loading.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
-		(vid.height - 48 - pic->height) / 2, pic);
+	         (vid.height - 48 - pic->height) / 2, pic);
 }
-
 
 
 //=============================================================================
@@ -527,7 +525,6 @@ void SCR_SetUpToDrawConsole(void)
 		scr_con_current -= scr_conspeed.value * host_frametime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
-
 	}
 	else if (scr_conlines > scr_con_current)
 	{
@@ -576,8 +573,9 @@ void SCR_DrawConsole(void)
 ==============================================================================
 */
 
-typedef struct _TargaHeader {
-	unsigned char  id_length, colormap_type, image_type;
+typedef struct _TargaHeader
+{
+	unsigned char id_length, colormap_type, image_type;
 	unsigned short colormap_index, colormap_length;
 	unsigned char colormap_size;
 	unsigned short x_origin, y_origin, width, height;
@@ -723,7 +721,8 @@ void SCR_DrawNotifyString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	}
+	while (1);
 }
 
 /*
@@ -753,7 +752,8 @@ int SCR_ModalMessage(char* text)
 	{
 		key_count = -1; // wait for a key down and up
 		Sys_SendKeyEvents();
-	} while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
+	}
+	while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
 
 	scr_fullupdate = 0;
 	SCR_UpdateScreen();
@@ -786,25 +786,27 @@ void SCR_BringDownConsole(void)
 
 void SCR_TileClear(void)
 {
-	if (r_refdef.vrect.x > 0) {
+	if (r_refdef.vrect.x > 0)
+	{
 		// left
 		Draw_TileClear(0, 0, r_refdef.vrect.x, vid.height - sb_lines);
 		// right
 		Draw_TileClear(r_refdef.vrect.x + r_refdef.vrect.width, 0,
-			vid.width - r_refdef.vrect.x + r_refdef.vrect.width,
-			vid.height - sb_lines);
+		               vid.width - r_refdef.vrect.x + r_refdef.vrect.width,
+		               vid.height - sb_lines);
 	}
-	if (r_refdef.vrect.y > 0) {
+	if (r_refdef.vrect.y > 0)
+	{
 		// top
 		Draw_TileClear(r_refdef.vrect.x, 0,
-			r_refdef.vrect.x + r_refdef.vrect.width,
-			r_refdef.vrect.y);
+		               r_refdef.vrect.x + r_refdef.vrect.width,
+		               r_refdef.vrect.y);
 		// bottom
 		Draw_TileClear(r_refdef.vrect.x,
-			r_refdef.vrect.y + r_refdef.vrect.height,
-			r_refdef.vrect.width,
-			vid.height - sb_lines -
-			(r_refdef.vrect.height + r_refdef.vrect.y));
+		               r_refdef.vrect.y + r_refdef.vrect.height,
+		               r_refdef.vrect.width,
+		               vid.height - sb_lines -
+		               (r_refdef.vrect.height + r_refdef.vrect.y));
 	}
 }
 
@@ -921,4 +923,3 @@ void SCR_UpdateScreen(void)
 
 	GL_EndRendering();
 }
-

@@ -23,16 +23,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_shared.h"
 
 #define ALIAS_BASE_SIZE_RATIO (1.0 / 11.0)
- // normalizing factor so player model works out to about
- //  1 pixel per triangle
+// normalizing factor so player model works out to about
+//  1 pixel per triangle
 
 #define BMODEL_FULLY_CLIPPED 0x10 // value returned by R_BmodelCheckBBox ()
-  //  if bbox is trivially rejected
+//  if bbox is trivially rejected
 
 //===========================================================================
 // viewmodel lighting
 
-typedef struct {
+typedef struct
+{
 	int ambientlight;
 	int shadelight;
 	float* plightvec;
@@ -47,7 +48,8 @@ typedef struct bedge_s
 	struct bedge_s* pnext;
 } bedge_t;
 
-typedef struct {
+typedef struct
+{
 	float fv[3]; // viewspace x, y
 } auxvert_t;
 
@@ -194,7 +196,7 @@ extern fixed16_t bbextents, bbextentt;
 
 #define MAXBVERTINDEXES 1000 // new clipped vertices when clipping bmodels
 //  to the world BSP
-extern mvertex_t* r_ptverts, * r_ptvertsmax;
+extern mvertex_t *r_ptverts, *r_ptvertsmax;
 
 extern vec3_t sbaseaxis[3], tbaseaxis[3];
 extern float entity_rotation[3][3];
@@ -204,7 +206,8 @@ extern int reinit_surfcache;
 extern int r_currentkey;
 extern int r_currentbkey;
 
-typedef struct btofpoly_s {
+typedef struct btofpoly_s
+{
 	int clipflags;
 	msurface_t* psurf;
 } btofpoly_t;
@@ -256,7 +259,7 @@ void R_SurfacePatch(void);
 extern int r_amodels_drawn;
 extern edge_t* auxedges;
 extern int r_numallocatededges;
-extern edge_t* r_edges, * edge_p, * edge_max;
+extern edge_t *r_edges, *edge_p, *edge_max;
 
 extern edge_t* newedges[MAXHEIGHT];
 extern edge_t* removeedges[MAXHEIGHT];
@@ -290,7 +293,7 @@ extern qboolean r_surfsonstack;
 extern cshift_t cshift_water;
 extern qboolean r_dowarpold, r_viewchanged;
 
-extern mleaf_t* r_viewleaf, * r_oldviewleaf;
+extern mleaf_t *r_viewleaf, *r_oldviewleaf;
 
 extern vec3_t r_emins, r_emaxs;
 extern mnode_t* r_pefragtopnode;

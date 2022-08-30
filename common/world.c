@@ -32,10 +32,10 @@ line of sight checks trace->crosscontent, but bullets don't
 
 typedef struct
 {
-	vec3_t boxmins, boxmaxs;// enclose the test object along entire move
-	float* mins, * maxs; // size of the moving object
+	vec3_t boxmins, boxmaxs; // enclose the test object along entire move
+	float *mins, *maxs; // size of the moving object
 	vec3_t mins2, maxs2; // size when clipping against mosnters
-	float* start, * end;
+	float *start, *end;
 	trace_t trace;
 	int type;
 	edict_t* passedict;
@@ -90,7 +90,6 @@ void SV_InitBoxHull(void)
 		box_planes[i].type = i >> 1;
 		box_planes[i].normal[i >> 1] = 1;
 	}
-
 }
 
 
@@ -115,7 +114,6 @@ hull_t* SV_HullForBox(vec3_t mins, vec3_t maxs)
 }
 
 
-
 /*
 ================
 SV_HullForEntity
@@ -135,7 +133,8 @@ hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 
 	// decide which clipping hull to use, based on the size
 	if (ent->v.solid == SOLID_BSP)
-	{ // explicit hulls in the BSP model
+	{
+		// explicit hulls in the BSP model
 		if (ent->v.movetype != MOVETYPE_PUSH)
 			Sys_Error("SOLID_BSP without MOVETYPE_PUSH");
 
@@ -157,7 +156,8 @@ hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 		VectorAdd(offset, ent->v.origin, offset);
 	}
 	else
-	{ // create a temp hull from bounding box sizes
+	{
+		// create a temp hull from bounding box sizes
 
 		VectorSubtract(ent->v.mins, maxs, hullmins);
 		VectorSubtract(ent->v.maxs, mins, hullmaxs);
@@ -276,7 +276,7 @@ SV_TouchLinks
 */
 void SV_TouchLinks(edict_t* ent, areanode_t* node)
 {
-	link_t* l, * next;
+	link_t *l, *next;
 	edict_t* touch;
 	int old_self, old_other;
 
@@ -426,8 +426,9 @@ void SV_LinkEdict(edict_t* ent, qboolean touch_triggers)
 		ent->v.absmax[1] += 15;
 	}
 	else
-	{ // because movement is clipped an epsilon away from an actual edge,
-	// we must fully check even when bounding boxes don't quite touch
+	{
+		// because movement is clipped an epsilon away from an actual edge,
+		// we must fully check even when bounding boxes don't quite touch
 		ent->v.absmin[0] -= 1;
 		ent->v.absmin[1] -= 1;
 		ent->v.absmin[2] -= 1;
@@ -469,7 +470,6 @@ void SV_LinkEdict(edict_t* ent, qboolean touch_triggers)
 	if (touch_triggers)
 		SV_TouchLinks(ent, sv_areanodes);
 }
-
 
 
 /*
@@ -690,7 +690,8 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 
 	while (SV_HullPointContents(hull, hull->firstclipnode, mid)
 		== CONTENTS_SOLID)
-	{ // shouldn't really happen, but does occasionally
+	{
+		// shouldn't really happen, but does occasionally
 		frac -= 0.1;
 		if (frac < 0)
 		{
@@ -813,7 +814,7 @@ Mins and maxs enclose the entire area swept by the move
 */
 void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 {
-	link_t* l, * next;
+	link_t *l, *next;
 	edict_t* touch;
 	trace_t trace;
 
@@ -959,4 +960,3 @@ trace_t SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, ed
 
 	return clip.trace;
 }
-

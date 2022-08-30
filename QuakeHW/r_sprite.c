@@ -59,8 +59,8 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 {
 	int i, outcount;
 	float dists[MAXWORKINGVERTS + 1];
-	float frac, clipdist, * pclipnormal;
-	float* in, * instep, * outstep, * vert2;
+	float frac, clipdist, *pclipnormal;
+	float *in, *instep, *outstep, *vert2;
 
 	clipdist = pclipplane->dist;
 	pclipnormal = pclipplane->normal;
@@ -136,10 +136,10 @@ R_SetupAndDrawSprite
 void R_SetupAndDrawSprite()
 {
 	int i, nump;
-	float dot, scale, * pv;
+	float dot, scale, *pv;
 	vec5_t* pverts;
 	vec3_t left, up, right, down, transformed, local;
-	emitpoint_t outverts[MAXWORKINGVERTS + 1], * pout;
+	emitpoint_t outverts[MAXWORKINGVERTS + 1], *pout;
 
 	dot = DotProduct(r_spritedesc.vpn, modelorg);
 
@@ -238,7 +238,7 @@ mspriteframe_t* R_GetSpriteframe(msprite_t* psprite)
 	mspritegroup_t* pspritegroup;
 	mspriteframe_t* pspriteframe;
 	int i, numframes, frame;
-	float* pintervals, fullinterval, targettime, time;
+	float *pintervals, fullinterval, targettime, time;
 
 	frame = currententity->frame;
 
@@ -371,7 +371,7 @@ void R_DrawSprite(void)
 	{
 		// generate the sprite's axes, according to the sprite's world orientation
 		AngleVectors(currententity->angles, r_spritedesc.vpn,
-			r_spritedesc.vright, r_spritedesc.vup);
+		             r_spritedesc.vright, r_spritedesc.vup);
 	}
 	else if (psprite->type == SPR_VP_PARALLEL_ORIENTED)
 	{
@@ -398,4 +398,3 @@ void R_DrawSprite(void)
 
 	R_SetupAndDrawSprite();
 }
-

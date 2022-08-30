@@ -204,4 +204,3 @@ void D_DrawParticle(particle_t* pparticle)
 }
 
 #endif // !id386
-

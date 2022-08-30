@@ -60,7 +60,7 @@ void Host_Status_f(void)
 	int minutes;
 	int hours = 0;
 	int j;
-	void (*print) (char* fmt, ...);
+	void (*print)(char* fmt, ...);
 
 	if (cmd_source == src_command)
 	{
@@ -97,7 +97,8 @@ void Host_Status_f(void)
 		}
 		else
 			hours = 0;
-		print("#%-2u %-16.16s  %3i  %2i:%02i:%02i\n", j + 1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
+		print("#%-2u %-16.16s  %3i  %2i:%02i:%02i\n", j + 1, client->name, (int)client->edict->v.frags, hours, minutes,
+		      seconds);
 		print("   %s\n", client->netconnection->address);
 	}
 }
@@ -564,7 +565,7 @@ void Host_Loadgame_f(void)
 	FILE* f;
 	char mapname[MAX_QPATH];
 	float time, tfloat;
-	char str[32768], * start;
+	char str[32768], *start;
 	int i, r;
 	edict_t* ent;
 	int entnum;
@@ -672,11 +673,13 @@ void Host_Loadgame_f(void)
 			Sys_Error("First token isn't a brace");
 
 		if (entnum == -1)
-		{ // parse the global vars
+		{
+			// parse the global vars
 			ED_ParseGlobals(start);
 		}
 		else
-		{ // parse an edict
+		{
+			// parse an edict
 
 			ent = EDICT_NUM(entnum);
 			memset(&ent->v, 0, progs->entityfields * 4);
@@ -1047,7 +1050,7 @@ void Host_Say(qboolean teamonly)
 	else
 		sprintf(text, "%c<%s> ", 1, hostname.string);
 
-	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
+	j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
 	if (Q_strlen(p) > j)
 		p[j] = 0;
 
@@ -1111,7 +1114,7 @@ void Host_Tell_f(void)
 	}
 
 	// check length & truncate if necessary
-	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
+	j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
 	if (Q_strlen(p) > j)
 		p[j] = 0;
 
@@ -1216,7 +1219,6 @@ Host_Pause_f
 */
 void Host_Pause_f(void)
 {
-
 	if (cmd_source == src_command)
 	{
 		Cmd_ForwardToServer();
@@ -1296,8 +1298,9 @@ void Host_Spawn_f(void)
 
 	// run the entrance script
 	if (sv.loadgame)
-	{ // loaded games are fully inited allready
-	// if this is the last client to be connected, unpause
+	{
+		// loaded games are fully inited allready
+		// if this is the last client to be connected, unpause
 		sv.paused = false;
 	}
 	else
@@ -1352,7 +1355,7 @@ void Host_Spawn_f(void)
 	for (i = 0; i < MAX_LIGHTSTYLES; i++)
 	{
 		MSG_WriteByte(&host_client->message, svc_lightstyle);
-		MSG_WriteByte(&host_client->message, (char)i);
+		MSG_WriteByte(&host_client->message, i);
 		MSG_WriteString(&host_client->message, sv.lightstyles[i]);
 	}
 

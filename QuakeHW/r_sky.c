@@ -139,8 +139,8 @@ void R_MakeSky(void)
 			ofs = baseofs + ((x + xshift) & SKYMASK);
 
 			*(byte*)pnewsky = (*((byte*)pnewsky + 128) &
-				*(byte*)&bottommask[ofs]) |
-				*(byte*)&bottomsky[ofs];
+					*&bottommask[ofs]) |
+				*&bottomsky[ofs];
 			pnewsky = (unsigned*)((byte*)pnewsky + 1);
 		}
 
@@ -199,8 +199,8 @@ void R_GenSkyTile(void* pdest)
 			ofs = baseofs + ((x + xshift) & SKYMASK);
 
 			*(byte*)pd = (*((byte*)pnewsky + 128) &
-				*(byte*)&bottommask[ofs]) |
-				*(byte*)&bottomsky[ofs];
+					*&bottommask[ofs]) |
+				*&bottomsky[ofs];
 			pnewsky = (unsigned*)((byte*)pnewsky + 1);
 			pd = (unsigned*)((byte*)pd + 1);
 		}
@@ -228,7 +228,7 @@ void R_GenSkyTile16(void* pdest)
 	xshift = skytime * skyspeed;
 	yshift = skytime * skyspeed;
 
-	pnewsky = (byte*)&newsky[0];
+	pnewsky = &newsky[0];
 	pd = (unsigned short*)pdest;
 
 	for (y = 0; y < SKYSIZE; y++)
@@ -242,8 +242,8 @@ void R_GenSkyTile16(void* pdest)
 			ofs = baseofs + ((x + xshift) & SKYMASK);
 
 			*pd = d_8to16table[(*(pnewsky + 128) &
-				*(byte*)&bottommask[ofs]) |
-				*(byte*)&bottomsky[ofs]];
+					*&bottommask[ofs]) |
+				*&bottomsky[ofs]];
 			pnewsky++;
 			pd++;
 		}
@@ -276,5 +276,3 @@ void R_SetSkyFrame(void)
 
 	r_skymade = 0;
 }
-
-

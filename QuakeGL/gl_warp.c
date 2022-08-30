@@ -176,11 +176,10 @@ void GL_SubdivideSurface(msurface_t* fa)
 //=========================================================
 
 
-
 // speed up sin calculations - Ed
 float turbsin[] =
 {
- #include "gl_warp_sin.h"
+#include "gl_warp_sin.h"
 };
 #define TURBSCALE (256.0 / (2 * M_PI))
 
@@ -219,8 +218,6 @@ void EmitWaterPolys(msurface_t* fa)
 		glEnd();
 	}
 }
-
-
 
 
 /*
@@ -1089,4 +1086,3 @@ void R_InitSky(texture_t* mt)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
-

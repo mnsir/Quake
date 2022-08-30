@@ -49,91 +49,91 @@ int pr_argc;
 
 char* pr_opnames[] =
 {
-"DONE",
+	"DONE",
 
-"MUL_F",
-"MUL_V",
-"MUL_FV",
-"MUL_VF",
+	"MUL_F",
+	"MUL_V",
+	"MUL_FV",
+	"MUL_VF",
 
-"DIV",
+	"DIV",
 
-"ADD_F",
-"ADD_V",
+	"ADD_F",
+	"ADD_V",
 
-"SUB_F",
-"SUB_V",
+	"SUB_F",
+	"SUB_V",
 
-"EQ_F",
-"EQ_V",
-"EQ_S",
-"EQ_E",
-"EQ_FNC",
+	"EQ_F",
+	"EQ_V",
+	"EQ_S",
+	"EQ_E",
+	"EQ_FNC",
 
-"NE_F",
-"NE_V",
-"NE_S",
-"NE_E",
-"NE_FNC",
+	"NE_F",
+	"NE_V",
+	"NE_S",
+	"NE_E",
+	"NE_FNC",
 
-"LE",
-"GE",
-"LT",
-"GT",
+	"LE",
+	"GE",
+	"LT",
+	"GT",
 
-"INDIRECT",
-"INDIRECT",
-"INDIRECT",
-"INDIRECT",
-"INDIRECT",
-"INDIRECT",
+	"INDIRECT",
+	"INDIRECT",
+	"INDIRECT",
+	"INDIRECT",
+	"INDIRECT",
+	"INDIRECT",
 
-"ADDRESS",
+	"ADDRESS",
 
-"STORE_F",
-"STORE_V",
-"STORE_S",
-"STORE_ENT",
-"STORE_FLD",
-"STORE_FNC",
+	"STORE_F",
+	"STORE_V",
+	"STORE_S",
+	"STORE_ENT",
+	"STORE_FLD",
+	"STORE_FNC",
 
-"STOREP_F",
-"STOREP_V",
-"STOREP_S",
-"STOREP_ENT",
-"STOREP_FLD",
-"STOREP_FNC",
+	"STOREP_F",
+	"STOREP_V",
+	"STOREP_S",
+	"STOREP_ENT",
+	"STOREP_FLD",
+	"STOREP_FNC",
 
-"RETURN",
+	"RETURN",
 
-"NOT_F",
-"NOT_V",
-"NOT_S",
-"NOT_ENT",
-"NOT_FNC",
+	"NOT_F",
+	"NOT_V",
+	"NOT_S",
+	"NOT_ENT",
+	"NOT_FNC",
 
-"IF",
-"IFNOT",
+	"IF",
+	"IFNOT",
 
-"CALL0",
-"CALL1",
-"CALL2",
-"CALL3",
-"CALL4",
-"CALL5",
-"CALL6",
-"CALL7",
-"CALL8",
+	"CALL0",
+	"CALL1",
+	"CALL2",
+	"CALL3",
+	"CALL4",
+	"CALL5",
+	"CALL6",
+	"CALL7",
+	"CALL8",
 
-"STATE",
+	"STATE",
 
-"GOTO",
+	"GOTO",
 
-"AND",
-"OR",
+	"AND",
+	"OR",
 
-"BITAND",
-"BITOR"
+	"BITAND",
+	"BITOR"
 };
 
 char* PR_GlobalString(int ofs);
@@ -221,7 +221,7 @@ PR_Profile_f
 */
 void PR_Profile_f(void)
 {
-	dfunction_t* f, * best;
+	dfunction_t *f, *best;
 	int max;
 	int num;
 	int i;
@@ -247,7 +247,8 @@ void PR_Profile_f(void)
 			num++;
 			best->profile = 0;
 		}
-	} while (best);
+	}
+	while (best);
 }
 
 
@@ -360,10 +361,10 @@ PR_ExecuteProgram
 */
 void PR_ExecuteProgram(func_t fnum)
 {
-	eval_t* a, * b, * c;
+	eval_t *a, *b, *c;
 	int s;
 	dstatement_t* st;
-	dfunction_t* f, * newf;
+	dfunction_t *f, *newf;
 	int runaway;
 	int i;
 	edict_t* ed;
@@ -529,7 +530,7 @@ void PR_ExecuteProgram(func_t fnum)
 			c->_float = a->function != b->function;
 			break;
 
-			//==================
+		//==================
 		case OP_STORE_F:
 		case OP_STORE_ENT:
 		case OP_STORE_FLD: // integers
@@ -563,7 +564,7 @@ void PR_ExecuteProgram(func_t fnum)
 #ifdef PARANOID
 			NUM_FOR_EDICT(ed); // make sure it's in range
 #endif
-			if (ed == (edict_t*)sv.edicts && sv.state == ss_active)
+			if (ed == sv.edicts && sv.state == ss_active)
 				PR_RunError("assignment to world entity");
 			c->_int = (byte*)((int*)&ed->v + b->_int) - (byte*)sv.edicts;
 			break;
@@ -592,7 +593,7 @@ void PR_ExecuteProgram(func_t fnum)
 			c->vector[2] = a->vector[2];
 			break;
 
-			//==================
+		//==================
 
 		case OP_IFNOT:
 			if (!a->_int)
@@ -624,7 +625,8 @@ void PR_ExecuteProgram(func_t fnum)
 			newf = &pr_functions[a->function];
 
 			if (newf->first_statement < 0)
-			{ // negative statements are built in functions
+			{
+				// negative statements are built in functions
 				i = -newf->first_statement;
 				if (i >= pr_numbuiltins)
 					PR_RunError("Bad builtin call number");
@@ -664,5 +666,4 @@ void PR_ExecuteProgram(func_t fnum)
 			PR_RunError("Bad opcode %i", st->op);
 		}
 	}
-
 }

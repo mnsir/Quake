@@ -39,7 +39,8 @@ typedef enum { ev_void, ev_string, ev_float, ev_vector, ev_entity, ev_field, ev_
 #define RESERVED_OFS 28
 
 
-enum {
+enum
+{
 	OP_DONE,
 	OP_MUL_F,
 	OP_MUL_V,
@@ -131,6 +132,7 @@ typedef struct
 	unsigned short ofs;
 	int s_name;
 } ddef_t;
+
 #define DEF_SAVEGLOBAL (1<<15)
 
 #define MAX_PARMS 8
@@ -152,6 +154,7 @@ typedef struct
 
 
 #define PROG_VERSION 6
+
 typedef struct
 {
 	int version;
@@ -177,4 +180,3 @@ typedef struct
 
 	int entityfields;
 } dprograms_t;
-

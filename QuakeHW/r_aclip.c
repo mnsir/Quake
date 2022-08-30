@@ -28,13 +28,13 @@ static auxvert_t av[8];
 
 void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
 void R_Alias_clip_top(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out);
+                      finalvert_t* out);
 void R_Alias_clip_bottom(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out);
+                         finalvert_t* out);
 void R_Alias_clip_left(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out);
+                       finalvert_t* out);
 void R_Alias_clip_right(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out);
+                        finalvert_t* out);
 
 
 /*
@@ -47,7 +47,7 @@ pfv0 is the unclipped vertex, pfv1 is the z-clipped vertex
 void R_Alias_clip_z(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out)
 {
 	float scale;
-	auxvert_t* pav0, * pav1, avout;
+	auxvert_t *pav0, *pav1, avout;
 
 	pav0 = &av[pfv0 - &fv[0][0]];
 	pav1 = &av[pfv1 - &fv[0][0]];
@@ -117,7 +117,7 @@ void R_Alias_clip_left(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out)
 
 
 void R_Alias_clip_right(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out)
+                        finalvert_t* out)
 {
 	float scale;
 	int i;
@@ -162,7 +162,7 @@ void R_Alias_clip_top(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out)
 
 
 void R_Alias_clip_bottom(finalvert_t* pfv0, finalvert_t* pfv1,
-	finalvert_t* out)
+                         finalvert_t* out)
 {
 	float scale;
 	int i;
@@ -189,7 +189,7 @@ void R_Alias_clip_bottom(finalvert_t* pfv0, finalvert_t* pfv1,
 
 
 int R_AliasClip(finalvert_t* in, finalvert_t* out, int flag, int count,
-	void(*clip)(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out))
+                void (*clip)(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out))
 {
 	int i, j, k;
 	int flags, oldflags;
@@ -281,7 +281,7 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 	if (clipflags & ALIAS_LEFT_CLIP)
 	{
 		k = R_AliasClip(fv[pingpong], fv[pingpong ^ 1],
-			ALIAS_LEFT_CLIP, k, R_Alias_clip_left);
+		                ALIAS_LEFT_CLIP, k, R_Alias_clip_left);
 		if (k == 0)
 			return;
 
@@ -291,7 +291,7 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 	if (clipflags & ALIAS_RIGHT_CLIP)
 	{
 		k = R_AliasClip(fv[pingpong], fv[pingpong ^ 1],
-			ALIAS_RIGHT_CLIP, k, R_Alias_clip_right);
+		                ALIAS_RIGHT_CLIP, k, R_Alias_clip_right);
 		if (k == 0)
 			return;
 
@@ -301,7 +301,7 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 	if (clipflags & ALIAS_BOTTOM_CLIP)
 	{
 		k = R_AliasClip(fv[pingpong], fv[pingpong ^ 1],
-			ALIAS_BOTTOM_CLIP, k, R_Alias_clip_bottom);
+		                ALIAS_BOTTOM_CLIP, k, R_Alias_clip_bottom);
 		if (k == 0)
 			return;
 
@@ -311,7 +311,7 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 	if (clipflags & ALIAS_TOP_CLIP)
 	{
 		k = R_AliasClip(fv[pingpong], fv[pingpong ^ 1],
-			ALIAS_TOP_CLIP, k, R_Alias_clip_top);
+		                ALIAS_TOP_CLIP, k, R_Alias_clip_top);
 		if (k == 0)
 			return;
 
@@ -347,4 +347,3 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 		D_PolysetDraw();
 	}
 }
-

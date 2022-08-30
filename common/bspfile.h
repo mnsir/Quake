@@ -101,6 +101,7 @@ typedef struct
 } dmiptexlump_t;
 
 #define MIPLEVELS 4
+
 typedef struct miptex_s
 {
 	char name[16];
@@ -131,7 +132,6 @@ typedef struct
 	float dist;
 	int type; // PLANE_X - PLANE_ANYZ ?remove? trivial to regenerate
 } dplane_t;
-
 
 
 #define CONTENTS_EMPTY -1
@@ -175,6 +175,7 @@ typedef struct texinfo_s
 	int miptex;
 	int flags;
 } texinfo_t;
+
 #define TEX_SPECIAL 1 // sky or slime, no lightmap or 256 subdivision
 
 // note that edge 0 is never used, because negative edge nums are used for
@@ -185,6 +186,7 @@ typedef struct
 } dedge_t;
 
 #define MAXLIGHTMAPS 4
+
 typedef struct
 {
 	short planenum;
@@ -198,7 +200,6 @@ typedef struct
 	byte styles[MAXLIGHTMAPS];
 	int lightofs; // start of [numstyles*surfsize] samples
 } dface_t;
-
 
 
 #define AMBIENT_WATER 0

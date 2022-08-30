@@ -90,13 +90,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define svc_time 7 // [float] server time
 #define svc_print 8 // [string] null terminated string
 #define svc_stufftext 9 // [string] stuffed into client's console buffer
- // the string should be \n terminated
+// the string should be \n terminated
 #define svc_setangle 10 // [angle3] set the view angle to this absolute value
 
 #define svc_serverinfo 11 // [long] version
- // [string] signon string
- // [string]..[0]model cache
- // [string]...[0]sounds cache
+// [string] signon string
+// [string]..[0]model cache
+// [string]...[0]sounds cache
 #define svc_lightstyle 12 // [byte] [string]
 #define svc_updatename 13 // [byte] [string]
 #define svc_updatefrags 14 // [byte] [short]

@@ -25,20 +25,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // references them even when on a unix system.
 
 // these two are not intended to be set directly
-cvar_t cl_name = { "_cl_name", "player", true };
-cvar_t cl_color = { "_cl_color", "0", true };
+cvar_t cl_name = {"_cl_name", "player", true};
+cvar_t cl_color = {"_cl_color", "0", true};
 
-cvar_t cl_shownet = { "cl_shownet","0" }; // can be 0, 1, or 2
-cvar_t cl_nolerp = { "cl_nolerp","0" };
+cvar_t cl_shownet = {"cl_shownet", "0"}; // can be 0, 1, or 2
+cvar_t cl_nolerp = {"cl_nolerp", "0"};
 
-cvar_t lookspring = { "lookspring","0", true };
-cvar_t lookstrafe = { "lookstrafe","0", true };
-cvar_t sensitivity = { "sensitivity","3", true };
+cvar_t lookspring = {"lookspring", "0", true};
+cvar_t lookstrafe = {"lookstrafe", "0", true};
+cvar_t sensitivity = {"sensitivity", "3", true};
 
-cvar_t m_pitch = { "m_pitch","0.022", true };
-cvar_t m_yaw = { "m_yaw","0.022", true };
-cvar_t m_forward = { "m_forward","1", true };
-cvar_t m_side = { "m_side","0.8", true };
+cvar_t m_pitch = {"m_pitch", "0.022", true};
+cvar_t m_yaw = {"m_yaw", "0.022", true};
+cvar_t m_forward = {"m_forward", "1", true};
+cvar_t m_side = {"m_side", "0.8", true};
 
 
 client_static_t cls;
@@ -136,8 +136,6 @@ void CL_Disconnect_f(void)
 }
 
 
-
-
 /*
 =====================
 CL_EstablishConnection
@@ -174,7 +172,7 @@ An svc_signonnum has been received, perform a client side setup
 */
 void CL_SignonReply(void)
 {
-	char  str[8192];
+	char str[8192];
 
 	Con_DPrintf("CL_SignonReply: %i\n", cls.signon);
 
@@ -260,7 +258,8 @@ void CL_PrintEntities_f(void)
 			continue;
 		}
 		Con_Printf("%s:%2i  (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
-			, ent->model->name, ent->frame, ent->origin[0], ent->origin[1], ent->origin[2], ent->angles[0], ent->angles[1], ent->angles[2]);
+		           , ent->model->name, ent->frame, ent->origin[0], ent->origin[1], ent->origin[2], ent->angles[0],
+		           ent->angles[1], ent->angles[2]);
 	}
 }
 
@@ -401,7 +400,8 @@ float CL_LerpPoint(void)
 	}
 
 	if (f > 0.1)
-	{ // dropped packet, or start of demo
+	{
+		// dropped packet, or start of demo
 		cl.mtime[1] = cl.mtime[0] - 0.1;
 		f = 0.1;
 	}
@@ -459,7 +459,7 @@ void CL_RelinkEntities(void)
 	//
 	for (i = 0; i < 3; i++)
 		cl.velocity[i] = cl.mvelocity[1][i] +
-		frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);
+			frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);
 
 	if (cls.demoplayback)
 	{
@@ -481,7 +481,8 @@ void CL_RelinkEntities(void)
 	for (i = 1, ent = cl_entities + 1; i < cl.num_entities; i++, ent++)
 	{
 		if (!ent->model)
-		{ // empty slot
+		{
+			// empty slot
 			if (ent->forcelink)
 				R_RemoveEfrags(ent); // just became empty
 			continue;
@@ -497,13 +498,15 @@ void CL_RelinkEntities(void)
 		VectorCopy(ent->origin, oldorg);
 
 		if (ent->forcelink)
-		{ // the entity was not updated in the last message
-		// so move to the final spot
+		{
+			// the entity was not updated in the last message
+			// so move to the final spot
 			VectorCopy(ent->msg_origins[0], ent->origin);
 			VectorCopy(ent->msg_angles[0], ent->angles);
 		}
 		else
-		{ // if the delta is large, assume a teleport and don't lerp
+		{
+			// if the delta is large, assume a teleport and don't lerp
 			f = frac;
 			for (j = 0; j < 3; j++)
 			{
@@ -524,7 +527,6 @@ void CL_RelinkEntities(void)
 					d += 360;
 				ent->angles[j] = ent->msg_angles[1][j] + f * d;
 			}
-
 		}
 
 		// rotate binary objects locally
@@ -620,7 +622,6 @@ void CL_RelinkEntities(void)
 			cl_numvisedicts++;
 		}
 	}
-
 }
 
 
@@ -648,7 +649,8 @@ int CL_ReadFromServer(void)
 
 		cl.last_received_message = realtime;
 		CL_ParseServerMessage();
-	} while (ret && cls.state == ca_connected);
+	}
+	while (ret && cls.state == ca_connected);
 
 	if (cl_shownet.value)
 		Con_Printf("\n");
@@ -684,7 +686,6 @@ void CL_SendCmd(void)
 
 		// send the unreliable message
 		CL_SendMove(&cmd);
-
 	}
 
 	if (cls.demoplayback)
@@ -754,4 +755,3 @@ void CL_Init(void)
 	Cmd_AddCommand("playdemo", CL_PlayDemo_f);
 	Cmd_AddCommand("timedemo", CL_TimeDemo_f);
 }
-

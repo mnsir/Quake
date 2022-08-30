@@ -32,6 +32,7 @@ typedef union eval_s
 } eval_t;
 
 #define MAX_ENT_LEAFS 16
+
 typedef struct edict_s
 {
 	qboolean free;
@@ -46,6 +47,7 @@ typedef struct edict_s
 	entvars_t v; // C exported fields from progs
 	// other fields from progs come immediately after
 } edict_t;
+
 #define EDICT_FROM_AREA(l) STRUCT_FROM_LINK(l,edict_t,area)
 
 //============================================================================
@@ -113,7 +115,7 @@ int NUM_FOR_EDICT(edict_t* e);
 
 extern int type_size[8];
 
-typedef void (*builtin_t) (void);
+typedef void (*builtin_t)(void);
 extern builtin_t* pr_builtins;
 extern int pr_numbuiltins;
 
@@ -131,4 +133,3 @@ void ED_PrintEdicts(void);
 void ED_PrintNum(int ent);
 
 eval_t* GetEdictFieldValue(edict_t* ed, char* field);
-

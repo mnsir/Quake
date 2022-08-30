@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Sys_Error(char* error, ...);
 
-vec3_t vec3_origin = { 0,0,0 };
+vec3_t vec3_origin = {0, 0, 0};
 int nanmask = 255 << 23;
 
 /*-----------------------------------------------------------------*/
@@ -398,7 +398,6 @@ float VectorNormalize(vec3_t v)
 	}
 
 	return length;
-
 }
 
 void VectorInverse(vec3_t v)
@@ -498,7 +497,7 @@ quotient must fit in 32 bits.
 */
 
 void FloorDivMod(double numer, double denom, int* quotient,
-	int* rem)
+                 int* rem)
 {
 	int q, r;
 	double x;
@@ -514,7 +513,6 @@ void FloorDivMod(double numer, double denom, int* quotient,
 
 	if (numer >= 0.0)
 	{
-
 		x = floor(numer / denom);
 		q = (int)x;
 		r = (int)floor(numer - (x * denom));
@@ -552,12 +550,9 @@ int GreatestCommonDivisor(int i1, int i2)
 			return (i1);
 		return GreatestCommonDivisor(i2, i1 % i2);
 	}
-	else
-	{
-		if (i1 == 0)
-			return (i2);
-		return GreatestCommonDivisor(i1, i2 % i1);
-	}
+	if (i1 == 0)
+		return (i2);
+	return GreatestCommonDivisor(i1, i2 % i1);
 }
 
 

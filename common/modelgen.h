@@ -49,6 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // must match definition in spritegn.h
 #ifndef SYNCTYPE_T
 #define SYNCTYPE_T
+
 typedef enum { ST_SYNC = 0, ST_RAND } synctype_t;
 #endif
 
@@ -56,7 +57,8 @@ typedef enum { ALIAS_SINGLE = 0, ALIAS_GROUP } aliasframetype_t;
 
 typedef enum { ALIAS_SKIN_SINGLE = 0, ALIAS_SKIN_GROUP } aliasskintype_t;
 
-typedef struct {
+typedef struct
+{
 	int ident;
 	int version;
 	vec3_t scale;
@@ -76,13 +78,15 @@ typedef struct {
 
 // TODO: could be shorts
 
-typedef struct {
+typedef struct
+{
 	int onseam;
 	int s;
 	int t;
 } stvert_t;
 
-typedef struct dtriangle_s {
+typedef struct dtriangle_s
+{
 	int facesfront;
 	int vertindex[3];
 } dtriangle_t;
@@ -92,43 +96,50 @@ typedef struct dtriangle_s {
 // This mirrors trivert_t in trilib.h, is present so Quake knows how to
 // load this data
 
-typedef struct {
+typedef struct
+{
 	byte v[3];
 	byte lightnormalindex;
 } trivertx_t;
 
-typedef struct {
+typedef struct
+{
 	trivertx_t bboxmin; // lightnormal isn't used
 	trivertx_t bboxmax; // lightnormal isn't used
 	char name[16]; // frame name from grabbing
 } daliasframe_t;
 
-typedef struct {
+typedef struct
+{
 	int numframes;
 	trivertx_t bboxmin; // lightnormal isn't used
 	trivertx_t bboxmax; // lightnormal isn't used
 } daliasgroup_t;
 
-typedef struct {
+typedef struct
+{
 	int numskins;
 } daliasskingroup_t;
 
-typedef struct {
+typedef struct
+{
 	float interval;
 } daliasinterval_t;
 
-typedef struct {
+typedef struct
+{
 	float interval;
 } daliasskininterval_t;
 
-typedef struct {
+typedef struct
+{
 	aliasframetype_t type;
 } daliasframetype_t;
 
-typedef struct {
+typedef struct
+{
 	aliasskintype_t type;
 } daliasskintype_t;
 
 #define IDPOLYHEADER (('O'<<24)+('P'<<16)+('D'<<8)+'I')
 // little-endian "IDPO"
-

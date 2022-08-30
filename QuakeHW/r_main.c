@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void* colormap;
 vec3_t viewlightvec;
-alight_t r_viewlighting = { 128, 192, viewlightvec };
+alight_t r_viewlighting = {128, 192, viewlightvec};
 float r_time1;
 int r_numallocatededges;
 qboolean r_drawpolys;
@@ -102,7 +102,7 @@ int r_frustum_indexes[4 * 6];
 int reinit_surfcache = 1; // if 1, surface cache is currently empty and
 // must be reinitialized for current cache size
 
-mleaf_t* r_viewleaf, * r_oldviewleaf;
+mleaf_t *r_viewleaf, *r_oldviewleaf;
 
 texture_t* r_notexture_mip;
 
@@ -115,27 +115,27 @@ float se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
 void R_MarkLeaves(void);
 
-cvar_t r_draworder = { "r_draworder","0" };
-cvar_t r_speeds = { "r_speeds","0" };
-cvar_t r_timegraph = { "r_timegraph","0" };
-cvar_t r_graphheight = { "r_graphheight","10" };
-cvar_t r_clearcolor = { "r_clearcolor","2" };
-cvar_t r_waterwarp = { "r_waterwarp","1" };
-cvar_t r_fullbright = { "r_fullbright","0" };
-cvar_t r_drawentities = { "r_drawentities","1" };
-cvar_t r_drawviewmodel = { "r_drawviewmodel","1" };
-cvar_t r_aliasstats = { "r_polymodelstats","0" };
-cvar_t r_dspeeds = { "r_dspeeds","0" };
-cvar_t r_drawflat = { "r_drawflat", "0" };
-cvar_t r_ambient = { "r_ambient", "0" };
-cvar_t r_reportsurfout = { "r_reportsurfout", "0" };
-cvar_t r_maxsurfs = { "r_maxsurfs", "0" };
-cvar_t r_numsurfs = { "r_numsurfs", "0" };
-cvar_t r_reportedgeout = { "r_reportedgeout", "0" };
-cvar_t r_maxedges = { "r_maxedges", "0" };
-cvar_t r_numedges = { "r_numedges", "0" };
-cvar_t r_aliastransbase = { "r_aliastransbase", "200" };
-cvar_t r_aliastransadj = { "r_aliastransadj", "100" };
+cvar_t r_draworder = {"r_draworder", "0"};
+cvar_t r_speeds = {"r_speeds", "0"};
+cvar_t r_timegraph = {"r_timegraph", "0"};
+cvar_t r_graphheight = {"r_graphheight", "10"};
+cvar_t r_clearcolor = {"r_clearcolor", "2"};
+cvar_t r_waterwarp = {"r_waterwarp", "1"};
+cvar_t r_fullbright = {"r_fullbright", "0"};
+cvar_t r_drawentities = {"r_drawentities", "1"};
+cvar_t r_drawviewmodel = {"r_drawviewmodel", "1"};
+cvar_t r_aliasstats = {"r_polymodelstats", "0"};
+cvar_t r_dspeeds = {"r_dspeeds", "0"};
+cvar_t r_drawflat = {"r_drawflat", "0"};
+cvar_t r_ambient = {"r_ambient", "0"};
+cvar_t r_reportsurfout = {"r_reportsurfout", "0"};
+cvar_t r_maxsurfs = {"r_maxsurfs", "0"};
+cvar_t r_numsurfs = {"r_numsurfs", "0"};
+cvar_t r_reportedgeout = {"r_reportedgeout", "0"};
+cvar_t r_maxedges = {"r_maxedges", "0"};
+cvar_t r_numedges = {"r_numedges", "0"};
+cvar_t r_aliastransbase = {"r_aliastransbase", "200"};
+cvar_t r_aliastransadj = {"r_aliastransadj", "100"};
 
 extern cvar_t scr_fov;
 
@@ -291,7 +291,7 @@ void R_NewMap(void)
 	else
 	{
 		auxedges = Hunk_AllocName(r_numallocatededges * sizeof(edge_t),
-			"edges");
+		                          "edges");
 	}
 
 	r_dowarpold = false;
@@ -451,7 +451,7 @@ void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 		VectorNormalize(screenedge[i].normal);
 
 	res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
-		(320.0 * 152.0)) *
+			(320.0 * 152.0)) *
 		(2.0 / r_refdef.horizontalFieldOfView);
 	r_aliastransition = r_aliastransbase.value * res_scale;
 	r_resfudge = r_aliastransadj.value * res_scale;
@@ -513,7 +513,8 @@ void R_MarkLeaves(void)
 					break;
 				node->visframe = r_visframecount;
 				node = node->parent;
-			} while (node);
+			}
+			while (node);
 		}
 	}
 }
@@ -530,7 +531,7 @@ void R_DrawEntitiesOnList(void)
 	int lnum;
 	alight_t lighting;
 	// FIXME: remove and do real lighting
-	float lightvec[3] = { -1, 0, 0 };
+	float lightvec[3] = {-1, 0, 0};
 	vec3_t dist;
 	float add;
 
@@ -556,8 +557,8 @@ void R_DrawEntitiesOnList(void)
 			VectorCopy(currententity->origin, r_entorigin);
 			VectorSubtract(r_origin, r_entorigin, modelorg);
 
-			// see if the bounding box lets us trivially reject, also sets
-			// trivial accept status
+		// see if the bounding box lets us trivially reject, also sets
+		// trivial accept status
 			if (R_AliasCheckBBox())
 			{
 				j = R_LightPoint(currententity->origin);
@@ -572,8 +573,8 @@ void R_DrawEntitiesOnList(void)
 					if (cl_dlights[lnum].die >= cl.time)
 					{
 						VectorSubtract(currententity->origin,
-							cl_dlights[lnum].origin,
-							dist);
+						               cl_dlights[lnum].origin,
+						               dist);
 						add = cl_dlights[lnum].radius - Length(dist);
 
 						if (add > 0)
@@ -606,7 +607,7 @@ R_DrawViewModel
 void R_DrawViewModel(void)
 {
 	// FIXME: remove and do real lighting
-	float lightvec[3] = { -1, 0, 0 };
+	float lightvec[3] = {-1, 0, 0};
 	int j;
 	int lnum;
 	vec3_t dist;
@@ -679,7 +680,7 @@ R_BmodelCheckBBox
 */
 int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 {
-	int i, * pindex, clipflags;
+	int i, *pindex, clipflags;
 	vec3_t acceptpt, rejectpt;
 	double d;
 
@@ -765,8 +766,8 @@ void R_DrawBEntitiesOnList(void)
 
 			clmodel = currententity->model;
 
-			// see if the bounding box lets us trivially reject, also sets
-			// trivial accept status
+		// see if the bounding box lets us trivially reject, also sets
+		// trivial accept status
 			for (j = 0; j < 3; j++)
 			{
 				minmaxs[j] = currententity->origin[j] +
@@ -802,7 +803,7 @@ void R_DrawBEntitiesOnList(void)
 						}
 
 						R_MarkLights(&cl_dlights[k], 1 << k,
-							clmodel->nodes + clmodel->hulls[0].firstclipnode);
+						             clmodel->nodes + clmodel->hulls[0].firstclipnode);
 					}
 				}
 
@@ -1082,4 +1083,3 @@ void R_InitTurb(void)
 		intsintable[i] = AMP2 + sin(i * 3.14159 * 2 / CYCLE) * AMP2; // AMP2, not 20
 	}
 }
-

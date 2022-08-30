@@ -107,7 +107,7 @@ int CL_GetMessage(void)
 				if (host_framecount == cls.td_startframe + 1)
 					cls.td_starttime = realtime;
 			}
-			else if ( /* cl.time > 0 && */ cl.time <= cl.mtime[0])
+			else if (/* cl.time > 0 && */ cl.time <= cl.mtime[0])
 			{
 				return 0; // don't need another message yet
 			}
@@ -217,7 +217,8 @@ void CL_Record_f(void)
 
 	if (c == 2 && cls.state == ca_connected)
 	{
-		Con_Printf("Can not record - already connected to server\nClient demo recording must be started before connecting\n");
+		Con_Printf(
+			"Can not record - already connected to server\nClient demo recording must be started before connecting\n");
 		return;
 	}
 
@@ -364,4 +365,3 @@ void CL_TimeDemo_f(void)
 	cls.td_startframe = host_framecount;
 	cls.td_lastframe = -1; // get a new message this frame
 }
-

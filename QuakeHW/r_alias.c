@@ -22,10 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h" // FIXME: shouldn't be needed (is needed for patch
- // right now, but that should move)
+// right now, but that should move)
 
 #define LIGHT_MIN 5 // lowest light value we'll allow, to avoid the
- //  need for inner-loop light clamping
+//  need for inner-loop light clamping
 
 mtriangle_t* ptriangles;
 affinetridesc_t r_affinetridesc;
@@ -55,15 +55,16 @@ int r_anumverts;
 
 float aliastransform[3][4];
 
-typedef struct {
+typedef struct
+{
 	int index0;
 	int index1;
 } aedge_t;
 
 static aedge_t aedges[12] = {
-{0, 1}, {1, 2}, {2, 3}, {3, 0},
-{4, 5}, {5, 6}, {6, 7}, {7, 4},
-{0, 5}, {1, 4}, {2, 7}, {3, 6}
+	{0, 1}, {1, 2}, {2, 3}, {3, 0},
+	{4, 5}, {5, 6}, {6, 7}, {7, 4},
+	{0, 5}, {1, 4}, {2, 7}, {3, 6}
 };
 
 #define NUMVERTEXNORMALS 162
@@ -73,11 +74,11 @@ float r_avertexnormals[NUMVERTEXNORMALS][3] = {
 };
 
 void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv,
-	stvert_t* pstverts);
+                                          stvert_t* pstverts);
 void R_AliasSetUpTransform(int trivial_accept);
 void R_AliasTransformVector(vec3_t in, vec3_t out);
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
-	trivertx_t* pverts, stvert_t* pstverts);
+                               trivertx_t* pverts, stvert_t* pstverts);
 void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
 
 
@@ -91,8 +92,8 @@ qboolean R_AliasCheckBBox(void)
 	int i, flags, frame, numv;
 	aliashdr_t* pahdr;
 	float zi, basepts[8][3], v0, v1, frac;
-	finalvert_t* pv0, * pv1, viewpts[16];
-	auxvert_t* pa0, * pa1, viewaux[16];
+	finalvert_t *pv0, *pv1, viewpts[16];
+	auxvert_t *pa0, *pa1, viewaux[16];
 	maliasframedesc_t* pframedesc;
 	qboolean zclipped, zfullyclipped;
 	unsigned anyclip, allclip;
@@ -113,7 +114,7 @@ qboolean R_AliasCheckBBox(void)
 	if ((frame >= pmdl->numframes) || (frame < 0))
 	{
 		Con_DPrintf("No such frame %d %s\n", frame,
-			pmodel->name);
+		            pmodel->name);
 		frame = 0;
 	}
 
@@ -316,13 +317,15 @@ void R_AliasPreparePoints(void)
 
 		if (!((pfv[0]->flags | pfv[1]->flags | pfv[2]->flags) &
 			(ALIAS_XY_CLIP_MASK | ALIAS_Z_CLIP)))
-		{ // totally unclipped
+		{
+			// totally unclipped
 			r_affinetridesc.pfinalverts = pfinalverts;
 			r_affinetridesc.ptriangles = ptri;
 			D_PolysetDraw();
 		}
 		else
-		{ // partially clipped
+		{
+			// partially clipped
 			R_AliasClipTriangle(ptri);
 		}
 	}
@@ -401,7 +404,6 @@ void R_AliasSetUpTransform(int trivial_accept)
 			aliastransform[1][i] *= aliasyscale *
 				(1.0 / ((float)0x8000 * 0x10000));
 			aliastransform[2][i] *= 1.0 / ((float)0x8000 * 0x10000);
-
 		}
 	}
 }
@@ -413,10 +415,10 @@ R_AliasTransformFinalVert
 ================
 */
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
-	trivertx_t* pverts, stvert_t* pstverts)
+                               trivertx_t* pverts, stvert_t* pstverts)
 {
 	int temp;
-	float lightcos, * plightnormal;
+	float lightcos, *plightnormal;
 
 	av->fv[0] = DotProduct(pverts->v, aliastransform[0]) +
 		aliastransform[0][3];
@@ -459,7 +461,7 @@ R_AliasTransformAndProjectFinalVerts
 void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 {
 	int i, temp;
-	float lightcos, * plightnormal, zi;
+	float lightcos, *plightnormal, zi;
 	trivertx_t* pverts;
 
 	pverts = r_apverts;
@@ -563,7 +565,7 @@ void R_AliasSetupSkin(void)
 	int skinnum;
 	int i, numskins;
 	maliasskingroup_t* paliasskingroup;
-	float* pskinintervals, fullskininterval;
+	float *pskinintervals, fullskininterval;
 	float skintargettime, skintime;
 
 	skinnum = currententity->skinnum;
@@ -616,7 +618,6 @@ R_AliasSetupLighting
 */
 void R_AliasSetupLighting(alight_t* plighting)
 {
-
 	// guarantee that no vertex will ever be lit below LIGHT_MIN, so we don't have
 	// to clamp off the bottom
 	r_ambientlight = plighting->ambientlight;
@@ -654,7 +655,7 @@ void R_AliasSetupFrame(void)
 	int frame;
 	int i, numframes;
 	maliasgroup_t* paliasgroup;
-	float* pintervals, fullinterval, targettime, time;
+	float *pintervals, fullinterval, targettime, time;
 
 	frame = currententity->frame;
 	if ((frame >= pmdl->numframes) || (frame < 0))
@@ -750,4 +751,3 @@ void R_AliasDrawModel(alight_t* plighting)
 	else
 		R_AliasPreparePoints();
 }
-

@@ -36,10 +36,10 @@ int DEFAULTnet_hostport = 26000;
 char my_ipx_address[NET_NAMELEN];
 char my_tcpip_address[NET_NAMELEN];
 
-void (*GetComPortConfig) (int portNumber, int* port, int* irq, int* baud, qboolean* useModem);
-void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
-void (*GetModemConfig) (int portNumber, char* dialType, char* clear, char* init, char* hangup);
-void (*SetModemConfig) (int portNumber, char* dialType, char* clear, char* init, char* hangup);
+void (*GetComPortConfig)(int portNumber, int* port, int* irq, int* baud, qboolean* useModem);
+void (*SetComPortConfig)(int portNumber, int port, int irq, int baud, qboolean useModem);
+void (*GetModemConfig)(int portNumber, char* dialType, char* clear, char* init, char* hangup);
+void (*SetModemConfig)(int portNumber, char* dialType, char* clear, char* init, char* hangup);
 
 static qboolean listening = false;
 
@@ -51,8 +51,8 @@ static int slistLastShown;
 
 static void Slist_Send(void);
 static void Slist_Poll(void);
-PollProcedure slistSendProcedure = { NULL, 0.0, Slist_Send };
-PollProcedure slistPollProcedure = { NULL, 0.0, Slist_Poll };
+PollProcedure slistSendProcedure = {NULL, 0.0, Slist_Send};
+PollProcedure slistPollProcedure = {NULL, 0.0, Slist_Poll};
 
 
 sizebuf_t net_message;
@@ -63,18 +63,18 @@ int messagesReceived = 0;
 int unreliableMessagesSent = 0;
 int unreliableMessagesReceived = 0;
 
-cvar_t net_messagetimeout = { "net_messagetimeout","300" };
-cvar_t hostname = { "hostname", "UNNAMED" };
+cvar_t net_messagetimeout = {"net_messagetimeout", "300"};
+cvar_t hostname = {"hostname", "UNNAMED"};
 
 qboolean configRestored = false;
-cvar_t config_com_port = { "_config_com_port", "0x3f8", true };
-cvar_t config_com_irq = { "_config_com_irq", "4", true };
-cvar_t config_com_baud = { "_config_com_baud", "57600", true };
-cvar_t config_com_modem = { "_config_com_modem", "1", true };
-cvar_t config_modem_dialtype = { "_config_modem_dialtype", "T", true };
-cvar_t config_modem_clear = { "_config_modem_clear", "ATZ", true };
-cvar_t config_modem_init = { "_config_modem_init", "", true };
-cvar_t config_modem_hangup = { "_config_modem_hangup", "AT H", true };
+cvar_t config_com_port = {"_config_com_port", "0x3f8", true};
+cvar_t config_com_irq = {"_config_com_irq", "4", true};
+cvar_t config_com_baud = {"_config_com_baud", "57600", true};
+cvar_t config_com_modem = {"_config_com_modem", "1", true};
+cvar_t config_modem_dialtype = {"_config_modem_dialtype", "T", true};
+cvar_t config_modem_clear = {"_config_modem_clear", "ATZ", true};
+cvar_t config_modem_init = {"_config_modem_init", "", true};
+cvar_t config_modem_hangup = {"_config_modem_hangup", "AT H", true};
 
 #ifdef IDGODS
 cvar_t idgods = { "idgods", "0" };
@@ -193,7 +193,7 @@ static void NET_Listen_f(void)
 
 static void MaxPlayers_f(void)
 {
-	int  n;
+	int n;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -232,7 +232,7 @@ static void MaxPlayers_f(void)
 
 static void NET_Port_f(void)
 {
-	int  n;
+	int n;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -274,7 +274,8 @@ static void PrintSlist(void)
 	for (n = slistLastShown; n < hostCacheCount; n++)
 	{
 		if (hostcache[n].maxusers)
-			Con_Printf("%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			Con_Printf("%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users,
+			           hostcache[n].maxusers);
 		else
 			Con_Printf("%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
 	}
@@ -783,7 +784,6 @@ int NET_SendToAll(sizebuf_t* data, int blocktime)
 					NET_GetMessage(host_client->netconnection);
 				}
 				count++;
-				continue;
 			}
 		}
 		if ((Sys_FloatTime() - start) > blocktime)
@@ -937,8 +937,10 @@ void NET_Poll(void)
 				useModem = true;
 			else
 				useModem = false;
-			SetComPortConfig(0, (int)config_com_port.value, (int)config_com_irq.value, (int)config_com_baud.value, useModem);
-			SetModemConfig(0, config_modem_dialtype.string, config_modem_clear.string, config_modem_init.string, config_modem_hangup.string);
+			SetComPortConfig(0, (int)config_com_port.value, (int)config_com_irq.value, (int)config_com_baud.value,
+			                 useModem);
+			SetModemConfig(0, config_modem_dialtype.string, config_modem_clear.string, config_modem_init.string,
+			               config_modem_hangup.string);
 		}
 		configRestored = true;
 	}
@@ -957,7 +959,7 @@ void NET_Poll(void)
 
 void SchedulePollProcedure(PollProcedure* proc, double timeOffset)
 {
-	PollProcedure* pp, * prev;
+	PollProcedure *pp, *prev;
 
 	proc->nextTime = Sys_FloatTime() + timeOffset;
 	for (pp = pollProcedureList, prev = NULL; pp; pp = pp->next)

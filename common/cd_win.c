@@ -33,7 +33,7 @@ static qboolean initialized = false;
 static qboolean enabled = false;
 static qboolean playLooping = false;
 static float cdvolume;
-static byte  remap[100];
+static byte remap[100];
 static byte cdrom;
 static byte playTrack;
 static byte maxTrack;
@@ -127,7 +127,8 @@ void CDAudio_Play(byte track, qboolean looping)
 	// don't try to play a non-audio track
 	mciStatusParms.dwItem = MCI_CDA_STATUS_TYPE_TRACK;
 	mciStatusParms.dwTrack = track;
-	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT, (DWORD)(LPVOID)&mciStatusParms);
+	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT,
+	                          (DWORD)(LPVOID)&mciStatusParms);
 	if (dwReturn)
 	{
 		Con_DPrintf("MCI_STATUS failed (%i)\n", dwReturn);
@@ -142,7 +143,8 @@ void CDAudio_Play(byte track, qboolean looping)
 	// get the length of the track to be played
 	mciStatusParms.dwItem = MCI_STATUS_LENGTH;
 	mciStatusParms.dwTrack = track;
-	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT, (DWORD)(LPVOID)&mciStatusParms);
+	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT,
+	                          (DWORD)(LPVOID)&mciStatusParms);
 	if (dwReturn)
 	{
 		Con_DPrintf("MCI_STATUS failed (%i)\n", dwReturn);
@@ -310,13 +312,13 @@ static void CD_f(void)
 
 	if (Q_strcasecmp(command, "play") == 0)
 	{
-		CDAudio_Play((byte)Q_atoi(Cmd_Argv(2)), false);
+		CDAudio_Play(Q_atoi(Cmd_Argv(2)), false);
 		return;
 	}
 
 	if (Q_strcasecmp(command, "loop") == 0)
 	{
-		CDAudio_Play((byte)Q_atoi(Cmd_Argv(2)), true);
+		CDAudio_Play(Q_atoi(Cmd_Argv(2)), true);
 		return;
 	}
 
@@ -355,7 +357,6 @@ static void CD_f(void)
 		else if (wasPlaying)
 			Con_Printf("Paused %s track %u\n", playLooping ? "looping" : "playing", playTrack);
 		Con_Printf("Volume is %f\n", cdvolume);
-		return;
 	}
 }
 

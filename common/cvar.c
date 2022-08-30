@@ -108,7 +108,8 @@ void Cvar_Set(char* var_name, char* value)
 
 	var = Cvar_FindVar(var_name);
 	if (!var)
-	{ // there is an error in C code if this happens
+	{
+		// there is an error in C code if this happens
 		Con_Printf("Cvar_Set: variable %s not found\n", var_name);
 		return;
 	}
@@ -221,4 +222,3 @@ void Cvar_WriteVariables(FILE* f)
 		if (var->archive)
 			fprintf(f, "%s \"%s\"\n", var->name, var->string);
 }
-

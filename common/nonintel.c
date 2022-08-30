@@ -60,4 +60,3 @@ void R_SurfacePatch(void)
 
 
 #endif // !id386
-

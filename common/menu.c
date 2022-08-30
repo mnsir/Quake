@@ -26,7 +26,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-enum { m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, m_keys, m_help, m_quit, m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, m_search, m_slist } m_state;
+enum
+{
+	m_none,
+	m_main,
+	m_singleplayer,
+	m_load,
+	m_save,
+	m_multiplayer,
+	m_setup,
+	m_net,
+	m_options,
+	m_video,
+	m_keys,
+	m_help,
+	m_quit,
+	m_serialconfig,
+	m_modemconfig,
+	m_lanconfig,
+	m_gameoptions,
+	m_search,
+	m_slist
+} m_state;
 
 void M_Menu_Main_f(void);
 void M_Menu_SinglePlayer_f(void);
@@ -150,7 +171,7 @@ byte translationTable[256];
 void M_BuildTranslationTable(int top, int bottom)
 {
 	int j;
-	byte* dest, * source;
+	byte *dest, *source;
 
 	for (j = 0; j < 256; j++)
 		identityTable[j] = j;
@@ -542,11 +563,11 @@ void M_Load_Key(int k)
 		m_state = m_none;
 		key_dest = key_game;
 
-		// Host_Loadgame_f can't bring up the loading plaque because too much
-		// stack space has been used, so do it now
+	// Host_Loadgame_f can't bring up the loading plaque because too much
+	// stack space has been used, so do it now
 		SCR_BeginLoadingPlaque();
 
-		// issue the load command
+	// issue the load command
 		Cbuf_AddText(va("load s%i\n", load_cursor));
 		return;
 
@@ -681,7 +702,7 @@ void M_MultiPlayer_Key(int key)
 /* SETUP MENU */
 
 int setup_cursor = 4;
-int setup_cursor_table[] = { 40, 56, 80, 104, 140 };
+int setup_cursor_table[] = {40, 56, 80, 104, 140};
 
 char setup_hostname[16];
 char setup_myname[16];
@@ -735,10 +756,12 @@ void M_Setup_Draw(void)
 	M_DrawCharacter(56, setup_cursor_table[setup_cursor], 12 + ((int)(realtime * 4) & 1));
 
 	if (setup_cursor == 0)
-		M_DrawCharacter(168 + 8 * strlen(setup_hostname), setup_cursor_table[setup_cursor], 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(168 + 8 * strlen(setup_hostname), setup_cursor_table[setup_cursor],
+		                10 + ((int)(realtime * 4) & 1));
 
 	if (setup_cursor == 1)
-		M_DrawCharacter(168 + 8 * strlen(setup_myname), setup_cursor_table[setup_cursor], 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(168 + 8 * strlen(setup_myname), setup_cursor_table[setup_cursor],
+		                10 + ((int)(realtime * 4) & 1));
 }
 
 
@@ -793,7 +816,7 @@ void M_Setup_Key(int k)
 		if (setup_cursor == 2 || setup_cursor == 3)
 			goto forward;
 
-		// setup_cursor == 4 (OK)
+	// setup_cursor == 4 (OK)
 		if (Q_strcmp(cl_name.string, setup_myname) != 0)
 			Cbuf_AddText(va("name \"%s\"\n", setup_myname));
 		if (Q_strcmp(hostname.string, setup_hostname) != 0)
@@ -861,25 +884,25 @@ int m_net_saveHeight;
 char* net_helpMessage[] =
 {
 	/* .........1.........2.... */
-	  "                        ",
-	  " Two computers connected",
-	  "   through two modems.  ",
-	  "                        ",
+	"                        ",
+	" Two computers connected",
+	"   through two modems.  ",
+	"                        ",
 
-	  "                        ",
-	  " Two computers connected",
-	  " by a null-modem cable. ",
-	  "                        ",
+	"                        ",
+	" Two computers connected",
+	" by a null-modem cable. ",
+	"                        ",
 
-	  " Novell network LANs    ",
-	  " or Windows 95 DOS-box. ",
-	  "                        ",
-	  "(LAN=Local Area Network)",
+	" Novell network LANs    ",
+	" or Windows 95 DOS-box. ",
+	"                        ",
+	"(LAN=Local Area Network)",
 
-	  " Commonly used to play  ",
-	  " over the Internet, but ",
-	  " also used on a Local   ",
-	  " Area Network.          "
+	" Commonly used to play  ",
+	" over the Internet, but ",
+	" also used on a Local   ",
+	" Area Network.          "
 };
 
 void M_Menu_Net_f(void)
@@ -1314,24 +1337,24 @@ void M_Options_Key(int k)
 
 char* bindnames[][2] =
 {
-{"+attack",  "attack"},
-{"impulse 10",  "change weapon"},
-{"+jump",  "jump / swim up"},
-{"+forward",  "walk forward"},
-{"+back",  "backpedal"},
-{"+left",  "turn left"},
-{"+right",  "turn right"},
-{"+speed",  "run"},
-{"+moveleft",  "step left"},
-{"+moveright",  "step right"},
-{"+strafe",  "sidestep"},
-{"+lookup",  "look up"},
-{"+lookdown",  "look down"},
-{"centerview",  "center view"},
-{"+mlook",  "mouse look"},
-{"+klook",  "keyboard look"},
-{"+moveup", "swim up"},
-{"+movedown", "swim down"}
+	{"+attack", "attack"},
+	{"impulse 10", "change weapon"},
+	{"+jump", "jump / swim up"},
+	{"+forward", "walk forward"},
+	{"+back", "backpedal"},
+	{"+left", "turn left"},
+	{"+right", "turn right"},
+	{"+speed", "run"},
+	{"+moveleft", "step left"},
+	{"+moveright", "step right"},
+	{"+strafe", "sidestep"},
+	{"+lookup", "look up"},
+	{"+lookdown", "look down"},
+	{"centerview", "center view"},
+	{"+mlook", "mouse look"},
+	{"+klook", "keyboard look"},
+	{"+moveup", "swim up"},
+	{"+movedown", "swim down"}
 };
 
 #define NUMCOMMANDS (sizeof(bindnames)/sizeof(bindnames[0]))
@@ -1449,7 +1472,8 @@ void M_Keys_Key(int k)
 	int keys[2];
 
 	if (bind_grab)
-	{ // defining a key
+	{
+		// defining a key
 		S_LocalSound("misc/menu1.wav");
 		if (k == K_ESCAPE)
 		{
@@ -1516,13 +1540,13 @@ void M_Menu_Video_f(void)
 
 void M_Video_Draw(void)
 {
-	(*vid_menudrawfn) ();
+	(*vid_menudrawfn)();
 }
 
 
 void M_Video_Key(int key)
 {
-	(*vid_menukeyfn) (key);
+	(*vid_menukeyfn)(key);
 }
 
 //=============================================================================
@@ -1539,7 +1563,6 @@ void M_Menu_Help_f(void)
 	m_entersound = true;
 	help_page = 0;
 }
-
 
 
 void M_Help_Draw(void)
@@ -1570,7 +1593,6 @@ void M_Help_Key(int key)
 			help_page = NUM_HELP_PAGES - 1;
 		break;
 	}
-
 }
 
 //=============================================================================
@@ -1667,7 +1689,6 @@ void M_Quit_Key(int key)
 	default:
 		break;
 	}
-
 }
 
 
@@ -1718,12 +1739,12 @@ void M_Quit_Draw(void)
 /* SERIAL CONFIG MENU */
 
 int serialConfig_cursor;
-int serialConfig_cursor_table[] = { 48, 64, 80, 96, 112, 132 };
+int serialConfig_cursor_table[] = {48, 64, 80, 96, 112, 132};
 #define NUM_SERIALCONFIG_CMDS 6
 
-static int ISA_uarts[] = { 0x3f8,0x2f8,0x3e8,0x2e8 };
-static int ISA_IRQs[] = { 4,3,4,3 };
-int serialConfig_baudrate[] = { 9600,14400,19200,28800,38400,57600 };
+static int ISA_uarts[] = {0x3f8, 0x2f8, 0x3e8, 0x2e8};
+static int ISA_IRQs[] = {4, 3, 4, 3};
+int serialConfig_baudrate[] = {9600, 14400, 19200, 28800, 38400, 57600};
 
 int serialConfig_comport;
 int serialConfig_irq;
@@ -1745,7 +1766,7 @@ void M_Menu_SerialConfig_f(void)
 	else
 		serialConfig_cursor = 5;
 
-	(*GetComPortConfig) (0, &port, &serialConfig_irq, &baudrate, &useModem);
+	(*GetComPortConfig)(0, &port, &serialConfig_irq, &baudrate, &useModem);
 
 	// map uart's port to COMx
 	for (n = 0; n < 4; n++)
@@ -1831,7 +1852,8 @@ void M_SerialConfig_Draw(void)
 	M_DrawCharacter(basex - 8, serialConfig_cursor_table[serialConfig_cursor], 12 + ((int)(realtime * 4) & 1));
 
 	if (serialConfig_cursor == 4)
-		M_DrawCharacter(168 + 8 * strlen(serialConfig_phone), serialConfig_cursor_table[serialConfig_cursor], 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(168 + 8 * strlen(serialConfig_phone), serialConfig_cursor_table[serialConfig_cursor],
+		                10 + ((int)(realtime * 4) & 1));
 
 	if (*m_return_reason)
 		M_PrintWhite(basex, 148, m_return_reason);
@@ -1933,7 +1955,8 @@ void M_SerialConfig_Key(int key)
 
 		if (serialConfig_cursor == 3)
 		{
-			(*SetComPortConfig) (0, ISA_uarts[serialConfig_comport - 1], serialConfig_irq, serialConfig_baudrate[serialConfig_baud], SerialConfig);
+			(*SetComPortConfig)(0, ISA_uarts[serialConfig_comport - 1], serialConfig_irq,
+			                    serialConfig_baudrate[serialConfig_baud], SerialConfig);
 
 			M_Menu_ModemConfig_f();
 			break;
@@ -1945,8 +1968,9 @@ void M_SerialConfig_Key(int key)
 			break;
 		}
 
-		// serialConfig_cursor == 5 (OK/CONNECT)
-		(*SetComPortConfig) (0, ISA_uarts[serialConfig_comport - 1], serialConfig_irq, serialConfig_baudrate[serialConfig_baud], SerialConfig);
+	// serialConfig_cursor == 5 (OK/CONNECT)
+		(*SetComPortConfig)(0, ISA_uarts[serialConfig_comport - 1], serialConfig_irq,
+		                    serialConfig_baudrate[serialConfig_baud], SerialConfig);
 
 		M_ConfigureNetSubsystem();
 
@@ -2006,7 +2030,7 @@ void M_SerialConfig_Key(int key)
 /* MODEM CONFIG MENU */
 
 int modemConfig_cursor;
-int modemConfig_cursor_table[] = { 40, 56, 88, 120, 156 };
+int modemConfig_cursor_table[] = {40, 56, 88, 120, 156};
 #define NUM_MODEMCONFIG_CMDS 5
 
 char modemConfig_dialing;
@@ -2019,7 +2043,7 @@ void M_Menu_ModemConfig_f(void)
 	key_dest = key_menu;
 	m_state = m_modemconfig;
 	m_entersound = true;
-	(*GetModemConfig) (0, &modemConfig_dialing, modemConfig_clear, modemConfig_init, modemConfig_hangup);
+	(*GetModemConfig)(0, &modemConfig_dialing, modemConfig_clear, modemConfig_init, modemConfig_hangup);
 }
 
 
@@ -2043,19 +2067,22 @@ void M_ModemConfig_Draw(void)
 	M_DrawTextBox(basex, modemConfig_cursor_table[1] + 4, 16, 1);
 	M_Print(basex + 8, modemConfig_cursor_table[1] + 12, modemConfig_clear);
 	if (modemConfig_cursor == 1)
-		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_clear), modemConfig_cursor_table[1] + 12, 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_clear), modemConfig_cursor_table[1] + 12,
+		                10 + ((int)(realtime * 4) & 1));
 
 	M_Print(basex, modemConfig_cursor_table[2], "Init");
 	M_DrawTextBox(basex, modemConfig_cursor_table[2] + 4, 30, 1);
 	M_Print(basex + 8, modemConfig_cursor_table[2] + 12, modemConfig_init);
 	if (modemConfig_cursor == 2)
-		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_init), modemConfig_cursor_table[2] + 12, 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_init), modemConfig_cursor_table[2] + 12,
+		                10 + ((int)(realtime * 4) & 1));
 
 	M_Print(basex, modemConfig_cursor_table[3], "Hangup");
 	M_DrawTextBox(basex, modemConfig_cursor_table[3] + 4, 16, 1);
 	M_Print(basex + 8, modemConfig_cursor_table[3] + 12, modemConfig_hangup);
 	if (modemConfig_cursor == 3)
-		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_hangup), modemConfig_cursor_table[3] + 12, 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(basex + 8 + 8 * strlen(modemConfig_hangup), modemConfig_cursor_table[3] + 12,
+		                10 + ((int)(realtime * 4) & 1));
 
 	M_DrawTextBox(basex, modemConfig_cursor_table[4] - 8, 2, 1);
 	M_Print(basex + 8, modemConfig_cursor_table[4], "OK");
@@ -2112,7 +2139,8 @@ void M_ModemConfig_Key(int key)
 
 		if (modemConfig_cursor == 4)
 		{
-			(*SetModemConfig) (0, va("%c", modemConfig_dialing), modemConfig_clear, modemConfig_init, modemConfig_hangup);
+			(*SetModemConfig)(0, va("%c", modemConfig_dialing), modemConfig_clear, modemConfig_init,
+			                  modemConfig_hangup);
 			m_entersound = true;
 			M_Menu_SerialConfig_f();
 		}
@@ -2178,10 +2206,10 @@ void M_ModemConfig_Key(int key)
 /* LAN CONFIG MENU */
 
 int lanConfig_cursor = -1;
-int lanConfig_cursor_table[] = { 72, 92, 124 };
+int lanConfig_cursor_table[] = {72, 92, 124};
 #define NUM_LANCONFIG_CMDS 3
 
-int  lanConfig_port;
+int lanConfig_port;
 char lanConfig_portname[6];
 char lanConfig_joinname[22];
 
@@ -2256,10 +2284,12 @@ void M_LanConfig_Draw(void)
 	M_DrawCharacter(basex - 8, lanConfig_cursor_table[lanConfig_cursor], 12 + ((int)(realtime * 4) & 1));
 
 	if (lanConfig_cursor == 0)
-		M_DrawCharacter(basex + 9 * 8 + 8 * strlen(lanConfig_portname), lanConfig_cursor_table[0], 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(basex + 9 * 8 + 8 * strlen(lanConfig_portname), lanConfig_cursor_table[0],
+		                10 + ((int)(realtime * 4) & 1));
 
 	if (lanConfig_cursor == 2)
-		M_DrawCharacter(basex + 16 + 8 * strlen(lanConfig_joinname), lanConfig_cursor_table[2], 10 + ((int)(realtime * 4) & 1));
+		M_DrawCharacter(basex + 16 + 8 * strlen(lanConfig_joinname), lanConfig_cursor_table[2],
+		                10 + ((int)(realtime * 4) & 1));
 
 	if (*m_return_reason)
 		M_PrintWhite(basex, 148, m_return_reason);
@@ -2387,101 +2417,101 @@ typedef struct
 
 level_t levels[] =
 {
- {"start", "Entrance"}, // 0
+	{"start", "Entrance"}, // 0
 
- {"e1m1", "Slipgate Complex"}, // 1
- {"e1m2", "Castle of the Damned"},
- {"e1m3", "The Necropolis"},
- {"e1m4", "The Grisly Grotto"},
- {"e1m5", "Gloom Keep"},
- {"e1m6", "The Door To Chthon"},
- {"e1m7", "The House of Chthon"},
- {"e1m8", "Ziggurat Vertigo"},
+	{"e1m1", "Slipgate Complex"}, // 1
+	{"e1m2", "Castle of the Damned"},
+	{"e1m3", "The Necropolis"},
+	{"e1m4", "The Grisly Grotto"},
+	{"e1m5", "Gloom Keep"},
+	{"e1m6", "The Door To Chthon"},
+	{"e1m7", "The House of Chthon"},
+	{"e1m8", "Ziggurat Vertigo"},
 
- {"e2m1", "The Installation"}, // 9
- {"e2m2", "Ogre Citadel"},
- {"e2m3", "Crypt of Decay"},
- {"e2m4", "The Ebon Fortress"},
- {"e2m5", "The Wizard's Manse"},
- {"e2m6", "The Dismal Oubliette"},
- {"e2m7", "Underearth"},
+	{"e2m1", "The Installation"}, // 9
+	{"e2m2", "Ogre Citadel"},
+	{"e2m3", "Crypt of Decay"},
+	{"e2m4", "The Ebon Fortress"},
+	{"e2m5", "The Wizard's Manse"},
+	{"e2m6", "The Dismal Oubliette"},
+	{"e2m7", "Underearth"},
 
- {"e3m1", "Termination Central"}, // 16
- {"e3m2", "The Vaults of Zin"},
- {"e3m3", "The Tomb of Terror"},
- {"e3m4", "Satan's Dark Delight"},
- {"e3m5", "Wind Tunnels"},
- {"e3m6", "Chambers of Torment"},
- {"e3m7", "The Haunted Halls"},
+	{"e3m1", "Termination Central"}, // 16
+	{"e3m2", "The Vaults of Zin"},
+	{"e3m3", "The Tomb of Terror"},
+	{"e3m4", "Satan's Dark Delight"},
+	{"e3m5", "Wind Tunnels"},
+	{"e3m6", "Chambers of Torment"},
+	{"e3m7", "The Haunted Halls"},
 
- {"e4m1", "The Sewage System"}, // 23
- {"e4m2", "The Tower of Despair"},
- {"e4m3", "The Elder God Shrine"},
- {"e4m4", "The Palace of Hate"},
- {"e4m5", "Hell's Atrium"},
- {"e4m6", "The Pain Maze"},
- {"e4m7", "Azure Agony"},
- {"e4m8", "The Nameless City"},
+	{"e4m1", "The Sewage System"}, // 23
+	{"e4m2", "The Tower of Despair"},
+	{"e4m3", "The Elder God Shrine"},
+	{"e4m4", "The Palace of Hate"},
+	{"e4m5", "Hell's Atrium"},
+	{"e4m6", "The Pain Maze"},
+	{"e4m7", "Azure Agony"},
+	{"e4m8", "The Nameless City"},
 
- {"end", "Shub-Niggurath's Pit"}, // 31
+	{"end", "Shub-Niggurath's Pit"}, // 31
 
- {"dm1", "Place of Two Deaths"}, // 32
- {"dm2", "Claustrophobopolis"},
- {"dm3", "The Abandoned Base"},
- {"dm4", "The Bad Place"},
- {"dm5", "The Cistern"},
- {"dm6", "The Dark Zone"}
+	{"dm1", "Place of Two Deaths"}, // 32
+	{"dm2", "Claustrophobopolis"},
+	{"dm3", "The Abandoned Base"},
+	{"dm4", "The Bad Place"},
+	{"dm5", "The Cistern"},
+	{"dm6", "The Dark Zone"}
 };
 
 //MED 01/06/97 added hipnotic levels
-level_t     hipnoticlevels[] =
+level_t hipnoticlevels[] =
 {
-   {"start", "Command HQ"},  // 0
+	{"start", "Command HQ"}, // 0
 
-   {"hip1m1", "The Pumping Station"},          // 1
-   {"hip1m2", "Storage Facility"},
-   {"hip1m3", "The Lost Mine"},
-   {"hip1m4", "Research Facility"},
-   {"hip1m5", "Military Complex"},
+	{"hip1m1", "The Pumping Station"}, // 1
+	{"hip1m2", "Storage Facility"},
+	{"hip1m3", "The Lost Mine"},
+	{"hip1m4", "Research Facility"},
+	{"hip1m5", "Military Complex"},
 
-   {"hip2m1", "Ancient Realms"},          // 6
-   {"hip2m2", "The Black Cathedral"},
-   {"hip2m3", "The Catacombs"},
-   {"hip2m4", "The Crypt"},
-   {"hip2m5", "Mortum's Keep"},
-   {"hip2m6", "The Gremlin's Domain"},
+	{"hip2m1", "Ancient Realms"}, // 6
+	{"hip2m2", "The Black Cathedral"},
+	{"hip2m3", "The Catacombs"},
+	{"hip2m4", "The Crypt"},
+	{"hip2m5", "Mortum's Keep"},
+	{"hip2m6", "The Gremlin's Domain"},
 
-   {"hip3m1", "Tur Torment"},       // 12
-   {"hip3m2", "Pandemonium"},
-   {"hip3m3", "Limbo"},
-   {"hip3m4", "The Gauntlet"},
+	{"hip3m1", "Tur Torment"}, // 12
+	{"hip3m2", "Pandemonium"},
+	{"hip3m3", "Limbo"},
+	{"hip3m4", "The Gauntlet"},
 
-   {"hipend", "Armagon's Lair"},       // 16
+	{"hipend", "Armagon's Lair"}, // 16
 
-   {"hipdm1", "The Edge of Oblivion"}           // 17
+	{"hipdm1", "The Edge of Oblivion"} // 17
 };
 
 //PGM 01/07/97 added rogue levels
 //PGM 03/02/97 added dmatch level
 level_t roguelevels[] =
 {
- {"start", "Split Decision"},
- {"r1m1", "Deviant's Domain"},
- {"r1m2", "Dread Portal"},
- {"r1m3", "Judgement Call"},
- {"r1m4", "Cave of Death"},
- {"r1m5", "Towers of Wrath"},
- {"r1m6", "Temple of Pain"},
- {"r1m7", "Tomb of the Overlord"},
- {"r2m1", "Tempus Fugit"},
- {"r2m2", "Elemental Fury I"},
- {"r2m3", "Elemental Fury II"},
- {"r2m4", "Curse of Osiris"},
- {"r2m5", "Wizard's Keep"},
- {"r2m6", "Blood Sacrifice"},
- {"r2m7", "Last Bastion"},
- {"r2m8", "Source of Evil"},
- {"ctf1",    "Division of Change"}
+	{"start", "Split Decision"},
+	{"r1m1", "Deviant's Domain"},
+	{"r1m2", "Dread Portal"},
+	{"r1m3", "Judgement Call"},
+	{"r1m4", "Cave of Death"},
+	{"r1m5", "Towers of Wrath"},
+	{"r1m6", "Temple of Pain"},
+	{"r1m7", "Tomb of the Overlord"},
+	{"r2m1", "Tempus Fugit"},
+	{"r2m2", "Elemental Fury I"},
+	{"r2m3", "Elemental Fury II"},
+	{"r2m4", "Curse of Osiris"},
+	{"r2m5", "Wizard's Keep"},
+	{"r2m6", "Blood Sacrifice"},
+	{"r2m7", "Last Bastion"},
+	{"r2m8", "Source of Evil"},
+	{"ctf1", "Division of Change"}
 };
 
 typedef struct
@@ -2493,34 +2523,34 @@ typedef struct
 
 episode_t episodes[] =
 {
- {"Welcome to Quake", 0, 1},
- {"Doomed Dimension", 1, 8},
- {"Realm of Black Magic", 9, 7},
- {"Netherworld", 16, 7},
- {"The Elder World", 23, 8},
- {"Final Level", 31, 1},
- {"Deathmatch Arena", 32, 6}
+	{"Welcome to Quake", 0, 1},
+	{"Doomed Dimension", 1, 8},
+	{"Realm of Black Magic", 9, 7},
+	{"Netherworld", 16, 7},
+	{"The Elder World", 23, 8},
+	{"Final Level", 31, 1},
+	{"Deathmatch Arena", 32, 6}
 };
 
 //MED 01/06/97  added hipnotic episodes
-episode_t   hipnoticepisodes[] =
+episode_t hipnoticepisodes[] =
 {
-   {"Scourge of Armagon", 0, 1},
-   {"Fortress of the Dead", 1, 5},
-   {"Dominion of Darkness", 6, 6},
-   {"The Rift", 12, 4},
-   {"Final Level", 16, 1},
-   {"Deathmatch Arena", 17, 1}
+	{"Scourge of Armagon", 0, 1},
+	{"Fortress of the Dead", 1, 5},
+	{"Dominion of Darkness", 6, 6},
+	{"The Rift", 12, 4},
+	{"Final Level", 16, 1},
+	{"Deathmatch Arena", 17, 1}
 };
 
 //PGM 01/07/97 added rogue episodes
 //PGM 03/02/97 added dmatch episode
 episode_t rogueepisodes[] =
 {
- {"Introduction", 0, 1},
- {"Hell's Fortress", 1, 7},
- {"Corridors of Time", 8, 8},
- {"Deathmatch Arena", 16, 1}
+	{"Introduction", 0, 1},
+	{"Hell's Fortress", 1, 7},
+	{"Corridors of Time", 8, 8},
+	{"Deathmatch Arena", 16, 1}
 };
 
 int startepisode;
@@ -2541,7 +2571,7 @@ void M_Menu_GameOptions_f(void)
 }
 
 
-int gameoptions_cursor_table[] = { 40, 56, 64, 72, 80, 88, 96, 112, 120 };
+int gameoptions_cursor_table[] = {40, 56, 64, 72, 80, 88, 96, 112, 120};
 #define NUM_GAMEOPTIONS 9
 int gameoptions_cursor;
 
@@ -2573,13 +2603,20 @@ void M_GameOptions_Draw(void)
 
 		switch ((int)teamplay.value)
 		{
-		case 1: msg = "No Friendly Fire"; break;
-		case 2: msg = "Friendly Fire"; break;
-		case 3: msg = "Tag"; break;
-		case 4: msg = "Capture the Flag"; break;
-		case 5: msg = "One Flag CTF"; break;
-		case 6: msg = "Three Team CTF"; break;
-		default: msg = "Off"; break;
+		case 1: msg = "No Friendly Fire";
+			break;
+		case 2: msg = "Friendly Fire";
+			break;
+		case 3: msg = "Tag";
+			break;
+		case 4: msg = "Capture the Flag";
+			break;
+		case 5: msg = "One Flag CTF";
+			break;
+		case 6: msg = "Three Team CTF";
+			break;
+		default: msg = "Off";
+			break;
 		}
 		M_Print(160, 72, msg);
 	}
@@ -2589,9 +2626,12 @@ void M_GameOptions_Draw(void)
 
 		switch ((int)teamplay.value)
 		{
-		case 1: msg = "No Friendly Fire"; break;
-		case 2: msg = "Friendly Fire"; break;
-		default: msg = "Off"; break;
+		case 1: msg = "No Friendly Fire";
+			break;
+		case 2: msg = "Friendly Fire";
+			break;
+		default: msg = "Off";
+			break;
 		}
 		M_Print(160, 72, msg);
 	}
@@ -2622,7 +2662,7 @@ void M_GameOptions_Draw(void)
 	//MED 01/06/97 added hipnotic episodes
 	if (hipnotic)
 		M_Print(160, 112, hipnoticepisodes[startepisode].description);
-	//PGM 01/07/97 added rogue episodes
+		//PGM 01/07/97 added rogue episodes
 	else if (rogue)
 		M_Print(160, 112, rogueepisodes[startepisode].description);
 	else
@@ -2731,11 +2771,11 @@ void M_NetStart_Change(int dir)
 
 	case 7:
 		startepisode += dir;
-		//MED 01/06/97 added hipnotic count
+	//MED 01/06/97 added hipnotic count
 		if (hipnotic)
 			count = 6;
-		//PGM 01/07/97 added rogue count
-		//PGM 03/02/97 added 1 for dmatch episode
+			//PGM 01/07/97 added rogue count
+			//PGM 03/02/97 added 1 for dmatch episode
 		else if (rogue)
 			count = 4;
 		else if (registered.value)
@@ -2754,10 +2794,10 @@ void M_NetStart_Change(int dir)
 
 	case 8:
 		startlevel += dir;
-		//MED 01/06/97 added hipnotic episodes
+	//MED 01/06/97 added hipnotic episodes
 		if (hipnotic)
 			count = hipnoticepisodes[startepisode].levels;
-		//PGM 01/06/97 added hipnotic episodes
+			//PGM 01/06/97 added hipnotic episodes
 		else if (rogue)
 			count = rogueepisodes[startepisode].levels;
 		else
@@ -2819,7 +2859,8 @@ void M_GameOptions_Key(int key)
 			SCR_BeginLoadingPlaque();
 
 			if (hipnotic)
-				Cbuf_AddText(va("map %s\n", hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name));
+				Cbuf_AddText(
+					va("map %s\n", hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name));
 			else if (rogue)
 				Cbuf_AddText(va("map %s\n", roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].name));
 			else
@@ -2848,7 +2889,6 @@ void M_Menu_Search_f(void)
 	slistLocal = false;
 	searchComplete = false;
 	NET_Slist_f();
-
 }
 
 
@@ -2940,7 +2980,8 @@ void M_ServerList_Draw(void)
 	for (n = 0; n < hostCacheCount; n++)
 	{
 		if (hostcache[n].maxusers)
-			sprintf(string, "%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			sprintf(string, "%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users,
+			        hostcache[n].maxusers);
 		else
 			sprintf(string, "%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
 		M_Print(16, 32 + 8 * n, string);
@@ -2993,7 +3034,6 @@ void M_ServerList_Key(int k)
 	default:
 		break;
 	}
-
 }
 
 //=============================================================================
@@ -3211,7 +3251,6 @@ void M_Keydown(int key)
 
 	case m_slist:
 		M_ServerList_Key(key);
-		return;
 	}
 }
 

@@ -65,11 +65,11 @@ void InitConProc(HANDLE hFile, HANDLE heventParent, HANDLE heventChild)
 	}
 
 	if (!CreateThread(NULL,
-		0,
-		(LPTHREAD_START_ROUTINE)RequestProc,
-		0,
-		0,
-		&dwID))
+	                  0,
+	                  (LPTHREAD_START_ROUTINE)RequestProc,
+	                  0,
+	                  0,
+	                  &dwID))
 	{
 		CloseHandle(heventDone);
 		Con_SafePrintf("Couldn't create QHOST thread\n");
@@ -132,7 +132,7 @@ DWORD RequestProc(DWORD dwNichts)
 			iBeginLine = pBuffer[1];
 			iEndLine = pBuffer[2];
 			pBuffer[0] = ReadText((LPTSTR)(pBuffer + 1), iBeginLine,
-				iEndLine);
+			                      iEndLine);
 			break;
 
 		case CCOM_GET_SCR_LINES:
@@ -159,7 +159,7 @@ LPVOID GetMappedBuffer(HANDLE hfileBuffer)
 	LPVOID pBuffer;
 
 	pBuffer = MapViewOfFile(hfileBuffer,
-		FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+	                        FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
 
 	return pBuffer;
 }
@@ -187,7 +187,6 @@ BOOL GetScreenBufferLines(int* piLines)
 
 BOOL SetScreenBufferLines(int iLines)
 {
-
 	return SetConsoleCXCY(hStdout, 80, iLines);
 }
 
@@ -220,7 +219,7 @@ BOOL WriteText(LPCTSTR szText)
 {
 	DWORD dwWritten;
 	INPUT_RECORD rec;
-	char upper, * sz;
+	char upper, *sz;
 
 	sz = (LPTSTR)szText;
 
@@ -362,4 +361,3 @@ BOOL SetConsoleCXCY(HANDLE hStdout, int cx, int cy)
 
 	return TRUE;
 }
-

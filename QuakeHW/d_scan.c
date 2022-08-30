@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 #include "d_local.h"
 
-unsigned char* r_turb_pbase, * r_turb_pdest;
+unsigned char *r_turb_pbase, *r_turb_pdest;
 fixed16_t r_turb_s, r_turb_t, r_turb_sstep, r_turb_tstep;
 int* r_turb_turb;
 int r_turb_spancount;
@@ -108,7 +108,8 @@ void D_DrawTurbulent8Span(void)
 		*r_turb_pdest++ = *(r_turb_pbase + (tturb << 6) + sturb);
 		r_turb_s += r_turb_sstep;
 		r_turb_t += r_turb_tstep;
-	} while (--r_turb_spancount > 0);
+	}
+	while (--r_turb_spancount > 0);
 }
 
 #endif // !id386
@@ -131,7 +132,7 @@ void Turbulent8(espan_t* pspan)
 	r_turb_sstep = 0; // keep compiler happy
 	r_turb_tstep = 0; // ditto
 
-	r_turb_pbase = (unsigned char*)cacheblock;
+	r_turb_pbase = cacheblock;
 
 	sdivz16stepu = d_sdivzstepu * 16;
 	tdivz16stepu = d_tdivzstepu * 16;
@@ -139,8 +140,8 @@ void Turbulent8(espan_t* pspan)
 
 	do
 	{
-		r_turb_pdest = (unsigned char*)((byte*)d_viewbuffer +
-			(screenwidth * pspan->v) + pspan->u);
+		r_turb_pdest = d_viewbuffer +
+			screenwidth * pspan->v + pspan->u;
 
 		count = pspan->count;
 
@@ -240,10 +241,10 @@ void Turbulent8(espan_t* pspan)
 
 			r_turb_s = snext;
 			r_turb_t = tnext;
-
-		} while (count > 0);
-
-	} while ((pspan = pspan->pnext) != NULL);
+		}
+		while (count > 0);
+	}
+	while ((pspan = pspan->pnext) != NULL);
 }
 
 
@@ -257,7 +258,7 @@ D_DrawSpans8
 void D_DrawSpans8(espan_t* pspan)
 {
 	int count, spancount;
-	unsigned char* pbase, * pdest;
+	unsigned char *pbase, *pdest;
 	fixed16_t s, t, snext, tnext, sstep, tstep;
 	float sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float sdivz8stepu, tdivz8stepu, zi8stepu;
@@ -265,7 +266,7 @@ void D_DrawSpans8(espan_t* pspan)
 	sstep = 0; // keep compiler happy
 	tstep = 0; // ditto
 
-	pbase = (unsigned char*)cacheblock;
+	pbase = cacheblock;
 
 	sdivz8stepu = d_sdivzstepu * 8;
 	tdivz8stepu = d_tdivzstepu * 8;
@@ -273,8 +274,8 @@ void D_DrawSpans8(espan_t* pspan)
 
 	do
 	{
-		pdest = (unsigned char*)((byte*)d_viewbuffer +
-			(screenwidth * pspan->v) + pspan->u);
+		pdest = d_viewbuffer +
+			screenwidth * pspan->v + pspan->u;
 
 		count = pspan->count;
 
@@ -372,14 +373,15 @@ void D_DrawSpans8(espan_t* pspan)
 				*pdest++ = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
 				s += sstep;
 				t += tstep;
-			} while (--spancount > 0);
+			}
+			while (--spancount > 0);
 
 			s = snext;
 			t = tnext;
-
-		} while (count > 0);
-
-	} while ((pspan = pspan->pnext) != NULL);
+		}
+		while (count > 0);
+	}
+	while ((pspan = pspan->pnext) != NULL);
 }
 
 #endif
@@ -436,14 +438,14 @@ void D_DrawZSpans(espan_t* pspan)
 				izi += izistep;
 				*(int*)pdest = ltemp;
 				pdest += 2;
-			} while (--doublecount > 0);
+			}
+			while (--doublecount > 0);
 		}
 
 		if (count & 1)
 			*pdest = (short)(izi >> 16);
-
-	} while ((pspan = pspan->pnext) != NULL);
+	}
+	while ((pspan = pspan->pnext) != NULL);
 }
 
 #endif
-

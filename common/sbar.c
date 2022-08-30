@@ -26,12 +26,12 @@ int sb_updates; // if >= vid.numpages, no update needed
 
 #define STAT_MINUS 10 // num frame for '-' stats digit
 qpic_t* sb_nums[2][11];
-qpic_t* sb_colon, * sb_slash;
+qpic_t *sb_colon, *sb_slash;
 qpic_t* sb_ibar;
 qpic_t* sb_sbar;
 qpic_t* sb_scorebar;
 
-qpic_t* sb_weapons[7][8];   // 0 is active, 1 is owned, 2-5 are flashes
+qpic_t* sb_weapons[7][8]; // 0 is active, 1 is owned, 2-5 are flashes
 qpic_t* sb_ammo[4];
 qpic_t* sb_sigil[4];
 qpic_t* sb_armor[3];
@@ -55,9 +55,9 @@ qpic_t* rsb_ammo[3];
 qpic_t* rsb_teambord; // PGM 01/19/97 - team color border
 
 //MED 01/04/97 added two more weapons + 3 alternates for grenade launcher
-qpic_t* hsb_weapons[7][5];   // 0 is active, 1 is owned, 2-5 are flashes
+qpic_t* hsb_weapons[7][5]; // 0 is active, 1 is owned, 2-5 are flashes
 //MED 01/04/97 added array to simplify weapon parsing
-int         hipweapons[4] = { HIT_LASER_CANNON_BIT,HIT_MJOLNIR_BIT,4,HIT_PROXIMITY_GUN_BIT };
+int hipweapons[4] = {HIT_LASER_CANNON_BIT,HIT_MJOLNIR_BIT, 4,HIT_PROXIMITY_GUN_BIT};
 //MED 01/04/97 added hipnotic items array
 qpic_t* hsb_items[2];
 
@@ -325,8 +325,7 @@ int Sbar_itoa(int num, char* buf)
 		num = -num;
 	}
 
-	for (pow10 = 10; num >= pow10; pow10 *= 10)
-		;
+	for (pow10 = 10; num >= pow10; pow10 *= 10);
 
 	do
 	{
@@ -334,7 +333,8 @@ int Sbar_itoa(int num, char* buf)
 		dig = num / pow10;
 		*str++ = '0' + dig;
 		num -= dig * pow10;
-	} while (pow10 != 1);
+	}
+	while (pow10 != 1);
 
 	*str = 0;
 
@@ -446,7 +446,6 @@ void Sbar_UpdateScoreboard(void)
 		scoreboardbottom[i] = Sbar_ColorForMap(bottom);
 	}
 }
-
 
 
 /*
@@ -638,7 +637,7 @@ void Sbar_DrawInventory(void)
 				else
 					Sbar_DrawPic(176 + (i * 24), -16, hsb_weapons[flashon][i]);
 				if (flashon > 1)
-					sb_updates = 0;      // force update to remove flash
+					sb_updates = 0; // force update to remove flash
 			}
 		}
 	}
@@ -677,7 +676,8 @@ void Sbar_DrawInventory(void)
 		{
 			time = cl.item_gettime[17 + i];
 			if (time && time > cl.time - 2 && flashon)
-			{  // flash frame
+			{
+				// flash frame
 				sb_updates = 0;
 			}
 			else
@@ -700,7 +700,8 @@ void Sbar_DrawInventory(void)
 			{
 				time = cl.item_gettime[24 + i];
 				if (time && time > cl.time - 2 && flashon)
-				{  // flash frame
+				{
+					// flash frame
 					sb_updates = 0;
 				}
 				else
@@ -722,7 +723,8 @@ void Sbar_DrawInventory(void)
 				time = cl.item_gettime[29 + i];
 
 				if (time && time > cl.time - 2 && flashon)
-				{ // flash frame
+				{
+					// flash frame
 					sb_updates = 0;
 				}
 				else
@@ -744,7 +746,8 @@ void Sbar_DrawInventory(void)
 			{
 				time = cl.item_gettime[28 + i];
 				if (time && time > cl.time - 2 && flashon)
-				{ // flash frame
+				{
+					// flash frame
 					sb_updates = 0;
 				}
 				else
@@ -956,7 +959,7 @@ void Sbar_Draw(void)
 		Sbar_DrawPic(0, 0, sb_sbar);
 
 		// keys (hipnotic only)
-		   //MED 01/04/97 moved keys here so they would not be overwritten
+		//MED 01/04/97 moved keys here so they would not be overwritten
 		if (hipnotic)
 		{
 			if (cl.items & IT_KEY1)
@@ -975,7 +978,7 @@ void Sbar_Draw(void)
 			if (rogue)
 			{
 				Sbar_DrawNum(24, 0, cl.stats[STAT_ARMOR], 3,
-					cl.stats[STAT_ARMOR] <= 25);
+				             cl.stats[STAT_ARMOR] <= 25);
 				if (cl.items & RIT_ARMOR3)
 					Sbar_DrawPic(0, 0, sb_armor[2]);
 				else if (cl.items & RIT_ARMOR2)
@@ -986,7 +989,7 @@ void Sbar_Draw(void)
 			else
 			{
 				Sbar_DrawNum(24, 0, cl.stats[STAT_ARMOR], 3
-					, cl.stats[STAT_ARMOR] <= 25);
+				             , cl.stats[STAT_ARMOR] <= 25);
 				if (cl.items & IT_ARMOR3)
 					Sbar_DrawPic(0, 0, sb_armor[2]);
 				else if (cl.items & IT_ARMOR2)
@@ -1001,7 +1004,7 @@ void Sbar_Draw(void)
 
 		// health
 		Sbar_DrawNum(136, 0, cl.stats[STAT_HEALTH], 3
-			, cl.stats[STAT_HEALTH] <= 25);
+		             , cl.stats[STAT_HEALTH] <= 25);
 
 		// ammo icon
 		if (rogue)
@@ -1034,10 +1037,11 @@ void Sbar_Draw(void)
 		}
 
 		Sbar_DrawNum(248, 0, cl.stats[STAT_AMMO], 3,
-			cl.stats[STAT_AMMO] <= 10);
+		             cl.stats[STAT_AMMO] <= 10);
 	}
 
-	if (vid.width > 320) {
+	if (vid.width > 320)
+	{
 		if (cl.gametype == GAME_DEATHMATCH)
 			Sbar_MiniDeathmatchOverlay();
 	}
@@ -1230,7 +1234,8 @@ void Sbar_MiniDeathmatchOverlay(void)
 		Draw_Character(x + 16, y, num[1]);
 		Draw_Character(x + 24, y, num[2]);
 
-		if (k == cl.viewentity - 1) {
+		if (k == cl.viewentity - 1)
+		{
 			Draw_Character(x, y, 16);
 			Draw_Character(x + 32, y, 17);
 		}
@@ -1302,7 +1307,6 @@ void Sbar_IntermissionOverlay(void)
 	Sbar_IntermissionNumber(160, 144, cl.stats[STAT_MONSTERS], 3, 0);
 	Draw_TransPic(232, 144, sb_slash);
 	Sbar_IntermissionNumber(240, 144, cl.stats[STAT_TOTALMONSTERS], 3, 0);
-
 }
 
 

@@ -207,7 +207,7 @@ extern server_t sv; // local server
 
 extern client_t* host_client;
 
-extern jmp_buf  host_abortserver;
+extern jmp_buf host_abortserver;
 
 extern double host_time;
 
@@ -219,7 +219,7 @@ void SV_Init(void);
 
 void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
 void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
-	float attenuation);
+                   float attenuation);
 
 void SV_DropClient(qboolean crash);
 

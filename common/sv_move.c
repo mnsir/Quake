@@ -194,8 +194,9 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 	if (!SV_CheckBottom(ent))
 	{
 		if ((int)ent->v.flags & FL_PARTIALGROUND)
-		{ // entity had floor mostly pulled out from underneath it
-		// and is trying to correct
+		{
+			// entity had floor mostly pulled out from underneath it
+			// and is trying to correct
 			if (relink)
 				SV_LinkEdict(ent, true);
 			return true;
@@ -230,6 +231,7 @@ facing it.
 ======================
 */
 void PF_changeyaw(void);
+
 qboolean SV_StepDirection(edict_t* ent, float yaw, float dist)
 {
 	vec3_t move, oldorigin;
@@ -248,7 +250,8 @@ qboolean SV_StepDirection(edict_t* ent, float yaw, float dist)
 	{
 		delta = ent->v.angles[YAW] - ent->v.ideal_yaw;
 		if (delta > 45 && delta < 315)
-		{ // not turned far enough, so don't take the step
+		{
+			// not turned far enough, so don't take the step
 			VectorCopy(oldorigin, ent->v.origin);
 		}
 		SV_LinkEdict(ent, true);
@@ -273,7 +276,6 @@ void SV_FixCheckBottom(edict_t* ent)
 }
 
 
-
 /*
 ================
 SV_NewChaseDir
@@ -281,6 +283,7 @@ SV_NewChaseDir
 ================
 */
 #define DI_NODIR -1
+
 void SV_NewChaseDir(edict_t* actor, edict_t* enemy, float dist)
 {
 	float deltax, deltay;
@@ -338,7 +341,7 @@ void SV_NewChaseDir(edict_t* actor, edict_t* enemy, float dist)
 	if (olddir != DI_NODIR && SV_StepDirection(actor, olddir, dist))
 		return;
 
-	if (rand() & 1)  /*randomly determine direction of search*/
+	if (rand() & 1) /*randomly determine direction of search*/
 	{
 		for (tdir = 0; tdir <= 315; tdir += 45)
 			if (tdir != turnaround && SV_StepDirection(actor, tdir, dist))
@@ -361,7 +364,6 @@ void SV_NewChaseDir(edict_t* actor, edict_t* enemy, float dist)
 
 	if (!SV_CheckBottom(actor))
 		SV_FixCheckBottom(actor);
-
 }
 
 /*
@@ -392,7 +394,7 @@ SV_MoveToGoal
 */
 void SV_MoveToGoal(void)
 {
-	edict_t* ent, * goal;
+	edict_t *ent, *goal;
 	float dist;
 #ifdef QUAKE2
 	edict_t* enemy;
@@ -424,4 +426,3 @@ void SV_MoveToGoal(void)
 		SV_NewChaseDir(ent, goal, dist);
 	}
 }
-

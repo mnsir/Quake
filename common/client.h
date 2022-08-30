@@ -69,6 +69,7 @@ typedef struct
 #define SIGNONS 4 // signon messages to receive before connected
 
 #define MAX_DLIGHTS 32
+
 typedef struct
 {
 	vec3_t origin;
@@ -84,6 +85,7 @@ typedef struct
 
 
 #define MAX_BEAMS 24
+
 typedef struct
 {
 	int entity;
@@ -98,9 +100,12 @@ typedef struct
 #define MAX_DEMOS 8
 #define MAX_DEMONAME 16
 
-typedef enum {
-	ca_dedicated,  // a dedicated server with no ability to start a client
-	ca_disconnected,  // full screen console with no connection
+typedef enum
+{
+	ca_dedicated,
+	// a dedicated server with no ability to start a client
+	ca_disconnected,
+	// full screen console with no connection
 	ca_connected // valid netcon, talking to a server
 } cactive_t;
 
@@ -136,7 +141,6 @@ typedef struct
 	int signon; // 0 to SIGNONS
 	struct qsocket_s* netcon;
 	sizebuf_t message; // writing buffer to send to server
-
 } client_static_t;
 
 extern client_static_t cls;
@@ -317,8 +321,8 @@ typedef struct
 } kbutton_t;
 
 extern kbutton_t in_mlook, in_klook;
-extern  kbutton_t  in_strafe;
-extern  kbutton_t  in_speed;
+extern kbutton_t in_strafe;
+extern kbutton_t in_speed;
 
 void CL_InitInput(void);
 void CL_SendCmd(void);
@@ -330,7 +334,7 @@ void CL_UpdateTEnts(void);
 void CL_ClearState(void);
 
 
-int  CL_ReadFromServer(void);
+int CL_ReadFromServer(void);
 void CL_WriteToServer(usercmd_t* cmd);
 void CL_BaseMove(usercmd_t* cmd);
 

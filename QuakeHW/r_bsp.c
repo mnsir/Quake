@@ -48,7 +48,7 @@ static mvertex_t* pbverts;
 static bedge_t* pbedges;
 static int numbverts, numbedges;
 
-static mvertex_t* pfrontenter, * pfrontexit;
+static mvertex_t *pfrontenter, *pfrontexit;
 
 static qboolean makeclippededge;
 
@@ -157,11 +157,11 @@ R_RecursiveClipBPoly
 */
 void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 {
-	bedge_t* psideedges[2], * pnextedge, * ptedge;
+	bedge_t *psideedges[2], *pnextedge, *ptedge;
 	int i, side, lastside;
 	float dist, frac, lastdist;
-	mplane_t* splitplane, tplane;
-	mvertex_t* pvert, * plastvert, * ptvert;
+	mplane_t *splitplane, tplane;
+	mvertex_t *pvert, *plastvert, *ptvert;
 	mnode_t* pn;
 
 	psideedges[0] = psideedges[1] = NULL;
@@ -312,7 +312,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 				else
 				{
 					R_RecursiveClipBPoly(psideedges[i], pnode->children[i],
-						psurf);
+					                     psurf);
 				}
 			}
 		}
@@ -333,8 +333,8 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 	int numsurfaces;
 	mplane_t* pplane;
 	mvertex_t bverts[MAX_BMODEL_VERTS];
-	bedge_t bedges[MAX_BMODEL_EDGES], * pbedge;
-	medge_t* pedge, * pedges;
+	bedge_t bedges[MAX_BMODEL_EDGES], *pbedge;
+	medge_t *pedge, *pedges;
 
 	// FIXME: use bounding-box-based frustum clipping info?
 
@@ -447,10 +447,10 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 {
-	int i, c, side, * pindex;
+	int i, c, side, *pindex;
 	vec3_t acceptpt, rejectpt;
 	mplane_t* plane;
-	msurface_t* surf, ** mark;
+	msurface_t *surf, **mark;
 	mleaf_t* pleaf;
 	double d, dot;
 
@@ -512,7 +512,8 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			{
 				(*mark)->visframe = r_framecount;
 				mark++;
-			} while (--c);
+			}
+			while (--c);
 		}
 
 		// deal with model fragments in this leaf
@@ -593,7 +594,8 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 					}
 
 					surf++;
-				} while (--c);
+				}
+				while (--c);
 			}
 			else if (dot > BACKFACE_EPSILON)
 			{
@@ -626,7 +628,8 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 					}
 
 					surf++;
-				} while (--c);
+				}
+				while (--c);
 			}
 
 			// all surfaces on the same node share the same sequence number
@@ -637,7 +640,6 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 		R_RecursiveWorldNode(node->children[!side], clipflags);
 	}
 }
-
 
 
 /*
@@ -670,5 +672,3 @@ void R_RenderWorld(void)
 		}
 	}
 }
-
-

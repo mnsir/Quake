@@ -116,9 +116,9 @@ Larger attenuations will drop off.  (max 4 attenuation)
 ==================
 */
 void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
-	float attenuation)
+                   float attenuation)
 {
-	int         sound_num;
+	int sound_num;
 	int field_mask;
 	int i;
 	int ent;
@@ -137,7 +137,7 @@ void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
 
 	// find precache number for sound
 	for (sound_num = 1; sound_num < MAX_SOUNDS
-		&& sv.sound_precache[sound_num]; sound_num++)
+	     && sv.sound_precache[sound_num]; sound_num++)
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 
@@ -275,7 +275,7 @@ void SV_ConnectClient(int clientnum)
 
 #ifdef IDGODS
 	client->privileged = IsID(&client->netconnection->addr);
-#else 
+#else
 	client->privileged = false;
 #endif
 
@@ -328,7 +328,6 @@ void SV_CheckForNewClients(void)
 		net_activeconnections++;
 	}
 }
-
 
 
 /*
@@ -392,7 +391,8 @@ void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 		else if (d < -8)
 			node = node->children[1];
 		else
-		{ // go down both
+		{
+			// go down both
 			SV_AddToFatPVS(org, node->children[0]);
 			node = node->children[1];
 		}
@@ -564,7 +564,6 @@ void SV_CleanupEnts(void)
 	{
 		ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
 	}
-
 }
 
 /*
@@ -741,7 +740,7 @@ qboolean SV_SendClientDatagram(client_t* client)
 	// send the datagram
 	if (NET_SendUnreliableMessage(client->netconnection, &msg) == -1)
 	{
-		SV_DropClient(true);// if the message couldn't send, kick off
+		SV_DropClient(true); // if the message couldn't send, kick off
 		return false;
 	}
 
@@ -872,7 +871,7 @@ void SV_SendClientMessages(void)
 			else
 			{
 				if (NET_SendMessage(host_client->netconnection
-					, &host_client->message) == -1)
+				                    , &host_client->message) == -1)
 					SV_DropClient(true); // if the message couldn't send, kick off
 				SZ_Clear(&host_client->message);
 				host_client->last_message = realtime;
@@ -1197,4 +1196,3 @@ void SV_SpawnServer(char* server)
 
 	Con_DPrintf("Server spawned.\n");
 }
-

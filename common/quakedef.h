@@ -240,6 +240,10 @@ void VID_UnlockBuffer(void);
 #include "cl_parse.h"
 #include "cl_tent.h"
 #include "server.h"
+#include "sv_main.h"
+#include "sv_user.h"
+#include "sv_phys.h"
+#include "sv_move.h"
 
 #ifdef GLQUAKE
 #include "gl_model.h"

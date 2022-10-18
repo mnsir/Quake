@@ -253,6 +253,10 @@
     <ClInclude Include="..\common\server.h" />
     <ClInclude Include="..\common\sound.h" />
     <ClInclude Include="..\common\spritegn.h" />
+    <ClInclude Include="..\common\sv_main.h" />
+    <ClInclude Include="..\common\sv_move.h" />
+    <ClInclude Include="..\common\sv_phys.h" />
+    <ClInclude Include="..\common\sv_user.h" />
     <ClInclude Include="..\common\sys.h" />
     <ClInclude Include="..\common\vid.h" />
     <ClInclude Include="..\common\view.h" />

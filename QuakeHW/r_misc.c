@@ -171,7 +171,7 @@ void R_TimeGraph(void)
 		x = r_refdef.vrect.width - 1;
 	else
 		x = r_refdef.vrect.width -
-			(r_refdef.vrect.width - MAX_TIMINGS) / 2;
+		(r_refdef.vrect.width - MAX_TIMINGS) / 2;
 	do
 	{
 		R_LineGraph(x, r_refdef.vrect.height - 2, r_timings[a]);
@@ -181,8 +181,7 @@ void R_TimeGraph(void)
 		a--;
 		if (a == -1)
 			a = MAX_TIMINGS - 1;
-	}
-	while (a != timex);
+	} while (a != timex);
 
 	timex = (timex + 1) % MAX_TIMINGS;
 }
@@ -203,7 +202,7 @@ void R_PrintTimes(void)
 	ms = 1000 * (r_time2 - r_time1);
 
 	Con_Printf("%5.1f ms %3i/%3i/%3i poly %3i surf\n",
-	           ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
+		ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
 	c_surf = 0;
 }
 
@@ -228,8 +227,8 @@ void R_PrintDSpeeds(void)
 	ms = (r_time2 - r_time1) * 1000;
 
 	Con_Printf("%3i %4.1fp %3iw %4.1fb %3is %4.1fe %4.1fv\n",
-	           (int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
-	           dv_time);
+		(int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
+		dv_time);
 }
 
 
@@ -287,9 +286,9 @@ void R_TransformFrustum(void)
 		v2[1] = v[1] * vright[1] + v[2] * vup[1] + v[0] * vpn[1];
 		v2[2] = v[1] * vright[2] + v[2] * vup[2] + v[0] * vpn[2];
 
-		VectorCopy(v2, view_clipplanes[i].normal);
+		MATHLIB_PUB_VectorCopy(v2, view_clipplanes[i].normal);
 
-		view_clipplanes[i].dist = DotProduct(modelorg, v2);
+		view_clipplanes[i].dist = MATHLIB_PUB_DotProduct(modelorg, v2);
 	}
 }
 
@@ -303,9 +302,9 @@ TransformVector
 */
 void TransformVector(vec3_t in, vec3_t out)
 {
-	out[0] = DotProduct(in, vright);
-	out[1] = DotProduct(in, vup);
-	out[2] = DotProduct(in, vpn);
+	out[0] = MATHLIB_PUB_DotProduct(in, vright);
+	out[1] = MATHLIB_PUB_DotProduct(in, vup);
+	out[2] = MATHLIB_PUB_DotProduct(in, vpn);
 }
 
 #endif
@@ -320,7 +319,7 @@ void R_TransformPlane(mplane_t* p, float* normal, float* dist)
 {
 	float d;
 
-	d = DotProduct(r_origin, p->normal);
+	d = MATHLIB_PUB_DotProduct(r_origin, p->normal);
 	*dist = p->dist - d;
 	// TODO: when we have rotating entities, this will need to use the view matrix
 	TransformVector(p->normal, normal);
@@ -334,7 +333,7 @@ R_SetUpFrustumIndexes
 */
 void R_SetUpFrustumIndexes(void)
 {
-	int i, j, *pindex;
+	int i, j, * pindex;
 
 	pindex = r_frustum_indexes;
 
@@ -387,7 +386,7 @@ void R_SetupFrame(void)
 			r_maxsurfsseen = surface_p - surfaces;
 
 		Con_Printf("Used %d of %d surfs; %d max\n", surface_p - surfaces,
-		           surf_max - surfaces, r_maxsurfsseen);
+			surf_max - surfaces, r_maxsurfsseen);
 	}
 
 	if (r_numedges.value)
@@ -398,7 +397,7 @@ void R_SetupFrame(void)
 			r_maxedgesseen = edgecount;
 
 		Con_Printf("Used %d of %d edges; %d max\n", edgecount,
-		           r_numallocatededges, r_maxedgesseen);
+			r_numallocatededges, r_maxedgesseen);
 	}
 
 	r_refdef.ambientlight = r_ambient.value;
@@ -428,10 +427,10 @@ void R_SetupFrame(void)
 #endif
 
 	// build the transformation matrix for the given view angles
-	VectorCopy(r_refdef.vieworg, modelorg);
-	VectorCopy(r_refdef.vieworg, r_origin);
+	MATHLIB_PUB_VectorCopy(r_refdef.vieworg, modelorg);
+	MATHLIB_PUB_VectorCopy(r_refdef.vieworg, r_origin);
 
-	AngleVectors(r_refdef.viewangles, vpn, vright, vup);
+	MATHLIB_PUB_AngleVectors(r_refdef.viewangles, vpn, vright, vup);
 
 	// current viewleaf
 	r_oldviewleaf = r_viewleaf;
@@ -477,9 +476,9 @@ void R_SetupFrame(void)
 				vrect.height = (int)h;
 
 				R_ViewChanged(&vrect,
-				              (int)((float)sb_lines * (h / (float)vid.height)),
-				              vid.aspect * (h / w) *
-				              ((float)vid.width / (float)vid.height));
+					(int)((float)sb_lines * (h / (float)vid.height)),
+					vid.aspect * (h / w) *
+					((float)vid.width / (float)vid.height));
 			}
 		}
 		else
@@ -499,10 +498,10 @@ void R_SetupFrame(void)
 	R_TransformFrustum();
 
 	// save base values
-	VectorCopy(vpn, base_vpn);
-	VectorCopy(vright, base_vright);
-	VectorCopy(vup, base_vup);
-	VectorCopy(modelorg, base_modelorg);
+	MATHLIB_PUB_VectorCopy(vpn, base_vpn);
+	MATHLIB_PUB_VectorCopy(vright, base_vright);
+	MATHLIB_PUB_VectorCopy(vup, base_vup);
+	MATHLIB_PUB_VectorCopy(modelorg, base_modelorg);
 
 	R_SetSkyFrame();
 

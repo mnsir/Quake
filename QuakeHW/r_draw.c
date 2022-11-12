@@ -78,7 +78,7 @@ R_EmitEdge
 */
 void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 {
-	edge_t *edge, *pcheck;
+	edge_t* edge, * pcheck;
 	int u_check;
 	float u, u_step;
 	vec3_t local, transformed;
@@ -99,7 +99,7 @@ void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 		world = &pv0->position[0];
 
 		// transform and project
-		VectorSubtract(world, modelorg, local);
+		MATHLIB_PUB_VectorSubtract(world, modelorg, local);
 		TransformVector(local, transformed);
 
 		if (transformed[2] < NEAR_CLIP)
@@ -128,7 +128,7 @@ void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 	world = &pv1->position[0];
 
 	// transform and project
-	VectorSubtract(world, modelorg, local);
+	MATHLIB_PUB_VectorSubtract(world, modelorg, local);
 	TransformVector(local, transformed);
 
 	if (transformed[2] < NEAR_CLIP)
@@ -264,8 +264,8 @@ void R_ClipEdge(mvertex_t* pv0, mvertex_t* pv1, clipplane_t* clip)
 	{
 		do
 		{
-			d0 = DotProduct(pv0->position, clip->normal) - clip->dist;
-			d1 = DotProduct(pv1->position, clip->normal) - clip->dist;
+			d0 = MATHLIB_PUB_DotProduct(pv0->position, clip->normal) - clip->dist;
+			d1 = MATHLIB_PUB_DotProduct(pv1->position, clip->normal) - clip->dist;
 
 			if (d0 >= 0)
 			{
@@ -310,7 +310,7 @@ void R_ClipEdge(mvertex_t* pv0, mvertex_t* pv1, clipplane_t* clip)
 				// we do cache fully clipped edges
 				if (!r_leftclipped)
 					cacheoffset = FULLY_CLIPPED_CACHED |
-						(r_framecount & FRAMECOUNT_MASK);
+					(r_framecount & FRAMECOUNT_MASK);
 				return;
 			}
 
@@ -341,8 +341,7 @@ void R_ClipEdge(mvertex_t* pv0, mvertex_t* pv1, clipplane_t* clip)
 
 			R_ClipEdge(&clipvert, pv1, clip->next);
 			return;
-		}
-		while ((clip = clip->next) != NULL);
+		} while ((clip = clip->next) != NULL);
 	}
 
 	// add the edge
@@ -387,7 +386,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 	mplane_t* pplane;
 	float distinv;
 	vec3_t p_normal;
-	medge_t *pedges, tedge;
+	medge_t* pedges, tedge;
 	clipplane_t* pclip;
 
 	// skip out if no more surfs
@@ -449,7 +448,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 				else
 				{
 					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
-							r_pedge->cachededgeoffset) &&
+						r_pedge->cachededgeoffset) &&
 						(((edge_t*)((unsigned long)r_edges +
 							r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
@@ -464,8 +463,8 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 			cacheoffset = (byte*)edge_p - (byte*)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge(&r_pcurrentvertbase[r_pedge->v[0]],
-			           &r_pcurrentvertbase[r_pedge->v[1]],
-			           pclip);
+				&r_pcurrentvertbase[r_pedge->v[1]],
+				pclip);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -495,7 +494,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 					// it's cached if the cached edge is valid and is owned
 					// by this medge_t
 					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
-							r_pedge->cachededgeoffset) &&
+						r_pedge->cachededgeoffset) &&
 						(((edge_t*)((unsigned long)r_edges +
 							r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
@@ -510,8 +509,8 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 			cacheoffset = (byte*)edge_p - (byte*)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge(&r_pcurrentvertbase[r_pedge->v[1]],
-			           &r_pcurrentvertbase[r_pedge->v[0]],
-			           pclip);
+				&r_pcurrentvertbase[r_pedge->v[0]],
+				pclip);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -560,7 +559,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 	// FIXME: cache this?
 	TransformVector(pplane->normal, p_normal);
 	// FIXME: cache this?
-	distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
+	distinv = 1.0 / (pplane->dist - MATHLIB_PUB_DotProduct(modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -675,7 +674,7 @@ void R_RenderBmodelFace(bedge_t* pedges, msurface_t* psurf)
 	// FIXME: cache this?
 	TransformVector(pplane->normal, p_normal);
 	// FIXME: cache this?
-	distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
+	distinv = 1.0 / (pplane->dist - MATHLIB_PUB_DotProduct(modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -750,8 +749,8 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	while (pclip)
 	{
 		lastvert = lnumverts - 1;
-		lastdist = DotProduct(verts[vertpage][lastvert].position,
-		                      pclip->normal) - pclip->dist;
+		lastdist = MATHLIB_PUB_DotProduct(verts[vertpage][lastvert].position,
+			pclip->normal) - pclip->dist;
 
 		visible = false;
 		newverts = 0;
@@ -759,7 +758,7 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 
 		for (i = 0; i < lnumverts; i++)
 		{
-			dist = DotProduct(verts[vertpage][i].position, pclip->normal) -
+			dist = MATHLIB_PUB_DotProduct(verts[vertpage][i].position, pclip->normal) -
 				pclip->dist;
 
 			if ((lastdist > 0) != (dist > 0))
@@ -826,7 +825,7 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	for (i = 0; i < lnumverts; i++)
 	{
 		// transform and project
-		VectorSubtract(verts[vertpage][i].position, modelorg, local);
+		MATHLIB_PUB_VectorSubtract(verts[vertpage][i].position, modelorg, local);
 		TransformVector(local, transformed);
 
 		if (transformed[2] < NEAR_CLIP)
@@ -891,7 +890,7 @@ void R_ZDrawSubmodelPolys(model_t* pmodel)
 		// find which side of the node we are on
 		pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		dot = MATHLIB_PUB_DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||

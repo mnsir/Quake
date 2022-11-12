@@ -385,7 +385,7 @@ void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 		}
 
 		plane = node->plane;
-		d = DotProduct(org, plane->normal) - plane->dist;
+		d = MATHLIB_PUB_DotProduct(org, plane->normal) - plane->dist;
 		if (d > 8)
 			node = node->children[0];
 		else if (d < -8)
@@ -434,7 +434,7 @@ void SV_WriteEntitiesToClient(edict_t* clent, sizebuf_t* msg)
 	edict_t* ent;
 
 	// find the client's PVS
-	VectorAdd(clent->v.origin, clent->v.view_ofs, org);
+	MATHLIB_PUB_VectorAdd(clent->v.origin, clent->v.view_ofs, org);
 	pvs = SV_FatPVS(org);
 
 	// send over all entities (excpet the client) that touch the pvs
@@ -939,8 +939,8 @@ void SV_CreateBaseline(void)
 		//
 		// create entity baseline
 		//
-		VectorCopy(svent->v.origin, svent->baseline.origin);
-		VectorCopy(svent->v.angles, svent->baseline.angles);
+		MATHLIB_PUB_VectorCopy(svent->v.origin, svent->baseline.origin);
+		MATHLIB_PUB_VectorCopy(svent->v.angles, svent->baseline.angles);
 		svent->baseline.frame = svent->v.frame;
 		svent->baseline.skin = svent->v.skin;
 		if (entnum > 0 && entnum <= svs.maxclients)

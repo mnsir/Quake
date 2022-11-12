@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ABSOLUTE_MIN_PARTICLES 512 // no fewer than this no matter what's
 //  on the command line
 
-int ramp1[8] = {0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61};
-int ramp2[8] = {0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66};
-int ramp3[8] = {0x6d, 0x6b, 6, 5, 4, 3};
+int ramp1[8] = { 0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61 };
+int ramp2[8] = { 0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66 };
+int ramp3[8] = { 0x6d, 0x6b, 6, 5, 4, 3 };
 
-particle_t *active_particles, *free_particles;
+particle_t* active_particles, * free_particles;
 
 particle_t* particles;
 int r_numparticles;
@@ -99,9 +99,9 @@ void R_DarkFieldParticles(entity_t* ent)
 				p->org[1] = org[1] + j + (rand() & 3);
 				p->org[2] = org[2] + k + (rand() & 3);
 
-				VectorNormalize(dir);
+				MATHLIB_PUB_VectorNormalize(dir);
 				vel = 50 + (rand() & 63);
-				VectorScale(dir, vel, p->vel);
+				MATHLIB_PUB_VectorScale(dir, vel, p->vel);
 			}
 }
 #endif
@@ -117,7 +117,7 @@ R_EntityParticles
 extern float r_avertexnormals[NUMVERTEXNORMALS][3];
 vec3_t avelocities[NUMVERTEXNORMALS];
 float beamlength = 16;
-vec3_t avelocity = {23, 7, 3};
+vec3_t avelocity = { 23, 7, 3 };
 float partstep = 0.01;
 float timescale = 0.01;
 
@@ -233,8 +233,8 @@ void R_ReadPointFile_f(void)
 		p->die = 99999;
 		p->color = (-c) & 15;
 		p->type = pt_static;
-		VectorCopy(vec3_origin, p->vel);
-		VectorCopy(org, p->org);
+		MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, p->vel);
+		MATHLIB_PUB_VectorCopy(org, p->org);
 	}
 
 	fclose(f);
@@ -487,9 +487,9 @@ void R_LavaSplash(vec3_t org)
 				p->org[1] = org[1] + dir[1];
 				p->org[2] = org[2] + (rand() & 63);
 
-				VectorNormalize(dir);
+				MATHLIB_PUB_VectorNormalize(dir);
 				vel = 50 + (rand() & 63);
-				VectorScale(dir, vel, p->vel);
+				MATHLIB_PUB_VectorScale(dir, vel, p->vel);
 			}
 }
 
@@ -529,9 +529,9 @@ void R_TeleportSplash(vec3_t org)
 				p->org[1] = org[1] + j + (rand() & 3);
 				p->org[2] = org[2] + k + (rand() & 3);
 
-				VectorNormalize(dir);
+				MATHLIB_PUB_VectorNormalize(dir);
 				vel = 50 + (rand() & 63);
-				VectorScale(dir, vel, p->vel);
+				MATHLIB_PUB_VectorScale(dir, vel, p->vel);
 			}
 }
 
@@ -544,8 +544,8 @@ void R_RocketTrail(vec3_t start, vec3_t end, int type)
 	int dec;
 	static int tracercount;
 
-	VectorSubtract(end, start, vec);
-	len = VectorNormalize(vec);
+	MATHLIB_PUB_VectorSubtract(end, start, vec);
+	len = MATHLIB_PUB_VectorNormalize(vec);
 	if (type < 128)
 		dec = 3;
 	else
@@ -565,7 +565,7 @@ void R_RocketTrail(vec3_t start, vec3_t end, int type)
 		p->next = active_particles;
 		active_particles = p;
 
-		VectorCopy(vec3_origin, p->vel);
+		MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, p->vel);
 		p->die = cl.time + 2;
 
 		switch (type)
@@ -604,7 +604,7 @@ void R_RocketTrail(vec3_t start, vec3_t end, int type)
 
 			tracercount++;
 
-			VectorCopy(start, p->org);
+			MATHLIB_PUB_VectorCopy(start, p->org);
 			if (tracercount & 1)
 			{
 				p->vel[0] = 30 * vec[1];
@@ -635,7 +635,7 @@ void R_RocketTrail(vec3_t start, vec3_t end, int type)
 		}
 
 
-		VectorAdd(start, vec, start);
+		MATHLIB_PUB_VectorAdd(start, vec, start);
 	}
 }
 
@@ -649,7 +649,7 @@ extern cvar_t sv_gravity;
 
 void R_DrawParticles(void)
 {
-	particle_t *p, *kill;
+	particle_t* p, * kill;
 	float grav;
 	int i;
 	float time2, time3;
@@ -666,14 +666,14 @@ void R_DrawParticles(void)
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin(GL_TRIANGLES);
 
-	VectorScale(vup, 1.5, up);
-	VectorScale(vright, 1.5, right);
+	MATHLIB_PUB_VectorScale(vup, 1.5, up);
+	MATHLIB_PUB_VectorScale(vright, 1.5, right);
 #else
 	D_StartParticles();
 
-	VectorScale(vright, xscaleshrink, r_pright);
-	VectorScale(vup, yscaleshrink, r_pup);
-	VectorCopy(vpn, r_ppn);
+	MATHLIB_PUB_VectorScale(vright, xscaleshrink, r_pright);
+	MATHLIB_PUB_VectorScale(vup, yscaleshrink, r_pup);
+	MATHLIB_PUB_VectorCopy(vpn, r_ppn);
 #endif
 	frametime = cl.time - cl.oldtime;
 	time3 = frametime * 15;

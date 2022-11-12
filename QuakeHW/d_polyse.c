@@ -1574,7 +1574,7 @@ void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 		dm = (double)tm;
 		dn = (double)tn;
 
-		FloorDivMod(dm, dn, &ubasestep, &erroradjustup);
+		MATHLIB_PUB_FloorDivMod(dm, dn, &ubasestep, &erroradjustup);
 
 		erroradjustdown = dn;
 	}

@@ -131,8 +131,8 @@ void ED_Free(edict_t* ed)
 	ed->v.colormap = 0;
 	ed->v.skin = 0;
 	ed->v.frame = 0;
-	VectorCopy(vec3_origin, ed->v.origin);
-	VectorCopy(vec3_origin, ed->v.angles);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ed->v.origin);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ed->v.angles);
 	ed->v.nextthink = -1;
 	ed->v.solid = 0;
 

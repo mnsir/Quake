@@ -48,7 +48,7 @@ static mvertex_t* pbverts;
 static bedge_t* pbedges;
 static int numbverts, numbedges;
 
-static mvertex_t *pfrontenter, *pfrontexit;
+static mvertex_t* pfrontenter, * pfrontexit;
 
 static qboolean makeclippededge;
 
@@ -64,10 +64,10 @@ void R_EntityRotate(vec3_t vec)
 {
 	vec3_t tvec;
 
-	VectorCopy(vec, tvec);
-	vec[0] = DotProduct(entity_rotation[0], tvec);
-	vec[1] = DotProduct(entity_rotation[1], tvec);
-	vec[2] = DotProduct(entity_rotation[2], tvec);
+	MATHLIB_PUB_VectorCopy(vec, tvec);
+	vec[0] = MATHLIB_PUB_DotProduct(entity_rotation[0], tvec);
+	vec[1] = MATHLIB_PUB_DotProduct(entity_rotation[1], tvec);
+	vec[2] = MATHLIB_PUB_DotProduct(entity_rotation[2], tvec);
 }
 
 
@@ -118,7 +118,7 @@ void R_RotateBmodel(void)
 	temp2[2][1] = 0;
 	temp2[2][2] = c;
 
-	R_ConcatRotations(temp2, temp1, temp3);
+	MATHLIB_PUB_R_ConcatRotations(temp2, temp1, temp3);
 
 	// roll
 	angle = currententity->angles[ROLL];
@@ -136,7 +136,7 @@ void R_RotateBmodel(void)
 	temp1[2][1] = -s;
 	temp1[2][2] = c;
 
-	R_ConcatRotations(temp1, temp3, entity_rotation);
+	MATHLIB_PUB_R_ConcatRotations(temp1, temp3, entity_rotation);
 
 	//
 	// rotate modelorg and the transformation matrix
@@ -157,11 +157,11 @@ R_RecursiveClipBPoly
 */
 void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 {
-	bedge_t *psideedges[2], *pnextedge, *ptedge;
+	bedge_t* psideedges[2], * pnextedge, * ptedge;
 	int i, side, lastside;
 	float dist, frac, lastdist;
-	mplane_t *splitplane, tplane;
-	mvertex_t *pvert, *plastvert, *ptvert;
+	mplane_t* splitplane, tplane;
+	mvertex_t* pvert, * plastvert, * ptvert;
 	mnode_t* pn;
 
 	psideedges[0] = psideedges[1] = NULL;
@@ -172,10 +172,10 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 	// FIXME: cache these?
 	splitplane = pnode->plane;
 	tplane.dist = splitplane->dist -
-		DotProduct(r_entorigin, splitplane->normal);
-	tplane.normal[0] = DotProduct(entity_rotation[0], splitplane->normal);
-	tplane.normal[1] = DotProduct(entity_rotation[1], splitplane->normal);
-	tplane.normal[2] = DotProduct(entity_rotation[2], splitplane->normal);
+		MATHLIB_PUB_DotProduct(r_entorigin, splitplane->normal);
+	tplane.normal[0] = MATHLIB_PUB_DotProduct(entity_rotation[0], splitplane->normal);
+	tplane.normal[1] = MATHLIB_PUB_DotProduct(entity_rotation[1], splitplane->normal);
+	tplane.normal[2] = MATHLIB_PUB_DotProduct(entity_rotation[2], splitplane->normal);
 
 	// clip edges to BSP plane
 	for (; pedges; pedges = pnextedge)
@@ -185,7 +185,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 		// set the status for the last point as the previous point
 		// FIXME: cache this stuff somehow?
 		plastvert = pedges->v[0];
-		lastdist = DotProduct(plastvert->position, tplane.normal) -
+		lastdist = MATHLIB_PUB_DotProduct(plastvert->position, tplane.normal) -
 			tplane.dist;
 
 		if (lastdist > 0)
@@ -195,7 +195,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 
 		pvert = pedges->v[1];
 
-		dist = DotProduct(pvert->position, tplane.normal) - tplane.dist;
+		dist = MATHLIB_PUB_DotProduct(pvert->position, tplane.normal) - tplane.dist;
 
 		if (dist > 0)
 			side = 0;
@@ -312,7 +312,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 				else
 				{
 					R_RecursiveClipBPoly(psideedges[i], pnode->children[i],
-					                     psurf);
+						psurf);
 				}
 			}
 		}
@@ -333,8 +333,8 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 	int numsurfaces;
 	mplane_t* pplane;
 	mvertex_t bverts[MAX_BMODEL_VERTS];
-	bedge_t bedges[MAX_BMODEL_EDGES], *pbedge;
-	medge_t *pedge, *pedges;
+	bedge_t bedges[MAX_BMODEL_EDGES], * pbedge;
+	medge_t* pedge, * pedges;
 
 	// FIXME: use bounding-box-based frustum clipping info?
 
@@ -347,7 +347,7 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 		// find which side of the node we are on
 		pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		dot = MATHLIB_PUB_DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
@@ -425,7 +425,7 @@ void R_DrawSubmodelPolygons(model_t* pmodel, int clipflags)
 		// find which side of the node we are on
 		pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		dot = MATHLIB_PUB_DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
@@ -447,10 +447,10 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 {
-	int i, c, side, *pindex;
+	int i, c, side, * pindex;
 	vec3_t acceptpt, rejectpt;
 	mplane_t* plane;
-	msurface_t *surf, **mark;
+	msurface_t* surf, ** mark;
 	mleaf_t* pleaf;
 	double d, dot;
 
@@ -480,7 +480,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			rejectpt[1] = (float)node->minmaxs[pindex[1]];
 			rejectpt[2] = (float)node->minmaxs[pindex[2]];
 
-			d = DotProduct(rejectpt, view_clipplanes[i].normal);
+			d = MATHLIB_PUB_DotProduct(rejectpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d <= 0)
@@ -490,7 +490,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			acceptpt[1] = (float)node->minmaxs[pindex[3 + 1]];
 			acceptpt[2] = (float)node->minmaxs[pindex[3 + 2]];
 
-			d = DotProduct(acceptpt, view_clipplanes[i].normal);
+			d = MATHLIB_PUB_DotProduct(acceptpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d >= 0)
@@ -512,8 +512,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			{
 				(*mark)->visframe = r_framecount;
 				mark++;
-			}
-			while (--c);
+			} while (--c);
 		}
 
 		// deal with model fragments in this leaf
@@ -544,7 +543,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			dot = modelorg[2] - plane->dist;
 			break;
 		default:
-			dot = DotProduct(modelorg, plane->normal) - plane->dist;
+			dot = MATHLIB_PUB_DotProduct(modelorg, plane->normal) - plane->dist;
 			break;
 		}
 
@@ -594,8 +593,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 					}
 
 					surf++;
-				}
-				while (--c);
+				} while (--c);
 			}
 			else if (dot > BACKFACE_EPSILON)
 			{
@@ -628,8 +626,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 					}
 
 					surf++;
-				}
-				while (--c);
+				} while (--c);
 			}
 
 			// all surfaces on the same node share the same sequence number
@@ -656,7 +653,7 @@ void R_RenderWorld(void)
 	pbtofpolys = btofpolys;
 
 	currententity = &cl_entities[0];
-	VectorCopy(r_origin, modelorg);
+	MATHLIB_PUB_VectorCopy(r_origin, modelorg);
 	clmodel = currententity->model;
 	r_pcurrentvertbase = clmodel->vertexes;
 

@@ -41,8 +41,8 @@ qboolean SV_CheckBottom(edict_t* ent)
 	int x, y;
 	float mid, bottom;
 
-	VectorAdd(ent->v.origin, ent->v.mins, mins);
-	VectorAdd(ent->v.origin, ent->v.maxs, maxs);
+	MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.mins, mins);
+	MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.maxs, maxs);
 
 	// if all of the points under the corners are solid world, don't bother
 	// with the tougher checks
@@ -71,7 +71,7 @@ realcheck:
 	start[0] = stop[0] = (mins[0] + maxs[0]) * 0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1]) * 0.5;
 	stop[2] = start[2] - 2 * STEPSIZE;
-	trace = SV_Move(start, vec3_origin, vec3_origin, stop, true, ent);
+	trace = SV_Move(start, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, stop, true, ent);
 
 	if (trace.fraction == 1.0)
 		return false;
@@ -84,7 +84,7 @@ realcheck:
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
 
-			trace = SV_Move(start, vec3_origin, vec3_origin, stop, true, ent);
+			trace = SV_Move(start, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, stop, true, ent);
 
 			if (trace.fraction != 1.0 && trace.endpos[2] > bottom)
 				bottom = trace.endpos[2];
@@ -116,8 +116,8 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 	edict_t* enemy;
 
 	// try the move 
-	VectorCopy(ent->v.origin, oldorg);
-	VectorAdd(ent->v.origin, move, neworg);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, oldorg);
+	MATHLIB_PUB_VectorAdd(ent->v.origin, move, neworg);
 
 	// flying monsters don't step up
 	if ((int)ent->v.flags & (FL_SWIM | FL_FLY))
@@ -125,7 +125,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 		// try one move with vertical motion, then one without
 		for (i = 0; i < 2; i++)
 		{
-			VectorAdd(ent->v.origin, move, neworg);
+			MATHLIB_PUB_VectorAdd(ent->v.origin, move, neworg);
 			enemy = PROG_TO_EDICT(ent->v.enemy);
 			if (i == 0 && enemy != sv.edicts)
 			{
@@ -142,7 +142,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 				if (((int)ent->v.flags & FL_SWIM) && SV_PointContents(trace.endpos) == CONTENTS_EMPTY)
 					return false; // swim monster left water
 
-				VectorCopy(trace.endpos, ent->v.origin);
+				MATHLIB_PUB_VectorCopy(trace.endpos, ent->v.origin);
 				if (relink)
 					SV_LinkEdict(ent, true);
 				return true;
@@ -157,7 +157,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 
 	// push down from a step height above the wished position
 	neworg[2] += STEPSIZE;
-	VectorCopy(neworg, end);
+	MATHLIB_PUB_VectorCopy(neworg, end);
 	end[2] -= STEPSIZE * 2;
 
 	trace = SV_Move(neworg, ent->v.mins, ent->v.maxs, end, false, ent);
@@ -177,7 +177,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 		// if monster had the ground pulled out, go ahead and fall
 		if ((int)ent->v.flags & FL_PARTIALGROUND)
 		{
-			VectorAdd(ent->v.origin, move, ent->v.origin);
+			MATHLIB_PUB_VectorAdd(ent->v.origin, move, ent->v.origin);
 			if (relink)
 				SV_LinkEdict(ent, true);
 			ent->v.flags = (int)ent->v.flags & ~FL_ONGROUND;
@@ -189,7 +189,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 	}
 
 	// check point traces down for dangling corners
-	VectorCopy(trace.endpos, ent->v.origin);
+	MATHLIB_PUB_VectorCopy(trace.endpos, ent->v.origin);
 
 	if (!SV_CheckBottom(ent))
 	{
@@ -201,7 +201,7 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 				SV_LinkEdict(ent, true);
 			return true;
 		}
-		VectorCopy(oldorg, ent->v.origin);
+		MATHLIB_PUB_VectorCopy(oldorg, ent->v.origin);
 		return false;
 	}
 
@@ -245,14 +245,14 @@ qboolean SV_StepDirection(edict_t* ent, float yaw, float dist)
 	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
-	VectorCopy(ent->v.origin, oldorigin);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, oldorigin);
 	if (SV_movestep(ent, move, false))
 	{
 		delta = ent->v.angles[YAW] - ent->v.ideal_yaw;
 		if (delta > 45 && delta < 315)
 		{
 			// not turned far enough, so don't take the step
-			VectorCopy(oldorigin, ent->v.origin);
+			MATHLIB_PUB_VectorCopy(oldorigin, ent->v.origin);
 		}
 		SV_LinkEdict(ent, true);
 		return true;
@@ -290,8 +290,8 @@ void SV_NewChaseDir(edict_t* actor, edict_t* enemy, float dist)
 	float d[3];
 	float tdir, olddir, turnaround;
 
-	olddir = anglemod((int)(actor->v.ideal_yaw / 45) * 45);
-	turnaround = anglemod(olddir - 180);
+	olddir = MATHLIB_PUB_anglemod((int)(actor->v.ideal_yaw / 45) * 45);
+	turnaround = MATHLIB_PUB_anglemod(olddir - 180);
 
 	deltax = enemy->v.origin[0] - actor->v.origin[0];
 	deltay = enemy->v.origin[1] - actor->v.origin[1];

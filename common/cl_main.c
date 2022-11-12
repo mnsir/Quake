@@ -475,7 +475,7 @@ void CL_RelinkEntities(void)
 		}
 	}
 
-	bobjrotate = anglemod(100 * cl.time);
+	bobjrotate = MATHLIB_PUB_anglemod(100 * cl.time);
 
 	// start on the entity after the world
 	for (i = 1, ent = cl_entities + 1; i < cl.num_entities; i++, ent++)
@@ -495,14 +495,14 @@ void CL_RelinkEntities(void)
 			continue;
 		}
 
-		VectorCopy(ent->origin, oldorg);
+		MATHLIB_PUB_VectorCopy(ent->origin, oldorg);
 
 		if (ent->forcelink)
 		{
 			// the entity was not updated in the last message
 			// so move to the final spot
-			VectorCopy(ent->msg_origins[0], ent->origin);
-			VectorCopy(ent->msg_angles[0], ent->angles);
+			MATHLIB_PUB_VectorCopy(ent->msg_origins[0], ent->origin);
+			MATHLIB_PUB_VectorCopy(ent->msg_angles[0], ent->angles);
 		}
 		else
 		{
@@ -544,11 +544,11 @@ void CL_RelinkEntities(void)
 			vec3_t fv, rv, uv;
 
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->origin[2] += 16;
-			AngleVectors(ent->angles, fv, rv, uv);
+			MATHLIB_PUB_AngleVectors(ent->angles, fv, rv, uv);
 
-			VectorMA(dl->origin, 18, fv, dl->origin);
+			MATHLIB_PUB_VectorMA(dl->origin, 18, fv, dl->origin);
 			dl->radius = 200 + (rand() & 31);
 			dl->minlight = 32;
 			dl->die = cl.time + 0.1;
@@ -556,7 +556,7 @@ void CL_RelinkEntities(void)
 		if (ent->effects & EF_BRIGHTLIGHT)
 		{
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->origin[2] += 16;
 			dl->radius = 400 + (rand() & 31);
 			dl->die = cl.time + 0.001;
@@ -564,7 +564,7 @@ void CL_RelinkEntities(void)
 		if (ent->effects & EF_DIMLIGHT)
 		{
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->radius = 200 + (rand() & 31);
 			dl->die = cl.time + 0.001;
 		}
@@ -572,7 +572,7 @@ void CL_RelinkEntities(void)
 		if (ent->effects & EF_DARKLIGHT)
 		{
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->radius = 200.0 + (rand() & 31);
 			dl->die = cl.time + 0.001;
 			dl->dark = true;
@@ -580,7 +580,7 @@ void CL_RelinkEntities(void)
 		if (ent->effects & EF_LIGHT)
 		{
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->radius = 200;
 			dl->die = cl.time + 0.001;
 		}
@@ -598,7 +598,7 @@ void CL_RelinkEntities(void)
 		{
 			R_RocketTrail(oldorg, ent->origin, 0);
 			dl = CL_AllocDlight(i);
-			VectorCopy(ent->origin, dl->origin);
+			MATHLIB_PUB_VectorCopy(ent->origin, dl->origin);
 			dl->radius = 200;
 			dl->die = cl.time + 0.01;
 		}

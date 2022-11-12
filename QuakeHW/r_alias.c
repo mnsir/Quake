@@ -235,11 +235,11 @@ float r_avertexnormals[NUMVERTEXNORMALS][3] = {
 };
 
 void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv,
-                                          stvert_t* pstverts);
+	stvert_t* pstverts);
 void R_AliasSetUpTransform(int trivial_accept);
 void R_AliasTransformVector(vec3_t in, vec3_t out);
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
-                               trivertx_t* pverts, stvert_t* pstverts);
+	trivertx_t* pverts, stvert_t* pstverts);
 void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
 
 
@@ -253,8 +253,8 @@ qboolean R_AliasCheckBBox(void)
 	int i, flags, frame, numv;
 	aliashdr_t* pahdr;
 	float zi, basepts[8][3], v0, v1, frac;
-	finalvert_t *pv0, *pv1, viewpts[16];
-	auxvert_t *pa0, *pa1, viewaux[16];
+	finalvert_t* pv0, * pv1, viewpts[16];
+	auxvert_t* pa0, * pa1, viewaux[16];
 	maliasframedesc_t* pframedesc;
 	qboolean zclipped, zfullyclipped;
 	unsigned anyclip, allclip;
@@ -275,7 +275,7 @@ qboolean R_AliasCheckBBox(void)
 	if ((frame >= pmdl->numframes) || (frame < 0))
 	{
 		Con_DPrintf("No such frame %d %s\n", frame,
-		            pmodel->name);
+			pmodel->name);
 		frame = 0;
 	}
 
@@ -414,9 +414,9 @@ R_AliasTransformVector
 */
 void R_AliasTransformVector(vec3_t in, vec3_t out)
 {
-	out[0] = DotProduct(in, aliastransform[0]) + aliastransform[0][3];
-	out[1] = DotProduct(in, aliastransform[1]) + aliastransform[1][3];
-	out[2] = DotProduct(in, aliastransform[2]) + aliastransform[2][3];
+	out[0] = MATHLIB_PUB_DotProduct(in, aliastransform[0]) + aliastransform[0][3];
+	out[1] = MATHLIB_PUB_DotProduct(in, aliastransform[1]) + aliastransform[1][3];
+	out[2] = MATHLIB_PUB_DotProduct(in, aliastransform[2]) + aliastransform[2][3];
 }
 
 
@@ -513,7 +513,7 @@ void R_AliasSetUpTransform(int trivial_accept)
 	angles[ROLL] = currententity->angles[ROLL];
 	angles[PITCH] = -currententity->angles[PITCH];
 	angles[YAW] = currententity->angles[YAW];
-	AngleVectors(angles, alias_forward, alias_right, alias_up);
+	MATHLIB_PUB_AngleVectors(angles, alias_forward, alias_right, alias_up);
 
 	tmatrix[0][0] = pmdl->scale[0];
 	tmatrix[1][1] = pmdl->scale[1];
@@ -537,19 +537,19 @@ void R_AliasSetUpTransform(int trivial_accept)
 	t2matrix[2][3] = -modelorg[2];
 
 	// FIXME: can do more efficiently than full concatenation
-	R_ConcatTransforms(t2matrix, tmatrix, rotationmatrix);
+	MATHLIB_PUB_R_ConcatTransforms(t2matrix, tmatrix, rotationmatrix);
 
 	// TODO: should be global, set when vright, etc., set
-	VectorCopy(vright, viewmatrix[0]);
-	VectorCopy(vup, viewmatrix[1]);
-	VectorInverse(viewmatrix[1]);
-	VectorCopy(vpn, viewmatrix[2]);
+	MATHLIB_PUB_VectorCopy(vright, viewmatrix[0]);
+	MATHLIB_PUB_VectorCopy(vup, viewmatrix[1]);
+	MATHLIB_PUB_VectorInverse(viewmatrix[1]);
+	MATHLIB_PUB_VectorCopy(vpn, viewmatrix[2]);
 
 	// viewmatrix[0][3] = 0;
 	// viewmatrix[1][3] = 0;
 	// viewmatrix[2][3] = 0;
 
-	R_ConcatTransforms(viewmatrix, rotationmatrix, aliastransform);
+	MATHLIB_PUB_R_ConcatTransforms(viewmatrix, rotationmatrix, aliastransform);
 
 	// do the scaling up of x and y to screen coordinates as part of the transform
 	// for the unclipped case (it would mess up clipping in the clipped case).
@@ -576,16 +576,16 @@ R_AliasTransformFinalVert
 ================
 */
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
-                               trivertx_t* pverts, stvert_t* pstverts)
+	trivertx_t* pverts, stvert_t* pstverts)
 {
 	int temp;
-	float lightcos, *plightnormal;
+	float lightcos, * plightnormal;
 
-	av->fv[0] = DotProduct(pverts->v, aliastransform[0]) +
+	av->fv[0] = MATHLIB_PUB_DotProduct(pverts->v, aliastransform[0]) +
 		aliastransform[0][3];
-	av->fv[1] = DotProduct(pverts->v, aliastransform[1]) +
+	av->fv[1] = MATHLIB_PUB_DotProduct(pverts->v, aliastransform[1]) +
 		aliastransform[1][3];
-	av->fv[2] = DotProduct(pverts->v, aliastransform[2]) +
+	av->fv[2] = MATHLIB_PUB_DotProduct(pverts->v, aliastransform[2]) +
 		aliastransform[2][3];
 
 	fv->v[2] = pstverts->s;
@@ -595,7 +595,7 @@ void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
 
 	// lighting
 	plightnormal = r_avertexnormals[pverts->lightnormalindex];
-	lightcos = DotProduct(plightnormal, r_plightvec);
+	lightcos = MATHLIB_PUB_DotProduct(plightnormal, r_plightvec);
 	temp = r_ambientlight;
 
 	if (lightcos < 0)
@@ -622,7 +622,7 @@ R_AliasTransformAndProjectFinalVerts
 void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 {
 	int i, temp;
-	float lightcos, *plightnormal, zi;
+	float lightcos, * plightnormal, zi;
 	trivertx_t* pverts;
 
 	pverts = r_apverts;
@@ -630,7 +630,7 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 	for (i = 0; i < r_anumverts; i++, fv++, pverts++, pstverts++)
 	{
 		// transform and project
-		zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) +
+		zi = 1.0 / (MATHLIB_PUB_DotProduct(pverts->v, aliastransform[2]) +
 			aliastransform[2][3]);
 
 		// x, y, and z are scaled down by 1/2**31 in the transform, so 1/z is
@@ -638,9 +638,9 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 		// projection
 		fv->v[5] = zi;
 
-		fv->v[0] = ((DotProduct(pverts->v, aliastransform[0]) +
+		fv->v[0] = ((MATHLIB_PUB_DotProduct(pverts->v, aliastransform[0]) +
 			aliastransform[0][3]) * zi) + aliasxcenter;
-		fv->v[1] = ((DotProduct(pverts->v, aliastransform[1]) +
+		fv->v[1] = ((MATHLIB_PUB_DotProduct(pverts->v, aliastransform[1]) +
 			aliastransform[1][3]) * zi) + aliasycenter;
 
 		fv->v[2] = pstverts->s;
@@ -649,7 +649,7 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 
 		// lighting
 		plightnormal = r_avertexnormals[pverts->lightnormalindex];
-		lightcos = DotProduct(plightnormal, r_plightvec);
+		lightcos = MATHLIB_PUB_DotProduct(plightnormal, r_plightvec);
 		temp = r_ambientlight;
 
 		if (lightcos < 0)
@@ -726,7 +726,7 @@ void R_AliasSetupSkin(void)
 	int skinnum;
 	int i, numskins;
 	maliasskingroup_t* paliasskingroup;
-	float *pskinintervals, fullskininterval;
+	float* pskinintervals, fullskininterval;
 	float skintargettime, skintime;
 
 	skinnum = currententity->skinnum;
@@ -799,9 +799,9 @@ void R_AliasSetupLighting(alight_t* plighting)
 	r_shadelight *= VID_GRADES;
 
 	// rotate the lighting vector into the model's frame of reference
-	r_plightvec[0] = DotProduct(plighting->plightvec, alias_forward);
-	r_plightvec[1] = -DotProduct(plighting->plightvec, alias_right);
-	r_plightvec[2] = DotProduct(plighting->plightvec, alias_up);
+	r_plightvec[0] = MATHLIB_PUB_DotProduct(plighting->plightvec, alias_forward);
+	r_plightvec[1] = -MATHLIB_PUB_DotProduct(plighting->plightvec, alias_right);
+	r_plightvec[2] = MATHLIB_PUB_DotProduct(plighting->plightvec, alias_up);
 }
 
 /*
@@ -816,7 +816,7 @@ void R_AliasSetupFrame(void)
 	int frame;
 	int i, numframes;
 	maliasgroup_t* paliasgroup;
-	float *pintervals, fullinterval, targettime, time;
+	float* pintervals, fullinterval, targettime, time;
 
 	frame = currententity->frame;
 	if ((frame >= pmdl->numframes) || (frame < 0))

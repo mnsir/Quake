@@ -81,8 +81,8 @@ void R_RenderDlight(dlight_t* light)
 
 	rad = light->radius * 0.35;
 
-	VectorSubtract(light->origin, r_origin, v);
-	if (Length(v) < rad)
+	MATHLIB_PUB_VectorSubtract(light->origin, r_origin, v);
+	if (MATHLIB_PUB_VectorLength(v) < rad)
 	{
 		// view is inside the dlight
 		AddLightBlend(1, 0.5, 0, light->radius * 0.0003);
@@ -167,7 +167,7 @@ void R_MarkLights(dlight_t* light, int bit, mnode_t* node)
 		return;
 
 	splitplane = node->plane;
-	dist = DotProduct(light->origin, splitplane->normal) - splitplane->dist;
+	dist = MATHLIB_PUB_DotProduct(light->origin, splitplane->normal) - splitplane->dist;
 
 	if (dist > light->radius)
 	{
@@ -256,8 +256,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 	// FIXME: optimize for axial
 	plane = node->plane;
-	front = DotProduct(start, plane->normal) - plane->dist;
-	back = DotProduct(end, plane->normal) - plane->dist;
+	front = MATHLIB_PUB_DotProduct(start, plane->normal) - plane->dist;
+	back = MATHLIB_PUB_DotProduct(end, plane->normal) - plane->dist;
 	side = front < 0;
 
 	if ((back < 0) == side)
@@ -277,7 +277,7 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 		return -1; // didn't hit anuthing
 
 	// check for impact on this node
-	VectorCopy(mid, lightspot);
+	MATHLIB_PUB_VectorCopy(mid, lightspot);
 	lightplane = plane;
 
 	surf = cl.worldmodel->surfaces + node->firstsurface;
@@ -288,8 +288,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 		tex = surf->texinfo;
 
-		s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
-		t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
+		s = MATHLIB_PUB_DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
+		t = MATHLIB_PUB_DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] ||
 			t < surf->texturemins[1])

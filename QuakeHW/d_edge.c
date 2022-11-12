@@ -148,13 +148,13 @@ void D_CalcGradients(msurface_t* pface)
 	d_tdivzorigin = p_taxis[2] * mipscale - xcenter * d_tdivzstepu -
 		ycenter * d_tdivzstepv;
 
-	VectorScale(transformed_modelorg, mipscale, p_temp1);
+	MATHLIB_PUB_VectorScale(transformed_modelorg, mipscale, p_temp1);
 
 	t = 0x10000 * mipscale;
-	sadjust = ((fixed16_t)(DotProduct(p_temp1, p_saxis) * 0x10000 + 0.5)) -
+	sadjust = ((fixed16_t)(MATHLIB_PUB_DotProduct(p_temp1, p_saxis) * 0x10000 + 0.5)) -
 		((pface->texturemins[0] << 16) >> miplevel)
 		+ pface->texinfo->vecs[0][3] * t;
-	tadjust = ((fixed16_t)(DotProduct(p_temp1, p_taxis) * 0x10000 + 0.5)) -
+	tadjust = ((fixed16_t)(MATHLIB_PUB_DotProduct(p_temp1, p_taxis) * 0x10000 + 0.5)) -
 		((pface->texturemins[1] << 16) >> miplevel)
 		+ pface->texinfo->vecs[1][3] * t;
 
@@ -181,7 +181,7 @@ void D_DrawSurfaces(void)
 
 	currententity = &cl_entities[0];
 	TransformVector(modelorg, transformed_modelorg);
-	VectorCopy(transformed_modelorg, world_transformed_modelorg);
+	MATHLIB_PUB_VectorCopy(transformed_modelorg, world_transformed_modelorg);
 
 	// TODO: could preset a lot of this at mode set time
 	if (r_drawflat.value)
@@ -247,7 +247,7 @@ void D_DrawSurfaces(void)
 					// TODO: store once at start of frame
 					currententity = s->entity; //FIXME: make this passed in to
 					// R_RotateBmodel ()
-					VectorSubtract(r_origin, currententity->origin,
+					MATHLIB_PUB_VectorSubtract(r_origin, currententity->origin,
 					               local_modelorg);
 					TransformVector(local_modelorg, transformed_modelorg);
 
@@ -267,12 +267,12 @@ void D_DrawSurfaces(void)
 					// TODO: speed up
 					//
 					currententity = &cl_entities[0];
-					VectorCopy(world_transformed_modelorg,
+					MATHLIB_PUB_VectorCopy(world_transformed_modelorg,
 					           transformed_modelorg);
-					VectorCopy(base_vpn, vpn);
-					VectorCopy(base_vup, vup);
-					VectorCopy(base_vright, vright);
-					VectorCopy(base_modelorg, modelorg);
+					MATHLIB_PUB_VectorCopy(base_vpn, vpn);
+					MATHLIB_PUB_VectorCopy(base_vup, vup);
+					MATHLIB_PUB_VectorCopy(base_vright, vright);
+					MATHLIB_PUB_VectorCopy(base_modelorg, modelorg);
 					R_TransformFrustum();
 				}
 			}
@@ -284,7 +284,7 @@ void D_DrawSurfaces(void)
 					// TODO: store once at start of frame
 					currententity = s->entity; //FIXME: make this passed in to
 					// R_RotateBmodel ()
-					VectorSubtract(r_origin, currententity->origin, local_modelorg);
+					MATHLIB_PUB_VectorSubtract(r_origin, currententity->origin, local_modelorg);
 					TransformVector(local_modelorg, transformed_modelorg);
 
 					R_RotateBmodel(); // FIXME: don't mess with the frustum,
@@ -315,12 +315,12 @@ void D_DrawSurfaces(void)
 					// TODO: speed up
 					//
 					currententity = &cl_entities[0];
-					VectorCopy(world_transformed_modelorg,
+					MATHLIB_PUB_VectorCopy(world_transformed_modelorg,
 					           transformed_modelorg);
-					VectorCopy(base_vpn, vpn);
-					VectorCopy(base_vup, vup);
-					VectorCopy(base_vright, vright);
-					VectorCopy(base_modelorg, modelorg);
+					MATHLIB_PUB_VectorCopy(base_vpn, vpn);
+					MATHLIB_PUB_VectorCopy(base_vup, vup);
+					MATHLIB_PUB_VectorCopy(base_vright, vright);
+					MATHLIB_PUB_VectorCopy(base_modelorg, modelorg);
 					R_TransformFrustum();
 				}
 			}

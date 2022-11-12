@@ -115,7 +115,7 @@ int CL_GetMessage(void)
 
 		// get the next message
 		fread(&net_message.cursize, 4, 1, cls.demofile);
-		VectorCopy(cl.mviewangles[0], cl.mviewangles[1]);
+		MATHLIB_PUB_VectorCopy(cl.mviewangles[0], cl.mviewangles[1]);
 		for (i = 0; i < 3; i++)
 		{
 			r = fread(&f, 4, 1, cls.demofile);

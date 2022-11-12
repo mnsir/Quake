@@ -86,8 +86,8 @@ void CL_ParseBeam(model_t* m)
 			b->entity = ent;
 			b->model = m;
 			b->endtime = cl.time + 0.2;
-			VectorCopy(start, b->start);
-			VectorCopy(end, b->end);
+			MATHLIB_PUB_VectorCopy(start, b->start);
+			MATHLIB_PUB_VectorCopy(end, b->end);
 			return;
 		}
 
@@ -99,8 +99,8 @@ void CL_ParseBeam(model_t* m)
 			b->entity = ent;
 			b->model = m;
 			b->endtime = cl.time + 0.2;
-			VectorCopy(start, b->start);
-			VectorCopy(end, b->end);
+			MATHLIB_PUB_VectorCopy(start, b->start);
+			MATHLIB_PUB_VectorCopy(end, b->end);
 			return;
 		}
 	}
@@ -130,7 +130,7 @@ void CL_ParseTEnt(void)
 		pos[0] = MSG_ReadCoord();
 		pos[1] = MSG_ReadCoord();
 		pos[2] = MSG_ReadCoord();
-		R_RunParticleEffect(pos, vec3_origin, 20, 30);
+		R_RunParticleEffect(pos, MATHLIB_PUB_vec3_origin, 20, 30);
 		S_StartSound(-1, 0, cl_sfx_wizhit, pos, 1, 1);
 		break;
 
@@ -138,7 +138,7 @@ void CL_ParseTEnt(void)
 		pos[0] = MSG_ReadCoord();
 		pos[1] = MSG_ReadCoord();
 		pos[2] = MSG_ReadCoord();
-		R_RunParticleEffect(pos, vec3_origin, 226, 20);
+		R_RunParticleEffect(pos, MATHLIB_PUB_vec3_origin, 226, 20);
 		S_StartSound(-1, 0, cl_sfx_knighthit, pos, 1, 1);
 		break;
 
@@ -149,7 +149,7 @@ void CL_ParseTEnt(void)
 #ifdef GLTEST
 		Test_Spawn(pos);
 #else
-		R_RunParticleEffect(pos, vec3_origin, 0, 10);
+		R_RunParticleEffect(pos, MATHLIB_PUB_vec3_origin, 0, 10);
 #endif
 		if (rand() % 5)
 			S_StartSound(-1, 0, cl_sfx_tink1, pos, 1, 1);
@@ -168,7 +168,7 @@ void CL_ParseTEnt(void)
 		pos[0] = MSG_ReadCoord();
 		pos[1] = MSG_ReadCoord();
 		pos[2] = MSG_ReadCoord();
-		R_RunParticleEffect(pos, vec3_origin, 0, 20);
+		R_RunParticleEffect(pos, MATHLIB_PUB_vec3_origin, 0, 20);
 
 		if (rand() % 5)
 			S_StartSound(-1, 0, cl_sfx_tink1, pos, 1, 1);
@@ -188,7 +188,7 @@ void CL_ParseTEnt(void)
 		pos[0] = MSG_ReadCoord();
 		pos[1] = MSG_ReadCoord();
 		pos[2] = MSG_ReadCoord();
-		R_RunParticleEffect(pos, vec3_origin, 0, 20);
+		R_RunParticleEffect(pos, MATHLIB_PUB_vec3_origin, 0, 20);
 		break;
 
 	case TE_EXPLOSION: // rocket explosion
@@ -197,7 +197,7 @@ void CL_ParseTEnt(void)
 		pos[2] = MSG_ReadCoord();
 		R_ParticleExplosion(pos);
 		dl = CL_AllocDlight(0);
-		VectorCopy(pos, dl->origin);
+		MATHLIB_PUB_VectorCopy(pos, dl->origin);
 		dl->radius = 350;
 		dl->die = cl.time + 0.5;
 		dl->decay = 300;
@@ -253,7 +253,7 @@ void CL_ParseTEnt(void)
 		colorLength = MSG_ReadByte();
 		R_ParticleExplosion2(pos, colorStart, colorLength);
 		dl = CL_AllocDlight(0);
-		VectorCopy(pos, dl->origin);
+		MATHLIB_PUB_VectorCopy(pos, dl->origin);
 		dl->radius = 350;
 		dl->die = cl.time + 0.5;
 		dl->decay = 300;
@@ -280,7 +280,7 @@ void CL_ParseTEnt(void)
 		R_RocketTrail(pos, endpos, 0 + 128);
 		R_ParticleExplosion(endpos);
 		dl = CL_AllocDlight(-1);
-		VectorCopy(endpos, dl->origin);
+		MATHLIB_PUB_VectorCopy(endpos, dl->origin);
 		dl->radius = 350;
 		dl->die = cl.time + 0.5;
 		dl->decay = 300;
@@ -343,11 +343,11 @@ void CL_UpdateTEnts(void)
 		// if coming from the player, update the start position
 		if (b->entity == cl.viewentity)
 		{
-			VectorCopy(cl_entities[cl.viewentity].origin, b->start);
+			MATHLIB_PUB_VectorCopy(cl_entities[cl.viewentity].origin, b->start);
 		}
 
 		// calculate pitch and yaw
-		VectorSubtract(b->end, b->start, dist);
+		MATHLIB_PUB_VectorSubtract(b->end, b->start, dist);
 
 		if (dist[1] == 0 && dist[0] == 0)
 		{
@@ -370,14 +370,14 @@ void CL_UpdateTEnts(void)
 		}
 
 		// add new entities for the lightning
-		VectorCopy(b->start, org);
-		d = VectorNormalize(dist);
+		MATHLIB_PUB_VectorCopy(b->start, org);
+		d = MATHLIB_PUB_VectorNormalize(dist);
 		while (d > 0)
 		{
 			ent = CL_NewTempEntity();
 			if (!ent)
 				return;
-			VectorCopy(org, ent->origin);
+			MATHLIB_PUB_VectorCopy(org, ent->origin);
 			ent->model = b->model;
 			ent->angles[0] = pitch;
 			ent->angles[1] = yaw;

@@ -54,7 +54,7 @@ void TraceLine(vec3_t start, vec3_t end, vec3_t impact)
 	memset(&trace, 0, sizeof(trace));
 	SV_RecursiveHullCheck(cl.worldmodel->hulls, 0, 0, 1, start, end, &trace);
 
-	VectorCopy(trace.endpos, impact);
+	MATHLIB_PUB_VectorCopy(trace.endpos, impact);
 }
 
 void Chase_Update(void)
@@ -66,7 +66,7 @@ void Chase_Update(void)
 
 
 	// if can't see player, reset
-	AngleVectors(cl.viewangles, forward, right, up);
+	MATHLIB_PUB_AngleVectors(cl.viewangles, forward, right, up);
 
 	// calc exact destination
 	for (i = 0; i < 3; i++)
@@ -76,16 +76,16 @@ void Chase_Update(void)
 	chase_dest[2] = r_refdef.vieworg[2] + chase_up.value;
 
 	// find the spot the player is looking at
-	VectorMA(r_refdef.vieworg, 4096, forward, dest);
+	MATHLIB_PUB_VectorMA(r_refdef.vieworg, 4096, forward, dest);
 	TraceLine(r_refdef.vieworg, dest, stop);
 
 	// calculate pitch to look at the same spot from camera
-	VectorSubtract(stop, r_refdef.vieworg, stop);
-	dist = DotProduct(stop, forward);
+	MATHLIB_PUB_VectorSubtract(stop, r_refdef.vieworg, stop);
+	dist = MATHLIB_PUB_DotProduct(stop, forward);
 	if (dist < 1)
 		dist = 1;
 	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / M_PI * 180;
 
 	// move towards destination
-	VectorCopy(chase_dest, r_refdef.vieworg);
+	MATHLIB_PUB_VectorCopy(chase_dest, r_refdef.vieworg);
 }

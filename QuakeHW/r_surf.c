@@ -35,7 +35,7 @@ unsigned* r_lightptr;
 int r_stepback;
 int r_lightwidth;
 int r_numhblocks, r_numvblocks;
-unsigned char *r_source, *r_sourcemax;
+unsigned char* r_source, * r_sourcemax;
 
 void R_DrawSurfaceBlock8_mip0(void);
 void R_DrawSurfaceBlock8_mip1(void);
@@ -80,7 +80,7 @@ void R_AddDynamicLights(void)
 			continue; // not lit by this light
 
 		rad = cl_dlights[lnum].radius;
-		dist = DotProduct(cl_dlights[lnum].origin, surf->plane->normal) -
+		dist = MATHLIB_PUB_DotProduct(cl_dlights[lnum].origin, surf->plane->normal) -
 			surf->plane->dist;
 		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
@@ -94,8 +94,8 @@ void R_AddDynamicLights(void)
 				surf->plane->normal[i] * dist;
 		}
 
-		local[0] = DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
-		local[1] = DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
+		local[0] = MATHLIB_PUB_DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
+		local[1] = MATHLIB_PUB_DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
 
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];
@@ -177,13 +177,13 @@ void R_BuildLightMap(void)
 	// add all the lightmaps
 	if (lightmap)
 		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-		     maps++)
-		{
-			scale = r_drawsurf.lightadj[maps]; // 8.8 fraction 
-			for (i = 0; i < size; i++)
-				blocklights[i] += lightmap[i] * scale;
-			lightmap += size; // skip to next lightmap
-		}
+			maps++)
+	{
+		scale = r_drawsurf.lightadj[maps]; // 8.8 fraction 
+		for (i = 0; i < size; i++)
+			blocklights[i] += lightmap[i] * scale;
+		lightmap += size; // skip to next lightmap
+	}
 
 	// add all the dynamic lights
 	if (surf->dlightframe == r_framecount)
@@ -342,7 +342,7 @@ R_DrawSurfaceBlock8_mip0
 void R_DrawSurfaceBlock8_mip0(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, *psource, *prowdest;
+	unsigned char pix, * psource, * prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -392,7 +392,7 @@ R_DrawSurfaceBlock8_mip1
 void R_DrawSurfaceBlock8_mip1(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, *psource, *prowdest;
+	unsigned char pix, * psource, * prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -442,7 +442,7 @@ R_DrawSurfaceBlock8_mip2
 void R_DrawSurfaceBlock8_mip2(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, *psource, *prowdest;
+	unsigned char pix, * psource, * prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;
@@ -492,7 +492,7 @@ R_DrawSurfaceBlock8_mip3
 void R_DrawSurfaceBlock8_mip3(void)
 {
 	int v, i, b, lightstep, lighttemp, light;
-	unsigned char pix, *psource, *prowdest;
+	unsigned char pix, * psource, * prowdest;
 
 	psource = pbasesource;
 	prowdest = prowdestbase;

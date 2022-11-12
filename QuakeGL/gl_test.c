@@ -53,7 +53,7 @@ plane_t* HitPlane(vec3_t start, vec3_t end)
 	memset(&trace, 0, sizeof(trace_t));
 	trace.fraction = 1;
 	trace.allsolid = true;
-	VectorCopy(end, trace.endpos);
+	MATHLIB_PUB_VectorCopy(end, trace.endpos);
 
 	SV_RecursiveHullCheck(cl.worldmodel->hulls, 0, 0, 1, start, end, &trace);
 
@@ -79,21 +79,21 @@ void Test_Spawn(vec3_t origin)
 	if (i == MAX_PUFFS)
 		return;
 
-	VectorSubtract(r_refdef.vieworg, origin, incoming);
-	VectorSubtract(origin, incoming, temp);
+	MATHLIB_PUB_VectorSubtract(r_refdef.vieworg, origin, incoming);
+	MATHLIB_PUB_VectorSubtract(origin, incoming, temp);
 	plane = HitPlane(r_refdef.vieworg, temp);
 
-	VectorNormalize(incoming);
-	d = DotProduct(incoming, plane->normal);
-	VectorSubtract(vec3_origin, incoming, p->reflect);
-	VectorMA(p->reflect, d * 2, plane->normal, p->reflect);
+	 MATHLIB_PUB_VectorNormalize(incoming);
+	d = MATHLIB_PUB_DotProduct(incoming, plane->normal);
+	MATHLIB_PUB_VectorSubtract(MATHLIB_PUB_vec3_origin, incoming, p->reflect);
+	MATHLIB_PUB_VectorMA(p->reflect, d * 2, plane->normal, p->reflect);
 
-	VectorCopy(origin, p->origin);
-	VectorCopy(plane->normal, p->normal);
+	MATHLIB_PUB_VectorCopy(origin, p->origin);
+	MATHLIB_PUB_VectorCopy(plane->normal, p->normal);
 
-	CrossProduct(incoming, p->normal, p->up);
+	 MATHLIB_PUB_CrossProduct(incoming, p->normal, p->up);
 
-	CrossProduct(p->up, p->normal, p->right);
+	 MATHLIB_PUB_CrossProduct(p->up, p->normal, p->right);
 
 	p->length = 8;
 }

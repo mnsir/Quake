@@ -34,45 +34,17 @@ typedef int fixed16_t;
 
 struct mplane_s;
 
-extern vec3_t vec3_origin;
-extern int nanmask;
+extern vec3_t MATHLIB_PUB_vec3_origin;
+extern int MATHLIB_PUB_nanmask;
 
-#define IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
+#define MATHLIB_PUB_IS_NAN(x) (((*(int *)&x)&MATHLIB_PUB_nanmask)==MATHLIB_PUB_nanmask)
 
-#define DotProduct(x,y) (x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
-#define VectorSubtract(a,b,c) {c[0]=a[0]-b[0];c[1]=a[1]-b[1];c[2]=a[2]-b[2];}
-#define VectorAdd(a,b,c) {c[0]=a[0]+b[0];c[1]=a[1]+b[1];c[2]=a[2]+b[2];}
-#define VectorCopy(a,b) {b[0]=a[0];b[1]=a[1];b[2]=a[2];}
+#define MATHLIB_PUB_DotProduct(x,y) (x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
+#define MATHLIB_PUB_VectorSubtract(a,b,c) {c[0]=a[0]-b[0];c[1]=a[1]-b[1];c[2]=a[2]-b[2];}
+#define MATHLIB_PUB_VectorAdd(a,b,c) {c[0]=a[0]+b[0];c[1]=a[1]+b[1];c[2]=a[2]+b[2];}
+#define MATHLIB_PUB_VectorCopy(a,b) {b[0]=a[0];b[1]=a[1];b[2]=a[2];}
 
-void VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
-
-vec_t _DotProduct(vec3_t v1, vec3_t v2);
-void _VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out);
-void _VectorCopy(vec3_t in, vec3_t out);
-
-int VectorCompare(vec3_t v1, vec3_t v2);
-vec_t Length(vec3_t v);
-void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
-float VectorNormalize(vec3_t v); // returns vector length
-void VectorInverse(vec3_t v);
-void VectorScale(vec3_t in, vec_t scale, vec3_t out);
-int Q_log2(int val);
-
-void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
-void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4]);
-
-void FloorDivMod(double numer, double denom, int* quotient,
-                 int* rem);
-fixed16_t Invert24To16(fixed16_t val);
-int GreatestCommonDivisor(int i1, int i2);
-
-void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct mplane_s* plane);
-float anglemod(float a);
-
-
-#define BOX_ON_PLANE_SIDE(emins, emaxs, p) \
+#define MATHLIB_PUB_BOX_ON_PLANE_SIDE(emins, emaxs, p) \
  (((p)->type < 3)? \
  ( \
  ((p)->dist <= (emins)[(p)->type])? \
@@ -86,4 +58,31 @@ float anglemod(float a);
  ) \
  ) \
  : \
- BoxOnPlaneSide( (emins), (emaxs), (p)))
+ MATHLIB_PUB_BoxOnPlaneSide( (emins), (emaxs), (p)))
+
+void MATHLIB_PUB_RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
+float MATHLIB_PUB_anglemod(float a);
+int MATHLIB_PUB_BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct mplane_s* plane);
+void MATHLIB_PUB_AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+int MATHLIB_PUB_VectorCompare(vec3_t v1, vec3_t v2);
+void MATHLIB_PUB_VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
+
+vec_t _MATHLIB_PUB_DotProduct(vec3_t v1, vec3_t v2);
+void _MATHLIB_PUB_VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out);
+void _MATHLIB_PUB_VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out);
+void _MATHLIB_PUB_VectorCopy(vec3_t in, vec3_t out);
+
+void MATHLIB_PUB_CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
+vec_t MATHLIB_PUB_VectorLength(vec3_t v);
+float MATHLIB_PUB_VectorNormalize(vec3_t v); // returns vector length
+void MATHLIB_PUB_VectorInverse(vec3_t v);
+void MATHLIB_PUB_VectorScale(vec3_t in, vec_t scale, vec3_t out);
+
+void MATHLIB_PUB_R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
+void MATHLIB_PUB_R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4]);
+
+void MATHLIB_PUB_FloorDivMod(double numer, double denom, int* quotient,
+	int* rem);
+int MATHLIB_PUB_GreatestCommonDivisor(int i1, int i2);
+
+

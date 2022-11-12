@@ -448,7 +448,7 @@ void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 	screenedge[3].type = PLANE_ANYZ;
 
 	for (i = 0; i < 4; i++)
-		VectorNormalize(screenedge[i].normal);
+		 MATHLIB_PUB_VectorNormalize(screenedge[i].normal);
 
 	res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
 			(320.0 * 152.0)) *
@@ -548,14 +548,14 @@ void R_DrawEntitiesOnList(void)
 		switch (currententity->model->type)
 		{
 		case mod_sprite:
-			VectorCopy(currententity->origin, r_entorigin);
-			VectorSubtract(r_origin, r_entorigin, modelorg);
+			MATHLIB_PUB_VectorCopy(currententity->origin, r_entorigin);
+			MATHLIB_PUB_VectorSubtract(r_origin, r_entorigin, modelorg);
 			R_DrawSprite();
 			break;
 
 		case mod_alias:
-			VectorCopy(currententity->origin, r_entorigin);
-			VectorSubtract(r_origin, r_entorigin, modelorg);
+			MATHLIB_PUB_VectorCopy(currententity->origin, r_entorigin);
+			MATHLIB_PUB_VectorSubtract(r_origin, r_entorigin, modelorg);
 
 		// see if the bounding box lets us trivially reject, also sets
 		// trivial accept status
@@ -572,10 +572,10 @@ void R_DrawEntitiesOnList(void)
 				{
 					if (cl_dlights[lnum].die >= cl.time)
 					{
-						VectorSubtract(currententity->origin,
+						MATHLIB_PUB_VectorSubtract(currententity->origin,
 						               cl_dlights[lnum].origin,
 						               dist);
-						add = cl_dlights[lnum].radius - Length(dist);
+						add = cl_dlights[lnum].radius - MATHLIB_PUB_VectorLength(dist);
 
 						if (add > 0)
 							lighting.ambientlight += add;
@@ -627,11 +627,11 @@ void R_DrawViewModel(void)
 	if (!currententity->model)
 		return;
 
-	VectorCopy(currententity->origin, r_entorigin);
-	VectorSubtract(r_origin, r_entorigin, modelorg);
+	MATHLIB_PUB_VectorCopy(currententity->origin, r_entorigin);
+	MATHLIB_PUB_VectorSubtract(r_origin, r_entorigin, modelorg);
 
-	VectorCopy(vup, viewlightvec);
-	VectorInverse(viewlightvec);
+	MATHLIB_PUB_VectorCopy(vup, viewlightvec);
+	MATHLIB_PUB_VectorInverse(viewlightvec);
 
 	j = R_LightPoint(currententity->origin);
 
@@ -651,8 +651,8 @@ void R_DrawViewModel(void)
 		if (dl->die < cl.time)
 			continue;
 
-		VectorSubtract(currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		MATHLIB_PUB_VectorSubtract(currententity->origin, dl->origin, dist);
+		add = dl->radius - MATHLIB_PUB_VectorLength(dist);
 		if (add > 0)
 			r_viewlighting.ambientlight += add;
 	}
@@ -691,7 +691,7 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 	{
 		for (i = 0; i < 4; i++)
 		{
-			d = DotProduct(currententity->origin, view_clipplanes[i].normal);
+			d = MATHLIB_PUB_DotProduct(currententity->origin, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d <= -clmodel->radius)
@@ -715,7 +715,7 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 			rejectpt[1] = minmaxs[pindex[1]];
 			rejectpt[2] = minmaxs[pindex[2]];
 
-			d = DotProduct(rejectpt, view_clipplanes[i].normal);
+			d = MATHLIB_PUB_DotProduct(rejectpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d <= 0)
@@ -725,7 +725,7 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 			acceptpt[1] = minmaxs[pindex[3 + 1]];
 			acceptpt[2] = minmaxs[pindex[3 + 2]];
 
-			d = DotProduct(acceptpt, view_clipplanes[i].normal);
+			d = MATHLIB_PUB_DotProduct(acceptpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d <= 0)
@@ -752,7 +752,7 @@ void R_DrawBEntitiesOnList(void)
 	if (!r_drawentities.value)
 		return;
 
-	VectorCopy(modelorg, oldorigin);
+	MATHLIB_PUB_VectorCopy(modelorg, oldorigin);
 	insubmodel = true;
 	r_dlightframecount = r_framecount;
 
@@ -780,10 +780,10 @@ void R_DrawBEntitiesOnList(void)
 
 			if (clipflags != BMODEL_FULLY_CLIPPED)
 			{
-				VectorCopy(currententity->origin, r_entorigin);
-				VectorSubtract(r_origin, r_entorigin, modelorg);
+				MATHLIB_PUB_VectorCopy(currententity->origin, r_entorigin);
+				MATHLIB_PUB_VectorSubtract(r_origin, r_entorigin, modelorg);
 				// FIXME: is this needed?
-				VectorCopy(modelorg, r_worldmodelorg);
+				MATHLIB_PUB_VectorCopy(modelorg, r_worldmodelorg);
 
 				r_pcurrentvertbase = clmodel->vertexes;
 
@@ -850,11 +850,11 @@ void R_DrawBEntitiesOnList(void)
 
 				// put back world rotation and frustum clipping 
 				// FIXME: R_RotateBmodel should just work off base_vxx
-				VectorCopy(base_vpn, vpn);
-				VectorCopy(base_vup, vup);
-				VectorCopy(base_vright, vright);
-				VectorCopy(base_modelorg, modelorg);
-				VectorCopy(oldorigin, modelorg);
+				MATHLIB_PUB_VectorCopy(base_vpn, vpn);
+				MATHLIB_PUB_VectorCopy(base_vup, vup);
+				MATHLIB_PUB_VectorCopy(base_vright, vright);
+				MATHLIB_PUB_VectorCopy(base_modelorg, modelorg);
+				MATHLIB_PUB_VectorCopy(oldorigin, modelorg);
 				R_TransformFrustum();
 			}
 

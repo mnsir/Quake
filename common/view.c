@@ -84,8 +84,8 @@ float V_CalcRoll(vec3_t angles, vec3_t velocity)
 	float side;
 	float value;
 
-	AngleVectors(angles, forward, right, up);
-	side = DotProduct(velocity, right);
+	MATHLIB_PUB_AngleVectors(angles, forward, right, up);
+	side = MATHLIB_PUB_DotProduct(velocity, right);
 	sign = side < 0 ? -1 : 1;
 	side = fabs(side);
 
@@ -124,7 +124,7 @@ float V_CalcBob(void)
 	// (don't count Z, or jumping messes it up)
 
 	bob = sqrt(cl.velocity[0] * cl.velocity[0] + cl.velocity[1] * cl.velocity[1]) * cl_bob.value;
-	//Con_Printf ("speed: %5.1f\n", Length(cl.velocity));
+	//Con_Printf ("speed: %5.1f\n", MATHLIB_PUB_VectorLength(cl.velocity));
 	bob = bob * 0.3 + bob * 0.7 * sin(cycle);
 	if (bob > 4)
 		bob = 4;
@@ -358,15 +358,15 @@ void V_ParseDamage(void)
 	//
 	ent = &cl_entities[cl.viewentity];
 
-	VectorSubtract(from, ent->origin, from);
-	VectorNormalize(from);
+	MATHLIB_PUB_VectorSubtract(from, ent->origin, from);
+	 MATHLIB_PUB_VectorNormalize(from);
 
-	AngleVectors(ent->angles, forward, right, up);
+	MATHLIB_PUB_AngleVectors(ent->angles, forward, right, up);
 
-	side = DotProduct(from, right);
+	side = MATHLIB_PUB_DotProduct(from, right);
 	v_dmg_roll = count * side * v_kickroll.value;
 
-	side = DotProduct(from, forward);
+	side = MATHLIB_PUB_DotProduct(from, forward);
 	v_dmg_pitch = count * side * v_kickpitch.value;
 
 	v_dmg_time = v_kicktime.value;
@@ -685,7 +685,7 @@ void V_UpdatePalette(void)
 
 float angledelta(float a)
 {
-	a = anglemod(a);
+	a = MATHLIB_PUB_anglemod(a);
 	if (a > 180)
 		a -= 360;
 	return a;
@@ -836,8 +836,8 @@ void V_CalcIntermissionRefdef(void)
 	// view is the weapon model (only visible from inside body)
 	view = &cl.viewent;
 
-	VectorCopy(ent->origin, r_refdef.vieworg);
-	VectorCopy(ent->angles, r_refdef.viewangles);
+	MATHLIB_PUB_VectorCopy(ent->origin, r_refdef.vieworg);
+	MATHLIB_PUB_VectorCopy(ent->angles, r_refdef.viewangles);
 	view->model = NULL;
 
 	// allways idle in intermission
@@ -881,7 +881,7 @@ void V_CalcRefdef(void)
 	bob = V_CalcBob();
 
 	// refresh position
-	VectorCopy(ent->origin, r_refdef.vieworg);
+	MATHLIB_PUB_VectorCopy(ent->origin, r_refdef.vieworg);
 	r_refdef.vieworg[2] += cl.viewheight + bob;
 
 	// never let it sit exactly on a node line, because a water plane can
@@ -891,7 +891,7 @@ void V_CalcRefdef(void)
 	r_refdef.vieworg[1] += 1.0 / 32;
 	r_refdef.vieworg[2] += 1.0 / 32;
 
-	VectorCopy(cl.viewangles, r_refdef.viewangles);
+	MATHLIB_PUB_VectorCopy(cl.viewangles, r_refdef.viewangles);
 	V_CalcViewRoll();
 	V_AddIdle();
 
@@ -901,7 +901,7 @@ void V_CalcRefdef(void)
 	angles[YAW] = ent->angles[YAW];
 	angles[ROLL] = ent->angles[ROLL];
 
-	AngleVectors(angles, forward, right, up);
+	MATHLIB_PUB_AngleVectors(angles, forward, right, up);
 
 	for (i = 0; i < 3; i++)
 		r_refdef.vieworg[i] += scr_ofsx.value * forward[i]
@@ -912,11 +912,11 @@ void V_CalcRefdef(void)
 	V_BoundOffsets();
 
 	// set up gun position
-	VectorCopy(cl.viewangles, view->angles);
+	MATHLIB_PUB_VectorCopy(cl.viewangles, view->angles);
 
 	CalcGunAngle();
 
-	VectorCopy(ent->origin, view->origin);
+	MATHLIB_PUB_VectorCopy(ent->origin, view->origin);
 	view->origin[2] += cl.viewheight;
 
 	for (i = 0; i < 3; i++)
@@ -947,7 +947,7 @@ void V_CalcRefdef(void)
 	view->colormap = vid.colormap;
 
 	// set up the refresh position
-	VectorAdd(r_refdef.viewangles, cl.punchangle, r_refdef.viewangles);
+	MATHLIB_PUB_VectorAdd(r_refdef.viewangles, cl.punchangle, r_refdef.viewangles);
 
 	// smooth out stair step ups
 	if (cl.onground && ent->origin[2] - oldz > 0)

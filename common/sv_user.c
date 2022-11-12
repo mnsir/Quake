@@ -77,7 +77,7 @@ void SV_SetIdealPitch(void)
 		bottom[1] = top[1];
 		bottom[2] = top[2] - 160;
 
-		tr = SV_Move(top, vec3_origin, vec3_origin, bottom, 1, sv_player);
+		tr = SV_Move(top, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, bottom, 1, sv_player);
 		if (tr.allsolid)
 			return; // looking at a wall, leave ideal the way is was
 
@@ -140,7 +140,7 @@ void SV_UserFriction(void)
 	start[2] = origin[2] + sv_player->v.mins[2];
 	stop[2] = start[2] - 34;
 
-	trace = SV_Move(start, vec3_origin, vec3_origin, stop, true, sv_player);
+	trace = SV_Move(start, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, stop, true, sv_player);
 
 	if (trace.fraction == 1.0)
 		friction = sv_friction.value * sv_edgefriction.value;
@@ -177,8 +177,8 @@ void SV_Accelerate(vec3_t wishvel)
 	if (wishspeed == 0)
 		return;
 
-	VectorSubtract(wishvel, velocity, pushvec);
-	addspeed = VectorNormalize(pushvec);
+	MATHLIB_PUB_VectorSubtract(wishvel, velocity, pushvec);
+	addspeed = MATHLIB_PUB_VectorNormalize(pushvec);
 
 	accelspeed = sv_accelerate.value * host_frametime * addspeed;
 	if (accelspeed > addspeed)
@@ -193,7 +193,7 @@ void SV_Accelerate(void)
 	int i;
 	float addspeed, accelspeed, currentspeed;
 
-	currentspeed = DotProduct(velocity, wishdir);
+	currentspeed = MATHLIB_PUB_DotProduct(velocity, wishdir);
 	addspeed = wishspeed - currentspeed;
 	if (addspeed <= 0)
 		return;
@@ -210,10 +210,10 @@ void SV_AirAccelerate(vec3_t wishveloc)
 	int i;
 	float addspeed, wishspd, accelspeed, currentspeed;
 
-	wishspd = VectorNormalize(wishveloc);
+	wishspd = MATHLIB_PUB_VectorNormalize(wishveloc);
 	if (wishspd > 30)
 		wishspd = 30;
-	currentspeed = DotProduct(velocity, wishveloc);
+	currentspeed = MATHLIB_PUB_DotProduct(velocity, wishveloc);
 	addspeed = wishspd - currentspeed;
 	if (addspeed <= 0)
 		return;
@@ -231,12 +231,12 @@ void DropPunchAngle(void)
 {
 	float len;
 
-	len = VectorNormalize(sv_player->v.punchangle);
+	len = MATHLIB_PUB_VectorNormalize(sv_player->v.punchangle);
 
 	len -= 10 * host_frametime;
 	if (len < 0)
 		len = 0;
-	VectorScale(sv_player->v.punchangle, len, sv_player->v.punchangle);
+	MATHLIB_PUB_VectorScale(sv_player->v.punchangle, len, sv_player->v.punchangle);
 }
 
 /*
@@ -254,7 +254,7 @@ void SV_WaterMove(void)
 	//
 	// user intentions
 	//
-	AngleVectors(sv_player->v.v_angle, forward, right, up);
+	MATHLIB_PUB_AngleVectors(sv_player->v.v_angle, forward, right, up);
 
 	for (i = 0; i < 3; i++)
 		wishvel[i] = forward[i] * cmd.forwardmove + right[i] * cmd.sidemove;
@@ -264,10 +264,10 @@ void SV_WaterMove(void)
 	else
 		wishvel[2] += cmd.upmove;
 
-	wishspeed = Length(wishvel);
+	wishspeed = MATHLIB_PUB_VectorLength(wishvel);
 	if (wishspeed > sv_maxspeed.value)
 	{
-		VectorScale(wishvel, sv_maxspeed.value / wishspeed, wishvel);
+		MATHLIB_PUB_VectorScale(wishvel, sv_maxspeed.value / wishspeed, wishvel);
 		wishspeed = sv_maxspeed.value;
 	}
 	wishspeed *= 0.7;
@@ -275,13 +275,13 @@ void SV_WaterMove(void)
 	//
 	// water friction
 	//
-	speed = Length(velocity);
+	speed = MATHLIB_PUB_VectorLength(velocity);
 	if (speed)
 	{
 		newspeed = speed - host_frametime * speed * sv_friction.value;
 		if (newspeed < 0)
 			newspeed = 0;
-		VectorScale(velocity, newspeed / speed, velocity);
+		MATHLIB_PUB_VectorScale(velocity, newspeed / speed, velocity);
 	}
 	else
 		newspeed = 0;
@@ -296,7 +296,7 @@ void SV_WaterMove(void)
 	if (addspeed <= 0)
 		return;
 
-	VectorNormalize(wishvel);
+	 MATHLIB_PUB_VectorNormalize(wishvel);
 	accelspeed = sv_accelerate.value * wishspeed * host_frametime;
 	if (accelspeed > addspeed)
 		accelspeed = addspeed;
@@ -330,7 +330,7 @@ void SV_AirMove(void)
 	vec3_t wishvel;
 	float fmove, smove;
 
-	AngleVectors(sv_player->v.angles, forward, right, up);
+	MATHLIB_PUB_AngleVectors(sv_player->v.angles, forward, right, up);
 
 	fmove = cmd.forwardmove;
 	smove = cmd.sidemove;
@@ -347,18 +347,18 @@ void SV_AirMove(void)
 	else
 		wishvel[2] = 0;
 
-	VectorCopy(wishvel, wishdir);
-	wishspeed = VectorNormalize(wishdir);
+	MATHLIB_PUB_VectorCopy(wishvel, wishdir);
+	wishspeed = MATHLIB_PUB_VectorNormalize(wishdir);
 	if (wishspeed > sv_maxspeed.value)
 	{
-		VectorScale(wishvel, sv_maxspeed.value / wishspeed, wishvel);
+		MATHLIB_PUB_VectorScale(wishvel, sv_maxspeed.value / wishspeed, wishvel);
 		wishspeed = sv_maxspeed.value;
 	}
 
 	if (sv_player->v.movetype == MOVETYPE_NOCLIP)
 	{
 		// noclip
-		VectorCopy(wishvel, velocity);
+		MATHLIB_PUB_VectorCopy(wishvel, velocity);
 	}
 	else if (onground)
 	{
@@ -406,7 +406,7 @@ void SV_ClientThink(void)
 	cmd = host_client->cmd;
 	angles = sv_player->v.angles;
 
-	VectorAdd(sv_player->v.v_angle, sv_player->v.punchangle, v_angle);
+	MATHLIB_PUB_VectorAdd(sv_player->v.v_angle, sv_player->v.punchangle, v_angle);
 	angles[ROLL] = V_CalcRoll(sv_player->v.angles, sv_player->v.velocity) * 4;
 	if (!sv_player->v.fixangle)
 	{
@@ -453,7 +453,7 @@ void SV_ReadClientMove(usercmd_t* move)
 	for (i = 0; i < 3; i++)
 		angle[i] = MSG_ReadAngle();
 
-	VectorCopy(angle, host_client->edict->v.v_angle);
+	MATHLIB_PUB_VectorCopy(angle, host_client->edict->v.v_angle);
 
 	// read movement
 	move->forwardmove = MSG_ReadShort();

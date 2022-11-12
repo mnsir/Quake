@@ -87,7 +87,7 @@ void R_AddDynamicLights(msurface_t* surf)
 			continue; // not lit by this light
 
 		rad = cl_dlights[lnum].radius;
-		dist = DotProduct(cl_dlights[lnum].origin, surf->plane->normal) -
+		dist = MATHLIB_PUB_DotProduct(cl_dlights[lnum].origin, surf->plane->normal) -
 			surf->plane->dist;
 		rad -= fabs(dist);
 		minlight = cl_dlights[lnum].minlight;
@@ -101,8 +101,8 @@ void R_AddDynamicLights(msurface_t* surf)
 				surf->plane->normal[i] * dist;
 		}
 
-		local[0] = DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
-		local[1] = DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
+		local[0] = MATHLIB_PUB_DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
+		local[1] = MATHLIB_PUB_DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
 
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];
@@ -1116,8 +1116,8 @@ void R_DrawBrushModel(entity_t* e)
 	else
 	{
 		rotated = false;
-		VectorAdd(e->origin, clmodel->mins, mins);
-		VectorAdd(e->origin, clmodel->maxs, maxs);
+		MATHLIB_PUB_VectorAdd(e->origin, clmodel->mins, mins);
+		MATHLIB_PUB_VectorAdd(e->origin, clmodel->maxs, maxs);
 	}
 
 	if (R_CullBox(mins, maxs))
@@ -1126,17 +1126,17 @@ void R_DrawBrushModel(entity_t* e)
 	glColor3f(1, 1, 1);
 	memset(lightmap_polys, 0, sizeof(lightmap_polys));
 
-	VectorSubtract(r_refdef.vieworg, e->origin, modelorg);
+	MATHLIB_PUB_VectorSubtract(r_refdef.vieworg, e->origin, modelorg);
 	if (rotated)
 	{
 		vec3_t temp;
 		vec3_t forward, right, up;
 
-		VectorCopy(modelorg, temp);
-		AngleVectors(e->angles, forward, right, up);
-		modelorg[0] = DotProduct(temp, forward);
-		modelorg[1] = -DotProduct(temp, right);
-		modelorg[2] = DotProduct(temp, up);
+		MATHLIB_PUB_VectorCopy(modelorg, temp);
+		MATHLIB_PUB_AngleVectors(e->angles, forward, right, up);
+		modelorg[0] = MATHLIB_PUB_DotProduct(temp, forward);
+		modelorg[1] = -MATHLIB_PUB_DotProduct(temp, right);
+		modelorg[2] = MATHLIB_PUB_DotProduct(temp, up);
 	}
 
 	psurf = &clmodel->surfaces[clmodel->firstmodelsurface];
@@ -1169,7 +1169,7 @@ void R_DrawBrushModel(entity_t* e)
 		// find which side of the node we are on
 		pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		dot = MATHLIB_PUB_DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
@@ -1260,7 +1260,7 @@ void R_RecursiveWorldNode(mnode_t* node)
 		dot = modelorg[2] - plane->dist;
 		break;
 	default:
-		dot = DotProduct(modelorg, plane->normal) - plane->dist;
+		dot = MATHLIB_PUB_DotProduct(modelorg, plane->normal) - plane->dist;
 		break;
 	}
 
@@ -1337,7 +1337,7 @@ void R_DrawWorld(void)
 	memset(&ent, 0, sizeof(ent));
 	ent.model = cl.worldmodel;
 
-	VectorCopy(r_refdef.vieworg, modelorg);
+	MATHLIB_PUB_VectorCopy(r_refdef.vieworg, modelorg);
 
 	currententity = &ent;
 	currenttexture = -1;
@@ -1511,26 +1511,26 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 			r_pedge = &pedges[-lindex];
 			vec = r_pcurrentvertbase[r_pedge->v[1]].position;
 		}
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
+		s = MATHLIB_PUB_DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
 		s /= fa->texinfo->texture->width;
 
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
+		t = MATHLIB_PUB_DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
 		t /= fa->texinfo->texture->height;
 
-		VectorCopy(vec, poly->verts[i]);
+		MATHLIB_PUB_VectorCopy(vec, poly->verts[i]);
 		poly->verts[i][3] = s;
 		poly->verts[i][4] = t;
 
 		//
 		// lightmap texture coordinates
 		//
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
+		s = MATHLIB_PUB_DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
 		s -= fa->texturemins[0];
 		s += fa->light_s * 16;
 		s += 8;
 		s /= BLOCK_WIDTH * 16; //fa->texinfo->texture->width;
 
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
+		t = MATHLIB_PUB_DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
 		t -= fa->texturemins[1];
 		t += fa->light_t * 16;
 		t += 8;
@@ -1555,10 +1555,10 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 			this = poly->verts[i];
 			next = poly->verts[(i + 1) % lnumverts];
 
-			VectorSubtract(this, prev, v1);
-			VectorNormalize(v1);
-			VectorSubtract(next, prev, v2);
-			VectorNormalize(v2);
+			MATHLIB_PUB_VectorSubtract(this, prev, v1);
+			 MATHLIB_PUB_VectorNormalize(v1);
+			MATHLIB_PUB_VectorSubtract(next, prev, v2);
+			 MATHLIB_PUB_VectorNormalize(v2);
 
 			// skip co-linear points
 #define COLINEAR_EPSILON 0.001

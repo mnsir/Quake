@@ -51,7 +51,7 @@ Call when removing an object from the world or moving it to another position
 */
 void R_RemoveEfrags(entity_t* ent)
 {
-	efrag_t *ef, *old, *walk, **prev;
+	efrag_t* ef, * old, * walk, ** prev;
 
 	ef = ent->efrag;
 
@@ -136,7 +136,7 @@ void R_SplitEntityOnNode(mnode_t* node)
 	// NODE_MIXED
 
 	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
+	sides = MATHLIB_PUB_BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
 
 	if (sides == 3)
 	{
@@ -177,7 +177,7 @@ void R_SplitEntityOnNode2(mnode_t* node)
 	}
 
 	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
+	sides = MATHLIB_PUB_BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
 
 	if (sides == 3)
 	{

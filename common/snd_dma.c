@@ -412,11 +412,11 @@ void SND_Spatialize(channel_t* ch)
 	// calculate stereo seperation and distance attenuation
 
 	snd = ch->sfx;
-	VectorSubtract(ch->origin, listener_origin, source_vec);
+	MATHLIB_PUB_VectorSubtract(ch->origin, listener_origin, source_vec);
 
-	dist = VectorNormalize(source_vec) * ch->dist_mult;
+	dist = MATHLIB_PUB_VectorNormalize(source_vec) * ch->dist_mult;
 
-	dot = DotProduct(listener_right, source_vec);
+	dot = MATHLIB_PUB_DotProduct(listener_right, source_vec);
 
 	if (shm->channels == 1)
 	{
@@ -472,7 +472,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t* sfx, vec3_t origin, float f
 
 	// spatialize
 	memset(target_chan, 0, sizeof(*target_chan));
-	VectorCopy(origin, target_chan->origin);
+	MATHLIB_PUB_VectorCopy(origin, target_chan->origin);
 	target_chan->dist_mult = attenuation / sound_nominal_clip_dist;
 	target_chan->master_vol = vol;
 	target_chan->entnum = entnum;
@@ -641,7 +641,7 @@ void S_StaticSound(sfx_t* sfx, vec3_t origin, float vol, float attenuation)
 	}
 
 	ss->sfx = sfx;
-	VectorCopy(origin, ss->origin);
+	MATHLIB_PUB_VectorCopy(origin, ss->origin);
 	ss->master_vol = vol;
 	ss->dist_mult = (attenuation / 64) / sound_nominal_clip_dist;
 	ss->end = paintedtime + sc->length;
@@ -724,10 +724,10 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
-	VectorCopy(origin, listener_origin);
-	VectorCopy(forward, listener_forward);
-	VectorCopy(right, listener_right);
-	VectorCopy(up, listener_up);
+	MATHLIB_PUB_VectorCopy(origin, listener_origin);
+	MATHLIB_PUB_VectorCopy(forward, listener_forward);
+	MATHLIB_PUB_VectorCopy(right, listener_right);
+	MATHLIB_PUB_VectorCopy(up, listener_up);
 
 	// update general area ambient sound sources
 	S_UpdateAmbientSounds();
@@ -990,7 +990,7 @@ void S_LocalSound(char* sound)
 		Con_Printf("S_LocalSound: can't cache %s\n", sound);
 		return;
 	}
-	S_StartSound(cl.viewentity, -1, sfx, vec3_origin, 1, 1);
+	S_StartSound(cl.viewentity, -1, sfx, MATHLIB_PUB_vec3_origin, 1, 1);
 }
 
 

@@ -113,7 +113,7 @@ qboolean R_CullBox(vec3_t mins, vec3_t maxs)
 	int i;
 
 	for (i = 0; i < 4; i++)
-		if (BoxOnPlaneSide(mins, maxs, &frustum[i]) == 2)
+		if (MATHLIB_PUB_BoxOnPlaneSide(mins, maxs, &frustum[i]) == 2)
 			return true;
 	return false;
 }
@@ -210,7 +210,7 @@ void R_DrawSpriteModel(entity_t* e)
 	if (psprite->type == SPR_ORIENTED)
 	{
 		// bullet marks on walls
-		AngleVectors(currententity->angles, v_forward, v_right, v_up);
+		MATHLIB_PUB_AngleVectors(currententity->angles, v_forward, v_right, v_up);
 		up = v_up;
 		right = v_right;
 	}
@@ -231,23 +231,23 @@ void R_DrawSpriteModel(entity_t* e)
 	glBegin(GL_QUADS);
 
 	glTexCoord2f(0, 1);
-	VectorMA(e->origin, frame->down, up, point);
-	VectorMA(point, frame->left, right, point);
+	MATHLIB_PUB_VectorMA(e->origin, frame->down, up, point);
+	MATHLIB_PUB_VectorMA(point, frame->left, right, point);
 	glVertex3fv(point);
 
 	glTexCoord2f(0, 0);
-	VectorMA(e->origin, frame->up, up, point);
-	VectorMA(point, frame->left, right, point);
+	MATHLIB_PUB_VectorMA(e->origin, frame->up, up, point);
+	MATHLIB_PUB_VectorMA(point, frame->left, right, point);
 	glVertex3fv(point);
 
 	glTexCoord2f(1, 0);
-	VectorMA(e->origin, frame->up, up, point);
-	VectorMA(point, frame->right, right, point);
+	MATHLIB_PUB_VectorMA(e->origin, frame->up, up, point);
+	MATHLIB_PUB_VectorMA(point, frame->right, right, point);
 	glVertex3fv(point);
 
 	glTexCoord2f(1, 1);
-	VectorMA(e->origin, frame->down, up, point);
-	VectorMA(point, frame->right, right, point);
+	MATHLIB_PUB_VectorMA(e->origin, frame->down, up, point);
+	MATHLIB_PUB_VectorMA(point, frame->right, right, point);
 	glVertex3fv(point);
 
 	glEnd();
@@ -894,15 +894,15 @@ void R_DrawAliasModel(entity_t* e)
 
 	clmodel = currententity->model;
 
-	VectorAdd(currententity->origin, clmodel->mins, mins);
-	VectorAdd(currententity->origin, clmodel->maxs, maxs);
+	MATHLIB_PUB_VectorAdd(currententity->origin, clmodel->mins, mins);
+	MATHLIB_PUB_VectorAdd(currententity->origin, clmodel->maxs, maxs);
 
 	if (R_CullBox(mins, maxs))
 		return;
 
 
-	VectorCopy(currententity->origin, r_entorigin);
-	VectorSubtract(r_origin, r_entorigin, modelorg);
+	MATHLIB_PUB_VectorCopy(currententity->origin, r_entorigin);
+	MATHLIB_PUB_VectorSubtract(r_origin, r_entorigin, modelorg);
 
 	//
 	// get lighting information
@@ -918,10 +918,10 @@ void R_DrawAliasModel(entity_t* e)
 	{
 		if (cl_dlights[lnum].die >= cl.time)
 		{
-			VectorSubtract(currententity->origin,
+			MATHLIB_PUB_VectorSubtract(currententity->origin,
 			               cl_dlights[lnum].origin,
 			               dist);
-			add = cl_dlights[lnum].radius - Length(dist);
+			add = cl_dlights[lnum].radius - MATHLIB_PUB_VectorLength(dist);
 
 			if (add > 0)
 			{
@@ -956,7 +956,7 @@ void R_DrawAliasModel(entity_t* e)
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
-	VectorNormalize(shadevector);
+	 MATHLIB_PUB_VectorNormalize(shadevector);
 
 	//
 	// locate the proper data
@@ -1132,8 +1132,8 @@ void R_DrawViewModel(void)
 		if (dl->die < cl.time)
 			continue;
 
-		VectorSubtract(currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		MATHLIB_PUB_VectorSubtract(currententity->origin, dl->origin, dist);
+		add = dl->radius - MATHLIB_PUB_VectorLength(dist);
 		if (add > 0)
 			ambientlight += add;
 	}
@@ -1212,28 +1212,28 @@ void R_SetFrustum(void)
 	{
 		// front side is visible
 
-		VectorAdd(vpn, vright, frustum[0].normal);
-		VectorSubtract(vpn, vright, frustum[1].normal);
+		MATHLIB_PUB_VectorAdd(vpn, vright, frustum[0].normal);
+		MATHLIB_PUB_VectorSubtract(vpn, vright, frustum[1].normal);
 
-		VectorAdd(vpn, vup, frustum[2].normal);
-		VectorSubtract(vpn, vup, frustum[3].normal);
+		MATHLIB_PUB_VectorAdd(vpn, vup, frustum[2].normal);
+		MATHLIB_PUB_VectorSubtract(vpn, vup, frustum[3].normal);
 	}
 	else
 	{
 		// rotate VPN right by FOV_X/2 degrees
-		RotatePointAroundVector(frustum[0].normal, vup, vpn, -(90 - r_refdef.fov_x / 2));
+		MATHLIB_PUB_RotatePointAroundVector(frustum[0].normal, vup, vpn, -(90 - r_refdef.fov_x / 2));
 		// rotate VPN left by FOV_X/2 degrees
-		RotatePointAroundVector(frustum[1].normal, vup, vpn, 90 - r_refdef.fov_x / 2);
+		MATHLIB_PUB_RotatePointAroundVector(frustum[1].normal, vup, vpn, 90 - r_refdef.fov_x / 2);
 		// rotate VPN up by FOV_X/2 degrees
-		RotatePointAroundVector(frustum[2].normal, vright, vpn, 90 - r_refdef.fov_y / 2);
+		MATHLIB_PUB_RotatePointAroundVector(frustum[2].normal, vright, vpn, 90 - r_refdef.fov_y / 2);
 		// rotate VPN down by FOV_X/2 degrees
-		RotatePointAroundVector(frustum[3].normal, vright, vpn, -(90 - r_refdef.fov_y / 2));
+		MATHLIB_PUB_RotatePointAroundVector(frustum[3].normal, vright, vpn, -(90 - r_refdef.fov_y / 2));
 	}
 
 	for (i = 0; i < 4; i++)
 	{
 		frustum[i].type = PLANE_ANYZ;
-		frustum[i].dist = DotProduct(r_origin, frustum[i].normal);
+		frustum[i].dist = MATHLIB_PUB_DotProduct(r_origin, frustum[i].normal);
 		frustum[i].signbits = SignbitsForPlane(&frustum[i]);
 	}
 }
@@ -1259,9 +1259,9 @@ void R_SetupFrame(void)
 	r_framecount++;
 
 	// build the transformation matrix for the given view angles
-	VectorCopy(r_refdef.vieworg, r_origin);
+	MATHLIB_PUB_VectorCopy(r_refdef.vieworg, r_origin);
 
-	AngleVectors(r_refdef.viewangles, vpn, vright, vup);
+	MATHLIB_PUB_AngleVectors(r_refdef.viewangles, vpn, vright, vup);
 
 	// current viewleaf
 	r_oldviewleaf = r_viewleaf;
@@ -1478,11 +1478,11 @@ void R_Mirror(void)
 
 	memcpy(r_base_world_matrix, r_world_matrix, sizeof(r_base_world_matrix));
 
-	d = DotProduct(r_refdef.vieworg, mirror_plane->normal) - mirror_plane->dist;
-	VectorMA(r_refdef.vieworg, -2 * d, mirror_plane->normal, r_refdef.vieworg);
+	d = MATHLIB_PUB_DotProduct(r_refdef.vieworg, mirror_plane->normal) - mirror_plane->dist;
+	MATHLIB_PUB_VectorMA(r_refdef.vieworg, -2 * d, mirror_plane->normal, r_refdef.vieworg);
 
-	d = DotProduct(vpn, mirror_plane->normal);
-	VectorMA(vpn, -2 * d, mirror_plane->normal, vpn);
+	d = MATHLIB_PUB_DotProduct(vpn, mirror_plane->normal);
+	MATHLIB_PUB_VectorMA(vpn, -2 * d, mirror_plane->normal, vpn);
 
 	r_refdef.viewangles[0] = -asin(vpn[2]) / M_PI * 180;
 	r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / M_PI * 180;

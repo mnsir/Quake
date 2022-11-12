@@ -24,22 +24,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Sys_Error(char* error, ...);
 
-vec3_t vec3_origin = {0, 0, 0};
-int nanmask = 255 << 23;
+vec3_t MATHLIB_PUB_vec3_origin = { 0, 0, 0 };
+int MATHLIB_PUB_nanmask = 255 << 23;
 
 /*-----------------------------------------------------------------*/
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 
-void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
+static void MATHLIB_PR_ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {
 	float d;
 	vec3_t n;
 	float inv_denom;
 
-	inv_denom = 1.0F / DotProduct(normal, normal);
+	inv_denom = 1.0F / MATHLIB_PUB_DotProduct(normal, normal);
 
-	d = DotProduct(normal, p) * inv_denom;
+	d = MATHLIB_PUB_DotProduct(normal, p) * inv_denom;
 
 	n[0] = normal[0] * inv_denom;
 	n[1] = normal[1] * inv_denom;
@@ -53,7 +53,7 @@ void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 /*
 ** assumes "src" is normalized
 */
-void PerpendicularVector(vec3_t dst, const vec3_t src)
+static void MATHLIB_PR_PerpendicularVector(vec3_t dst, const vec3_t src)
 {
 	int pos;
 	int i;
@@ -77,12 +77,12 @@ void PerpendicularVector(vec3_t dst, const vec3_t src)
 	/*
 	** project the point onto the plane defined by src
 	*/
-	ProjectPointOnPlane(dst, tempvec, src);
+	MATHLIB_PR_ProjectPointOnPlane(dst, tempvec, src);
 
 	/*
 	** normalize the result
 	*/
-	VectorNormalize(dst);
+	MATHLIB_PUB_VectorNormalize(dst);
 }
 
 #ifdef _WIN32
@@ -90,7 +90,7 @@ void PerpendicularVector(vec3_t dst, const vec3_t src)
 #endif
 
 
-void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
+void MATHLIB_PUB_RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
 {
 	float m[3][3];
 	float im[3][3];
@@ -104,8 +104,8 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	vf[1] = dir[1];
 	vf[2] = dir[2];
 
-	PerpendicularVector(vr, dir);
-	CrossProduct(vr, vf, vup);
+	MATHLIB_PR_PerpendicularVector(vr, dir);
+	MATHLIB_PUB_CrossProduct(vr, vf, vup);
 
 	m[0][0] = vr[0];
 	m[1][0] = vr[1];
@@ -136,8 +136,8 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	zrot[1][0] = -sin(DEG2RAD(degrees));
 	zrot[1][1] = cos(DEG2RAD(degrees));
 
-	R_ConcatRotations(m, zrot, tmpmat);
-	R_ConcatRotations(tmpmat, im, rot);
+	MATHLIB_PUB_R_ConcatRotations(m, zrot, tmpmat);
+	MATHLIB_PUB_R_ConcatRotations(tmpmat, im, rot);
 
 	for (i = 0; i < 3; i++)
 	{
@@ -152,7 +152,7 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 /*-----------------------------------------------------------------*/
 
 
-float anglemod(float a)
+float MATHLIB_PUB_anglemod(float a)
 {
 #if 0
 	if (a >= 0)
@@ -171,7 +171,7 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
-void BOPS_Error(void)
+static void MATHLIB_PR_BOPS_Error(void)
 {
 	Sys_Error("BoxOnPlaneSide:  Bad signbits");
 }
@@ -186,7 +186,7 @@ BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 ==================
 */
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
+int MATHLIB_PUB_BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 {
 	float dist1, dist2;
 	int sides;
@@ -241,7 +241,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 		break;
 	default:
 		dist1 = dist2 = 0; // shut up compiler
-		BOPS_Error();
+		MATHLIB_PR_BOPS_Error();
 		break;
 	}
 
@@ -262,8 +262,8 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 			corners[0][i] = emaxs[i];
 		}
 	}
-	dist = DotProduct(plane->normal, corners[0]) - plane->dist;
-	dist2 = DotProduct(plane->normal, corners[1]) - plane->dist;
+	dist = MATHLIB_PUB_DotProduct(plane->normal, corners[0]) - plane->dist;
+	dist2 = MATHLIB_PUB_DotProduct(plane->normal, corners[1]) - plane->dist;
 	sides = 0;
 	if (dist1 >= 0)
 		sides = 1;
@@ -289,7 +289,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 #endif
 
 
-void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
+void MATHLIB_PUB_AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float angle;
 	float sr, sp, sy, cr, cp, cy;
@@ -315,7 +315,7 @@ void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	up[2] = cr * cp;
 }
 
-int VectorCompare(vec3_t v1, vec3_t v2)
+int MATHLIB_PUB_VectorCompare(vec3_t v1, vec3_t v2)
 {
 	int i;
 
@@ -326,7 +326,7 @@ int VectorCompare(vec3_t v1, vec3_t v2)
 	return 1;
 }
 
-void VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
+void MATHLIB_PUB_VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 {
 	vecc[0] = veca[0] + scale * vecb[0];
 	vecc[1] = veca[1] + scale * vecb[1];
@@ -334,33 +334,33 @@ void VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 }
 
 
-vec_t _DotProduct(vec3_t v1, vec3_t v2)
+vec_t _MATHLIB_PUB_DotProduct(vec3_t v1, vec3_t v2)
 {
 	return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-void _VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out)
+void _MATHLIB_PUB_VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out)
 {
 	out[0] = veca[0] - vecb[0];
 	out[1] = veca[1] - vecb[1];
 	out[2] = veca[2] - vecb[2];
 }
 
-void _VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out)
+void _MATHLIB_PUB_VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out)
 {
 	out[0] = veca[0] + vecb[0];
 	out[1] = veca[1] + vecb[1];
 	out[2] = veca[2] + vecb[2];
 }
 
-void _VectorCopy(vec3_t in, vec3_t out)
+void _MATHLIB_PUB_VectorCopy(vec3_t in, vec3_t out)
 {
 	out[0] = in[0];
 	out[1] = in[1];
 	out[2] = in[2];
 }
 
-void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
+void MATHLIB_PUB_CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
 {
 	cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
@@ -369,7 +369,7 @@ void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
 
 double sqrt(double x);
 
-vec_t Length(vec3_t v)
+vec_t MATHLIB_PUB_VectorLength(vec3_t v)
 {
 	int i;
 	float length;
@@ -382,7 +382,7 @@ vec_t Length(vec3_t v)
 	return length;
 }
 
-float VectorNormalize(vec3_t v)
+float MATHLIB_PUB_VectorNormalize(vec3_t v)
 {
 	float length, ilength;
 
@@ -400,27 +400,18 @@ float VectorNormalize(vec3_t v)
 	return length;
 }
 
-void VectorInverse(vec3_t v)
+void MATHLIB_PUB_VectorInverse(vec3_t v)
 {
 	v[0] = -v[0];
 	v[1] = -v[1];
 	v[2] = -v[2];
 }
 
-void VectorScale(vec3_t in, vec_t scale, vec3_t out)
+void MATHLIB_PUB_VectorScale(vec3_t in, vec_t scale, vec3_t out)
 {
 	out[0] = in[0] * scale;
 	out[1] = in[1] * scale;
 	out[2] = in[2] * scale;
-}
-
-
-int Q_log2(int val)
-{
-	int answer = 0;
-	while (val >>= 1)
-		answer++;
-	return answer;
 }
 
 
@@ -429,7 +420,7 @@ int Q_log2(int val)
 R_ConcatRotations
 ================
 */
-void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3])
+void MATHLIB_PUB_R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 		in1[0][2] * in2[2][0];
@@ -457,7 +448,7 @@ void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3])
 R_ConcatTransforms
 ================
 */
-void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4])
+void MATHLIB_PUB_R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4])
 {
 	out[0][0] = in1[0][0] * in2[0][0] + in1[0][1] * in2[1][0] +
 		in1[0][2] * in2[2][0];
@@ -496,8 +487,8 @@ quotient must fit in 32 bits.
 ====================
 */
 
-void FloorDivMod(double numer, double denom, int* quotient,
-                 int* rem)
+void MATHLIB_PUB_FloorDivMod(double numer, double denom, int* quotient,
+	int* rem)
 {
 	int q, r;
 	double x;
@@ -542,39 +533,16 @@ void FloorDivMod(double numer, double denom, int* quotient,
 GreatestCommonDivisor
 ====================
 */
-int GreatestCommonDivisor(int i1, int i2)
+int MATHLIB_PUB_GreatestCommonDivisor(int i1, int i2)
 {
 	if (i1 > i2)
 	{
 		if (i2 == 0)
 			return (i1);
-		return GreatestCommonDivisor(i2, i1 % i2);
+		return MATHLIB_PUB_GreatestCommonDivisor(i2, i1 % i2);
 	}
 	if (i1 == 0)
 		return (i2);
-	return GreatestCommonDivisor(i1, i2 % i1);
+	return MATHLIB_PUB_GreatestCommonDivisor(i1, i2 % i1);
 }
 
-
-#if !id386
-
-// TODO: move to nonintel.c
-
-/*
-===================
-Invert24To16
-
-Inverts an 8.24 value to a 16.16 value
-====================
-*/
-
-fixed16_t Invert24To16(fixed16_t val)
-{
-	if (val < 256)
-		return (0xFFFFFFFF);
-
-	return (fixed16_t)
-		(((double)0x10000 * (double)0x1000000 / (double)val) + 0.5);
-}
-
-#endif

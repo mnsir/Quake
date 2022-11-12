@@ -710,7 +710,7 @@ void _Host_Frame(float time)
 		CL_DecayLights();
 	}
 	else
-		S_Update(vec3_origin, vec3_origin, vec3_origin, vec3_origin);
+		S_Update(MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin);
 
 	CDAudio_Update();
 

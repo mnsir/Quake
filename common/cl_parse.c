@@ -444,8 +444,8 @@ void CL_ParseUpdate(int bits)
 		ent->effects = ent->baseline.effects;
 
 	// shift the known values for interpolation
-	VectorCopy(ent->msg_origins[0], ent->msg_origins[1]);
-	VectorCopy(ent->msg_angles[0], ent->msg_angles[1]);
+	MATHLIB_PUB_VectorCopy(ent->msg_origins[0], ent->msg_origins[1]);
+	MATHLIB_PUB_VectorCopy(ent->msg_angles[0], ent->msg_angles[1]);
 
 	if (bits & U_ORIGIN1)
 		ent->msg_origins[0][0] = MSG_ReadCoord();
@@ -480,10 +480,10 @@ void CL_ParseUpdate(int bits)
 	if (forcelink)
 	{
 		// didn't have an update last message
-		VectorCopy(ent->msg_origins[0], ent->msg_origins[1]);
-		VectorCopy(ent->msg_origins[0], ent->origin);
-		VectorCopy(ent->msg_angles[0], ent->msg_angles[1]);
-		VectorCopy(ent->msg_angles[0], ent->angles);
+		MATHLIB_PUB_VectorCopy(ent->msg_origins[0], ent->msg_origins[1]);
+		MATHLIB_PUB_VectorCopy(ent->msg_origins[0], ent->origin);
+		MATHLIB_PUB_VectorCopy(ent->msg_angles[0], ent->msg_angles[1]);
+		MATHLIB_PUB_VectorCopy(ent->msg_angles[0], ent->angles);
 		ent->forcelink = true;
 	}
 }
@@ -530,7 +530,7 @@ void CL_ParseClientdata(int bits)
 	else
 		cl.idealpitch = 0;
 
-	VectorCopy(cl.mvelocity[0], cl.mvelocity[1]);
+	MATHLIB_PUB_VectorCopy(cl.mvelocity[0], cl.mvelocity[1]);
 	for (i = 0; i < 3; i++)
 	{
 		if (bits & (SU_PUNCH1 << i))
@@ -690,8 +690,8 @@ void CL_ParseStatic(void)
 	ent->skinnum = ent->baseline.skin;
 	ent->effects = ent->baseline.effects;
 
-	VectorCopy(ent->baseline.origin, ent->origin);
-	VectorCopy(ent->baseline.angles, ent->angles);
+	MATHLIB_PUB_VectorCopy(ent->baseline.origin, ent->origin);
+	MATHLIB_PUB_VectorCopy(ent->baseline.angles, ent->angles);
 	R_AddEfrags(ent);
 }
 

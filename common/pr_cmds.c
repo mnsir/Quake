@@ -61,7 +61,7 @@ void PF_error(void)
 
 	s = PF_VarString(0);
 	Con_Printf("======SERVER ERROR in %s:\n%s\n"
-	           , pr_strings + pr_xfunction->s_name, s);
+		, pr_strings + pr_xfunction->s_name, s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print(ed);
 
@@ -85,7 +85,7 @@ void PF_objerror(void)
 
 	s = PF_VarString(0);
 	Con_Printf("======OBJECT ERROR in %s:\n%s\n"
-	           , pr_strings + pr_xfunction->s_name, s);
+		, pr_strings + pr_xfunction->s_name, s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print(ed);
 	ED_Free(ed);
@@ -104,7 +104,7 @@ makevectors(vector)
 */
 void PF_makevectors(void)
 {
-	AngleVectors(G_VECTOR(OFS_PARM0), pr_global_struct->v_forward, pr_global_struct->v_right, pr_global_struct->v_up);
+	MATHLIB_PUB_AngleVectors(G_VECTOR(OFS_PARM0), pr_global_struct->v_forward, pr_global_struct->v_right, pr_global_struct->v_up);
 }
 
 /*
@@ -123,7 +123,7 @@ void PF_setorigin(void)
 
 	e = G_EDICT(OFS_PARM0);
 	org = G_VECTOR(OFS_PARM1);
-	VectorCopy(org, e->v.origin);
+	MATHLIB_PUB_VectorCopy(org, e->v.origin);
 	SV_LinkEdict(e, false);
 }
 
@@ -146,8 +146,8 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, qboolean rotate)
 
 	if (!rotate)
 	{
-		VectorCopy(min, rmin);
-		VectorCopy(max, rmax);
+		MATHLIB_PUB_VectorCopy(min, rmin);
+		MATHLIB_PUB_VectorCopy(max, rmax);
 	}
 	else
 	{
@@ -161,8 +161,8 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, qboolean rotate)
 		yvector[0] = -sin(a);
 		yvector[1] = cos(a);
 
-		VectorCopy(min, bounds[0]);
-		VectorCopy(max, bounds[1]);
+		MATHLIB_PUB_VectorCopy(min, bounds[0]);
+		MATHLIB_PUB_VectorCopy(max, bounds[1]);
 
 		rmin[0] = rmin[1] = rmin[2] = 9999;
 		rmax[0] = rmax[1] = rmax[2] = -9999;
@@ -195,9 +195,9 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, qboolean rotate)
 	}
 
 	// set derived values
-	VectorCopy(rmin, e->v.mins);
-	VectorCopy(rmax, e->v.maxs);
-	VectorSubtract(max, min, e->v.size);
+	MATHLIB_PUB_VectorCopy(rmin, e->v.mins);
+	MATHLIB_PUB_VectorCopy(rmax, e->v.maxs);
+	MATHLIB_PUB_VectorSubtract(max, min, e->v.size);
 
 	SV_LinkEdict(e, false);
 }
@@ -214,7 +214,7 @@ setsize (entity, minvector, maxvector)
 void PF_setsize(void)
 {
 	edict_t* e;
-	float *min, *max;
+	float* min, * max;
 
 	e = G_EDICT(OFS_PARM0);
 	min = G_VECTOR(OFS_PARM1);
@@ -233,7 +233,7 @@ setmodel(entity, model)
 void PF_setmodel(void)
 {
 	edict_t* e;
-	char *m, **check;
+	char* m, ** check;
 	model_t* mod;
 	int i;
 
@@ -257,7 +257,7 @@ void PF_setmodel(void)
 	if (mod)
 		SetMinMaxSize(e, mod->mins, mod->maxs, true);
 	else
-		SetMinMaxSize(e, vec3_origin, vec3_origin, true);
+		SetMinMaxSize(e, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, true);
 }
 
 /*
@@ -367,7 +367,7 @@ void PF_normalize(void)
 		newvalue[2] = value1[2] * new;
 	}
 
-	VectorCopy(newvalue, G_VECTOR(OFS_RETURN));
+	MATHLIB_PUB_VectorCopy(newvalue, G_VECTOR(OFS_RETURN));
 }
 
 /*
@@ -484,7 +484,7 @@ particle(origin, color, count)
 */
 void PF_particle(void)
 {
-	float *org, *dir;
+	float* org, * dir;
 	float color;
 	float count;
 
@@ -606,7 +606,7 @@ traceline (vector1, vector2, tryents)
 */
 void PF_traceline(void)
 {
-	float *v1, *v2;
+	float* v1, * v2;
 	trace_t trace;
 	int nomonsters;
 	edict_t* ent;
@@ -616,15 +616,15 @@ void PF_traceline(void)
 	nomonsters = G_FLOAT(OFS_PARM2);
 	ent = G_EDICT(OFS_PARM3);
 
-	trace = SV_Move(v1, vec3_origin, vec3_origin, v2, nomonsters, ent);
+	trace = SV_Move(v1, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, v2, nomonsters, ent);
 
 	pr_global_struct->trace_allsolid = trace.allsolid;
 	pr_global_struct->trace_startsolid = trace.startsolid;
 	pr_global_struct->trace_fraction = trace.fraction;
 	pr_global_struct->trace_inwater = trace.inwater;
 	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy(trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy(trace.plane.normal, pr_global_struct->trace_plane_normal);
+	MATHLIB_PUB_VectorCopy(trace.endpos, pr_global_struct->trace_endpos);
+	MATHLIB_PUB_VectorCopy(trace.plane.normal, pr_global_struct->trace_plane_normal);
 	pr_global_struct->trace_plane_dist = trace.plane.dist;
 	if (trace.ent)
 		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
@@ -652,8 +652,8 @@ void PF_TraceToss(void)
 	pr_global_struct->trace_fraction = trace.fraction;
 	pr_global_struct->trace_inwater = trace.inwater;
 	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy(trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy(trace.plane.normal, pr_global_struct->trace_plane_normal);
+	MATHLIB_PUB_VectorCopy(trace.endpos, pr_global_struct->trace_endpos);
+	MATHLIB_PUB_VectorCopy(trace.plane.normal, pr_global_struct->trace_plane_normal);
 	pr_global_struct->trace_plane_dist = trace.plane.dist;
 	if (trace.ent)
 		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
@@ -723,7 +723,7 @@ int PF_newcheckclient(int check)
 	}
 
 	// get the PVS for the entity
-	VectorAdd(ent->v.origin, ent->v.view_ofs, org);
+	MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.view_ofs, org);
 	leaf = Mod_PointInLeaf(org, sv.worldmodel);
 	pvs = Mod_LeafPVS(leaf, sv.worldmodel);
 	memcpy(checkpvs, pvs, (sv.worldmodel->numleafs + 7) >> 3);
@@ -751,7 +751,7 @@ int c_invis, c_notvis;
 
 void PF_checkclient(void)
 {
-	edict_t *ent, *self;
+	edict_t* ent, * self;
 	mleaf_t* leaf;
 	int l;
 	vec3_t view;
@@ -773,7 +773,7 @@ void PF_checkclient(void)
 
 	// if current entity can't possibly see the check entity, return 0
 	self = PROG_TO_EDICT(pr_global_struct->self);
-	VectorAdd(self->v.origin, self->v.view_ofs, view);
+	MATHLIB_PUB_VectorAdd(self->v.origin, self->v.view_ofs, view);
 	leaf = Mod_PointInLeaf(view, sv.worldmodel);
 	l = (leaf - sv.worldmodel->leafs) - 1;
 	if ((l < 0) || !(checkpvs[l >> 3] & (1 << (l & 7))))
@@ -859,7 +859,7 @@ float cvar (string)
 */
 void PF_cvar_set(void)
 {
-	char *var, *val;
+	char* var, * val;
 
 	var = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
@@ -878,7 +878,7 @@ findradius (origin, radius)
 */
 void PF_findradius(void)
 {
-	edict_t *ent, *chain;
+	edict_t* ent, * chain;
 	float rad;
 	float* org;
 	vec3_t eorg;
@@ -898,7 +898,7 @@ void PF_findradius(void)
 			continue;
 		for (j = 0; j < 3; j++)
 			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j]) * 0.5);
-		if (Length(eorg) > rad)
+		if (MATHLIB_PUB_VectorLength(eorg) > rad)
 			continue;
 
 		ent->v.chain = EDICT_TO_PROG(chain);
@@ -943,7 +943,7 @@ void PF_fabs(void)
 void PF_vtos(void)
 {
 	sprintf(pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1],
-	        G_VECTOR(OFS_PARM0)[2]);
+		G_VECTOR(OFS_PARM0)[2]);
 	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
 }
 
@@ -1025,7 +1025,7 @@ void PF_Find(void)
 {
 	int e;
 	int f;
-	char *s, *t;
+	char* s, * t;
 	edict_t* ed;
 
 	e = G_EDICTNUM(OFS_PARM0);
@@ -1195,7 +1195,7 @@ void PF_droptofloor(void)
 
 	ent = PROG_TO_EDICT(pr_global_struct->self);
 
-	VectorCopy(ent->v.origin, end);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, end);
 	end[2] -= 256;
 
 	trace = SV_Move(ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
@@ -1204,7 +1204,7 @@ void PF_droptofloor(void)
 		G_FLOAT(OFS_RETURN) = 0;
 	else
 	{
-		VectorCopy(trace.endpos, ent->v.origin);
+		MATHLIB_PUB_VectorCopy(trace.endpos, ent->v.origin);
 		SV_LinkEdict(ent, false);
 		ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 		ent->v.groundentity = EDICT_TO_PROG(trace.ent);
@@ -1332,11 +1332,11 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-cvar_t sv_aim = {"sv_aim", "0.93"};
+cvar_t sv_aim = { "sv_aim", "0.93" };
 
 void PF_aim(void)
 {
-	edict_t *ent, *check, *bestent;
+	edict_t* ent, * check, * bestent;
 	vec3_t start, dir, end, bestdir;
 	int i, j;
 	trace_t tr;
@@ -1346,23 +1346,23 @@ void PF_aim(void)
 	ent = G_EDICT(OFS_PARM0);
 	speed = G_FLOAT(OFS_PARM1);
 
-	VectorCopy(ent->v.origin, start);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, start);
 	start[2] += 20;
 
 	// try sending a trace straight
-	VectorCopy(pr_global_struct->v_forward, dir);
-	VectorMA(start, 2048, dir, end);
-	tr = SV_Move(start, vec3_origin, vec3_origin, end, false, ent);
+	MATHLIB_PUB_VectorCopy(pr_global_struct->v_forward, dir);
+	MATHLIB_PUB_VectorMA(start, 2048, dir, end);
+	tr = SV_Move(start, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, end, false, ent);
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_AIM
 		&& (!teamplay.value || ent->v.team <= 0 || ent->v.team != tr.ent->v.team))
 	{
-		VectorCopy(pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
+		MATHLIB_PUB_VectorCopy(pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
 		return;
 	}
 
 
 	// try all possible entities
-	VectorCopy(dir, bestdir);
+	MATHLIB_PUB_VectorCopy(dir, bestdir);
 	bestdist = sv_aim.value;
 	bestent = NULL;
 
@@ -1377,13 +1377,13 @@ void PF_aim(void)
 			continue; // don't aim at teammate
 		for (j = 0; j < 3; j++)
 			end[j] = check->v.origin[j]
-				+ 0.5 * (check->v.mins[j] + check->v.maxs[j]);
-		VectorSubtract(end, start, dir);
-		VectorNormalize(dir);
-		dist = DotProduct(dir, pr_global_struct->v_forward);
+			+ 0.5 * (check->v.mins[j] + check->v.maxs[j]);
+		MATHLIB_PUB_VectorSubtract(end, start, dir);
+		MATHLIB_PUB_VectorNormalize(dir);
+		dist = MATHLIB_PUB_DotProduct(dir, pr_global_struct->v_forward);
 		if (dist < bestdist)
 			continue; // to far to turn
-		tr = SV_Move(start, vec3_origin, vec3_origin, end, false, ent);
+		tr = SV_Move(start, MATHLIB_PUB_vec3_origin, MATHLIB_PUB_vec3_origin, end, false, ent);
 		if (tr.ent == check)
 		{
 			// can shoot at this one
@@ -1394,16 +1394,16 @@ void PF_aim(void)
 
 	if (bestent)
 	{
-		VectorSubtract(bestent->v.origin, ent->v.origin, dir);
-		dist = DotProduct(dir, pr_global_struct->v_forward);
-		VectorScale(pr_global_struct->v_forward, dist, end);
+		MATHLIB_PUB_VectorSubtract(bestent->v.origin, ent->v.origin, dir);
+		dist = MATHLIB_PUB_DotProduct(dir, pr_global_struct->v_forward);
+		MATHLIB_PUB_VectorScale(pr_global_struct->v_forward, dist, end);
 		end[2] = dir[2];
-		VectorNormalize(end);
-		VectorCopy(end, G_VECTOR(OFS_RETURN));
+		MATHLIB_PUB_VectorNormalize(end);
+		MATHLIB_PUB_VectorCopy(end, G_VECTOR(OFS_RETURN));
 	}
 	else
 	{
-		VectorCopy(bestdir, G_VECTOR(OFS_RETURN));
+		MATHLIB_PUB_VectorCopy(bestdir, G_VECTOR(OFS_RETURN));
 	}
 }
 
@@ -1420,7 +1420,7 @@ void PF_changeyaw(void)
 	float ideal, current, move, speed;
 
 	ent = PROG_TO_EDICT(pr_global_struct->self);
-	current = anglemod(ent->v.angles[1]);
+	current = MATHLIB_PUB_anglemod(ent->v.angles[1]);
 	ideal = ent->v.ideal_yaw;
 	speed = ent->v.yaw_speed;
 
@@ -1448,7 +1448,7 @@ void PF_changeyaw(void)
 			move = -speed;
 	}
 
-	ent->v.angles[1] = anglemod(current + move);
+	ent->v.angles[1] = MATHLIB_PUB_anglemod(current + move);
 }
 
 #ifdef QUAKE2
@@ -1463,7 +1463,7 @@ void PF_changepitch(void)
 	float ideal, current, move, speed;
 
 	ent = G_EDICT(OFS_PARM0);
-	current = anglemod(ent->v.angles[0]);
+	current = MATHLIB_PUB_anglemod(ent->v.angles[0]);
 	ideal = ent->v.idealpitch;
 	speed = ent->v.pitch_speed;
 
@@ -1491,7 +1491,7 @@ void PF_changepitch(void)
 			move = -speed;
 	}
 
-	ent->v.angles[0] = anglemod(current + move);
+	ent->v.angles[0] = MATHLIB_PUB_anglemod(current + move);
 }
 #endif
 
@@ -1803,7 +1803,7 @@ void PF_WaterMove(void)
 	if (!(flags & FL_WATERJUMP))
 	{
 		// self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
-		VectorMA(self->v.velocity, -0.8 * self->v.waterlevel * host_frametime, self->v.velocity, self->v.velocity);
+		MATHLIB_PUB_VectorMA(self->v.velocity, -0.8 * self->v.waterlevel * host_frametime, self->v.velocity, self->v.velocity);
 	}
 
 	G_FLOAT(OFS_RETURN) = damage;

@@ -39,11 +39,11 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t sv_friction = {"sv_friction", "4", false, true};
-cvar_t sv_stopspeed = {"sv_stopspeed", "100"};
-cvar_t sv_gravity = {"sv_gravity", "800", false, true};
-cvar_t sv_maxvelocity = {"sv_maxvelocity", "2000"};
-cvar_t sv_nostep = {"sv_nostep", "0"};
+cvar_t sv_friction = { "sv_friction", "4", false, true };
+cvar_t sv_stopspeed = { "sv_stopspeed", "100" };
+cvar_t sv_gravity = { "sv_gravity", "800", false, true };
+cvar_t sv_maxvelocity = { "sv_maxvelocity", "2000" };
+cvar_t sv_nostep = { "sv_nostep", "0" };
 
 #ifdef QUAKE2
 static vec3_t vec_origin = { 0.0, 0.0, 0.0 };
@@ -96,12 +96,12 @@ void SV_CheckVelocity(edict_t* ent)
 	//
 	for (i = 0; i < 3; i++)
 	{
-		if (IS_NAN(ent->v.velocity[i]))
+		if (MATHLIB_PUB_IS_NAN(ent->v.velocity[i]))
 		{
 			Con_Printf("Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
 			ent->v.velocity[i] = 0;
 		}
-		if (IS_NAN(ent->v.origin[i]))
+		if (MATHLIB_PUB_IS_NAN(ent->v.origin[i]))
 		{
 			Con_Printf("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;
@@ -199,7 +199,7 @@ int ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 	if (!normal[2])
 		blocked |= 2; // step
 
-	backoff = DotProduct(in, normal) * overbounce;
+	backoff = MATHLIB_PUB_DotProduct(in, normal) * overbounce;
 
 	for (i = 0; i < 3; i++)
 	{
@@ -244,8 +244,8 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 	numbumps = 4;
 
 	blocked = 0;
-	VectorCopy(ent->v.velocity, original_velocity);
-	VectorCopy(ent->v.velocity, primal_velocity);
+	MATHLIB_PUB_VectorCopy(ent->v.velocity, original_velocity);
+	MATHLIB_PUB_VectorCopy(ent->v.velocity, primal_velocity);
 	numplanes = 0;
 
 	time_left = time;
@@ -263,15 +263,15 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 		if (trace.allsolid)
 		{
 			// entity is trapped in another solid
-			VectorCopy(vec3_origin, ent->v.velocity);
+			MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
 			return 3;
 		}
 
 		if (trace.fraction > 0)
 		{
 			// actually covered some distance
-			VectorCopy(trace.endpos, ent->v.origin);
-			VectorCopy(ent->v.velocity, original_velocity);
+			MATHLIB_PUB_VectorCopy(trace.endpos, ent->v.origin);
+			MATHLIB_PUB_VectorCopy(ent->v.velocity, original_velocity);
 			numplanes = 0;
 		}
 
@@ -311,11 +311,11 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 		if (numplanes >= MAX_CLIP_PLANES)
 		{
 			// this shouldn't really happen
-			VectorCopy(vec3_origin, ent->v.velocity);
+			MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
 			return 3;
 		}
 
-		VectorCopy(trace.plane.normal, planes[numplanes]);
+		MATHLIB_PUB_VectorCopy(trace.plane.normal, planes[numplanes]);
 		numplanes++;
 
 		//
@@ -327,7 +327,7 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 			for (j = 0; j < numplanes; j++)
 				if (j != i)
 				{
-					if (DotProduct(new_velocity, planes[j]) < 0)
+					if (MATHLIB_PUB_DotProduct(new_velocity, planes[j]) < 0)
 						break; // not ok
 				}
 			if (j == numplanes)
@@ -337,7 +337,7 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 		if (i != numplanes)
 		{
 			// go along this plane
-			VectorCopy(new_velocity, ent->v.velocity);
+			MATHLIB_PUB_VectorCopy(new_velocity, ent->v.velocity);
 		}
 		else
 		{
@@ -345,21 +345,21 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 			if (numplanes != 2)
 			{
 				// Con_Printf ("clip velocity, numplanes == %i\n",numplanes);
-				VectorCopy(vec3_origin, ent->v.velocity);
+				MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
 				return 7;
 			}
-			CrossProduct(planes[0], planes[1], dir);
-			d = DotProduct(dir, ent->v.velocity);
-			VectorScale(dir, d, ent->v.velocity);
+			MATHLIB_PUB_CrossProduct(planes[0], planes[1], dir);
+			d = MATHLIB_PUB_DotProduct(dir, ent->v.velocity);
+			MATHLIB_PUB_VectorScale(dir, d, ent->v.velocity);
 		}
 
 		//
 		// if original velocity is against the original velocity, stop dead
 		// to avoid tiny occilations in sloping corners
 		//
-		if (DotProduct(ent->v.velocity, primal_velocity) <= 0)
+		if (MATHLIB_PUB_DotProduct(ent->v.velocity, primal_velocity) <= 0)
 		{
-			VectorCopy(vec3_origin, ent->v.velocity);
+			MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
 			return blocked;
 		}
 	}
@@ -416,7 +416,7 @@ trace_t SV_PushEntity(edict_t* ent, vec3_t push)
 	trace_t trace;
 	vec3_t end;
 
-	VectorAdd(ent->v.origin, push, end);
+	MATHLIB_PUB_VectorAdd(ent->v.origin, push, end);
 
 	if (ent->v.movetype == MOVETYPE_FLYMISSILE)
 		trace = SV_Move(ent->v.origin, ent->v.mins, ent->v.maxs, end, MOVE_MISSILE, ent);
@@ -426,7 +426,7 @@ trace_t SV_PushEntity(edict_t* ent, vec3_t push)
 	else
 		trace = SV_Move(ent->v.origin, ent->v.mins, ent->v.maxs, end, MOVE_NORMAL, ent);
 
-	VectorCopy(trace.endpos, ent->v.origin);
+	MATHLIB_PUB_VectorCopy(trace.endpos, ent->v.origin);
 	SV_LinkEdict(ent, true);
 
 	if (trace.ent)
@@ -445,7 +445,7 @@ SV_PushMove
 void SV_PushMove(edict_t* pusher, float movetime)
 {
 	int i, e;
-	edict_t *check, *block;
+	edict_t* check, * block;
 	vec3_t mins, maxs, move;
 	vec3_t entorig, pushorig;
 	int num_moved;
@@ -465,11 +465,11 @@ void SV_PushMove(edict_t* pusher, float movetime)
 		maxs[i] = pusher->v.absmax[i] + move[i];
 	}
 
-	VectorCopy(pusher->v.origin, pushorig);
+	MATHLIB_PUB_VectorCopy(pusher->v.origin, pushorig);
 
 	// move the pusher to it's final position
 
-	VectorAdd(pusher->v.origin, move, pusher->v.origin);
+	MATHLIB_PUB_VectorAdd(pusher->v.origin, move, pusher->v.origin);
 	pusher->v.ltime += movetime;
 	SV_LinkEdict(pusher, false);
 
@@ -510,8 +510,8 @@ void SV_PushMove(edict_t* pusher, float movetime)
 		if (check->v.movetype != MOVETYPE_WALK)
 			check->v.flags = (int)check->v.flags & ~FL_ONGROUND;
 
-		VectorCopy(check->v.origin, entorig);
-		VectorCopy(check->v.origin, moved_from[num_moved]);
+		MATHLIB_PUB_VectorCopy(check->v.origin, entorig);
+		MATHLIB_PUB_VectorCopy(check->v.origin, moved_from[num_moved]);
 		moved_edict[num_moved] = check;
 		num_moved++;
 
@@ -531,14 +531,14 @@ void SV_PushMove(edict_t* pusher, float movetime)
 			{
 				// corpse
 				check->v.mins[0] = check->v.mins[1] = 0;
-				VectorCopy(check->v.mins, check->v.maxs);
+				MATHLIB_PUB_VectorCopy(check->v.mins, check->v.maxs);
 				continue;
 			}
 
-			VectorCopy(entorig, check->v.origin);
+			MATHLIB_PUB_VectorCopy(entorig, check->v.origin);
 			SV_LinkEdict(check, true);
 
-			VectorCopy(pushorig, pusher->v.origin);
+			MATHLIB_PUB_VectorCopy(pushorig, pusher->v.origin);
 			SV_LinkEdict(pusher, false);
 			pusher->v.ltime -= movetime;
 
@@ -554,7 +554,7 @@ void SV_PushMove(edict_t* pusher, float movetime)
 			// move back any entities we already moved
 			for (i = 0; i < num_moved; i++)
 			{
-				VectorCopy(moved_from[i], moved_edict[i]->v.origin);
+				MATHLIB_PUB_VectorCopy(moved_from[i], moved_edict[i]->v.origin);
 				SV_LinkEdict(moved_edict[i], false);
 			}
 			return;
@@ -590,14 +590,14 @@ void SV_PushRotate(edict_t* pusher, float movetime)
 	for (i = 0; i < 3; i++)
 		amove[i] = pusher->v.avelocity[i] * movetime;
 
-	VectorSubtract(vec3_origin, amove, a);
-	AngleVectors(a, forward, right, up);
+	MATHLIB_PUB_VectorSubtract(MATHLIB_PUB_vec3_origin, amove, a);
+	MATHLIB_PUB_AngleVectors(a, forward, right, up);
 
-	VectorCopy(pusher->v.angles, pushorig);
+	MATHLIB_PUB_VectorCopy(pusher->v.angles, pushorig);
 
 	// move the pusher to it's final position
 
-	VectorAdd(pusher->v.angles, amove, pusher->v.angles);
+	MATHLIB_PUB_VectorAdd(pusher->v.angles, amove, pusher->v.angles);
 	pusher->v.ltime += movetime;
 	SV_LinkEdict(pusher, false);
 
@@ -636,17 +636,17 @@ void SV_PushRotate(edict_t* pusher, float movetime)
 		if (check->v.movetype != MOVETYPE_WALK)
 			check->v.flags = (int)check->v.flags & ~FL_ONGROUND;
 
-		VectorCopy(check->v.origin, entorig);
-		VectorCopy(check->v.origin, moved_from[num_moved]);
+		MATHLIB_PUB_VectorCopy(check->v.origin, entorig);
+		MATHLIB_PUB_VectorCopy(check->v.origin, moved_from[num_moved]);
 		moved_edict[num_moved] = check;
 		num_moved++;
 
 		// calculate destination position
-		VectorSubtract(check->v.origin, pusher->v.origin, org);
-		org2[0] = DotProduct(org, forward);
-		org2[1] = -DotProduct(org, right);
-		org2[2] = DotProduct(org, up);
-		VectorSubtract(org2, org, move);
+		MATHLIB_PUB_VectorSubtract(check->v.origin, pusher->v.origin, org);
+		org2[0] = MATHLIB_PUB_DotProduct(org, forward);
+		org2[1] = -MATHLIB_PUB_DotProduct(org, right);
+		org2[2] = MATHLIB_PUB_DotProduct(org, up);
+		MATHLIB_PUB_VectorSubtract(org2, org, move);
 
 		// try moving the contacted entity 
 		pusher->v.solid = SOLID_NOT;
@@ -662,14 +662,14 @@ void SV_PushRotate(edict_t* pusher, float movetime)
 			if (check->v.solid == SOLID_NOT || check->v.solid == SOLID_TRIGGER)
 			{ // corpse
 				check->v.mins[0] = check->v.mins[1] = 0;
-				VectorCopy(check->v.mins, check->v.maxs);
+				MATHLIB_PUB_VectorCopy(check->v.mins, check->v.maxs);
 				continue;
 			}
 
-			VectorCopy(entorig, check->v.origin);
+			MATHLIB_PUB_VectorCopy(entorig, check->v.origin);
 			SV_LinkEdict(check, true);
 
-			VectorCopy(pushorig, pusher->v.angles);
+			MATHLIB_PUB_VectorCopy(pushorig, pusher->v.angles);
 			SV_LinkEdict(pusher, false);
 			pusher->v.ltime -= movetime;
 
@@ -685,15 +685,15 @@ void SV_PushRotate(edict_t* pusher, float movetime)
 			// move back any entities we already moved
 			for (i = 0; i < num_moved; i++)
 			{
-				VectorCopy(moved_from[i], moved_edict[i]->v.origin);
-				VectorSubtract(moved_edict[i]->v.angles, amove, moved_edict[i]->v.angles);
+				MATHLIB_PUB_VectorCopy(moved_from[i], moved_edict[i]->v.origin);
+				MATHLIB_PUB_VectorSubtract(moved_edict[i]->v.angles, amove, moved_edict[i]->v.angles);
 				SV_LinkEdict(moved_edict[i], false);
 			}
 			return;
 		}
 		else
 		{
-			VectorAdd(check->v.angles, amove, check->v.angles);
+			MATHLIB_PUB_VectorAdd(check->v.angles, amove, check->v.angles);
 		}
 	}
 
@@ -732,7 +732,7 @@ void SV_Physics_Pusher(edict_t* ent)
 			SV_PushRotate(ent, movetime);
 		else
 #endif
-		SV_PushMove(ent, movetime); // advances ent->v.ltime if not blocked
+			SV_PushMove(ent, movetime); // advances ent->v.ltime if not blocked
 	}
 
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
@@ -772,12 +772,12 @@ void SV_CheckStuck(edict_t* ent)
 
 	if (!SV_TestEntityPosition(ent))
 	{
-		VectorCopy(ent->v.origin, ent->v.oldorigin);
+		MATHLIB_PUB_VectorCopy(ent->v.origin, ent->v.oldorigin);
 		return;
 	}
 
-	VectorCopy(ent->v.origin, org);
-	VectorCopy(ent->v.oldorigin, ent->v.origin);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, org);
+	MATHLIB_PUB_VectorCopy(ent->v.oldorigin, ent->v.origin);
 	if (!SV_TestEntityPosition(ent))
 	{
 		Con_DPrintf("Unstuck.\n");
@@ -800,7 +800,7 @@ void SV_CheckStuck(edict_t* ent)
 				}
 			}
 
-	VectorCopy(org, ent->v.origin);
+	MATHLIB_PUB_VectorCopy(org, ent->v.origin);
 	Con_DPrintf("player is stuck.\n");
 }
 
@@ -855,7 +855,7 @@ qboolean SV_CheckWater(edict_t* ent)
 			{0, 0, -1}
 			};
 
-			VectorMA(ent->v.basevelocity, 150.0 * ent->v.waterlevel / 3.0, current_table[CONTENTS_CURRENT_0 - truecont], ent->v.basevelocity);
+			MATHLIB_PUB_VectorMA(ent->v.basevelocity, 150.0 * ent->v.waterlevel / 3.0, current_table[CONTENTS_CURRENT_0 - truecont], ent->v.basevelocity);
 		}
 #endif
 	}
@@ -875,17 +875,17 @@ void SV_WallFriction(edict_t* ent, trace_t* trace)
 	float d, i;
 	vec3_t into, side;
 
-	AngleVectors(ent->v.v_angle, forward, right, up);
-	d = DotProduct(trace->plane.normal, forward);
+	MATHLIB_PUB_AngleVectors(ent->v.v_angle, forward, right, up);
+	d = MATHLIB_PUB_DotProduct(trace->plane.normal, forward);
 
 	d += 0.5;
 	if (d >= 0)
 		return;
 
 	// cut the tangential velocity
-	i = DotProduct(trace->plane.normal, ent->v.velocity);
-	VectorScale(trace->plane.normal, i, into);
-	VectorSubtract(ent->v.velocity, into, side);
+	i = MATHLIB_PUB_DotProduct(trace->plane.normal, ent->v.velocity);
+	MATHLIB_PUB_VectorScale(trace->plane.normal, i, into);
+	MATHLIB_PUB_VectorSubtract(ent->v.velocity, into, side);
 
 	ent->v.velocity[0] = side[0] * (1 + d);
 	ent->v.velocity[1] = side[1] * (1 + d);
@@ -911,8 +911,8 @@ int SV_TryUnstick(edict_t* ent, vec3_t oldvel)
 	int clip;
 	trace_t steptrace;
 
-	VectorCopy(ent->v.origin, oldorg);
-	VectorCopy(vec3_origin, dir);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, oldorg);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, dir);
 
 	for (i = 0; i < 8; i++)
 	{
@@ -961,10 +961,10 @@ int SV_TryUnstick(edict_t* ent, vec3_t oldvel)
 		}
 
 		// go back to the original pos and try again
-		VectorCopy(oldorg, ent->v.origin);
+		MATHLIB_PUB_VectorCopy(oldorg, ent->v.origin);
 	}
 
-	VectorCopy(vec3_origin, ent->v.velocity);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
 	return 7; // still not moving
 }
 
@@ -992,8 +992,8 @@ void SV_WalkMove(edict_t* ent)
 	oldonground = (int)ent->v.flags & FL_ONGROUND;
 	ent->v.flags = (int)ent->v.flags & ~FL_ONGROUND;
 
-	VectorCopy(ent->v.origin, oldorg);
-	VectorCopy(ent->v.velocity, oldvel);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, oldorg);
+	MATHLIB_PUB_VectorCopy(ent->v.velocity, oldvel);
 
 	clip = SV_FlyMove(ent, host_frametime, &steptrace);
 
@@ -1012,16 +1012,16 @@ void SV_WalkMove(edict_t* ent)
 	if ((int)sv_player->v.flags & FL_WATERJUMP)
 		return;
 
-	VectorCopy(ent->v.origin, nosteporg);
-	VectorCopy(ent->v.velocity, nostepvel);
+	MATHLIB_PUB_VectorCopy(ent->v.origin, nosteporg);
+	MATHLIB_PUB_VectorCopy(ent->v.velocity, nostepvel);
 
 	//
 	// try moving up and forward to go up a step
 	//
-	VectorCopy(oldorg, ent->v.origin); // back to start pos
+	MATHLIB_PUB_VectorCopy(oldorg, ent->v.origin); // back to start pos
 
-	VectorCopy(vec3_origin, upmove);
-	VectorCopy(vec3_origin, downmove);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, upmove);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, downmove);
 	upmove[2] = STEPSIZE;
 	downmove[2] = -STEPSIZE + oldvel[2] * host_frametime;
 
@@ -1066,8 +1066,8 @@ void SV_WalkMove(edict_t* ent)
 		// if the push down didn't end up on good ground, use the move without
 		// the step up.  This happens near wall / slope combinations, and can
 		// cause the player to hop up higher on a slope too steep to climb 
-		VectorCopy(nosteporg, ent->v.origin);
-		VectorCopy(nostepvel, ent->v.velocity);
+		MATHLIB_PUB_VectorCopy(nosteporg, ent->v.origin);
+		MATHLIB_PUB_VectorCopy(nostepvel, ent->v.velocity);
 	}
 }
 
@@ -1113,12 +1113,12 @@ void SV_Physics_Client(edict_t* ent, int num)
 			SV_AddGravity(ent);
 		SV_CheckStuck(ent);
 #ifdef QUAKE2
-		VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+		MATHLIB_PUB_VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 #endif
 		SV_WalkMove(ent);
 
 #ifdef QUAKE2
-		VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+		MATHLIB_PUB_VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 #endif
 		break;
 
@@ -1136,7 +1136,7 @@ void SV_Physics_Client(edict_t* ent, int num)
 	case MOVETYPE_NOCLIP:
 		if (!SV_RunThink(ent))
 			return;
-		VectorMA(ent->v.origin, host_frametime, ent->v.velocity, ent->v.origin);
+		MATHLIB_PUB_VectorMA(ent->v.origin, host_frametime, ent->v.velocity, ent->v.origin);
 		break;
 
 	default:
@@ -1180,7 +1180,7 @@ void SV_Physics_Follow(edict_t* ent)
 {
 	// regular thinking
 	SV_RunThink(ent);
-	VectorAdd(PROG_TO_EDICT(ent->v.aiment)->v.origin, ent->v.v_angle, ent->v.origin);
+	MATHLIB_PUB_VectorAdd(PROG_TO_EDICT(ent->v.aiment)->v.origin, ent->v.v_angle, ent->v.origin);
 	SV_LinkEdict(ent, true);
 }
 #endif
@@ -1198,8 +1198,8 @@ void SV_Physics_Noclip(edict_t* ent)
 	if (!SV_RunThink(ent))
 		return;
 
-	VectorMA(ent->v.angles, host_frametime, ent->v.avelocity, ent->v.angles);
-	VectorMA(ent->v.origin, host_frametime, ent->v.velocity, ent->v.origin);
+	MATHLIB_PUB_VectorMA(ent->v.angles, host_frametime, ent->v.avelocity, ent->v.angles);
+	MATHLIB_PUB_VectorMA(ent->v.origin, host_frametime, ent->v.velocity, ent->v.origin);
 
 	SV_LinkEdict(ent, false);
 }
@@ -1278,9 +1278,9 @@ void SV_Physics_Toss(edict_t* ent)
 
 	groundentity = PROG_TO_EDICT(ent->v.groundentity);
 	if ((int)groundentity->v.flags & FL_CONVEYOR)
-		VectorScale(groundentity->v.movedir, groundentity->v.speed, ent->v.basevelocity);
+		MATHLIB_PUB_VectorScale(groundentity->v.movedir, groundentity->v.speed, ent->v.basevelocity);
 	else
-		VectorCopy(vec_origin, ent->v.basevelocity);
+		MATHLIB_PUB_VectorCopy(vec_origin, ent->v.basevelocity);
 	SV_CheckWater(ent);
 #endif
 	// regular thinking
@@ -1293,7 +1293,7 @@ void SV_Physics_Toss(edict_t* ent)
 
 	if (((int)ent->v.flags & FL_ONGROUND))
 		//@@
-		if (VectorCompare(ent->v.basevelocity, vec_origin))
+		if (MATHLIB_PUB_VectorCompare(ent->v.basevelocity, vec_origin))
 			return;
 
 	SV_CheckVelocity(ent);
@@ -1319,16 +1319,16 @@ void SV_Physics_Toss(edict_t* ent)
 #endif
 
 	// move angles
-	VectorMA(ent->v.angles, host_frametime, ent->v.avelocity, ent->v.angles);
+	MATHLIB_PUB_VectorMA(ent->v.angles, host_frametime, ent->v.avelocity, ent->v.angles);
 
 	// move origin
 #ifdef QUAKE2
-	VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+	MATHLIB_PUB_VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 #endif
-	VectorScale(ent->v.velocity, host_frametime, move);
+	MATHLIB_PUB_VectorScale(ent->v.velocity, host_frametime, move);
 	trace = SV_PushEntity(ent, move);
 #ifdef QUAKE2
-	VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+	MATHLIB_PUB_VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 #endif
 	if (trace.fraction == 1)
 		return;
@@ -1357,8 +1357,8 @@ void SV_Physics_Toss(edict_t* ent)
 		{
 			ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 			ent->v.groundentity = EDICT_TO_PROG(trace.ent);
-			VectorCopy(vec3_origin, ent->v.velocity);
-			VectorCopy(vec3_origin, ent->v.avelocity);
+			MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.velocity);
+			MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, ent->v.avelocity);
 		}
 	}
 
@@ -1398,9 +1398,9 @@ void SV_Physics_Step(edict_t* ent)
 
 	groundentity = PROG_TO_EDICT(ent->v.groundentity);
 	if ((int)groundentity->v.flags & FL_CONVEYOR)
-		VectorScale(groundentity->v.movedir, groundentity->v.speed, ent->v.basevelocity);
+		MATHLIB_PUB_VectorScale(groundentity->v.movedir, groundentity->v.speed, ent->v.basevelocity);
 	else
-		VectorCopy(vec_origin, ent->v.basevelocity);
+		MATHLIB_PUB_VectorCopy(vec_origin, ent->v.basevelocity);
 	//@@
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
@@ -1425,7 +1425,7 @@ void SV_Physics_Step(edict_t* ent)
 					SV_AddGravity(ent);
 			}
 
-	if (!VectorCompare(ent->v.velocity, vec_origin) || !VectorCompare(ent->v.basevelocity, vec_origin))
+	if (!MATHLIB_PUB_VectorCompare(ent->v.velocity, vec_origin) || !MATHLIB_PUB_VectorCompare(ent->v.basevelocity, vec_origin))
 	{
 		ent->v.flags = (int)ent->v.flags & ~FL_ONGROUND;
 		// apply friction
@@ -1451,17 +1451,17 @@ void SV_Physics_Step(edict_t* ent)
 				}
 			}
 
-		VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+		MATHLIB_PUB_VectorAdd(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 		SV_FlyMove(ent, host_frametime, NULL);
-		VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
+		MATHLIB_PUB_VectorSubtract(ent->v.velocity, ent->v.basevelocity, ent->v.velocity);
 
 		// determine if it's on solid ground at all
 		{
 			vec3_t mins, maxs, point;
 			int x, y;
 
-			VectorAdd(ent->v.origin, ent->v.mins, mins);
-			VectorAdd(ent->v.origin, ent->v.maxs, maxs);
+			MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.mins, mins);
+			MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.maxs, maxs);
 
 			point[2] = mins[2] - 1;
 			for (x = 0; x <= 1; x++)
@@ -1612,11 +1612,11 @@ trace_t SV_Trace_Toss(edict_t* ent, edict_t* ignore)
 	{
 		SV_CheckVelocity(tent);
 		SV_AddGravity(tent);
-		VectorMA(tent->v.angles, host_frametime, tent->v.avelocity, tent->v.angles);
-		VectorScale(tent->v.velocity, host_frametime, move);
-		VectorAdd(tent->v.origin, move, end);
+		MATHLIB_PUB_VectorMA(tent->v.angles, host_frametime, tent->v.avelocity, tent->v.angles);
+		MATHLIB_PUB_VectorScale(tent->v.velocity, host_frametime, move);
+		MATHLIB_PUB_VectorAdd(tent->v.origin, move, end);
 		trace = SV_Move(tent->v.origin, tent->v.mins, tent->v.maxs, end, MOVE_NORMAL, tent);
-		VectorCopy(trace.endpos, tent->v.origin);
+		MATHLIB_PUB_VectorCopy(trace.endpos, tent->v.origin);
 
 		// p = free_particles;
 		// if (p)
@@ -1628,7 +1628,7 @@ trace_t SV_Trace_Toss(edict_t* ent, edict_t* ignore)
 		// p->die = 256;
 		// p->color = 15;
 		// p->type = pt_static;
-		// VectorCopy (vec3_origin, p->vel);
+		// VectorCopy (MATHLIB_PUB_vec3_origin, p->vel);
 		// VectorCopy (tent->v.origin, p->org);
 		// }
 

@@ -96,7 +96,7 @@ mleaf_t* Mod_PointInLeaf(vec3_t p, model_t* model)
 		if (node->contents < 0)
 			return (mleaf_t*)node;
 		plane = node->plane;
-		d = DotProduct(p, plane->normal) - plane->dist;
+		d = MATHLIB_PUB_DotProduct(p, plane->normal) - plane->dist;
 		if (d > 0)
 			node = node->children[0];
 		else
@@ -668,8 +668,8 @@ void Mod_LoadTexinfo(lump_t* l)
 	{
 		for (j = 0; j < 8; j++)
 			out->vecs[0][j] = LittleFloat(in->vecs[0][j]);
-		len1 = Length(out->vecs[0]);
-		len2 = Length(out->vecs[1]);
+		len1 = MATHLIB_PUB_VectorLength(out->vecs[0]);
+		len2 = MATHLIB_PUB_VectorLength(out->vecs[1]);
 		len1 = (len1 + len2) / 2;
 		if (len1 < 0.32)
 			out->mipadjust = 4;
@@ -1135,7 +1135,7 @@ float RadiusFromBounds(vec3_t mins, vec3_t maxs)
 		corner[i] = fabs(mins[i]) > fabs(maxs[i]) ? fabs(mins[i]) : fabs(maxs[i]);
 	}
 
-	return Length(corner);
+	return MATHLIB_PUB_VectorLength(corner);
 }
 
 /*
@@ -1203,8 +1203,8 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;
 
-		VectorCopy(bm->maxs, mod->maxs);
-		VectorCopy(bm->mins, mod->mins);
+		MATHLIB_PUB_VectorCopy(bm->maxs, mod->maxs);
+		MATHLIB_PUB_VectorCopy(bm->mins, mod->mins);
 		mod->radius = RadiusFromBounds(mod->mins, mod->maxs);
 
 		mod->numleafs = bm->visleafs;

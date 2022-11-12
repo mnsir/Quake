@@ -61,11 +61,11 @@ void D_DrawParticle(particle_t* pparticle)
 	int i, izi, pix, count, u, v;
 
 	// transform point
-	VectorSubtract(pparticle->org, r_origin, local);
+	MATHLIB_PUB_VectorSubtract(pparticle->org, r_origin, local);
 
-	transformed[0] = DotProduct(local, r_pright);
-	transformed[1] = DotProduct(local, r_pup);
-	transformed[2] = DotProduct(local, r_ppn);
+	transformed[0] = MATHLIB_PUB_DotProduct(local, r_pright);
+	transformed[1] = MATHLIB_PUB_DotProduct(local, r_pup);
+	transformed[2] = MATHLIB_PUB_DotProduct(local, r_ppn);
 
 	if (transformed[2] < PARTICLE_Z_CLIP)
 		return;

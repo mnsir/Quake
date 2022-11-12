@@ -86,7 +86,7 @@ void SubdividePolygon(int numverts, float* verts)
 		// wrap cases
 		dist[j] = dist[0];
 		v -= i;
-		VectorCopy(verts, v);
+		MATHLIB_PUB_VectorCopy(verts, v);
 
 		f = b = 0;
 		v = verts;
@@ -94,12 +94,12 @@ void SubdividePolygon(int numverts, float* verts)
 		{
 			if (dist[j] >= 0)
 			{
-				VectorCopy(v, front[f]);
+				MATHLIB_PUB_VectorCopy(v, front[f]);
 				f++;
 			}
 			if (dist[j] <= 0)
 			{
-				VectorCopy(v, back[b]);
+				MATHLIB_PUB_VectorCopy(v, back[b]);
 				b++;
 			}
 			if (dist[j] == 0 || dist[j + 1] == 0)
@@ -126,9 +126,9 @@ void SubdividePolygon(int numverts, float* verts)
 	poly->numverts = numverts;
 	for (i = 0; i < numverts; i++, verts += 3)
 	{
-		VectorCopy(verts, poly->verts[i]);
-		s = DotProduct(verts, warpface->texinfo->vecs[0]);
-		t = DotProduct(verts, warpface->texinfo->vecs[1]);
+		MATHLIB_PUB_VectorCopy(verts, poly->verts[i]);
+		s = MATHLIB_PUB_DotProduct(verts, warpface->texinfo->vecs[0]);
+		t = MATHLIB_PUB_DotProduct(verts, warpface->texinfo->vecs[1]);
 		poly->verts[i][3] = s;
 		poly->verts[i][4] = t;
 	}
@@ -166,7 +166,7 @@ void GL_SubdivideSurface(msurface_t* fa)
 			vec = loadmodel->vertexes[loadmodel->edges[lindex].v[0]].position;
 		else
 			vec = loadmodel->vertexes[loadmodel->edges[-lindex].v[1]].position;
-		VectorCopy(vec, verts[numverts]);
+		MATHLIB_PUB_VectorCopy(vec, verts[numverts]);
 		numverts++;
 	}
 
@@ -270,7 +270,7 @@ void EmitSkyPolys(msurface_t* fa)
 		glBegin(GL_POLYGON);
 		for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
 		{
-			VectorSubtract(v, r_origin, dir);
+			MATHLIB_PUB_VectorSubtract(v, r_origin, dir);
 			dir[2] *= 3; // flatten the sphere
 
 			length = dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2];
@@ -755,17 +755,17 @@ void DrawSkyPolygon(int nump, vec3_t vecs)
 	glBegin(GL_POLYGON);
 	for (i = 0; i < nump; i++, vecs += 3)
 	{
-		VectorAdd(vecs, r_origin, v);
+		MATHLIB_PUB_VectorAdd(vecs, r_origin, v);
 		glVertex3fv(v);
 	}
 	glEnd();
 	return;
 #endif
 	// decide which face it maps to
-	VectorCopy(vec3_origin, v);
+	MATHLIB_PUB_VectorCopy(MATHLIB_PUB_vec3_origin, v);
 	for (i = 0, vp = vecs; i < nump; i++, vp += 3)
 	{
-		VectorAdd(vp, v, v);
+		MATHLIB_PUB_VectorAdd(vp, v, v);
 	}
 	av[0] = fabs(v[0]);
 	av[1] = fabs(v[1]);
@@ -848,7 +848,7 @@ void ClipSkyPolygon(int nump, vec3_t vecs, int stage)
 	norm = skyclip[stage];
 	for (i = 0, v = vecs; i < nump; i++, v += 3)
 	{
-		d = DotProduct(v, norm);
+		d = MATHLIB_PUB_DotProduct(v, norm);
 		if (d > ON_EPSILON)
 		{
 			front = true;
@@ -873,7 +873,7 @@ void ClipSkyPolygon(int nump, vec3_t vecs, int stage)
 	// clip it
 	sides[i] = sides[0];
 	dists[i] = dists[0];
-	VectorCopy(vecs, (vecs + (i * 3)));
+	MATHLIB_PUB_VectorCopy(vecs, (vecs + (i * 3)));
 	newc[0] = newc[1] = 0;
 
 	for (i = 0, v = vecs; i < nump; i++, v += 3)
@@ -881,17 +881,17 @@ void ClipSkyPolygon(int nump, vec3_t vecs, int stage)
 		switch (sides[i])
 		{
 		case SIDE_FRONT:
-			VectorCopy(v, newv[0][newc[0]]);
+			MATHLIB_PUB_VectorCopy(v, newv[0][newc[0]]);
 			newc[0]++;
 			break;
 		case SIDE_BACK:
-			VectorCopy(v, newv[1][newc[1]]);
+			MATHLIB_PUB_VectorCopy(v, newv[1][newc[1]]);
 			newc[1]++;
 			break;
 		case SIDE_ON:
-			VectorCopy(v, newv[0][newc[0]]);
+			MATHLIB_PUB_VectorCopy(v, newv[0][newc[0]]);
 			newc[0]++;
-			VectorCopy(v, newv[1][newc[1]]);
+			MATHLIB_PUB_VectorCopy(v, newv[1][newc[1]]);
 			newc[1]++;
 			break;
 		}
@@ -939,7 +939,7 @@ void R_DrawSkyChain(msurface_t* s)
 		{
 			for (i = 0; i < p->numverts; i++)
 			{
-				VectorSubtract(p->verts[i], r_origin, verts[i]);
+				MATHLIB_PUB_VectorSubtract(p->verts[i], r_origin, verts[i]);
 			}
 			ClipSkyPolygon(p->numverts, verts[0], 0);
 		}

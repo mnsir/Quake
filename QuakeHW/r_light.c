@@ -77,7 +77,7 @@ void R_MarkLights(dlight_t* light, int bit, mnode_t* node)
 		return;
 
 	splitplane = node->plane;
-	dist = DotProduct(light->origin, splitplane->normal) - splitplane->dist;
+	dist = MATHLIB_PUB_DotProduct(light->origin, splitplane->normal) - splitplane->dist;
 
 	if (dist > light->radius)
 	{
@@ -160,8 +160,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 	// FIXME: optimize for axial
 	plane = node->plane;
-	front = DotProduct(start, plane->normal) - plane->dist;
-	back = DotProduct(end, plane->normal) - plane->dist;
+	front = MATHLIB_PUB_DotProduct(start, plane->normal) - plane->dist;
+	back = MATHLIB_PUB_DotProduct(end, plane->normal) - plane->dist;
 	side = front < 0;
 
 	if ((back < 0) == side)
@@ -190,8 +190,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 		tex = surf->texinfo;
 
-		s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
-		t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
+		s = MATHLIB_PUB_DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
+		t = MATHLIB_PUB_DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] ||
 			t < surf->texturemins[1])
@@ -216,7 +216,7 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 			lightmap += dt * ((surf->extents[0] >> 4) + 1) + ds;
 
 			for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-			     maps++)
+				maps++)
 			{
 				scale = d_lightstylevalue[surf->styles[maps]];
 				r += *lightmap * scale;

@@ -143,7 +143,7 @@ hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 		if (!model || model->type != mod_brush)
 			Sys_Error("MOVETYPE_PUSH with a non bsp model");
 
-		VectorSubtract(maxs, mins, size);
+		MATHLIB_PUB_VectorSubtract(maxs, mins, size);
 		if (size[0] < 3)
 			hull = &model->hulls[0];
 		else if (size[0] <= 32)
@@ -152,18 +152,18 @@ hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 			hull = &model->hulls[2];
 
 		// calculate an offset value to center the origin
-		VectorSubtract(hull->clip_mins, mins, offset);
-		VectorAdd(offset, ent->v.origin, offset);
+		MATHLIB_PUB_VectorSubtract(hull->clip_mins, mins, offset);
+		MATHLIB_PUB_VectorAdd(offset, ent->v.origin, offset);
 	}
 	else
 	{
 		// create a temp hull from bounding box sizes
 
-		VectorSubtract(ent->v.mins, maxs, hullmins);
-		VectorSubtract(ent->v.maxs, mins, hullmaxs);
+		MATHLIB_PUB_VectorSubtract(ent->v.mins, maxs, hullmins);
+		MATHLIB_PUB_VectorSubtract(ent->v.maxs, mins, hullmaxs);
 		hull = SV_HullForBox(hullmins, hullmaxs);
 
-		VectorCopy(ent->v.origin, offset);
+		MATHLIB_PUB_VectorCopy(ent->v.origin, offset);
 	}
 
 
@@ -218,17 +218,17 @@ areanode_t* SV_CreateAreaNode(int depth, vec3_t mins, vec3_t maxs)
 		return anode;
 	}
 
-	VectorSubtract(maxs, mins, size);
+	MATHLIB_PUB_VectorSubtract(maxs, mins, size);
 	if (size[0] > size[1])
 		anode->axis = 0;
 	else
 		anode->axis = 1;
 
 	anode->dist = 0.5 * (maxs[anode->axis] + mins[anode->axis]);
-	VectorCopy(mins, mins1);
-	VectorCopy(mins, mins2);
-	VectorCopy(maxs, maxs1);
-	VectorCopy(maxs, maxs2);
+	MATHLIB_PUB_VectorCopy(mins, mins1);
+	MATHLIB_PUB_VectorCopy(mins, mins2);
+	MATHLIB_PUB_VectorCopy(maxs, maxs1);
+	MATHLIB_PUB_VectorCopy(maxs, maxs2);
 
 	maxs1[anode->axis] = mins2[anode->axis] = anode->dist;
 
@@ -353,7 +353,7 @@ void SV_FindTouchedLeafs(edict_t* ent, mnode_t* node)
 	// NODE_MIXED
 
 	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(ent->v.absmin, ent->v.absmax, splitplane);
+	sides = MATHLIB_PUB_BOX_ON_PLANE_SIDE(ent->v.absmin, ent->v.absmax, splitplane);
 
 	// recurse down the contacted sides
 	if (sides & 1)
@@ -410,8 +410,8 @@ void SV_LinkEdict(edict_t* ent, qboolean touch_triggers)
 	else
 #endif
 	{
-		VectorAdd(ent->v.origin, ent->v.mins, ent->v.absmin);
-		VectorAdd(ent->v.origin, ent->v.maxs, ent->v.absmax);
+		MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.mins, ent->v.absmin);
+		MATHLIB_PUB_VectorAdd(ent->v.origin, ent->v.maxs, ent->v.absmax);
 	}
 
 	//
@@ -505,7 +505,7 @@ int SV_HullPointContents(hull_t* hull, int num, vec3_t p)
 		if (plane->type < 3)
 			d = p[plane->type] - plane->dist;
 		else
-			d = DotProduct(plane->normal, p) - plane->dist;
+			d = MATHLIB_PUB_DotProduct(plane->normal, p) - plane->dist;
 		if (d < 0)
 			num = node->children[1];
 		else
@@ -621,8 +621,8 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 	}
 	else
 	{
-		t1 = DotProduct(plane->normal, p1) - plane->dist;
-		t2 = DotProduct(plane->normal, p2) - plane->dist;
+		t1 = MATHLIB_PUB_DotProduct(plane->normal, p1) - plane->dist;
+		t2 = MATHLIB_PUB_DotProduct(plane->normal, p2) - plane->dist;
 	}
 
 #if 1
@@ -679,12 +679,12 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 	//==================
 	if (!side)
 	{
-		VectorCopy(plane->normal, trace->plane.normal);
+		MATHLIB_PUB_VectorCopy(plane->normal, trace->plane.normal);
 		trace->plane.dist = plane->dist;
 	}
 	else
 	{
-		VectorSubtract(vec3_origin, plane->normal, trace->plane.normal);
+		MATHLIB_PUB_VectorSubtract(MATHLIB_PUB_vec3_origin, plane->normal, trace->plane.normal);
 		trace->plane.dist = -plane->dist;
 	}
 
@@ -696,7 +696,7 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 		if (frac < 0)
 		{
 			trace->fraction = midf;
-			VectorCopy(mid, trace->endpos);
+			MATHLIB_PUB_VectorCopy(mid, trace->endpos);
 			Con_DPrintf("backup past 0\n");
 			return false;
 		}
@@ -706,7 +706,7 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 	}
 
 	trace->fraction = midf;
-	VectorCopy(mid, trace->endpos);
+	MATHLIB_PUB_VectorCopy(mid, trace->endpos);
 
 	return false;
 }
@@ -731,13 +731,13 @@ trace_t SV_ClipMoveToEntity(edict_t* ent, vec3_t start, vec3_t mins, vec3_t maxs
 	memset(&trace, 0, sizeof(trace_t));
 	trace.fraction = 1;
 	trace.allsolid = true;
-	VectorCopy(end, trace.endpos);
+	MATHLIB_PUB_VectorCopy(end, trace.endpos);
 
 	// get the clipping hull
 	hull = SV_HullForEntity(ent, mins, maxs, offset);
 
-	VectorSubtract(start, offset, start_l);
-	VectorSubtract(end, offset, end_l);
+	MATHLIB_PUB_VectorSubtract(start, offset, start_l);
+	MATHLIB_PUB_VectorSubtract(end, offset, end_l);
 
 #ifdef QUAKE2
 	// rotate start and end into the models frame of reference
@@ -748,17 +748,17 @@ trace_t SV_ClipMoveToEntity(edict_t* ent, vec3_t start, vec3_t mins, vec3_t maxs
 		vec3_t forward, right, up;
 		vec3_t temp;
 
-		AngleVectors(ent->v.angles, forward, right, up);
+		MATHLIB_PUB_AngleVectors(ent->v.angles, forward, right, up);
 
-		VectorCopy(start_l, temp);
-		start_l[0] = DotProduct(temp, forward);
-		start_l[1] = -DotProduct(temp, right);
-		start_l[2] = DotProduct(temp, up);
+		MATHLIB_PUB_VectorCopy(start_l, temp);
+		start_l[0] = MATHLIB_PUB_DotProduct(temp, forward);
+		start_l[1] = -MATHLIB_PUB_DotProduct(temp, right);
+		start_l[2] = MATHLIB_PUB_DotProduct(temp, up);
 
-		VectorCopy(end_l, temp);
-		end_l[0] = DotProduct(temp, forward);
-		end_l[1] = -DotProduct(temp, right);
-		end_l[2] = DotProduct(temp, up);
+		MATHLIB_PUB_VectorCopy(end_l, temp);
+		end_l[0] = MATHLIB_PUB_DotProduct(temp, forward);
+		end_l[1] = -MATHLIB_PUB_DotProduct(temp, right);
+		end_l[2] = MATHLIB_PUB_DotProduct(temp, up);
 	}
 #endif
 
@@ -776,25 +776,25 @@ trace_t SV_ClipMoveToEntity(edict_t* ent, vec3_t start, vec3_t mins, vec3_t maxs
 
 		if (trace.fraction != 1)
 		{
-			VectorSubtract(vec3_origin, ent->v.angles, a);
-			AngleVectors(a, forward, right, up);
+			MATHLIB_PUB_VectorSubtract(MATHLIB_PUB_vec3_origin, ent->v.angles, a);
+			MATHLIB_PUB_AngleVectors(a, forward, right, up);
 
-			VectorCopy(trace.endpos, temp);
-			trace.endpos[0] = DotProduct(temp, forward);
-			trace.endpos[1] = -DotProduct(temp, right);
-			trace.endpos[2] = DotProduct(temp, up);
+			MATHLIB_PUB_VectorCopy(trace.endpos, temp);
+			trace.endpos[0] = MATHLIB_PUB_DotProduct(temp, forward);
+			trace.endpos[1] = -MATHLIB_PUB_DotProduct(temp, right);
+			trace.endpos[2] = MATHLIB_PUB_DotProduct(temp, up);
 
-			VectorCopy(trace.plane.normal, temp);
-			trace.plane.normal[0] = DotProduct(temp, forward);
-			trace.plane.normal[1] = -DotProduct(temp, right);
-			trace.plane.normal[2] = DotProduct(temp, up);
+			MATHLIB_PUB_VectorCopy(trace.plane.normal, temp);
+			trace.plane.normal[0] = MATHLIB_PUB_DotProduct(temp, forward);
+			trace.plane.normal[1] = -MATHLIB_PUB_DotProduct(temp, right);
+			trace.plane.normal[2] = MATHLIB_PUB_DotProduct(temp, up);
 		}
 	}
 #endif
 
 	// fix trace up by the offset
 	if (trace.fraction != 1)
-		VectorAdd(trace.endpos, offset, trace.endpos);
+		MATHLIB_PUB_VectorAdd(trace.endpos, offset, trace.endpos);
 
 	// did we clip the move?
 	if (trace.fraction < 1 || trace.startsolid)
@@ -948,8 +948,8 @@ trace_t SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, ed
 	}
 	else
 	{
-		VectorCopy(mins, clip.mins2);
-		VectorCopy(maxs, clip.maxs2);
+		MATHLIB_PUB_VectorCopy(mins, clip.mins2);
+		MATHLIB_PUB_VectorCopy(maxs, clip.maxs2);
 	}
 
 	// create the bounding box of the entire move

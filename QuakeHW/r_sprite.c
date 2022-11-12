@@ -41,9 +41,9 @@ void R_RotateSprite(float beamlength)
 	if (beamlength == 0.0)
 		return;
 
-	VectorScale(r_spritedesc.vpn, -beamlength, vec);
-	VectorAdd(r_entorigin, vec, r_entorigin);
-	VectorSubtract(modelorg, vec, modelorg);
+	MATHLIB_PUB_VectorScale(r_spritedesc.vpn, -beamlength, vec);
+	MATHLIB_PUB_VectorAdd(r_entorigin, vec, r_entorigin);
+	MATHLIB_PUB_VectorSubtract(modelorg, vec, modelorg);
 }
 
 
@@ -59,8 +59,8 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 {
 	int i, outcount;
 	float dists[MAXWORKINGVERTS + 1];
-	float frac, clipdist, *pclipnormal;
-	float *in, *instep, *outstep, *vert2;
+	float frac, clipdist, * pclipnormal;
+	float* in, * instep, * outstep, * vert2;
 
 	clipdist = pclipplane->dist;
 	pclipnormal = pclipplane->normal;
@@ -82,7 +82,7 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 	instep = in;
 	for (i = 0; i < nump; i++, instep += sizeof(vec5_t) / sizeof(float))
 	{
-		dists[i] = DotProduct(instep, pclipnormal) - clipdist;
+		dists[i] = MATHLIB_PUB_DotProduct(instep, pclipnormal) - clipdist;
 	}
 
 	// handle wraparound case
@@ -136,22 +136,22 @@ R_SetupAndDrawSprite
 void R_SetupAndDrawSprite()
 {
 	int i, nump;
-	float dot, scale, *pv;
+	float dot, scale, * pv;
 	vec5_t* pverts;
 	vec3_t left, up, right, down, transformed, local;
-	emitpoint_t outverts[MAXWORKINGVERTS + 1], *pout;
+	emitpoint_t outverts[MAXWORKINGVERTS + 1], * pout;
 
-	dot = DotProduct(r_spritedesc.vpn, modelorg);
+	dot = MATHLIB_PUB_DotProduct(r_spritedesc.vpn, modelorg);
 
 	// backface cull
 	if (dot >= 0)
 		return;
 
 	// build the sprite poster in worldspace
-	VectorScale(r_spritedesc.vright, r_spritedesc.pspriteframe->right, right);
-	VectorScale(r_spritedesc.vup, r_spritedesc.pspriteframe->up, up);
-	VectorScale(r_spritedesc.vright, r_spritedesc.pspriteframe->left, left);
-	VectorScale(r_spritedesc.vup, r_spritedesc.pspriteframe->down, down);
+	MATHLIB_PUB_VectorScale(r_spritedesc.vright, r_spritedesc.pspriteframe->right, right);
+	MATHLIB_PUB_VectorScale(r_spritedesc.vup, r_spritedesc.pspriteframe->up, up);
+	MATHLIB_PUB_VectorScale(r_spritedesc.vright, r_spritedesc.pspriteframe->left, left);
+	MATHLIB_PUB_VectorScale(r_spritedesc.vup, r_spritedesc.pspriteframe->down, down);
 
 	pverts = clip_verts[0];
 
@@ -198,7 +198,7 @@ void R_SetupAndDrawSprite()
 
 	for (i = 0; i < nump; i++)
 	{
-		VectorSubtract(pv, r_origin, local);
+		MATHLIB_PUB_VectorSubtract(pv, r_origin, local);
 		TransformVector(local, transformed);
 
 		if (transformed[2] < NEAR_CLIP)
@@ -238,7 +238,7 @@ mspriteframe_t* R_GetSpriteframe(msprite_t* psprite)
 	mspritegroup_t* pspritegroup;
 	mspriteframe_t* pspriteframe;
 	int i, numframes, frame;
-	float *pintervals, fullinterval, targettime, time;
+	float* pintervals, fullinterval, targettime, time;
 
 	frame = currententity->frame;
 
@@ -309,7 +309,7 @@ void R_DrawSprite(void)
 		tvec[0] = -modelorg[0];
 		tvec[1] = -modelorg[1];
 		tvec[2] = -modelorg[2];
-		VectorNormalize(tvec);
+		MATHLIB_PUB_VectorNormalize(tvec);
 		dot = tvec[2]; // same as DotProduct (tvec, r_spritedesc.vup) because
 		//  r_spritedesc.vup is 0, 0, 1
 		if ((dot > 0.999848) || (dot < -0.999848)) // cos(1 degree) = 0.999848
@@ -318,11 +318,11 @@ void R_DrawSprite(void)
 		r_spritedesc.vup[1] = 0;
 		r_spritedesc.vup[2] = 1;
 		r_spritedesc.vright[0] = tvec[1];
-		// CrossProduct(r_spritedesc.vup, -modelorg,
+		// MATHLIB_PUB_CrossProduct(r_spritedesc.vup, -modelorg,
 		r_spritedesc.vright[1] = -tvec[0];
 		//              r_spritedesc.vright)
 		r_spritedesc.vright[2] = 0;
-		VectorNormalize(r_spritedesc.vright);
+		MATHLIB_PUB_VectorNormalize(r_spritedesc.vright);
 		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
 		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
 		r_spritedesc.vpn[2] = 0;
@@ -360,7 +360,7 @@ void R_DrawSprite(void)
 		// CrossProduct (r_spritedesc.vup, vpn,
 		r_spritedesc.vright[1] = -vpn[0]; //  r_spritedesc.vright)
 		r_spritedesc.vright[2] = 0;
-		VectorNormalize(r_spritedesc.vright);
+		MATHLIB_PUB_VectorNormalize(r_spritedesc.vright);
 		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
 		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
 		r_spritedesc.vpn[2] = 0;
@@ -370,8 +370,8 @@ void R_DrawSprite(void)
 	else if (psprite->type == SPR_ORIENTED)
 	{
 		// generate the sprite's axes, according to the sprite's world orientation
-		AngleVectors(currententity->angles, r_spritedesc.vpn,
-		             r_spritedesc.vright, r_spritedesc.vup);
+		MATHLIB_PUB_AngleVectors(currententity->angles, r_spritedesc.vpn,
+			r_spritedesc.vright, r_spritedesc.vup);
 	}
 	else if (psprite->type == SPR_VP_PARALLEL_ORIENTED)
 	{

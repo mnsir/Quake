@@ -25,11 +25,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void Sys_Error(char* error, ...);
 
 vec3_t MATHLIB_PUB_vec3_origin = { 0, 0, 0 };
-int MATHLIB_PUB_nanmask = 255 << 23;
 
 /*-----------------------------------------------------------------*/
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
+
+
+int MATHLIB_PUB_IS_NAN(vec_t x)
+{
+	static const int MATHLIB_PUB_nanmask = 255 << 23;
+	return (*(int*)&x & MATHLIB_PUB_nanmask) == MATHLIB_PUB_nanmask;
+}
+
 
 static void MATHLIB_PR_ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {

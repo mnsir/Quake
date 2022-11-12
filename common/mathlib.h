@@ -35,9 +35,6 @@ typedef int fixed16_t;
 struct mplane_s;
 
 extern vec3_t MATHLIB_PUB_vec3_origin;
-extern int MATHLIB_PUB_nanmask;
-
-#define MATHLIB_PUB_IS_NAN(x) (((*(int *)&x)&MATHLIB_PUB_nanmask)==MATHLIB_PUB_nanmask)
 
 #define MATHLIB_PUB_DotProduct(x,y) (x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
 #define MATHLIB_PUB_VectorSubtract(a,b,c) {c[0]=a[0]-b[0];c[1]=a[1]-b[1];c[2]=a[2]-b[2];}
@@ -60,6 +57,7 @@ extern int MATHLIB_PUB_nanmask;
  : \
  MATHLIB_PUB_BoxOnPlaneSide( (emins), (emaxs), (p)))
 
+int MATHLIB_PUB_IS_NAN(vec_t x);
 void MATHLIB_PUB_RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
 float MATHLIB_PUB_anglemod(float a);
 int MATHLIB_PUB_BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct mplane_s* plane);

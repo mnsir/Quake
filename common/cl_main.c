@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
+#include "mathlib.h"
 #include "quakedef.h"
 
 // we need to declare some mouse variables here, because the menu system

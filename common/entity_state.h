@@ -1,5 +1,7 @@
 #pragma once
 
+#include "mathlib.h"
+
 typedef struct
 {
 	vec3_t origin;

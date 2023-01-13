@@ -95,7 +95,7 @@ void R_SplitEntityOnNode(mnode_t* node)
 	mleaf_t* leaf;
 	int sides;
 
-	if (node->contents == CONTENTS_SOLID)
+	if (node->contents == SPFILE_PUB_CONTENTS_SOLID)
 	{
 		return;
 	}

@@ -169,7 +169,7 @@ void R_BuildLightMap(msurface_t* surf, byte* dest, int stride)
 
 	// add all the lightmaps
 	if (lightmap)
-		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
+		for (maps = 0; maps < BSPFILE_PUB_MAXLIGHTMAPS && surf->styles[maps] != 255;
 		     maps++)
 		{
 			scale = d_lightstylevalue[surf->styles[maps]];
@@ -795,7 +795,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 	lightmap_polys[fa->lightmaptexturenum] = fa->polys;
 
 	// check for lightmap modification
-	for (maps = 0; maps < MAXLIGHTMAPS && fa->styles[maps] != 255;
+	for (maps = 0; maps < BSPFILE_PUB_MAXLIGHTMAPS && fa->styles[maps] != 255;
 	     maps++)
 		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps])
 			goto dynamic;
@@ -856,7 +856,7 @@ void R_RenderDynamicLightmaps(msurface_t* fa)
 	lightmap_polys[fa->lightmaptexturenum] = fa->polys;
 
 	// check for lightmap modification
-	for (maps = 0; maps < MAXLIGHTMAPS && fa->styles[maps] != 255;
+	for (maps = 0; maps < BSPFILE_PUB_MAXLIGHTMAPS && fa->styles[maps] != 255;
 	     maps++)
 		if (d_lightstylevalue[fa->styles[maps]] != fa->cached_light[maps])
 			goto dynamic;
@@ -1211,7 +1211,7 @@ void R_RecursiveWorldNode(mnode_t* node)
 	double d, dot;
 	vec3_t mins, maxs;
 
-	if (node->contents == CONTENTS_SOLID)
+	if (node->contents == SPFILE_PUB_CONTENTS_SOLID)
 		return; // solid
 
 	if (node->visframe != r_visframecount)
@@ -1251,13 +1251,13 @@ void R_RecursiveWorldNode(mnode_t* node)
 
 	switch (plane->type)
 	{
-	case PLANE_X:
+	case BSPFILE_PUB_PLANE_X:
 		dot = modelorg[0] - plane->dist;
 		break;
-	case PLANE_Y:
+	case BSPFILE_PUB_PLANE_Y:
 		dot = modelorg[1] - plane->dist;
 		break;
-	case PLANE_Z:
+	case BSPFILE_PUB_PLANE_Z:
 		dot = modelorg[2] - plane->dist;
 		break;
 	default:

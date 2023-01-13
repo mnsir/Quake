@@ -104,7 +104,7 @@ typedef struct surfcache_s
 {
 	struct surfcache_s* next;
 	struct surfcache_s** owner; // NULL is an empty chunk of memory
-	int lightadj[MAXLIGHTMAPS]; // checked for strobe flush
+	int lightadj[BSPFILE_PUB_MAXLIGHTMAPS]; // checked for strobe flush
 	int dlight;
 	int size; // including header
 	unsigned width;
@@ -120,7 +120,7 @@ typedef struct
 	pixel_t* surfdat; // destination for generated surface
 	int rowbytes; // destination logical width in bytes
 	msurface_t* surf; // description for surface to generate
-	fixed8_t lightadj[MAXLIGHTMAPS];
+	fixed8_t lightadj[BSPFILE_PUB_MAXLIGHTMAPS];
 	// adjust for lightmap levels for dynamic lighting
 	texture_t* texture; // corrected for animating textures
 	int surfmip; // mipmapped ratio of surface texels / world pixels

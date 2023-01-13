@@ -824,9 +824,9 @@ qboolean SV_CheckWater(edict_t* ent)
 	point[2] = ent->v.origin[2] + ent->v.mins[2] + 1;
 
 	ent->v.waterlevel = 0;
-	ent->v.watertype = CONTENTS_EMPTY;
+	ent->v.watertype = SPFILE_PUB_CONTENTS_EMPTY;
 	cont = SV_PointContents(point);
-	if (cont <= CONTENTS_WATER)
+	if (cont <= SPFILE_PUB_CONTENTS_WATER)
 	{
 #ifdef QUAKE2
 		truecont = SV_TruePointContents(point);
@@ -835,16 +835,16 @@ qboolean SV_CheckWater(edict_t* ent)
 		ent->v.waterlevel = 1;
 		point[2] = ent->v.origin[2] + (ent->v.mins[2] + ent->v.maxs[2]) * 0.5;
 		cont = SV_PointContents(point);
-		if (cont <= CONTENTS_WATER)
+		if (cont <= SPFILE_PUB_CONTENTS_WATER)
 		{
 			ent->v.waterlevel = 2;
 			point[2] = ent->v.origin[2] + ent->v.view_ofs[2];
 			cont = SV_PointContents(point);
-			if (cont <= CONTENTS_WATER)
+			if (cont <= SPFILE_PUB_CONTENTS_WATER)
 				ent->v.waterlevel = 3;
 		}
 #ifdef QUAKE2
-		if (truecont <= CONTENTS_CURRENT_0 && truecont >= CONTENTS_CURRENT_DOWN)
+		if (truecont <= SPFILE_PUB_CONTENTS_CURRENT_0 && truecont >= CONTENTS_CURRENT_DOWN)
 		{
 			static vec3_t current_table[] =
 			{
@@ -856,7 +856,7 @@ qboolean SV_CheckWater(edict_t* ent)
 			{0, 0, -1}
 			};
 
-			MATHLIB_PUB_VectorMA(ent->v.basevelocity, 150.0 * ent->v.waterlevel / 3.0, current_table[CONTENTS_CURRENT_0 - truecont], ent->v.basevelocity);
+			MATHLIB_PUB_VectorMA(ent->v.basevelocity, 150.0 * ent->v.waterlevel / 3.0, current_table[SPFILE_PUB_CONTENTS_CURRENT_0 - truecont], ent->v.basevelocity);
 		}
 #endif
 	}
@@ -1240,9 +1240,9 @@ void SV_CheckWaterTransition(edict_t* ent)
 		return;
 	}
 
-	if (cont <= CONTENTS_WATER)
+	if (cont <= SPFILE_PUB_CONTENTS_WATER)
 	{
-		if (ent->v.watertype == CONTENTS_EMPTY)
+		if (ent->v.watertype == SPFILE_PUB_CONTENTS_EMPTY)
 		{
 			// just crossed into water
 			SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
@@ -1252,12 +1252,12 @@ void SV_CheckWaterTransition(edict_t* ent)
 	}
 	else
 	{
-		if (ent->v.watertype != CONTENTS_EMPTY)
+		if (ent->v.watertype != SPFILE_PUB_CONTENTS_EMPTY)
 		{
 			// just crossed into water
 			SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
 		}
-		ent->v.watertype = CONTENTS_EMPTY;
+		ent->v.watertype = SPFILE_PUB_CONTENTS_EMPTY;
 		ent->v.waterlevel = cont;
 	}
 }
@@ -1470,7 +1470,7 @@ void SV_Physics_Step(edict_t* ent)
 				{
 					point[0] = x ? maxs[0] : mins[0];
 					point[1] = y ? maxs[1] : mins[1];
-					if (SV_PointContents(point) == CONTENTS_SOLID)
+					if (SV_PointContents(point) == SPFILE_PUB_CONTENTS_SOLID)
 					{
 						ent->v.flags = (int)ent->v.flags | FL_ONGROUND;
 						break;

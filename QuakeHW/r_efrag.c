@@ -96,7 +96,7 @@ void R_SplitEntityOnNode(mnode_t* node)
 	mleaf_t* leaf;
 	int sides;
 
-	if (node->contents == CONTENTS_SOLID)
+	if (node->contents == SPFILE_PUB_CONTENTS_SOLID)
 	{
 		return;
 	}
@@ -171,7 +171,7 @@ void R_SplitEntityOnNode2(mnode_t* node)
 
 	if (node->contents < 0)
 	{
-		if (node->contents != CONTENTS_SOLID)
+		if (node->contents != SPFILE_PUB_CONTENTS_SOLID)
 			r_pefragtopnode = node; // we've reached a non-solid leaf, so it's
 		//  visible and not BSP clipped
 		return;

@@ -362,7 +362,7 @@ crosses a waterline.
 */
 
 int fatbytes;
-byte fatpvs[MAX_MAP_LEAFS / 8];
+byte fatpvs[BSPFILE_PUB_MAX_MAP_LEAFS / 8];
 
 void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 {
@@ -376,7 +376,7 @@ void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 		// if this is a leaf, accumulate the pvs bits
 		if (node->contents < 0)
 		{
-			if (node->contents != CONTENTS_SOLID)
+			if (node->contents != SPFILE_PUB_CONTENTS_SOLID)
 			{
 				pvs = Mod_LeafPVS((mleaf_t*)node, sv.worldmodel);
 				for (i = 0; i < fatbytes; i++)

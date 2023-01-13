@@ -304,7 +304,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 			{
 				if (pn->contents < 0)
 				{
-					if (pn->contents != CONTENTS_SOLID)
+					if (pn->contents != SPFILE_PUB_CONTENTS_SOLID)
 					{
 						r_currentbkey = ((mleaf_t*)pn)->key;
 						R_RenderBmodelFace(psideedges[i], psurf);
@@ -455,7 +455,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 	mleaf_t* pleaf;
 	double d, dot;
 
-	if (node->contents == CONTENTS_SOLID)
+	if (node->contents == SPFILE_PUB_CONTENTS_SOLID)
 		return; // solid
 
 	if (node->visframe != r_visframecount)
@@ -534,13 +534,13 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 
 		switch (plane->type)
 		{
-		case PLANE_X:
+		case BSPFILE_PUB_PLANE_X:
 			dot = modelorg[0] - plane->dist;
 			break;
-		case PLANE_Y:
+		case BSPFILE_PUB_PLANE_Y:
 			dot = modelorg[1] - plane->dist;
 			break;
-		case PLANE_Z:
+		case BSPFILE_PUB_PLANE_Z:
 			dot = modelorg[2] - plane->dist;
 			break;
 		default:

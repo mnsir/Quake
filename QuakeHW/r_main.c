@@ -427,26 +427,26 @@ void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 	screenedge[0].normal[0] = -1.0 / (xOrigin * r_refdef.horizontalFieldOfView);
 	screenedge[0].normal[1] = 0;
 	screenedge[0].normal[2] = 1;
-	screenedge[0].type = PLANE_ANYZ;
+	screenedge[0].type = BSPFILE_PUB_PLANE_ANYZ;
 
 	// right side clip
 	screenedge[1].normal[0] =
 		1.0 / ((1.0 - xOrigin) * r_refdef.horizontalFieldOfView);
 	screenedge[1].normal[1] = 0;
 	screenedge[1].normal[2] = 1;
-	screenedge[1].type = PLANE_ANYZ;
+	screenedge[1].type = BSPFILE_PUB_PLANE_ANYZ;
 
 	// top side clip
 	screenedge[2].normal[0] = 0;
 	screenedge[2].normal[1] = -1.0 / (yOrigin * verticalFieldOfView);
 	screenedge[2].normal[2] = 1;
-	screenedge[2].type = PLANE_ANYZ;
+	screenedge[2].type = BSPFILE_PUB_PLANE_ANYZ;
 
 	// bottom side clip
 	screenedge[3].normal[0] = 0;
 	screenedge[3].normal[1] = 1.0 / ((1.0 - yOrigin) * verticalFieldOfView);
 	screenedge[3].normal[2] = 1;
-	screenedge[3].type = PLANE_ANYZ;
+	screenedge[3].type = BSPFILE_PUB_PLANE_ANYZ;
 
 	for (i = 0; i < 4; i++)
 		 MATHLIB_PUB_VectorNormalize(screenedge[i].normal);

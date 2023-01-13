@@ -55,7 +55,7 @@ HULL BOXES
 
 
 static hull_t box_hull;
-static dclipnode_t box_clipnodes[6];
+static BSPFILE_PUB_dclipnode_t box_clipnodes[6];
 static mplane_t box_planes[6];
 
 /*
@@ -82,11 +82,11 @@ void SV_InitBoxHull(void)
 
 		side = i & 1;
 
-		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
+		box_clipnodes[i].children[side] = SPFILE_PUB_CONTENTS_EMPTY;
 		if (i != 5)
 			box_clipnodes[i].children[side ^ 1] = i + 1;
 		else
-			box_clipnodes[i].children[side ^ 1] = CONTENTS_SOLID;
+			box_clipnodes[i].children[side ^ 1] = SPFILE_PUB_CONTENTS_SOLID;
 
 		box_planes[i].type = i >> 1;
 		box_planes[i].normal[i >> 1] = 1;
@@ -333,7 +333,7 @@ void SV_FindTouchedLeafs(edict_t* ent, mnode_t* node)
 	int sides;
 	int leafnum;
 
-	if (node->contents == CONTENTS_SOLID)
+	if (node->contents == SPFILE_PUB_CONTENTS_SOLID)
 		return;
 
 	// add an efrag if the node is a leaf
@@ -492,7 +492,7 @@ SV_HullPointContents
 int SV_HullPointContents(hull_t* hull, int num, vec3_t p)
 {
 	float d;
-	dclipnode_t* node;
+	BSPFILE_PUB_dclipnode_t* node;
 	mplane_t* plane;
 
 	while (num >= 0)
@@ -530,8 +530,8 @@ int SV_PointContents(vec3_t p)
 	int cont;
 
 	cont = SV_HullPointContents(&sv.worldmodel->hulls[0], 0, p);
-	if (cont <= CONTENTS_CURRENT_0 && cont >= CONTENTS_CURRENT_DOWN)
-		cont = CONTENTS_WATER;
+	if (cont <= SPFILE_PUB_CONTENTS_CURRENT_0 && cont >= SPFILE_PUB_CONTENTS_CURRENT_DOWN)
+		cont = SPFILE_PUB_CONTENTS_WATER;
 	return cont;
 }
 
@@ -581,7 +581,7 @@ SV_RecursiveHullCheck
 */
 qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t* trace)
 {
-	dclipnode_t* node;
+	BSPFILE_PUB_dclipnode_t* node;
 	mplane_t* plane;
 	float t1, t2;
 	float frac;
@@ -593,10 +593,10 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 	// check for empty
 	if (num < 0)
 	{
-		if (num != CONTENTS_SOLID)
+		if (num != SPFILE_PUB_CONTENTS_SOLID)
 		{
 			trace->allsolid = false;
-			if (num == CONTENTS_EMPTY)
+			if (num == SPFILE_PUB_CONTENTS_EMPTY)
 				trace->inopen = true;
 			else
 				trace->inwater = true;
@@ -660,7 +660,7 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 
 #ifdef PARANOID
 	if (SV_HullPointContents(sv_hullmodel, mid, node->children[side])
-		== CONTENTS_SOLID)
+		== SPFILE_PUB_CONTENTS_SOLID)
 	{
 		Con_Printf("mid PointInHullSolid\n");
 		return false;
@@ -668,7 +668,7 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 #endif
 
 	if (SV_HullPointContents(hull, node->children[side ^ 1], mid)
-		!= CONTENTS_SOLID)
+		!= SPFILE_PUB_CONTENTS_SOLID)
 		// go past the node
 		return SV_RecursiveHullCheck(hull, node->children[side ^ 1], midf, p2f, mid, p2, trace);
 
@@ -690,7 +690,7 @@ qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3
 	}
 
 	while (SV_HullPointContents(hull, hull->firstclipnode, mid)
-		== CONTENTS_SOLID)
+		== SPFILE_PUB_CONTENTS_SOLID)
 	{
 		// shouldn't really happen, but does occasionally
 		frac -= 0.1;

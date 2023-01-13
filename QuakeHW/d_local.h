@@ -39,7 +39,7 @@ typedef struct surfcache_s
 {
 	struct surfcache_s* next;
 	struct surfcache_s** owner; // NULL is an empty chunk of memory
-	int lightadj[MAXLIGHTMAPS]; // checked for strobe flush
+	int lightadj[BSPFILE_PUB_MAXLIGHTMAPS]; // checked for strobe flush
 	int dlight;
 	int size; // including header
 	unsigned width;

@@ -680,7 +680,7 @@ void PF_checkpos(void)
 
 //============================================================================
 
-byte checkpvs[MAX_MAP_LEAFS / 8];
+byte checkpvs[BSPFILE_PUB_MAX_MAP_LEAFS / 8];
 
 int PF_newcheckclient(int check)
 {

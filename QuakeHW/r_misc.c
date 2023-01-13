@@ -438,7 +438,7 @@ void R_SetupFrame(void)
 	r_viewleaf = Mod_PointInLeaf(r_origin, cl.worldmodel);
 
 	r_dowarpold = r_dowarp;
-	r_dowarp = r_waterwarp.value && (r_viewleaf->contents <= CONTENTS_WATER);
+	r_dowarp = r_waterwarp.value && (r_viewleaf->contents <= SPFILE_PUB_CONTENTS_WATER);
 
 	if ((r_dowarp != r_dowarpold) || r_viewchanged || lcd_x.value)
 	{

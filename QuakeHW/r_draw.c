@@ -804,18 +804,18 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	pplane = fa->plane;
 	switch (pplane->type)
 	{
-	case PLANE_X:
-	case PLANE_ANYX:
+	case BSPFILE_PUB_PLANE_X:
+	case BSPFILE_PUB_PLANE_ANYX:
 		s_axis = 1;
 		t_axis = 2;
 		break;
-	case PLANE_Y:
-	case PLANE_ANYY:
+	case BSPFILE_PUB_PLANE_Y:
+	case BSPFILE_PUB_PLANE_ANYY:
 		s_axis = 0;
 		t_axis = 2;
 		break;
-	case PLANE_Z:
-	case PLANE_ANYZ:
+	case BSPFILE_PUB_PLANE_Z:
+	case BSPFILE_PUB_PLANE_ANYZ:
 		s_axis = 0;
 		t_axis = 1;
 		break;

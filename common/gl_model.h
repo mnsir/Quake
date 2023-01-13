@@ -81,7 +81,7 @@ typedef struct texture_s
 	int anim_min, anim_max; // time for this frame min <=time< max
 	struct texture_s* anim_next; // in the animation sequence
 	struct texture_s* alternate_anims; // bmodels in frmae 1 use these
-	unsigned offsets[MIPLEVELS]; // four mip maps stored
+	unsigned offsets[BSPFILE_PUB_MIPLEVELS]; // four mip maps stored
 } texture_t;
 
 
@@ -144,8 +144,8 @@ typedef struct msurface_s
 	int dlightbits;
 
 	int lightmaptexturenum;
-	byte styles[MAXLIGHTMAPS];
-	int cached_light[MAXLIGHTMAPS]; // values currently used in lightmap
+	byte styles[BSPFILE_PUB_MAXLIGHTMAPS];
+	int cached_light[BSPFILE_PUB_MAXLIGHTMAPS]; // values currently used in lightmap
 	qboolean cached_dlight; // true if dynamic light in cache
 	byte* samples; // [numstyles*surfsize]
 } msurface_t;
@@ -186,13 +186,13 @@ typedef struct mleaf_s
 	msurface_t** firstmarksurface;
 	int nummarksurfaces;
 	int key; // BSP sequence number for leaf's contents
-	byte ambient_sound_level[NUM_AMBIENTS];
+	byte ambient_sound_level[BSPFILE_PUB_NUM_AMBIENTS];
 } mleaf_t;
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
-	dclipnode_t* clipnodes;
+	BSPFILE_PUB_dclipnode_t* clipnodes;
 	mplane_t* planes;
 	int firstclipnode;
 	int lastclipnode;
@@ -368,7 +368,7 @@ typedef struct model_s
 	int firstmodelsurface, nummodelsurfaces;
 
 	int numsubmodels;
-	dmodel_t* submodels;
+	BSPFILE_PUB_dmodel_t* submodels;
 
 	int numplanes;
 	mplane_t* planes;
@@ -395,12 +395,12 @@ typedef struct model_s
 	int* surfedges;
 
 	int numclipnodes;
-	dclipnode_t* clipnodes;
+	BSPFILE_PUB_dclipnode_t* clipnodes;
 
 	int nummarksurfaces;
 	msurface_t** marksurfaces;
 
-	hull_t hulls[MAX_MAP_HULLS];
+	hull_t hulls[BSPFILE_PUB_MAX_MAP_HULLS];
 
 	int numtextures;
 	texture_t** textures;

@@ -414,14 +414,14 @@ void V_SetContentsColor(int contents)
 {
 	switch (contents)
 	{
-	case CONTENTS_EMPTY:
-	case CONTENTS_SOLID:
+	case SPFILE_PUB_CONTENTS_EMPTY:
+	case SPFILE_PUB_CONTENTS_SOLID:
 		cl.cshifts[CSHIFT_CONTENTS] = cshift_empty;
 		break;
-	case CONTENTS_LAVA:
+	case SPFILE_PUB_CONTENTS_LAVA:
 		cl.cshifts[CSHIFT_CONTENTS] = cshift_lava;
 		break;
-	case CONTENTS_SLIME:
+	case SPFILE_PUB_CONTENTS_SLIME:
 		cl.cshifts[CSHIFT_CONTENTS] = cshift_slime;
 		break;
 	default:

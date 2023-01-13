@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // comndef.h  -- general definitions
 #pragma once
 
+#include <stdio.h>
+
 #if !defined BYTE_DEFINED
 typedef unsigned char byte;
 #define BYTE_DEFINED 1
@@ -165,6 +167,9 @@ char* va(char* format, ...);
 
 extern int com_filesize;
 struct cache_user_s;
+
+
+#define MAX_OSPATH 128 // max length of a filesystem pathname
 
 extern char com_gamedir[MAX_OSPATH];
 

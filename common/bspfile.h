@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #pragma once
 
+#include "common.h"
+
 // upper design bounds
 
 #define BSPFILE_PUB_MAX_MAP_HULLS 4
@@ -227,7 +229,7 @@ typedef struct
 
 
 //============================================================================
-
+/*
 #ifndef QUAKE_GAME
 
 #define ANGLE_UP -1
@@ -323,3 +325,4 @@ void  GetVectorForKey(entity_t* ent, char* key, vec3_t vec);
 epair_t* ParseEpair(void);
 
 #endif
+*/

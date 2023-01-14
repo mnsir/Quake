@@ -24,9 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma warning(disable : 4136)     // X86
 #pragma warning(disable : 4051)     // ALPHA
 
-#ifdef _WIN32
 #include <windows.h>
-#endif
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -35,7 +33,6 @@ void GL_BeginRendering(int* x, int* y, int* width, int* height);
 void GL_EndRendering(void);
 
 
-#ifdef _WIN32
 // Function prototypes for the Texture Object Extension routines
 typedef GLboolean (APIENTRY* ARETEXRESFUNCPTR)(GLsizei, const GLuint*,
                                                const GLboolean*);
@@ -50,7 +47,6 @@ typedef void (APIENTRY* TEXSUBIMAGEPTR)(int, int, int, int, int, int, int, int, 
 extern BINDTEXFUNCPTR bindTexFunc;
 extern DELTEXFUNCPTR delTexFunc;
 extern TEXSUBIMAGEPTR TexSubImage2DFunc;
-#endif
 
 extern int texture_extension_number;
 extern int texture_mode;
@@ -73,12 +69,10 @@ extern glvert_t glv;
 
 extern int glx, gly, glwidth, glheight;
 
-#ifdef _WIN32
 extern PROC glArrayElementEXT;
 extern PROC glColorPointerEXT;
 extern PROC glTexturePointerEXT;
 extern PROC glVertexPointerEXT;
-#endif
 
 // r_local.h -- private refresh defs
 
@@ -244,10 +238,6 @@ void GL_Bind(int texnum);
 // Multitexture
 #define    TEXTURE0_SGIS 0x835E
 #define    TEXTURE1_SGIS 0x835F
-
-#ifndef _WIN32
-#define APIENTRY /* */
-#endif
 
 typedef void (APIENTRY* lpMTexFUNC)(GLenum, GLfloat, GLfloat);
 typedef void (APIENTRY* lpSelTexFUNC)(GLenum);

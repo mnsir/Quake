@@ -574,7 +574,6 @@ int texture_mode = GL_LINEAR;
 
 int texture_extension_number = 1;
 
-#ifdef _WIN32
 void CheckMultiTextureExtensions(void)
 {
 	if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm("-nomtex"))
@@ -585,12 +584,6 @@ void CheckMultiTextureExtensions(void)
 		gl_mtexable = true;
 	}
 }
-#else
-void CheckMultiTextureExtensions(void)
-{
-	gl_mtexable = true;
-}
-#endif
 
 /*
 ===============

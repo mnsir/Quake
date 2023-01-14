@@ -1175,7 +1175,6 @@ void D_PolysetSetEdgeTable(void);
 void D_RasterizeAliasPolySmooth(void);
 void D_PolysetScanLeftEdge(int height);
 
-#if !id386
 
 /*
 ================
@@ -1446,8 +1445,6 @@ nodraw:
 	D_PolysetRecursiveTriangle(lp3, new, lp2);
 }
 
-#endif // !id386
-
 
 /*
 ================
@@ -1470,8 +1467,6 @@ void D_PolysetUpdateTables(void)
 	}
 }
 
-
-#if !id386
 
 /*
 ===================
@@ -1539,8 +1534,6 @@ void D_PolysetScanLeftEdge(int height)
 	while (--height);
 }
 
-#endif // !id386
-
 
 /*
 ===================
@@ -1580,8 +1573,6 @@ void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 	}
 }
 
-
-#if !id386
 
 /*
 ================
@@ -1632,39 +1623,13 @@ void D_PolysetCalcGradients(int skinwidth)
 		xstepdenominv);
 	r_zistepy = (int)((t1 * p00_minus_p20 - t0 * p10_minus_p20) *
 		ystepdenominv);
-
-#if id386
-	a_sstepxfrac = r_sstepx << 16;
-	a_tstepxfrac = r_tstepx << 16;
-#else
+	
 	a_sstepxfrac = r_sstepx & 0xFFFF;
 	a_tstepxfrac = r_tstepx & 0xFFFF;
-#endif
 
 	a_ststepxwhole = skinwidth * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
 
-#endif // !id386
-
-
-#if 0
-byte gelmap[256];
-void InitGel(byte* palette)
-{
-	int i;
-	int r;
-
-	for (i = 0; i < 256; i++)
-	{
-		// r = (palette[i*3]>>4);
-		r = (palette[i * 3] + palette[i * 3 + 1] + palette[i * 3 + 2]) / (16 * 3);
-		gelmap[i] = /* 64 */ 0 + r;
-	}
-}
-#endif
-
-
-#if !id386
 
 /*
 ================
@@ -1736,7 +1701,6 @@ void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 	}
 	while (pspanpackage->count != -999999);
 }
-#endif // !id386
 
 
 /*
@@ -1817,13 +1781,8 @@ void D_RasterizeAliasPolySmooth(void)
 
 	d_ptex = (byte*)r_affinetridesc.pskin + (plefttop[2] >> 16) +
 		(plefttop[3] >> 16) * r_affinetridesc.skinwidth;
-#if id386
-	d_sfrac = (plefttop[2] & 0xFFFF) << 16;
-	d_tfrac = (plefttop[3] & 0xFFFF) << 16;
-#else
 	d_sfrac = plefttop[2] & 0xFFFF;
 	d_tfrac = plefttop[3] & 0xFFFF;
-#endif
 	d_light = plefttop[4];
 	d_zi = plefttop[5];
 
@@ -1851,14 +1810,9 @@ void D_RasterizeAliasPolySmooth(void)
 	{
 		D_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
 		                          pleftbottom[0], pleftbottom[1]);
-
-#if id386
-		d_pzbasestep = (d_zwidth + ubasestep) << 1;
-		d_pzextrastep = d_pzbasestep + 2;
-#else
+		
 		d_pzbasestep = d_zwidth + ubasestep;
 		d_pzextrastep = d_pzbasestep + 1;
-#endif
 
 		d_pdestbasestep = screenwidth + ubasestep;
 		d_pdestextrastep = d_pdestbasestep + 1;
@@ -1877,26 +1831,16 @@ void D_RasterizeAliasPolySmooth(void)
 		d_ptexbasestep = ((r_sstepy + r_sstepx * ubasestep) >> 16) +
 			((r_tstepy + r_tstepx * ubasestep) >> 16) *
 			r_affinetridesc.skinwidth;
-#if id386
-		d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) << 16;
-		d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) << 16;
-#else
 		d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) & 0xFFFF;
 		d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) & 0xFFFF;
-#endif
 		d_lightbasestep = r_lstepy + working_lstepx * ubasestep;
 		d_zibasestep = r_zistepy + r_zistepx * ubasestep;
 
 		d_ptexextrastep = ((r_sstepy + r_sstepx * d_countextrastep) >> 16) +
 			((r_tstepy + r_tstepx * d_countextrastep) >> 16) *
 			r_affinetridesc.skinwidth;
-#if id386
-		d_sfracextrastep = (r_sstepy + r_sstepx * d_countextrastep) << 16;
-		d_tfracextrastep = (r_tstepy + r_tstepx * d_countextrastep) << 16;
-#else
 		d_sfracextrastep = (r_sstepy + r_sstepx * d_countextrastep) & 0xFFFF;
 		d_tfracextrastep = (r_tstepy + r_tstepx * d_countextrastep) & 0xFFFF;
-#endif
 		d_lightextrastep = d_lightbasestep + working_lstepx;
 		d_ziextrastep = d_zibasestep + r_zistepx;
 
@@ -1952,14 +1896,9 @@ void D_RasterizeAliasPolySmooth(void)
 
 			d_pdestbasestep = screenwidth + ubasestep;
 			d_pdestextrastep = d_pdestbasestep + 1;
-
-#if id386
-			d_pzbasestep = (d_zwidth + ubasestep) << 1;
-			d_pzextrastep = d_pzbasestep + 2;
-#else
+			
 			d_pzbasestep = d_zwidth + ubasestep;
 			d_pzextrastep = d_pzbasestep + 1;
-#endif
 
 			if (ubasestep < 0)
 				working_lstepx = r_lstepx - 1;
@@ -1970,26 +1909,16 @@ void D_RasterizeAliasPolySmooth(void)
 			d_ptexbasestep = ((r_sstepy + r_sstepx * ubasestep) >> 16) +
 				((r_tstepy + r_tstepx * ubasestep) >> 16) *
 				r_affinetridesc.skinwidth;
-#if id386
-			d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) << 16;
-			d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) << 16;
-#else
 			d_sfracbasestep = (r_sstepy + r_sstepx * ubasestep) & 0xFFFF;
 			d_tfracbasestep = (r_tstepy + r_tstepx * ubasestep) & 0xFFFF;
-#endif
 			d_lightbasestep = r_lstepy + working_lstepx * ubasestep;
 			d_zibasestep = r_zistepy + r_zistepx * ubasestep;
 
 			d_ptexextrastep = ((r_sstepy + r_sstepx * d_countextrastep) >> 16) +
 				((r_tstepy + r_tstepx * d_countextrastep) >> 16) *
 				r_affinetridesc.skinwidth;
-#if id386
-			d_sfracextrastep = ((r_sstepy + r_sstepx * d_countextrastep) & 0xFFFF) << 16;
-			d_tfracextrastep = ((r_tstepy + r_tstepx * d_countextrastep) & 0xFFFF) << 16;
-#else
 			d_sfracextrastep = (r_sstepy + r_sstepx * d_countextrastep) & 0xFFFF;
 			d_tfracextrastep = (r_tstepy + r_tstepx * d_countextrastep) & 0xFFFF;
-#endif
 			d_lightextrastep = d_lightbasestep + working_lstepx;
 			d_ziextrastep = d_zibasestep + r_zistepx;
 
@@ -2094,77 +2023,3 @@ void D_PolysetSetEdgeTable(void)
 	pedgetable = &edgetables[edgetableindex];
 }
 
-
-#if 0
-
-void D_PolysetRecursiveDrawLine(int* lp1, int* lp2)
-{
-	int d;
-	int new[6];
-	int  ofs;
-
-	d = lp2[0] - lp1[0];
-	if (d < -1 || d > 1)
-		goto split;
-	d = lp2[1] - lp1[1];
-	if (d < -1 || d > 1)
-		goto split;
-
-	return; // line is completed
-
-split:
-	// split this edge
-	new[0] = (lp1[0] + lp2[0]) >> 1;
-	new[1] = (lp1[1] + lp2[1]) >> 1;
-	new[5] = (lp1[5] + lp2[5]) >> 1;
-	new[2] = (lp1[2] + lp2[2]) >> 1;
-	new[3] = (lp1[3] + lp2[3]) >> 1;
-	new[4] = (lp1[4] + lp2[4]) >> 1;
-
-	// draw the point
-	ofs = d_scantable[new[1]] + new[0];
-	if (new[5] > d_pzbuffer[ofs])
-	{
-		int pix;
-
-		d_pzbuffer[ofs] = new[5];
-		pix = skintable[new[3] >> 16][new[2] >> 16];
-		// pix = ((byte *)acolormap)[pix + (new[4] & 0xFF00)];
-		d_viewbuffer[ofs] = pix;
-	}
-
-	// recursively continue
-	D_PolysetRecursiveDrawLine(lp1, new);
-	D_PolysetRecursiveDrawLine(new, lp2);
-}
-
-void D_PolysetRecursiveTriangle2(int* lp1, int* lp2, int* lp3)
-{
-	int d;
-	int new[4];
-
-	d = lp2[0] - lp1[0];
-	if (d < -1 || d > 1)
-		goto split;
-	d = lp2[1] - lp1[1];
-	if (d < -1 || d > 1)
-		goto split;
-	return;
-
-split:
-	// split this edge
-	new[0] = (lp1[0] + lp2[0]) >> 1;
-	new[1] = (lp1[1] + lp2[1]) >> 1;
-	new[5] = (lp1[5] + lp2[5]) >> 1;
-	new[2] = (lp1[2] + lp2[2]) >> 1;
-	new[3] = (lp1[3] + lp2[3]) >> 1;
-	new[4] = (lp1[4] + lp2[4]) >> 1;
-
-	D_PolysetRecursiveDrawLine(new, lp3);
-
-	// recursively continue
-	D_PolysetRecursiveTriangle(lp1, new, lp3);
-	D_PolysetRecursiveTriangle(new, lp2, lp3);
-}
-
-#endif

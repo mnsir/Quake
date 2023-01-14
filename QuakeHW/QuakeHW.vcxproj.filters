@@ -96,9 +96,6 @@
     <ClCompile Include="r_surf.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_vars.c">
-      <Filter>diff</Filter>
-    </ClCompile>
     <ClCompile Include="screen.c">
       <Filter>diff</Filter>
     </ClCompile>

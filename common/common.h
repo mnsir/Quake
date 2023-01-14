@@ -20,10 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // comndef.h  -- general definitions
 #pragma once
 
-#if !defined BYTE_DEFINED
 typedef unsigned char byte;
-#define BYTE_DEFINED 1
-#endif
 
 #undef true
 #undef false
@@ -67,10 +64,6 @@ void InsertLinkAfter(link_t* l, link_t* after);
 #define STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
 
 //============================================================================
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
 
 #define Q_MAXCHAR ((char)0x7f)
 #define Q_MAXSHORT ((short)0x7fff)

@@ -22,17 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
-#if 0
-// FIXME
-the complex cases add new polys on most lines, so dont optimize for keeping them the same
-have multiple free span lists to try to get better coherence ?
-low depth complexity-- 1 to 3 or so
-
-this breaks spans at every edge, even hidden ones(bad)
-
-have a sentinal at both ends ?
-#endif
-
+int r_bmodelactive;
 
 edge_t* auxedges;
 edge_t *r_edges, *edge_p, *edge_max;
@@ -158,8 +148,6 @@ void R_BeginEdgeFrame(void)
 }
 
 
-#if !id386
-
 /*
 ==============
 R_InsertNewEdges
@@ -202,10 +190,6 @@ void R_InsertNewEdges(edge_t* edgestoadd, edge_t* edgelist)
 	while ((edgestoadd = next_edge) != NULL);
 }
 
-#endif // !id386
-
-
-#if !id386
 
 /*
 ==============
@@ -222,10 +206,6 @@ void R_RemoveEdges(edge_t* pedge)
 	while ((pedge = pedge->nextremove) != NULL);
 }
 
-#endif // !id386
-
-
-#if !id386
 
 /*
 ==============
@@ -291,8 +271,6 @@ void R_StepActiveU(edge_t* pedge)
 			return;
 	}
 }
-
-#endif // !id386
 
 
 /*
@@ -452,8 +430,6 @@ void R_TrailingEdge(surf_t* surf, edge_t* edge)
 	}
 }
 
-
-#if !id386
 
 /*
 ==============
@@ -619,8 +595,6 @@ void R_GenerateSpans(void)
 
 	R_CleanupSpan();
 }
-
-#endif // !id386
 
 
 /*

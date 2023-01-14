@@ -159,7 +159,6 @@
     <ClCompile Include="r_sky.c" />
     <ClCompile Include="r_sprite.c" />
     <ClCompile Include="r_surf.c" />
-    <ClCompile Include="r_vars.c" />
     <ClCompile Include="screen.c" />
     <ClCompile Include="vid_win.c" />
   </ItemGroup>

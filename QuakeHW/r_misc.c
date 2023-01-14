@@ -294,8 +294,6 @@ void R_TransformFrustum(void)
 }
 
 
-#if !id386
-
 /*
 ================
 TransformVector
@@ -307,8 +305,6 @@ void TransformVector(vec3_t in, vec3_t out)
 	out[1] = DotProduct(in, vup);
 	out[2] = DotProduct(in, vpn);
 }
-
-#endif
 
 
 /*
@@ -416,17 +412,7 @@ void R_SetupFrame(void)
 	r_framecount++;
 
 	numbtofpolys = 0;
-
-	// debugging
-#if 0
-	r_refdef.vieworg[0] = 80;
-	r_refdef.vieworg[1] = 64;
-	r_refdef.vieworg[2] = 40;
-	r_refdef.viewangles[0] = 0;
-	r_refdef.viewangles[1] = 46.763641357;
-	r_refdef.viewangles[2] = 0;
-#endif
-
+	
 	// build the transformation matrix for the given view angles
 	VectorCopy(r_refdef.vieworg, modelorg);
 	VectorCopy(r_refdef.vieworg, r_origin);

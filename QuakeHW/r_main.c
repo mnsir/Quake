@@ -22,7 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
-//define PASSAGES
 
 void* colormap;
 vec3_t viewlightvec;
@@ -230,10 +229,6 @@ void R_Init(void)
 	R_InitParticles();
 
 	// TODO: collect 386-specific code in one place
-#if id386
-	Sys_MakeCodeWriteable((long)R_EdgeCodeStart,
-		(long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
-#endif // id386
 
 	D_Init();
 }
@@ -296,9 +291,6 @@ void R_NewMap(void)
 
 	r_dowarpold = false;
 	r_viewchanged = false;
-#ifdef PASSAGES
-	CreatePassages();
-#endif
 }
 
 
@@ -460,25 +452,7 @@ void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 		r_fov_greater_than_90 = false;
 	else
 		r_fov_greater_than_90 = true;
-
-	// TODO: collect 386-specific code in one place
-#if id386
-	if (r_pixbytes == 1)
-	{
-		Sys_MakeCodeWriteable((long)R_Surf8Start,
-			(long)R_Surf8End - (long)R_Surf8Start);
-		colormap = vid.colormap;
-		R_Surf8Patch();
-	}
-	else
-	{
-		Sys_MakeCodeWriteable((long)R_Surf16Start,
-			(long)R_Surf16End - (long)R_Surf16Start);
-		colormap = vid.colormap16;
-		R_Surf16Patch();
-	}
-#endif // id386
-
+	
 	D_ViewChanged();
 }
 
@@ -957,12 +931,8 @@ void R_RenderView_(void)
 		r_time1 = Sys_FloatTime();
 
 	R_SetupFrame();
-
-#ifdef PASSAGES
-	SetVisibilityByPassages();
-#else
+	
 	R_MarkLeaves(); // done here so we know if we're in water
-#endif
 
 	// make FDIV fast. This reduces timing precision after we've been running for a
 	// while, so we don't do it globally.  This also sets chop mode, and we do it

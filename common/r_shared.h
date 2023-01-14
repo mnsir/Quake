@@ -151,4 +151,5 @@ typedef struct edge_s
 	medge_t* owner;
 } edge_t;
 
-#endif // _R_SHARED_H_
+#endif
+

@@ -47,9 +47,6 @@ extern LPDIRECTSOUNDBUFFER pDSBuf;
 extern DWORD gSndBufSize;
 //#define SNDBUFSIZE 65536
 
-void VID_LockBuffer(void);
-void VID_UnlockBuffer(void);
-
 
 typedef enum { MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT } modestate_t;
 
@@ -59,9 +56,6 @@ extern HWND mainwindow;
 extern qboolean ActiveApp, Minimized;
 
 extern qboolean WinNT;
-
-int VID_ForceUnlockedAndReturnState(void);
-void VID_ForceLockState(int lk);
 
 void IN_ShowMouse(void);
 void IN_DeactivateMouse(void);
@@ -88,8 +82,6 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
 
 void S_BlockSound(void);
 void S_UnblockSound(void);
-
-void VID_SetDefaultMode(void);
 
 int (PASCAL FAR* pWSAStartup)(WORD wVersionRequired, LPWSADATA lpWSAData);
 int (PASCAL FAR* pWSACleanup)(void);

@@ -422,6 +422,9 @@
     <ClInclude Include="..\common\sv_user.h">
       <Filter>server</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\enum_synctype.h">
+      <Filter>model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\common\winquake.rc">

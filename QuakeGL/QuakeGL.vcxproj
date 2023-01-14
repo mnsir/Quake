@@ -219,6 +219,7 @@
     <ClInclude Include="..\common\cvar.h" />
     <ClInclude Include="..\common\draw.h" />
     <ClInclude Include="..\common\entity_state.h" />
+    <ClInclude Include="..\common\enum_synctype.h" />
     <ClInclude Include="..\common\glquake.h" />
     <ClInclude Include="..\common\gl_model.h" />
     <ClInclude Include="..\common\host.h" />

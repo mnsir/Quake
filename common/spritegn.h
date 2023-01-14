@@ -22,6 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 #pragma once
 
+#include "enum_synctype.h"
+
+
 // **********************************************************
 // * This file must be identical in the spritegen directory *
 // * and in the Quake directory, because it's used to       *
@@ -45,11 +48,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define SPRITE_VERSION 1
 
-// must match definition in modelgen.h
-#ifndef SYNCTYPE_T
-#define SYNCTYPE_T
-typedef enum { ST_SYNC = 0, ST_RAND } synctype_t;
-#endif
 
 // TODO: shorten these?
 typedef struct

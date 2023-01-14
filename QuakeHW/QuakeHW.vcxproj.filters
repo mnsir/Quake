@@ -425,6 +425,9 @@
     <ClInclude Include="..\common\sv_user.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\enum_synctype.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\common\winquake.rc">

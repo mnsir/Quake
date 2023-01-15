@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 #pragma once
-//cd_win.h
+
+#include "typedef_byte.h"
 
 int CDAudio_Init(void);
 void CDAudio_Play(byte track, qboolean looping);

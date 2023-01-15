@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 /* crc.c */
 
+#include "typedef_byte.h"
+
+
 #include "quakedef.h"
 #include "crc.h"
 

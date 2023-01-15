@@ -259,6 +259,7 @@
     <ClInclude Include="..\common\sv_phys.h" />
     <ClInclude Include="..\common\sv_user.h" />
     <ClInclude Include="..\common\sys.h" />
+    <ClInclude Include="..\common\typedef_byte.h" />
     <ClInclude Include="..\common\vid.h" />
     <ClInclude Include="..\common\view.h" />
     <ClInclude Include="..\common\wad.h" />

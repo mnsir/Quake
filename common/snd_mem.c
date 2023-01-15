@@ -21,6 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "typedef_byte.h"
+
+
 int cache_full_cycle;
 
 byte* S_Alloc(int size);

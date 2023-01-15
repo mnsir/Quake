@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_dgrm.c
 
 
+#include "typedef_byte.h"
 #include <windows.h>
 
 #include "quakedef.h"

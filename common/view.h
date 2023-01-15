@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // view.h
 #pragma once
 
+#include "typedef_byte.h"
+
 #define CSHIFT_CONTENTS 0
 #define CSHIFT_DAMAGE 1
 #define CSHIFT_BONUS 2

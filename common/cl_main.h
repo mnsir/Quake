@@ -1,5 +1,6 @@
 #pragma once
 
+#include "typedef_byte.h"
 #include "cl_input.h"
 #include "common.h"
 #include "cvar.h"

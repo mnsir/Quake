@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_wins.h
 #pragma once
 
+#include "typedef_byte.h"
+
+
 int WINS_Init(void);
 void WINS_Shutdown(void);
 void WINS_Listen(qboolean state);

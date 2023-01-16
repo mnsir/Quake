@@ -32,6 +32,9 @@ typedef bool qboolean;
 
 //============================================================================
 
+extern qboolean msg_suppress_1; // suppresses resolution and cache size console output
+//  an fullscreen DIB focus gain/loss
+
 typedef struct sizebuf_s
 {
 	qboolean allowoverflow; // if false, do a Sys_Error

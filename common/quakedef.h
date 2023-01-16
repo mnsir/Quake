@@ -229,9 +229,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-extern qboolean msg_suppress_1; // suppresses resolution and cache size console output
-//  an fullscreen DIB focus gain/loss
-
-extern qboolean isDedicated;
-
 #include "chase.h"

@@ -21,12 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 
+
 #include "typedef_byte.h"
 
 #undef true
 #undef false
 
-typedef enum { false, true } qboolean;
+#include <stdbool.h>
+typedef bool qboolean;
 
 //============================================================================
 

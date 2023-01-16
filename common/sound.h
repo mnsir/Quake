@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // sound.h -- client sound i/o functions
 #pragma once
 
+#include "quakedef.h"
 #include "typedef_byte.h"
 
 

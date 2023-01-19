@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sys_win.c -- Win32 system interface code
 
+#include "sys.h"
+
+
 #include "typedef_byte.h"
 
 #include <math.h>
@@ -30,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common.h"
 #include "bspfile.h"
 #include "vid.h"
-#include "sys.h"
 #include "zone.h"
 #include "mathlib.h"
 #include "entity_state.h";

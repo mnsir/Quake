@@ -19,7 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_tent.c -- client side temporary entities
 
+#include "cl_tent.h"
 
+ 
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>

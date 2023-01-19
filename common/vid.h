@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // vid.h -- video driver defs
 #pragma once
 
+#include <windows.h>
+#include "common.h"
+#include "cvar.h"
 #include "typedef_byte.h"
 
 
@@ -94,3 +97,24 @@ int VID_ForceUnlockedAndReturnState(void);
 void VID_ForceLockState(int lk);
 
 void VID_SetDefaultMode(void);
+
+
+extern RECT window_rect;
+
+extern int window_center_x, window_center_y;
+
+
+extern cvar_t _windowed_mouse;
+
+
+void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
+
+typedef enum { MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT } modestate_t;
+
+extern modestate_t modestate;
+
+extern HWND mainwindow;
+
+
+
+extern qboolean DDActive;

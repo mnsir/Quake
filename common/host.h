@@ -1,6 +1,13 @@
 #pragma once
 
+#include <setjmp.h>
+
+#include "common.h"
+#include "cvar.h"
 #include "typedef_byte.h"
+#include "server.h"
+
+
 //=============================================================================
 // host.h
 

@@ -252,6 +252,10 @@
     <ClInclude Include="..\common\sbar.h" />
     <ClInclude Include="..\common\screen.h" />
     <ClInclude Include="..\common\server.h" />
+    <ClInclude Include="..\common\snd_dma.h" />
+    <ClInclude Include="..\common\snd_mem.h" />
+    <ClInclude Include="..\common\snd_mix.h" />
+    <ClInclude Include="..\common\snd_win.h" />
     <ClInclude Include="..\common\sound.h" />
     <ClInclude Include="..\common\spritegn.h" />
     <ClInclude Include="..\common\sv_main.h" />

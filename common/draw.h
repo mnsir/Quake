@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 #include "typedef_byte.h"
+#include "wad.h"
+
 
 extern qpic_t* draw_disc; // also used on sbar
 

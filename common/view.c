@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // view.c -- player eye positioning
 
+#include "view.h"
+
+
 #include "typedef_byte.h"
 
 #include <math.h>
@@ -39,9 +42,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cvar.h"
 #include "screen.h"
 #include "net_main.h"
-#include "net_win.h"
 #include "net.h"
 #include "protocol.h"
+#include "net_win.h"
 #include "cmd.h"
 #include "sbar.h"
 #include "sound.h"
@@ -68,7 +71,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "world.h"
 #include "keys.h"
 #include "console.h"
-#include "view.h"
 #include "menu.h"
 #include "crc.h"
 #include "cdaudio.h"

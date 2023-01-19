@@ -19,7 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // mathlib.c -- math primitives
 
-#include <math.h>
+#include "mathlib.h"
+
 
 #include <math.h>
 #include <string.h>
@@ -32,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vid.h"
 #include "sys.h"
 #include "zone.h"
-#include "mathlib.h"
 #include "entity_state.h";
 #include "wad.h"
 #include "draw.h"

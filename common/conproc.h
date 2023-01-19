@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // conproc.h
 #pragma once
 
+#include <windows.h>
+
+
 #define CCOM_WRITE_TEXT 0x2
 // Param1 : Text
 

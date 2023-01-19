@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // net_wipx.c
 
+#include "net_wipx.h"
+
+
+#include "net_wins.h"
+
+
 #include "typedef_byte.h"
 
 #include <math.h>

@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // cmd.h -- Command buffer and command execution
-#pragma once
 
 //===========================================================================
 
@@ -34,6 +33,9 @@ The + command line options are also added to the command buffer.
 The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 
 */
+#pragma once
+
+#include "common.h"
 
 
 void Cbuf_Init(void);

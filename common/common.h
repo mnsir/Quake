@@ -22,14 +22,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-#include "typedef_byte.h"
 
 #undef true
 #undef false
 
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "quakedef.h"
+#include "typedef_byte.h"
+#include "zone.h"
+
+
 typedef bool qboolean;
 
 //============================================================================
@@ -165,7 +169,6 @@ char* va(char* format, ...);
 //============================================================================
 
 extern int com_filesize;
-struct cache_user_s;
 
 extern char com_gamedir[MAX_OSPATH];
 
@@ -177,7 +180,7 @@ void COM_CloseFile(int h);
 byte* COM_LoadStackFile(char* path, void* buffer, int bufsize);
 byte* COM_LoadTempFile(char* path);
 byte* COM_LoadHunkFile(char* path);
-void COM_LoadCacheFile(char* path, struct cache_user_s* cu);
+void COM_LoadCacheFile(char* path, cache_user_t* cu);
 
 
 extern struct cvar_s registered;

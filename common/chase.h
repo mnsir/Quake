@@ -1,5 +1,8 @@
 #pragma once
 
+#include "cvar.h"
+
+
 //
 // chase
 //

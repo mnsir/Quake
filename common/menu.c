@@ -17,6 +17,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#include "menu.h"
+
+
+#include "snd_dma.h"
+
 #include "typedef_byte.h"
 
 #include <math.h>
@@ -67,7 +72,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "console.h"
 #include "view.h"
-#include "menu.h"
 #include "crc.h"
 #include "cdaudio.h"
 #ifdef GLQUAKE

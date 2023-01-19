@@ -21,6 +21,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 #include "typedef_byte.h"
+#include "mathlib.h"
+#include "cvar.h"
+#include "vid.h"
+#include "common.h"
+
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
 
 #define WARP_WIDTH 320
 #define WARP_HEIGHT 200

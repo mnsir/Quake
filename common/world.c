@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // world.c -- world query functions
 
+#include "world.h"
+
 
 #include <math.h>
 #include <string.h>
@@ -64,7 +66,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "d_iface.h"
 #endif
 #include "input.h"
-#include "world.h"
 #include "keys.h"
 #include "console.h"
 #include "view.h"

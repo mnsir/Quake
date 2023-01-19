@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // snd_mix.c -- portable code to mix sounds for snd_dma.c
 
+#include "snd_mix.h"
+
+
+#include "snd_dma.h"
+#include "snd_mem.h"
+#include "snd_win.h"
 
 #include <math.h>
 #include <string.h>
@@ -79,6 +85,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "winquake.h"
+
+
+// !!! if this is changed, it much be changed in asm_i386.h too !!!
+typedef struct
+{
+	int left;
+	int right;
+} portable_samplepair_t;
+
 
 #define PAINTBUFFER_SIZE 512
 portable_samplepair_t paintbuffer[PAINTBUFFER_SIZE];

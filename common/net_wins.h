@@ -41,3 +41,6 @@ int WINS_GetAddrFromName(char* name, struct qsockaddr* addr);
 int WINS_AddrCompare(struct qsockaddr* addr1, struct qsockaddr* addr2);
 int WINS_GetSocketPort(struct qsockaddr* addr);
 int WINS_SetSocketPort(struct qsockaddr* addr, int port);
+
+
+extern qboolean winsock_lib_initialized;

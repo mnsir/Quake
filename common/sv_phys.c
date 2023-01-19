@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sv_phys.c
 
+#include "sv_phys.h"
+
 
 #include <math.h>
 #include <string.h>
@@ -55,7 +57,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "server.h"
 #include "sv_main.h"
 #include "sv_user.h"
-#include "sv_phys.h"
 #include "sv_move.h"
 #ifdef GLQUAKE
 #include "gl_model.h"

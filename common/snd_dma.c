@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // snd_dma.c -- main control for any streaming sound output device
 
+#include "snd_dma.h"
+
+
+#include "snd_win.h"
+#include "snd_mem.h"
+
 
 #include <math.h>
 #include <string.h>
@@ -86,6 +92,9 @@ void S_SoundList(void);
 void S_Update_();
 void S_StopAllSounds(qboolean clear);
 void S_StopAllSoundsC(void);
+
+
+#define MAX_DYNAMIC_CHANNELS 8
 
 // =======================================================================
 // Internal sound data & structures

@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // cmd.c -- Quake script command processing module
+#include "cmd.h"
 
 
 #include <math.h>
@@ -41,7 +42,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "net_win.h"
 #include "net.h"
 #include "protocol.h"
-#include "cmd.h"
 #include "sbar.h"
 #include "sound.h"
 #include "render.h"

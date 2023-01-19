@@ -18,11 +18,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // sys.h -- non-portable functions
-#pragma once
 
 //
 // file IO
 //
+#pragma once
+
+#include <windows.h>
+#include "common.h"
+
 
 // returns the file size
 // return -1 if file is not present
@@ -72,3 +76,16 @@ void Sys_SetFPCW(void);
 
 
 extern qboolean isDedicated;
+
+extern HANDLE hinput, houtput;
+
+extern HWND hwnd_dialog;
+
+
+extern qboolean ActiveApp, Minimized;
+
+extern qboolean WinNT;
+
+
+extern HINSTANCE global_hInstance;
+extern int global_nCmdShow;

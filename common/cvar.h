@@ -18,7 +18,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // cvar.h
-#pragma once
 
 /*
 
@@ -53,6 +52,11 @@ r_draworder 0 sets the current value to 0
 Cvars are restricted from having the same names as commands to keep this
 interface from being ambiguous.
 */
+#pragma once
+
+#include <stdio.h>
+
+#include "common.h"
 
 typedef struct cvar_s
 {

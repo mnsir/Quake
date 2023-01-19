@@ -3,6 +3,13 @@
 #include "mathlib.h"
 #include "render.h"
 
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+
+
 typedef struct
 {
 	int entity;

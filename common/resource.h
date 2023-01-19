@@ -8,6 +8,7 @@
 #define IDI_ICON2                       1
 #define IDD_DIALOG1                     108
 #define IDD_PROGRESS                    109
+#define IDC_STATIC						110
 #define IDC_PROGRESS                    1000
 
 // Next default values for new objects

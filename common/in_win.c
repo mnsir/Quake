@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // in_win.c -- windows 95 mouse and joystick code
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
+#include "input.h"
+
+
 #include <dinput.h>
 
 #include <math.h>
@@ -65,7 +68,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "model.h"
 #include "d_iface.h"
 #endif
-#include "input.h"
 #include "world.h"
 #include "keys.h"
 #include "console.h"

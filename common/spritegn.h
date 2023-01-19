@@ -20,9 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // spritegn.h: header file for sprite generation program
 //
-#pragma once
-
-#include "enum_synctype.h"
 
 
 // **********************************************************
@@ -45,9 +42,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //     sprite bitmap
 // <endrepeat>
 //-------------------------------------------------------
+#pragma once
+
+#include "enum_synctype.h"
+
 
 #define SPRITE_VERSION 1
-
 
 // TODO: shorten these?
 typedef struct

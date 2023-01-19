@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.c -- misc functions used in client and server
 
+#include "common.h"
+
+
 #include "typedef_byte.h"
 #include <math.h>
 #include <string.h>
@@ -1623,7 +1626,7 @@ byte* COM_LoadTempFile(char* path)
 	return COM_LoadFile(path, 2);
 }
 
-void COM_LoadCacheFile(char* path, struct cache_user_s* cu)
+void COM_LoadCacheFile(char* path, cache_user_t* cu)
 {
 	loadcache = cu;
 	COM_LoadFile(path, 3);

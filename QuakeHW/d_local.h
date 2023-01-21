@@ -56,15 +56,15 @@ typedef struct sspan_s
 	int u, v, count;
 } sspan_t;
 
-extern cvar_t d_subdiv16;
+extern cvar_t d_subdiv16; // d_init.h
 
-extern float scale_for_mip;
+extern float scale_for_mip; // d_edge.h
 
-extern qboolean d_roverwrapped;
-extern surfcache_t* sc_rover;
-extern surfcache_t* d_initial_rover;
+extern qboolean d_roverwrapped; // d_init.h
+extern surfcache_t* sc_rover; // d_surf.h
+extern surfcache_t* d_initial_rover; // d_init.h
 
-extern float d_sdivzstepu, d_tdivzstepu, d_zistepu;
+extern float d_sdivzstepu, d_tdivzstepu, d_zistepu;  // d_vars.h
 extern float d_sdivzstepv, d_tdivzstepv, d_zistepv;
 extern float d_sdivzorigin, d_tdivzorigin, d_ziorigin;
 
@@ -72,36 +72,31 @@ fixed16_t sadjust, tadjust;
 fixed16_t bbextents, bbextentt;
 
 
-void D_DrawSpans8(espan_t* pspans);
-void D_DrawSpans16(espan_t* pspans);
-void D_DrawZSpans(espan_t* pspans);
-void Turbulent8(espan_t* pspan);
-void D_SpriteDrawSpans(sspan_t* pspan);
+void D_DrawSpans8(espan_t* pspans); // d_scan.h
+void D_DrawZSpans(espan_t* pspans); // d_scan.h
+void Turbulent8(espan_t* pspan); // d_scan.h
+void D_SpriteDrawSpans(sspan_t* pspan);  // d_sprite.h
 
-void D_DrawSkyScans8(espan_t* pspan);
-void D_DrawSkyScans16(espan_t* pspan);
+void D_DrawSkyScans8(espan_t* pspan); // d_sky.h
 
-void R_ShowSubDiv(void);
-void (*prealspandrawer)(void);
-surfcache_t* D_CacheSurface(msurface_t* surface, int miplevel);
+surfcache_t* D_CacheSurface(msurface_t* surface, int miplevel);  // d_surf.h
 
-extern int D_MipLevelForScale(float scale);
+extern int D_MipLevelForScale(float scale); // d_edge.h
 
-extern short* d_pzbuffer;
-extern unsigned int d_zrowbytes, d_zwidth;
+extern short* d_pzbuffer; // d_vars.h
+extern unsigned int d_zrowbytes, d_zwidth; // d_vars.h
 
-extern int* d_pscantable;
-extern int d_scantable[MAXHEIGHT];
+extern int d_scantable[MAXHEIGHT]; // d_modech.h
 
-extern int d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
+extern int d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle; // d_modech.h
 
-extern int d_y_aspect_shift, d_pix_min, d_pix_max, d_pix_shift;
+extern int d_y_aspect_shift, d_pix_min, d_pix_max, d_pix_shift; // d_modech.h
 
-extern pixel_t* d_viewbuffer;
+extern pixel_t* d_viewbuffer; // d_vars.h
 
-extern short* zspantable[MAXHEIGHT];
+extern short* zspantable[MAXHEIGHT]; // d_modech.h
 
-extern int d_minmip;
-extern float d_scalemip[3];
+extern int d_minmip; // d_init.h
+extern float d_scalemip[3]; // d_init.h
 
 extern void (*d_drawspans)(espan_t* pspan);

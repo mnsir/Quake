@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cl_tent.h"
 #include "cmd.h"
 #include "console.h"
-#include "glquake.h"
 #include "host.h"
 #include "host_cmd.h"
 #include "protocol.h"

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdio.h>
-#include "typedef_byte.h"
 #include "cvar.h"
 #include "cl_input.h"
 #include "quakedef.h"

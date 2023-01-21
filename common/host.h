@@ -4,7 +4,6 @@
 
 #include "common.h"
 #include "cvar.h"
-#include "typedef_byte.h"
 #include "server.h"
 
 

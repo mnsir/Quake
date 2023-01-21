@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "screen.h"
 #include "sv_main.h"
 #include "sys.h"
-#include "typedef_byte.h"
 
 
 // these two macros are to make the code more readable

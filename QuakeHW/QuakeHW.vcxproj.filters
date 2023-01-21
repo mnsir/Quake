@@ -99,7 +99,7 @@
     <ClCompile Include="screen.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="vid_win.c">
+    <ClCompile Include="vid.c">
       <Filter>diff</Filter>
     </ClCompile>
     <ClCompile Include="..\common\cd_win.c">

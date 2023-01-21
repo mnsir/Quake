@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // d_iface.h: interface header file for rasterization driver modules
 #pragma once
 
-#include "typedef_byte.h"
 #include "mathlib.h"
 #include "cvar.h"
 #include "vid.h"

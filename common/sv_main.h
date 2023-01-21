@@ -7,7 +7,6 @@
 #include "model.h"
 #endif
 #include "progs.h"
-#include "typedef_byte.h"
 #include "server.h"
 
 

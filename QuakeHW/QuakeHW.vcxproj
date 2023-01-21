@@ -160,7 +160,7 @@
     <ClCompile Include="r_sprite.c" />
     <ClCompile Include="r_surf.c" />
     <ClCompile Include="screen.c" />
-    <ClCompile Include="vid_win.c" />
+    <ClCompile Include="vid.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspfile.h" />

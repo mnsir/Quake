@@ -92,9 +92,3 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CCREP_SERVER_INFO 0x83
 #define CCREP_PLAYER_INFO 0x84
 #define CCREP_RULE_INFO 0x85
-
-// net_main.h
-
-// net_win.h
-
-

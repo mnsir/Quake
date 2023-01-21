@@ -2,6 +2,7 @@
 
 #include "typedef_byte.h"
 #include "common.h"
+#include "net_main.h"
 
 
 typedef struct

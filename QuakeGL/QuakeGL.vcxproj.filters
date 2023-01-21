@@ -219,10 +219,10 @@
     <ClCompile Include="..\common\nonintel.c">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\in_win.c">
+    <ClCompile Include="..\common\input.c">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sys_win.c">
+    <ClCompile Include="..\common\sys.c">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="..\common\host.c">
@@ -439,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="..\common\snd_mem.h">
       <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\host_cmd.h">
+      <Filter>host</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_loop.h
 #pragma once
 
+#include "common.h"
+#include "net_main.h"
+
 int Loop_Init(void);
 void Loop_Listen(qboolean state);
 void Loop_SearchForHosts(qboolean xmit);

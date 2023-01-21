@@ -158,7 +158,7 @@
     <ClCompile Include="..\common\cvar.c" />
     <ClCompile Include="..\common\host.c" />
     <ClCompile Include="..\common\host_cmd.c" />
-    <ClCompile Include="..\common\in_win.c" />
+    <ClCompile Include="..\common\input.c" />
     <ClCompile Include="..\common\keys.c" />
     <ClCompile Include="..\common\mathlib.c" />
     <ClCompile Include="..\common\menu.c" />
@@ -183,7 +183,7 @@
     <ClCompile Include="..\common\sv_move.c" />
     <ClCompile Include="..\common\sv_phys.c" />
     <ClCompile Include="..\common\sv_user.c" />
-    <ClCompile Include="..\common\sys_win.c" />
+    <ClCompile Include="..\common\sys.c" />
     <ClCompile Include="..\common\view.c" />
     <ClCompile Include="..\common\wad.c" />
     <ClCompile Include="..\common\world.c" />
@@ -223,6 +223,7 @@
     <ClInclude Include="..\common\glquake.h" />
     <ClInclude Include="..\common\gl_model.h" />
     <ClInclude Include="..\common\host.h" />
+    <ClInclude Include="..\common\host_cmd.h" />
     <ClInclude Include="..\common\input.h" />
     <ClInclude Include="..\common\keys.h" />
     <ClInclude Include="..\common\mathlib.h" />

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_wins.h
 #pragma once
 
-#include "typedef_byte.h"
+#include "common.h"
 
 
 int WINS_Init(void);

@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_dgrm.h
 #pragma once
 
+#include "common.h"
+#include "net_main.h"
+
 #define NET_HEADERSIZE (2 * sizeof(unsigned int))
 #define NET_DATAGRAMSIZE (MAX_DATAGRAM + NET_HEADERSIZE)
 

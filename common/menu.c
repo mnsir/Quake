@@ -19,69 +19,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "menu.h"
 
-
-#include "snd_dma.h"
-
-#include "typedef_byte.h"
-
-#include <math.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-#include "common.h"
-#include "bspfile.h"
-#include "vid.h"
-#include "sys.h"
-#include "zone.h"
-#include "mathlib.h"
-#include "entity_state.h";
-#include "wad.h"
-#include "draw.h"
-#include "cvar.h"
-#include "screen.h"
-#include "net_main.h"
-#include "net_win.h"
-#include "net.h"
-#include "protocol.h"
-#include "cmd.h"
-#include "sbar.h"
-#include "sound.h"
-#include "render.h"
-#include "client.h"
-#include "progs.h"
-#include "cl_demo.h"
-#include "cl_input.h"
 #include "cl_main.h"
-#include "cl_parse.h"
-#include "cl_tent.h"
-#include "server.h"
-#include "sv_main.h"
-#include "sv_user.h"
-#include "sv_phys.h"
-#include "sv_move.h"
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "model.h"
-#include "d_iface.h"
-#endif
-#include "input.h"
-#include "world.h"
-#include "keys.h"
+#include "cmd.h"
+#include "common.h"
 #include "console.h"
-#include "view.h"
-#include "crc.h"
-#include "cdaudio.h"
-#ifdef GLQUAKE
-#include "glquake.h"
-#endif
+#include "draw.h"
 #include "host.h"
-#include "chase.h"
-#include "quakedef.h"
+#include "host_cmd.h"
+#include "keys.h"
+#include "render.h"
+#include "screen.h"
+#include "snd_dma.h"
+#include "sv_main.h"
+#include "vid.h"
+#include "view.h"
 
-#include "winquake.h"
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);

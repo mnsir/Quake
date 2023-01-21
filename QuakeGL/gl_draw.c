@@ -23,20 +23,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "draw.h"
 
-
-#include "typedef_byte.h"
-
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
-#include "common.h"
 #include "bspfile.h"
 #include "vid.h"
 #include "sys.h"
-#include "zone.h"
 #include "mathlib.h"
 #include "entity_state.h";
 #include "wad.h"
@@ -82,7 +76,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "host.h"
 #include "chase.h"
-#include "quakedef.h"
 
 #define GL_COLOR_INDEX8_EXT     0x80E5
 

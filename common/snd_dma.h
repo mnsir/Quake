@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common.h"
 #include "cvar.h"
 #include "mathlib.h"
 #include "sound.h"

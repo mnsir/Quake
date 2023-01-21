@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "net.h"
 #include "net_win.h"
 #include "pr_edict.h"
-#include "quakedef.h"
 #include "screen.h"
 #include "sv_main.h"
 #include "sys.h"

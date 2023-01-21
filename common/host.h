@@ -2,7 +2,6 @@
 
 #include <setjmp.h>
 
-#include "common.h"
 #include "cvar.h"
 #include "server.h"
 

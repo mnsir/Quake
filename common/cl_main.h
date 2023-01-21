@@ -6,7 +6,6 @@
 #include "quakedef.h"
 #include "cl_main.h"
 #include "vid.h"
-#include "common.h"
 #include "mathlib.h"
 #include "net_main.h"
 

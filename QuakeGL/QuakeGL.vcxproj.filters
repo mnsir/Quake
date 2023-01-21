@@ -87,9 +87,6 @@
     <ClCompile Include="gl_rsurf.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="gl_screen.c">
-      <Filter>diff</Filter>
-    </ClCompile>
     <ClCompile Include="gl_test.c">
       <Filter>diff</Filter>
     </ClCompile>
@@ -233,6 +230,9 @@
     </ClCompile>
     <ClCompile Include="..\common\chase.c">
       <Filter>other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\screen.c">
+      <Filter>screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

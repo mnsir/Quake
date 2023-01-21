@@ -120,6 +120,7 @@
     <ClCompile Include="..\common\pr_exec.c" />
     <ClCompile Include="..\common\r_part.c" />
     <ClCompile Include="..\common\sbar.c" />
+    <ClCompile Include="..\common\screen.c" />
     <ClCompile Include="..\common\snd_dma.c" />
     <ClCompile Include="..\common\snd_mem.c" />
     <ClCompile Include="..\common\snd_mix.c" />
@@ -159,7 +160,6 @@
     <ClCompile Include="r_sky.c" />
     <ClCompile Include="r_sprite.c" />
     <ClCompile Include="r_surf.c" />
-    <ClCompile Include="screen.c" />
     <ClCompile Include="vid.c" />
   </ItemGroup>
   <ItemGroup>

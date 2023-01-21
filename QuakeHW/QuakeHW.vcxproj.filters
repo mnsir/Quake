@@ -96,9 +96,6 @@
     <ClCompile Include="r_surf.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="screen.c">
-      <Filter>diff</Filter>
-    </ClCompile>
     <ClCompile Include="vid.c">
       <Filter>diff</Filter>
     </ClCompile>
@@ -236,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="..\common\sys.c">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\screen.c">
+      <Filter>Файлы заголовков</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

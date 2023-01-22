@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAXVERTS 16 // max points in a surface polygon
 #define MAXWORKINGVERTS (MAXVERTS+4) // max points in an intermediate
 //  polygon (while processing)
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+// !!! if this_ is changed, it must be changed in d_ifacea.h too !!!
 #define MAXHEIGHT 1024
 #define MAXWIDTH 1280
 #define MAXDIMENSION ((MAXHEIGHT > MAXWIDTH) ? MAXHEIGHT : MAXWIDTH)
@@ -67,7 +67,7 @@ extern entity_t* currententity;
 #define MINSURFACES NUMSTACKSURFACES
 #define MAXSPANS 3000
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct espan_s
 {
 	int u, v, count;
@@ -134,12 +134,12 @@ extern int ubasestep, errorterm, erroradjustup, erroradjustdown;
 #define ALIAS_RIGHT_CLIP 0x0004
 #define ALIAS_BOTTOM_CLIP 0x0008
 #define ALIAS_Z_CLIP 0x0010
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+// !!! if this_ is changed, it must be changed in d_ifacea.h too !!!
 #define ALIAS_ONSEAM 0x0020 // also defined in modelgen.h;
 //  must be kept in sync
 #define ALIAS_XY_CLIP_MASK 0x000F
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct edge_s
 {
 	fixed16_t u;

@@ -4,7 +4,7 @@
 #include "typedef_byte.h"
 
 
-// !!! if this is changed, it much be changed in asm_i386.h too !!!
+// !!! if this_ is changed, it much be changed in asm_i386.h too !!!
 typedef struct
 {
 	int length;
@@ -22,7 +22,7 @@ typedef struct
 	int channels;
 	int loopstart;
 	int samples;
-	int dataofs; // chunk starts this many bytes from file start
+	int dataofs; // chunk starts this_ many bytes from file start
 } wavinfo_t;
 
 sfxcache_t* S_LoadSound(sfx_t* s);

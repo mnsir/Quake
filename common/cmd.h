@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -30,7 +30,7 @@ servers can also send across commands and entire text files can be execed.
 
 The + command line options are also added to the command buffer.
 
-The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
+The game starts with a Cbuf_AddText ((char*)"exec quake.rc\n"); Cbuf_Execute ();
 
 */
 #pragma once
@@ -42,7 +42,7 @@ void Cbuf_Init(void);
 // allocates an initial text buffer that will grow as needed
 
 void Cbuf_AddText(char* text);
-// as new commands are generated from the console or keybindings,
+// as new_ commands are generated from the console or keybindings,
 // the text is added to the end of the command buffer.
 
 void Cbuf_InsertText(char* text);
@@ -75,7 +75,7 @@ typedef enum
 {
 	src_client,
 	// came in over a net connection as a clc_stringcmd
-	// host_client will be valid during this state.
+	// host_client will be valid during this_ state.
 	src_command // from the command buffer
 } cmd_source_t;
 

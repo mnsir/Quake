@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -45,7 +45,7 @@ BRUSH MODELS
 //
 // in memory representation
 //
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
 	vec3_t position;
@@ -57,7 +57,7 @@ typedef struct
 
 
 // plane_t structure
-// !!! if this is changed, it must be changed in asm_i386.h too !!!
+// !!! if this_ is changed, it must be changed in asm_i386.h too !!!
 typedef struct mplane_s
 {
 	vec3_t normal;
@@ -72,7 +72,7 @@ typedef struct texture_s
 	char name[16];
 	unsigned width, height;
 	int anim_total; // total tenths in sequence ( 0 = no)
-	int anim_min, anim_max; // time for this frame min <=time< max
+	int anim_min, anim_max; // time for this_ frame min <=time< max
 	struct texture_s* anim_next; // in the animation sequence
 	struct texture_s* alternate_anims; // bmodels in frmae 1 use these
 	unsigned offsets[MIPLEVELS]; // four mip maps stored
@@ -86,7 +86,7 @@ typedef struct texture_s
 #define SURF_DRAWTILED 0x20
 #define SURF_DRAWBACKGROUND 0x40
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
 	unsigned short v[2];
@@ -166,7 +166,7 @@ typedef struct mleaf_s
 	byte ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
-// !!! if this is changed, it must be changed in asm_i386.h too !!!
+// !!! if this_ is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
 	dclipnode_t* clipnodes;
@@ -267,7 +267,7 @@ typedef struct
 	maliasskindesc_t skindescs[1];
 } maliasskingroup_t;
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct mtriangle_s
 {
 	int facesfront;

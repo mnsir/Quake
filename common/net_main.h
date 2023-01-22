@@ -100,7 +100,7 @@ void NET_Init(void);
 void NET_Shutdown(void);
 
 struct qsocket_s* NET_CheckNewConnections(void);
-// returns a new connection number if there is one pending, else -1
+// returns a new_ connection number if there is one pending, else -1
 
 struct qsocket_s* NET_Connect(char* host);
 // called by client to connect to a host.  Returns -1 if not able to
@@ -129,13 +129,13 @@ int NET_SendToAll(sizebuf_t* data, int blocktime);
 
 
 void NET_Close(struct qsocket_s* sock);
-// if a dead connection is returned by a get or send function, this function
+// if a dead connection is returned by a get or send function, this_ function
 // should be called when it is convenient
 
 // Server calls when a client is kicked off for a game related misbehavior
 // like an illegal protocal conversation.  Client calls when disconnecting
 // from a server.
-// A netcon_t number will not be reused until this function is called for it
+// A netcon_t number will not be reused until this_ function is called for it
 
 void NET_Poll(void);
 

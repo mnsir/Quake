@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -25,6 +25,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 #define MNET_IPX 1
 #define MNET_TCP 2
+
+enum MState
+{
+	m_none,
+	m_main,
+	m_singleplayer,
+	m_load,
+	m_save,
+	m_multiplayer,
+	m_setup,
+	m_net,
+	m_options,
+	m_video,
+	m_keys,
+	m_help,
+	m_quit,
+	m_serialconfig,
+	m_modemconfig,
+	m_lanconfig,
+	m_gameoptions,
+	m_search,
+	m_slist
+};
+
+extern MState m_state;
 
 extern int m_activenet;
 

@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -88,7 +88,7 @@ extern cvar_t r_numedges;
 
 #define DIST_NOT_SET 98765
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct clipplane_s
 {
 	vec3_t normal;
@@ -180,7 +180,7 @@ extern model_t* cl_worldmodel;
 
 extern int* pfrustum_indexes[4];
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 #define NEAR_CLIP 0.01
 
 extern int ubasestep, errorterm, erroradjustup, erroradjustdown;
@@ -189,7 +189,7 @@ extern int vstartscan;
 extern fixed16_t sadjust, tadjust;
 extern fixed16_t bbextents, bbextentt;
 
-#define MAXBVERTINDEXES 1000 // new clipped vertices when clipping bmodels
+#define MAXBVERTINDEXES 1000 // new_ clipped vertices when clipping bmodels
 //  to the world BSP
 extern mvertex_t *r_ptverts, *r_ptvertsmax;
 
@@ -207,7 +207,7 @@ typedef struct btofpoly_s
 	msurface_t* psurf;
 } btofpoly_t;
 
-#define MAX_BTOFPOLYS 5000 // FIXME: tune this
+#define MAX_BTOFPOLYS 5000 // FIXME: tune this_
 
 extern int numbtofpolys;
 extern btofpoly_t* pbtofpolys;
@@ -219,7 +219,7 @@ void R_ZDrawSubmodelPolys(model_t* clmodel);
 // Alias models
 //=========================================================
 
-#define MAXALIASVERTS 2000 // TODO: tune this
+#define MAXALIASVERTS 2000 // TODO: tune this_
 #define ALIAS_Z_CLIP_PLANE 5
 
 extern int numverts;
@@ -256,7 +256,7 @@ extern edge_t* auxedges;
 extern int r_numallocatededges;
 extern edge_t *r_edges, *edge_p, *edge_max;
 
-extern edge_t* newedges[MAXHEIGHT];
+extern edge_t* new_edges[MAXHEIGHT];
 extern edge_t* removeedges[MAXHEIGHT];
 
 extern int screenwidth;

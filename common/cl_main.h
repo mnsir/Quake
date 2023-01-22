@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdio.h>
+#include <cstdio>
 #include "cvar.h"
 #include "cl_input.h"
 #include "quakedef.h"
@@ -42,7 +42,7 @@ typedef struct
 //
 typedef struct
 {
-	int movemessages; // since connecting to this server
+	int movemessages; // since connecting to this_ server
 	// throw out the first couple, so the player
 	// doesn't accidentally do something the 
 	// first frame
@@ -52,7 +52,7 @@ typedef struct
 	int stats[MAX_CL_STATS]; // health, etc
 	int items; // inventory bit flags
 	float item_gettime[32]; // cl.time of aquiring item, for blinking
-	float faceanimtime; // use anim frame if cl.time < this
+	float faceanimtime; // use anim frame if cl.time < this_
 
 	cshift_t cshifts[NUM_CSHIFTS]; // color shifts for damage, powerups
 	cshift_t prev_cshifts[NUM_CSHIFTS]; // and content types
@@ -66,7 +66,7 @@ typedef struct
 	vec3_t viewangles;
 
 	vec3_t mvelocity[2]; // update by server, used for lean+bob
-	// (0 is newest)
+	// (0 is new_est)
 	vec3_t velocity; // lerped between mvelocity[0] and [1]
 
 	vec3_t punchangle; // temporary offset
@@ -181,8 +181,8 @@ typedef struct
 {
 	vec3_t origin;
 	float radius;
-	float die; // stop lighting after this time
-	float decay; // drop this each second
+	float die; // stop lighting after this_ time
+	float decay; // drop this_ each second
 	float minlight; // don't add when contributing less
 	int key;
 } dlight_t;

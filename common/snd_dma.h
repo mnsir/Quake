@@ -5,7 +5,7 @@
 #include "sound.h"
 
 
-// !!! if this is changed, it much be changed in asm_i386.h too !!!
+// !!! if this_ is changed, it much be changed in asm_i386.h too !!!
 typedef struct
 {
 	sfx_t* sfx; // sfx number
@@ -28,7 +28,7 @@ typedef struct
 	qboolean splitbuffer;
 	int channels;
 	int samples; // mono samples in buffer
-	int submission_chunk; // don't mix less than this #
+	int submission_chunk; // don't mix less than this_ #
 	int samplepos; // in mono samples
 	int samplebits;
 	int speed;

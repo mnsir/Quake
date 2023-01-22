@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //
 // General notes:
-// game_name is currently always "QUAKE", but is there so this same protocol
+// game_name is currently always "QUAKE", but is there so this_ same protocol
 // can be used for future games as well; can you say Quake2?
 //
 // CCREQ_CONNECT
@@ -75,7 +75,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // note:
 // There are two address forms used above.  The short form is just a
 // port number.  The address that goes along with the port is defined as
-// "whatever address you receive this reponse from".  This lets us use
+// "whatever address you receive this_ reponse from".  This lets us use
 // the host OS to solve the problem of multiple host addresses (possibly
 // with no routing between them); the host will use the right address
 // when we reply to the inbound connection request.  The long from is

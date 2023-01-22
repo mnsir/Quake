@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -137,7 +137,7 @@ typedef enum
 	pt_blob2
 } ptype_t;
 
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
+// !!! if this_ is changed, it must be changed in d_ifacea.h too !!!
 typedef struct particle_s
 {
 	// driver-usable fields
@@ -250,3 +250,29 @@ extern qboolean gl_mtexable;
 
 void GL_DisableMultitexture(void);
 void GL_EnableMultitexture(void);
+
+qboolean VID_Is8bit();
+void GL_SubdivideSurface(msurface_t* fa);
+void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr);
+int R_LightPoint(vec3_t p);
+void R_DrawWaterSurfaces(void);
+void EmitWaterPolys(msurface_t* fa);
+void EmitBothSkyLayers(msurface_t* fa);
+void EmitSkyPolys(msurface_t* fa);
+void R_DrawSkyChain(msurface_t* s);
+qboolean R_CullBox(vec3_t mins, vec3_t maxs);
+void R_MarkLights(dlight_t* light, int bit, mnode_t* node);
+void R_RotateForEntity(entity_t* e);
+void R_StoreEfrags(efrag_t** ppefrag);
+void V_CalcBlend(void);
+void R_AnimateLight(void);
+void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
+void R_DrawBrushModel(entity_t* e);
+void R_DrawWorld(void);
+void R_RenderDlights(void);
+void R_DrawParticles(void);
+void R_RenderBrushPoly(msurface_t* fa);
+void R_InitParticles(void);
+void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean alpha);
+void R_ClearParticles(void);
+void GL_BuildLightmaps(void);

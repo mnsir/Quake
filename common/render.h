@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -52,9 +52,9 @@ typedef struct entity_s
 	entity_state_t baseline; // to fill in defaults in updates
 
 	double msgtime; // time of last update
-	vec3_t msg_origins[2]; // last two updates (0 is newest) 
+	vec3_t msg_origins[2]; // last two updates (0 is new_est) 
 	vec3_t origin;
-	vec3_t msg_angles[2]; // last two updates (0 is newest)
+	vec3_t msg_angles[2]; // last two updates (0 is new_est)
 	vec3_t angles;
 	struct model_s* model; // NULL = no model
 	struct efrag_s* efrag; // linked list of efrags
@@ -63,7 +63,7 @@ typedef struct entity_s
 	byte* colormap;
 	int effects; // light, particals, etc
 	int skinnum; // for Alias models
-	int visframe; // last frame this entity was
+	int visframe; // last frame this_ entity was
 	//  found in an active leaf
 
 	int dlightframe; // dynamic lighting
@@ -76,7 +76,7 @@ typedef struct entity_s
 	//  not split
 } entity_t;
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this_ is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
 	vrect_t vrect; // subwindow in video for refresh
@@ -94,7 +94,7 @@ typedef struct
 	// right and bottom edges, for clamping
 	float fvrectright; // rightmost edge, for Alias clamping
 	float fvrectbottom; // bottommost edge, for Alias clamping
-	float horizontalFieldOfView; // at Z = 1.0, this many X is visible 
+	float horizontalFieldOfView; // at Z = 1.0, this_ many X is visible 
 	// 2.0 = 90 degrees
 	float xOrigin; // should probably allways be 0.5
 	float yOrigin; // between be around 0.3 to 0.5

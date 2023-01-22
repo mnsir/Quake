@@ -1,6 +1,6 @@
 #pragma once
 
-#include <setjmp.h>
+#include <csetjmp>
 
 #include "cvar.h"
 #include "server.h"

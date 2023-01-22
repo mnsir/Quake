@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
+along with this_ program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
@@ -26,14 +26,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #undef true
 #undef false
 
-//#include <stdbool.h>
-#include <stdio.h>
+#include <cstdio>
 
 #include "quakedef.h"
 #include "typedef_byte.h"
 #include "zone.h"
 
-typedef enum { false, true } qboolean;
+using qboolean = bool;
 
 //============================================================================
 
@@ -71,7 +70,7 @@ void InsertLinkAfter(link_t* l, link_t* after);
 
 // (type *)STRUCT_FROM_LINK(link_t *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
-// FIXME: remove this mess!
+// FIXME: remove this_ mess!
 #define STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
 
 //============================================================================

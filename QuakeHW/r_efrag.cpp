@@ -55,16 +55,14 @@ Call when removing an object from the world or moving it to another position
 */
 void R_RemoveEfrags(entity_t* ent)
 {
-	efrag_t *ef, *old, *walk, **prev;
-
-	ef = ent->efrag;
+	efrag_t* ef = ent->efrag;
 
 	while (ef)
 	{
-		prev = &ef->leaf->efrags;
+		efrag_t** prev = &ef->leaf->efrags;
 		while (1)
 		{
-			walk = *prev;
+			efrag_t* walk = *prev;
 			if (!walk)
 				break;
 			if (walk == ef)
@@ -76,7 +74,7 @@ void R_RemoveEfrags(entity_t* ent)
 			prev = &walk->leafnext;
 		}
 
-		old = ef;
+		efrag_t* old = ef;
 		ef = ef->entnext;
 
 		// put it on the free list
@@ -94,11 +92,6 @@ R_SplitEntityOnNode
 */
 void R_SplitEntityOnNode(mnode_t* node)
 {
-	efrag_t* ef;
-	mplane_t* splitplane;
-	mleaf_t* leaf;
-	int sides;
-
 	if (node->contents == CONTENTS_SOLID)
 	{
 		return;
@@ -111,10 +104,10 @@ void R_SplitEntityOnNode(mnode_t* node)
 		if (!r_pefragtopnode)
 			r_pefragtopnode = node;
 
-		leaf = (mleaf_t*)node;
+		mleaf_t* leaf = (mleaf_t*)node;
 
 		// grab an efrag off the free list
-		ef = cl.free_efrags;
+		efrag_t* ef = cl.free_efrags;
 		if (!ef)
 		{
 			Con_Printf((char*)"Too many efrags!\n");
@@ -139,8 +132,8 @@ void R_SplitEntityOnNode(mnode_t* node)
 
 	// NODE_MIXED
 
-	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
+	mplane_t* splitplane = node->plane;
+	int sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
 
 	if (sides == 3)
 	{
@@ -166,9 +159,6 @@ R_SplitEntityOnNode2
 */
 void R_SplitEntityOnNode2(mnode_t* node)
 {
-	mplane_t* splitplane;
-	int sides;
-
 	if (node->visframe != r_visframecount)
 		return;
 
@@ -180,8 +170,8 @@ void R_SplitEntityOnNode2(mnode_t* node)
 		return;
 	}
 
-	splitplane = node->plane;
-	sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
+	mplane_t* splitplane = node->plane;
+	int sides = BOX_ON_PLANE_SIDE(r_emins, r_emaxs, splitplane);
 
 	if (sides == 3)
 	{
@@ -205,9 +195,6 @@ R_AddEfrags
 */
 void R_AddEfrags(entity_t* ent)
 {
-	model_t* entmodel;
-	int i;
-
 	if (!ent->model)
 		return;
 
@@ -219,9 +206,9 @@ void R_AddEfrags(entity_t* ent)
 	lastlink = &ent->efrag;
 	r_pefragtopnode = NULL;
 
-	entmodel = ent->model;
+	model_t* entmodel = ent->model;
 
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		r_emins[i] = ent->origin[i] + entmodel->mins[i];
 		r_emaxs[i] = ent->origin[i] + entmodel->maxs[i];
@@ -242,15 +229,13 @@ R_StoreEfrags
 */
 void R_StoreEfrags(efrag_t** ppefrag)
 {
-	entity_t* pent;
-	model_t* clmodel;
 	efrag_t* pefrag;
 
 
 	while ((pefrag = *ppefrag) != NULL)
 	{
-		pent = pefrag->entity;
-		clmodel = pent->model;
+		entity_t* pent = pefrag->entity;
+		model_t* clmodel = pent->model;
 
 		switch (clmodel->type)
 		{

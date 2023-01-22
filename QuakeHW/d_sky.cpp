@@ -36,7 +36,7 @@ D_Sky_uv_To_st
 */
 void D_Sky_uv_To_st(int u, int v, fixed16_t* s, fixed16_t* t)
 {
-	float wu, wv, temp;
+	float temp;
 	vec3_t end;
 
 	if (r_refdef.vrect.width >= r_refdef.vrect.height)
@@ -44,8 +44,8 @@ void D_Sky_uv_To_st(int u, int v, fixed16_t* s, fixed16_t* t)
 	else
 		temp = (float)r_refdef.vrect.height;
 
-	wu = 8192.0 * (float)(u - ((int)vid.width >> 1)) / temp;
-	wv = 8192.0 * (float)(((int)vid.height >> 1) - v) / temp;
+	float wu = 8192.0 * (float)(u - ((int)vid.width >> 1)) / temp;
+	float wv = 8192.0 * (float)(((int)vid.height >> 1) - v) / temp;
 
 	end[0] = 4096 * vpn[0] + wu * vright[0] + wv * vup[0];
 	end[1] = 4096 * vpn[1] + wu * vright[1] + wv * vup[1];
@@ -66,26 +66,24 @@ D_DrawSkyScans8
 */
 void D_DrawSkyScans8(espan_t* pspan)
 {
-	int count, spancount, u, v;
-	unsigned char* pdest;
-	fixed16_t s, t, snext, tnext, sstep, tstep;
-	int spancountminus1;
+	int spancount;
+	fixed16_t s, t, snext, tnext;
 
 	snext = 0;
 	tnext = 0;
-	sstep = 0; // keep compiler happy
-	tstep = 0; // ditto
+	fixed16_t sstep = 0; // keep compiler happy
+	fixed16_t tstep = 0; // ditto
 
 	do
 	{
-		pdest = d_viewbuffer +
+		unsigned char* pdest = d_viewbuffer +
 			screenwidth * pspan->v + pspan->u;
 
-		count = pspan->count;
+		int count = pspan->count;
 
 		// calculate the initial s & t
-		u = pspan->u;
-		v = pspan->v;
+		int u = pspan->u;
+		int v = pspan->v;
 		D_Sky_uv_To_st(u, v, &s, &t);
 
 		do
@@ -112,7 +110,7 @@ void D_DrawSkyScans8(espan_t* pspan)
 			{
 				// calculate s and t at last pixel in span,
 				// calculate s and t steps across span by division
-				spancountminus1 = (float)(spancount - 1);
+				int spancountminus1 = (float)(spancount - 1);
 
 				if (spancountminus1 > 0)
 				{

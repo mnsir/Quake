@@ -342,7 +342,6 @@ IN_InitDInput
 */
 qboolean IN_InitDInput(void)
 {
-	HRESULT hr;
 	DIPROPDWORD dipdw = {
 		{
 			sizeof(DIPROPDWORD), // diph.dwSize
@@ -376,7 +375,7 @@ qboolean IN_InitDInput(void)
 	}
 
 	// register with DirectInput and get an IDirectInput to play with.
-	hr = iDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
+	HRESULT hr = iDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
 
 	if (FAILED(hr))
 	{
@@ -558,12 +557,10 @@ IN_MouseEvent
 */
 void IN_MouseEvent(int mstate)
 {
-	int i;
-
 	if (mouseactive && !dinput)
 	{
 		// perform button actions
-		for (i = 0; i < mouse_buttons; i++)
+		for (int i = 0; i < mouse_buttons; i++)
 		{
 			if ((mstate & (1 << i)) &&
 				!(mouse_oldbuttonstate & (1 << i)))
@@ -592,10 +589,8 @@ void IN_MouseMove(usercmd_t* cmd)
 {
 	int mx, my;
 	HDC hdc;
-	int i;
 	DIDEVICEOBJECTDATA od;
 	DWORD dwElements;
-	HRESULT hr;
 
 	if (!mouseactive)
 		return;
@@ -609,8 +604,8 @@ void IN_MouseMove(usercmd_t* cmd)
 		{
 			dwElements = 1;
 
-			hr = IDirectInputDevice_GetDeviceData(g_pMouse,
-			                                      sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
+			HRESULT hr = IDirectInputDevice_GetDeviceData(g_pMouse,
+			                                              sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
 
 			if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 			{
@@ -661,7 +656,7 @@ void IN_MouseMove(usercmd_t* cmd)
 		}
 
 		// perform button actions
-		for (i = 0; i < mouse_buttons; i++)
+		for (int i = 0; i < mouse_buttons; i++)
 		{
 			if ((mstate_di & (1 << i)) &&
 				!(mouse_oldbuttonstate & (1 << i)))
@@ -901,7 +896,6 @@ void Joy_AdvancedUpdate_f(void)
 	// called once by IN_ReadJoystick and by user whenever an update is needed
 	// cvars are now available
 	int i;
-	DWORD dwTemp;
 
 	// initialize all the maps
 	for (i = 0; i < JOY_MAX_AXES; i++)
@@ -930,7 +924,7 @@ void Joy_AdvancedUpdate_f(void)
 
 		// advanced initialization here
 		// data supplied by user via joy_axisn cvars
-		dwTemp = (DWORD)joy_advaxisx.value;
+		DWORD dwTemp = (DWORD)joy_advaxisx.value;
 		dwAxisMap[JOY_AXIS_X] = dwTemp & 0x0000000f;
 		dwControlMap[JOY_AXIS_X] = dwTemp & JOY_RELATIVE_AXIS;
 		dwTemp = (DWORD)joy_advaxisy.value;
@@ -970,7 +964,6 @@ IN_Commands
 void IN_Commands(void)
 {
 	int i, key_index;
-	DWORD buttonstate, povstate;
 
 	if (!joy_avail)
 	{
@@ -980,7 +973,7 @@ void IN_Commands(void)
 
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
-	buttonstate = ji.dwButtons;
+	DWORD buttonstate = ji.dwButtons;
 	for (i = 0; i < joy_numbuttons; i++)
 	{
 		if ((buttonstate & (1 << i)) && !(joy_oldbuttonstate & (1 << i)))
@@ -1002,7 +995,7 @@ void IN_Commands(void)
 		// convert POV information into 4 bits of state information
 		// this_ avoids any potential problems related to moving from one
 		// direction to another without going through the center position
-		povstate = 0;
+		DWORD povstate = 0;
 		if (ji.dwPOV != JOY_POVCENTERED)
 		{
 			if (ji.dwPOV == JOY_POVFORWARD)
@@ -1070,9 +1063,7 @@ IN_JoyMove
 */
 void IN_JoyMove(usercmd_t* cmd)
 {
-	float speed, aspeed;
-	float fAxisValue, fTemp;
-	int i;
+	float speed;
 
 	// complete initialization if first time in
 	// this_ is needed as cvars are not available at initialization time
@@ -1098,13 +1089,13 @@ void IN_JoyMove(usercmd_t* cmd)
 		speed = cl_movespeedkey.value;
 	else
 		speed = 1;
-	aspeed = speed * host_frametime;
+	float aspeed = speed * host_frametime;
 
 	// loop through the axes
-	for (i = 0; i < JOY_MAX_AXES; i++)
+	for (int i = 0; i < JOY_MAX_AXES; i++)
 	{
 		// get the floating point zero-centered, potentially-inverted data for the current axis
-		fAxisValue = (float)*pdwRawValue[i];
+		float fAxisValue = (float)*pdwRawValue[i];
 		// move centerpoint to zero
 		fAxisValue -= 32768.0;
 
@@ -1116,7 +1107,7 @@ void IN_JoyMove(usercmd_t* cmd)
 				// y=ax^b; where a = 300 and b = 1.3
 				// also x values are in increments of 800 (so this_ is factored out)
 				// then bounds check result to level out excessively high spin rates
-				fTemp = 300.0 * pow(abs(fAxisValue) / 800.0, 1.3);
+				float fTemp = 300.0 * pow(abs(fAxisValue) / 800.0, 1.3);
 				if (fTemp > 14000.0)
 					fTemp = 14000.0;
 				// restore direction information

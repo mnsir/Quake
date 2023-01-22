@@ -73,8 +73,6 @@ Host_Status_f
 void Host_Status_f(void)
 {
 	client_t* client;
-	int seconds;
-	int minutes;
 	int hours = 0;
 	int j;
 	void (*print)(char* fmt, ...);
@@ -103,8 +101,8 @@ void Host_Status_f(void)
 	{
 		if (!client->active)
 			continue;
-		seconds = (int)(net_time - client->netconnection->connecttime);
-		minutes = seconds / 60;
+		int seconds = (int)(net_time - client->netconnection->connecttime);
+		int minutes = seconds / 60;
 		if (minutes)
 		{
 			seconds -= (minutes * 60);
@@ -230,8 +228,7 @@ Host_Ping_f
 */
 void Host_Ping_f(void)
 {
-	int i, j;
-	float total;
+	int i;
 	client_t* client;
 
 	if (cmd_source == src_command)
@@ -245,8 +242,8 @@ void Host_Ping_f(void)
 	{
 		if (!client->active)
 			continue;
-		total = 0;
-		for (j = 0; j < NUM_PING_TIMES; j++)
+		float total = 0;
+		for (int j = 0; j < NUM_PING_TIMES; j++)
 			total += client->ping_times[j];
 		total /= NUM_PING_TIMES;
 		SV_ClientPrintf((char*)"%4i %s\n", (int)(total * 1000), client->name);
@@ -442,7 +439,6 @@ Host_Savegame_f
 void Host_Savegame_f(void)
 {
 	char name[256];
-	FILE* f;
 	int i;
 	char comment[SAVEGAME_COMMENT_LENGTH + 1];
 
@@ -492,7 +488,7 @@ void Host_Savegame_f(void)
 	COM_DefaultExtension(name, (char*)".sav");
 
 	Con_Printf((char*)"Saving game to %s...\n", name);
-	f = fopen(name, (char*)"w");
+	FILE* f = fopen(name, (char*)"w");
 	if (!f)
 	{
 		Con_Printf((char*)"ERROR: couldn't open.\n");
@@ -538,13 +534,10 @@ Host_Loadgame_f
 void Host_Loadgame_f(void)
 {
 	char name[MAX_OSPATH];
-	FILE* f;
 	char mapname[MAX_QPATH];
 	float time, tfloat;
-	char str[32768], *start;
-	int i, r;
-	edict_t* ent;
-	int entnum;
+	char str[32768];
+	int i;
 	int version;
 	float spawn_parms[NUM_SPAWN_PARMS];
 
@@ -567,7 +560,7 @@ void Host_Loadgame_f(void)
 	// SCR_BeginLoadingPlaque ();
 
 	Con_Printf((char*)"Loading game from %s...\n", name);
-	f = fopen(name, (char*)"r");
+	FILE* f = fopen(name, (char*)"r");
 	if (!f)
 	{
 		Con_Printf((char*)"ERROR: couldn't open.\n");
@@ -613,12 +606,12 @@ void Host_Loadgame_f(void)
 	}
 
 	// load the edicts out of the savegame file
-	entnum = -1; // -1 is the globals
+	int entnum = -1; // -1 is the globals
 	while (!feof(f))
 	{
 		for (i = 0; i < sizeof(str) - 1; i++)
 		{
-			r = fgetc(f);
+			int r = fgetc(f);
 			if (r == EOF || !r)
 				break;
 			str[i] = r;
@@ -631,7 +624,7 @@ void Host_Loadgame_f(void)
 		if (i == sizeof(str) - 1)
 			Sys_Error((char*)"Loadgame buffer overflow");
 		str[i] = 0;
-		start = str;
+		char* start = str;
 		start = COM_Parse(str);
 		if (!com_token[0])
 			break; // end of file
@@ -647,7 +640,7 @@ void Host_Loadgame_f(void)
 		{
 			// parse an edict
 
-			ent = EDICT_NUM(entnum);
+			edict_t* ent = EDICT_NUM(entnum);
 			memset(&ent->v, 0, progs->entityfields * 4);
 			ent->free = false;
 			ED_ParseEdict(start, ent);
@@ -731,9 +724,6 @@ void Host_Version_f(void)
 void Host_Say(qboolean teamonly)
 {
 	client_t* client;
-	client_t* save;
-	int j;
-	char* p;
 	char text[64];
 	qboolean fromServer = false;
 
@@ -754,9 +744,9 @@ void Host_Say(qboolean teamonly)
 	if (Cmd_Argc() < 2)
 		return;
 
-	save = host_client;
+	client_t* save = host_client;
 
-	p = Cmd_Args();
+	char* p = Cmd_Args();
 	// remove quotes if present
 	if (*p == '"')
 	{
@@ -770,7 +760,7 @@ void Host_Say(qboolean teamonly)
 	else
 		sprintf(text, (char*)"%c<%s> ", 1, hostname.string);
 
-	j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
+	int j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
 	if (Q_strlen(p) > j)
 		p[j] = 0;
 
@@ -807,9 +797,6 @@ void Host_Say_Team_f(void)
 void Host_Tell_f(void)
 {
 	client_t* client;
-	client_t* save;
-	int j;
-	char* p;
 	char text[64];
 
 	if (cmd_source == src_command)
@@ -824,7 +811,7 @@ void Host_Tell_f(void)
 	Q_strcpy(text, host_client->name);
 	Q_strcat(text, (char*)": ");
 
-	p = Cmd_Args();
+	char* p = Cmd_Args();
 
 	// remove quotes if present
 	if (*p == '"')
@@ -834,14 +821,14 @@ void Host_Tell_f(void)
 	}
 
 	// check length & truncate if necessary
-	j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
+	int j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
 	if (Q_strlen(p) > j)
 		p[j] = 0;
 
 	strcat(text, p);
 	strcat(text, (char*)"\n");
 
-	save = host_client;
+	client_t* save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active || !client->spawned)
@@ -864,7 +851,6 @@ Host_Color_f
 void Host_Color_f(void)
 {
 	int top, bottom;
-	int playercolor;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -888,7 +874,7 @@ void Host_Color_f(void)
 	if (bottom > 13)
 		bottom = 13;
 
-	playercolor = top * 16 + bottom;
+	int playercolor = top * 16 + bottom;
 
 	if (cmd_source == src_command)
 	{
@@ -1148,7 +1134,6 @@ void Host_Kick_f(void)
 {
 	char* who;
 	char* message = NULL;
-	client_t* save;
 	int i;
 	qboolean byNumber = false;
 
@@ -1163,7 +1148,7 @@ void Host_Kick_f(void)
 	else if (pr_global_struct->deathmatch && !host_client->privileged)
 		return;
 
-	save = host_client;
+	client_t* save = host_client;
 
 	if (Cmd_Argc() > 2 && Q_strcmp(Cmd_Argv(1), (char*)"#") == 0)
 	{
@@ -1238,8 +1223,7 @@ Host_Give_f
 */
 void Host_Give_f(void)
 {
-	char* t;
-	int v, w;
+	int w;
 	eval_t* val;
 
 	if (cmd_source == src_command)
@@ -1251,8 +1235,8 @@ void Host_Give_f(void)
 	if (pr_global_struct->deathmatch && !host_client->privileged)
 		return;
 
-	t = Cmd_Argv(1);
-	v = atoi(Cmd_Argv(2));
+	char* t = Cmd_Argv(1);
+	int v = atoi(Cmd_Argv(2));
 
 	switch (t[0])
 	{
@@ -1392,12 +1376,9 @@ void Host_Give_f(void)
 
 edict_t* FindViewthing(void)
 {
-	int i;
-	edict_t* e;
-
-	for (i = 0; i < sv.num_edicts; i++)
+	for (int i = 0; i < sv.num_edicts; i++)
 	{
-		e = EDICT_NUM(i);
+		edict_t* e = EDICT_NUM(i);
 		if (!strcmp(pr_strings + e->v.classname, (char*)"viewthing"))
 			return e;
 	}
@@ -1412,14 +1393,11 @@ Host_Viewmodel_f
 */
 void Host_Viewmodel_f(void)
 {
-	edict_t* e;
-	model_t* m;
-
-	e = FindViewthing();
+	edict_t* e = FindViewthing();
 	if (!e)
 		return;
 
-	m = Mod_ForName(Cmd_Argv(1), false);
+	model_t* m = Mod_ForName(Cmd_Argv(1), false);
 	if (!m)
 	{
 		Con_Printf((char*)"Can't load %s\n", Cmd_Argv(1));
@@ -1437,16 +1415,12 @@ Host_Viewframe_f
 */
 void Host_Viewframe_f(void)
 {
-	edict_t* e;
-	int f;
-	model_t* m;
-
-	e = FindViewthing();
+	edict_t* e = FindViewthing();
 	if (!e)
 		return;
-	m = cl.model_precache[(int)e->v.modelindex];
+	model_t* m = cl.model_precache[(int)e->v.modelindex];
 
-	f = atoi(Cmd_Argv(1));
+	int f = atoi(Cmd_Argv(1));
 	if (f >= m->numframes)
 		f = m->numframes - 1;
 
@@ -1456,13 +1430,10 @@ void Host_Viewframe_f(void)
 
 void PrintFrameName(model_t* m, int frame)
 {
-	aliashdr_t* hdr;
-	maliasframedesc_t* pframedesc;
-
-	hdr = (aliashdr_t*)Mod_Extradata(m);
+	aliashdr_t* hdr = (aliashdr_t*)Mod_Extradata(m);
 	if (!hdr)
 		return;
-	pframedesc = &hdr->frames[frame];
+	maliasframedesc_t* pframedesc = &hdr->frames[frame];
 
 	Con_Printf((char*)"frame %i: %s\n", frame, pframedesc->name);
 }
@@ -1474,13 +1445,10 @@ Host_Viewnext_f
 */
 void Host_Viewnext_f(void)
 {
-	edict_t* e;
-	model_t* m;
-
-	e = FindViewthing();
+	edict_t* e = FindViewthing();
 	if (!e)
 		return;
-	m = cl.model_precache[(int)e->v.modelindex];
+	model_t* m = cl.model_precache[(int)e->v.modelindex];
 
 	e->v.frame = e->v.frame + 1;
 	if (e->v.frame >= m->numframes)
@@ -1496,14 +1464,11 @@ Host_Viewprev_f
 */
 void Host_Viewprev_f(void)
 {
-	edict_t* e;
-	model_t* m;
-
-	e = FindViewthing();
+	edict_t* e = FindViewthing();
 	if (!e)
 		return;
 
-	m = cl.model_precache[(int)e->v.modelindex];
+	model_t* m = cl.model_precache[(int)e->v.modelindex];
 
 	e->v.frame = e->v.frame - 1;
 	if (e->v.frame < 0)
@@ -1528,8 +1493,6 @@ Host_Startdemos_f
 */
 void Host_Startdemos_f(void)
 {
-	int i, c;
-
 	if (cls.state == ca_dedicated)
 	{
 		if (!sv.active)
@@ -1537,7 +1500,7 @@ void Host_Startdemos_f(void)
 		return;
 	}
 
-	c = Cmd_Argc() - 1;
+	int c = Cmd_Argc() - 1;
 	if (c > MAX_DEMOS)
 	{
 		Con_Printf((char*)"Max %i demos in demoloop\n", MAX_DEMOS);
@@ -1545,7 +1508,7 @@ void Host_Startdemos_f(void)
 	}
 	Con_Printf((char*)"%i demo(s) in loop\n", c);
 
-	for (i = 1; i < c + 1; i++)
+	for (int i = 1; i < c + 1; i++)
 		strncpy(cls.demos[i - 1], Cmd_Argv(i), sizeof(cls.demos[0]) - 1);
 
 	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)

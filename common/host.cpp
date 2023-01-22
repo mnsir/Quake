@@ -178,11 +178,9 @@ Host_FindMaxClients
 */
 void Host_FindMaxClients(void)
 {
-	int i;
-
 	svs.maxclients = 1;
 
-	i = COM_CheckParm((char*)"-dedicated");
+	int i = COM_CheckParm((char*)"-dedicated");
 	if (i)
 	{
 		cls.state = ca_dedicated;
@@ -267,13 +265,11 @@ Writes key bindings and archived cvars to config.cfg
 */
 void Host_WriteConfiguration(void)
 {
-	FILE* f;
-
 	// dedicated servers initialize the host but don't parse and set the
 	// config.cfg cvars
 	if (host_initialized & !isDedicated)
 	{
-		f = fopen(va((char*)"%s/config.cfg", com_gamedir), (char*)"w");
+		FILE* f = fopen(va((char*)"%s/config.cfg", com_gamedir), (char*)"w");
 		if (!f)
 		{
 			Con_Printf((char*)"Couldn't write config.cfg.\n");
@@ -320,13 +316,12 @@ void SV_BroadcastPrintf(char* fmt, ...)
 {
 	va_list argptr;
 	char string[1024];
-	int i;
 
 	va_start(argptr, fmt);
 	vsprintf(string, fmt, argptr);
 	va_end(argptr);
 
-	for (i = 0; i < svs.maxclients; i++)
+	for (int i = 0; i < svs.maxclients; i++)
 		if (svs.clients[i].active && svs.clients[i].spawned)
 		{
 			MSG_WriteByte(&svs.clients[i].message, svc_print);
@@ -364,7 +359,6 @@ if (crash = true), don't bother sending signofs
 */
 void SV_DropClient(qboolean crash)
 {
-	int saveSelf;
 	int i;
 	client_t* client;
 
@@ -381,7 +375,7 @@ void SV_DropClient(qboolean crash)
 		{
 			// call the prog function for removing a client
 			// this_ will set the body to a dead frame, among other things
-			saveSelf = pr_global_struct->self;
+			int saveSelf = pr_global_struct->self;
 			pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
 			PR_ExecuteProgram(pr_global_struct->ClientDisconnect);
 			pr_global_struct->self = saveSelf;
@@ -430,7 +424,6 @@ void Host_ShutdownServer(qboolean crash)
 	int count;
 	sizebuf_t buf;
 	char message[4];
-	double start;
 
 	if (!sv.active)
 		return;
@@ -442,7 +435,7 @@ void Host_ShutdownServer(qboolean crash)
 		CL_Disconnect();
 
 	// flush any pending messages - like the score!!!
-	start = Sys_FloatTime();
+	double start = Sys_FloatTime();
 	do
 	{
 		count = 0;
@@ -554,11 +547,9 @@ Add them exactly as if they had been typed at the console
 */
 void Host_GetConsoleCommands(void)
 {
-	char* cmd;
-
 	while (1)
 	{
-		cmd = Sys_ConsoleInput();
+		char* cmd = Sys_ConsoleInput();
 		if (!cmd)
 			break;
 		Cbuf_AddText(cmd);
@@ -608,7 +599,6 @@ void _Host_Frame(float time)
 	static double time1 = 0;
 	static double time2 = 0;
 	static double time3 = 0;
-	int pass1, pass2, pass3;
 
 	if (setjmp(host_abortserver))
 		return; // something bad happened, or the server disconnected
@@ -688,10 +678,10 @@ void _Host_Frame(float time)
 
 	if (host_speeds.value)
 	{
-		pass1 = (time1 - time3) * 1000;
+		int pass1 = (time1 - time3) * 1000;
 		time3 = Sys_FloatTime();
-		pass2 = (time2 - time1) * 1000;
-		pass3 = (time3 - time2) * 1000;
+		int pass2 = (time2 - time1) * 1000;
+		int pass3 = (time3 - time2) * 1000;
 		Con_Printf((char*)"%3i tot %3i server %3i gfx %3i snd\n",
 		           pass1 + pass2 + pass3, pass1, pass2, pass3);
 	}
@@ -701,10 +691,8 @@ void _Host_Frame(float time)
 
 void Host_Frame(float time)
 {
-	double time1, time2;
 	static double timetotal;
 	static int timecount;
-	int i, c, m;
 
 	if (!serverprofile.value)
 	{
@@ -712,9 +700,9 @@ void Host_Frame(float time)
 		return;
 	}
 
-	time1 = Sys_FloatTime();
+	double time1 = Sys_FloatTime();
 	_Host_Frame(time);
-	time2 = Sys_FloatTime();
+	double time2 = Sys_FloatTime();
 
 	timetotal += time2 - time1;
 	timecount++;
@@ -722,11 +710,11 @@ void Host_Frame(float time)
 	if (timecount < 1000)
 		return;
 
-	m = timetotal * 1000 / timecount;
+	int m = timetotal * 1000 / timecount;
 	timecount = 0;
 	timetotal = 0;
-	c = 0;
-	for (i = 0; i < svs.maxclients; i++)
+	int c = 0;
+	for (int i = 0; i < svs.maxclients; i++)
 	{
 		if (svs.clients[i].active)
 			c++;
@@ -745,7 +733,6 @@ extern int vcrFile;
 void Host_InitVCR(quakeparms_t* parms)
 {
 	int i, len, n;
-	char* p;
 
 	if (COM_CheckParm((char*)"-playback"))
 	{
@@ -766,7 +753,7 @@ void Host_InitVCR(quakeparms_t* parms)
 		for (i = 0; i < com_argc; i++)
 		{
 			Sys_FileRead(vcrFile, &len, sizeof(int));
-			p = static_cast<char*>(malloc(len));
+			char* p = static_cast<char*>(malloc(len));
 			Sys_FileRead(vcrFile, p, len);
 			com_argv[i + 1] = p;
 		}

@@ -110,14 +110,12 @@ StripLength
 */
 int StripLength(int starttri, int startv)
 {
-	int m1, m2;
 	int j;
-	mtriangle_t *last, *check;
-	int k;
+	mtriangle_t*check;
 
 	used[starttri] = 2;
 
-	last = &triangles[starttri];
+	mtriangle_t* last = &triangles[starttri];
 
 	stripverts[0] = last->vertindex[(startv) % 3];
 	stripverts[1] = last->vertindex[(startv + 1) % 3];
@@ -126,8 +124,8 @@ int StripLength(int starttri, int startv)
 	striptris[0] = starttri;
 	stripcount = 1;
 
-	m1 = last->vertindex[(startv + 2) % 3];
-	m2 = last->vertindex[(startv + 1) % 3];
+	int m1 = last->vertindex[(startv + 2) % 3];
+	int m2 = last->vertindex[(startv + 1) % 3];
 
 	// look for a matching triangle
 nexttri:
@@ -135,7 +133,7 @@ nexttri:
 	{
 		if (check->facesfront != last->facesfront)
 			continue;
-		for (k = 0; k < 3; k++)
+		for (int k = 0; k < 3; k++)
 		{
 			if (check->vertindex[k] != m1)
 				continue;
@@ -179,14 +177,12 @@ FanLength
 */
 int FanLength(int starttri, int startv)
 {
-	int m1, m2;
 	int j;
-	mtriangle_t *last, *check;
-	int k;
+	mtriangle_t*check;
 
 	used[starttri] = 2;
 
-	last = &triangles[starttri];
+	mtriangle_t* last = &triangles[starttri];
 
 	stripverts[0] = last->vertindex[(startv) % 3];
 	stripverts[1] = last->vertindex[(startv + 1) % 3];
@@ -195,8 +191,8 @@ int FanLength(int starttri, int startv)
 	striptris[0] = starttri;
 	stripcount = 1;
 
-	m1 = last->vertindex[(startv + 0) % 3];
-	m2 = last->vertindex[(startv + 2) % 3];
+	int m1 = last->vertindex[(startv + 0) % 3];
+	int m2 = last->vertindex[(startv + 2) % 3];
 
 
 	// look for a matching triangle
@@ -205,7 +201,7 @@ nexttri:
 	{
 		if (check->facesfront != last->facesfront)
 			continue;
-		for (k = 0; k < 3; k++)
+		for (int k = 0; k < 3; k++)
 		{
 			if (check->vertindex[k] != m1)
 				continue;
@@ -250,19 +246,16 @@ for the model, which holds for all frames
 */
 void BuildTris(void)
 {
-	int i, j, k;
-	int startv;
+	int j;
 	mtriangle_t *last, *check;
 	int m1, m2;
 	int striplength;
 	trivertx_t* v;
 	mtriangle_t* tv;
-	float s, t;
 	int index;
-	int len, bestlen, besttype;
+	int len, besttype;
 	int bestverts[1024];
 	int besttris[1024];
-	int type;
 
 	//
 	// build tristrips
@@ -270,17 +263,17 @@ void BuildTris(void)
 	numorder = 0;
 	numcommands = 0;
 	memset(used, 0, sizeof(used));
-	for (i = 0; i < pheader->numtris; i++)
+	for (int i = 0; i < pheader->numtris; i++)
 	{
 		// pick an unused triangle and start the trifan
 		if (used[i])
 			continue;
 
-		bestlen = 0;
-		for (type = 0; type < 2; type++)
+		int bestlen = 0;
+		for (int type = 0; type < 2; type++)
 		// type = 1;
 		{
-			for (startv = 0; startv < 3; startv++)
+			for (int startv = 0; startv < 3; startv++)
 			{
 				if (type == 1)
 					len = StripLength(i, startv);
@@ -310,12 +303,12 @@ void BuildTris(void)
 		for (j = 0; j < bestlen + 2; j++)
 		{
 			// emit a vertex into the reorder buffer
-			k = bestverts[j];
+			int k = bestverts[j];
 			vertexorder[numorder++] = k;
 
 			// emit s/t coords into the commands stream
-			s = stverts[k].s;
-			t = stverts[k].t;
+			float s = stverts[k].s;
+			float t = stverts[k].t;
 			if (!triangles[besttris[0]].facesfront && stverts[k].onseam)
 				s += pheader->skinwidth / 2; // on back side
 			s = (s + 0.5) / pheader->skinwidth;
@@ -342,10 +335,7 @@ GL_MakeAliasModelDisplayLists
 */
 void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 {
-	int i, j;
 	maliasgroup_t* paliasgroup;
-	int* cmds;
-	trivertx_t* verts;
 	char cache[MAX_QPATH], fullpath[MAX_OSPATH], *c;
 	FILE* f;
 	int len;
@@ -399,14 +389,14 @@ void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 
 	paliashdr->poseverts = numorder;
 
-	cmds = static_cast<int*>(Hunk_Alloc(numcommands * 4));
+	int* cmds = static_cast<int*>(Hunk_Alloc(numcommands * 4));
 	paliashdr->commands = (byte*)cmds - (byte*)paliashdr;
 	memcpy(cmds, commands, numcommands * 4);
 
-	verts = static_cast<trivertx_t*>(Hunk_Alloc(paliashdr->numposes * paliashdr->poseverts
+	trivertx_t* verts = static_cast<trivertx_t*>(Hunk_Alloc(paliashdr->numposes * paliashdr->poseverts
 		* sizeof(trivertx_t)));
 	paliashdr->posedata = (byte*)verts - (byte*)paliashdr;
-	for (i = 0; i < paliashdr->numposes; i++)
-		for (j = 0; j < numorder; j++)
+	for (int i = 0; i < paliashdr->numposes; i++)
+		for (int j = 0; j < numorder; j++)
 			*verts++ = poseverts[i][vertexorder[j]];
 }

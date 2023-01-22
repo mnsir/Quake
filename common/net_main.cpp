@@ -113,8 +113,6 @@ The sequence and buffer fields will be filled in properly
 */
 qsocket_t* NET_NewQSocket(void)
 {
-	qsocket_t* sock;
-
 	if (net_freeSockets == NULL)
 		return NULL;
 
@@ -122,7 +120,7 @@ qsocket_t* NET_NewQSocket(void)
 		return NULL;
 
 	// get one from free list
-	sock = net_freeSockets;
+	qsocket_t* sock = net_freeSockets;
 	net_freeSockets = sock->next;
 
 	// add it to active list
@@ -197,8 +195,6 @@ static void NET_Listen_f(void)
 
 static void MaxPlayers_f(void)
 {
-	int n;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf((char*)"\"maxplayers\" is \"%u\"\n", svs.maxclients);
@@ -211,7 +207,7 @@ static void MaxPlayers_f(void)
 		return;
 	}
 
-	n = Q_atoi(Cmd_Argv(1));
+	int n = Q_atoi(Cmd_Argv(1));
 	if (n < 1)
 		n = 1;
 	if (n > svs.maxclientslimit)
@@ -236,15 +232,13 @@ static void MaxPlayers_f(void)
 
 static void NET_Port_f(void)
 {
-	int n;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf((char*)"\"port\" is \"%u\"\n", net_hostport);
 		return;
 	}
 
-	n = Q_atoi(Cmd_Argv(1));
+	int n = Q_atoi(Cmd_Argv(1));
 	if (n < 1 || n > 65534)
 	{
 		Con_Printf((char*)"Bad value, must be between 1 and 65534\n");
@@ -372,7 +366,6 @@ hostcache_t hostcache[HOSTCACHESIZE];
 
 qsocket_t* NET_Connect(char* host)
 {
-	qsocket_t* ret;
 	int n;
 	int numdrivers = net_numdrivers;
 
@@ -429,7 +422,7 @@ JustDoIt:
 	{
 		if (net_drivers[net_driverlevel].initialized == false)
 			continue;
-		ret = dfunc.Connect(host);
+		qsocket_t* ret = dfunc.Connect(host);
 		if (ret)
 			return ret;
 	}
@@ -461,8 +454,6 @@ struct
 
 qsocket_t* NET_CheckNewConnections(void)
 {
-	qsocket_t* ret;
-
 	SetNetTime();
 
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
@@ -471,7 +462,7 @@ qsocket_t* NET_CheckNewConnections(void)
 			continue;
 		if (net_driverlevel && listening == false)
 			continue;
-		ret = dfunc.CheckNewConnections();
+		qsocket_t* ret = dfunc.CheckNewConnections();
 		if (ret)
 		{
 			if (recording)
@@ -544,8 +535,6 @@ extern void PrintStats(qsocket_t* s);
 
 int NET_GetMessage(qsocket_t* sock)
 {
-	int ret;
-
 	if (!sock)
 		return -1;
 
@@ -557,7 +546,7 @@ int NET_GetMessage(qsocket_t* sock)
 
 	SetNetTime();
 
-	ret = sfunc.QGetMessage(sock);
+	int ret = sfunc.QGetMessage(sock);
 
 	// see if this_ connection has timed out
 	if (ret == 0 && sock->driver)
@@ -629,8 +618,6 @@ struct
 
 int NET_SendMessage(qsocket_t* sock, sizebuf_t* data)
 {
-	int r;
-
 	if (!sock)
 		return -1;
 
@@ -641,7 +628,7 @@ int NET_SendMessage(qsocket_t* sock, sizebuf_t* data)
 	}
 
 	SetNetTime();
-	r = sfunc.QSendMessage(sock, data);
+	int r = sfunc.QSendMessage(sock, data);
 	if (r == 1 && sock->driver)
 		messagesSent++;
 
@@ -660,8 +647,6 @@ int NET_SendMessage(qsocket_t* sock, sizebuf_t* data)
 
 int NET_SendUnreliableMessage(qsocket_t* sock, sizebuf_t* data)
 {
-	int r;
-
 	if (!sock)
 		return -1;
 
@@ -672,7 +657,7 @@ int NET_SendUnreliableMessage(qsocket_t* sock, sizebuf_t* data)
 	}
 
 	SetNetTime();
-	r = sfunc.SendUnreliableMessage(sock, data);
+	int r = sfunc.SendUnreliableMessage(sock, data);
 	if (r == 1 && sock->driver)
 		unreliableMessagesSent++;
 
@@ -699,8 +684,6 @@ message to be transmitted.
 */
 qboolean NET_CanSendMessage(qsocket_t* sock)
 {
-	int r;
-
 	if (!sock)
 		return false;
 
@@ -709,7 +692,7 @@ qboolean NET_CanSendMessage(qsocket_t* sock)
 
 	SetNetTime();
 
-	r = sfunc.CanSendMessage(sock);
+	int r = sfunc.CanSendMessage(sock);
 
 	if (recording)
 	{
@@ -726,7 +709,6 @@ qboolean NET_CanSendMessage(qsocket_t* sock)
 
 int NET_SendToAll(sizebuf_t* data, int blocktime)
 {
-	double start;
 	int i;
 	int count = 0;
 	qboolean state1[MAX_SCOREBOARD];
@@ -756,7 +738,7 @@ int NET_SendToAll(sizebuf_t* data, int blocktime)
 		}
 	}
 
-	start = Sys_FloatTime();
+	double start = Sys_FloatTime();
 	while (count)
 	{
 		count = 0;
@@ -807,10 +789,6 @@ NET_Init
 
 void NET_Init(void)
 {
-	int i;
-	int controlSocket;
-	qsocket_t* s;
-
 	if (COM_CheckParm((char*)"-playback"))
 	{
 		net_numdrivers = 1;
@@ -820,7 +798,7 @@ void NET_Init(void)
 	if (COM_CheckParm((char*)"-record"))
 		recording = true;
 
-	i = COM_CheckParm((char*)"-port");
+	int i = COM_CheckParm((char*)"-port");
 	if (!i)
 		i = COM_CheckParm((char*)"-udpport");
 	if (!i)
@@ -845,7 +823,7 @@ void NET_Init(void)
 
 	for (i = 0; i < net_numsockets; i++)
 	{
-		s = (qsocket_t*)Hunk_AllocName(sizeof(qsocket_t), (char*)"qsocket");
+		qsocket_t* s = (qsocket_t*)Hunk_AllocName(sizeof(qsocket_t), (char*)"qsocket");
 		s->next = net_freeSockets;
 		net_freeSockets = s;
 		s->disconnected = true;
@@ -873,7 +851,7 @@ void NET_Init(void)
 	// initialize all the drivers
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
-		controlSocket = net_drivers[net_driverlevel].Init();
+		int controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)
 			continue;
 		net_drivers[net_driverlevel].initialized = true;
@@ -896,11 +874,9 @@ NET_Shutdown
 
 void NET_Shutdown(void)
 {
-	qsocket_t* sock;
-
 	SetNetTime();
 
-	for (sock = net_activeSockets; sock; sock = sock->next)
+	for (qsocket_t* sock = net_activeSockets; sock; sock = sock->next)
 		NET_Close(sock);
 
 	//
@@ -927,7 +903,6 @@ static PollProcedure* pollProcedureList = NULL;
 
 void NET_Poll(void)
 {
-	PollProcedure* pp;
 	qboolean useModem;
 
 	if (!configRestored)
@@ -948,7 +923,7 @@ void NET_Poll(void)
 
 	SetNetTime();
 
-	for (pp = pollProcedureList; pp; pp = pp->next)
+	for (PollProcedure* pp = pollProcedureList; pp; pp = pp->next)
 	{
 		if (pp->nextTime > net_time)
 			break;

@@ -74,12 +74,11 @@ Dumps the current net message, prefixed by the length and view angles
 void CL_WriteDemoMessage(void)
 {
 	int len;
-	int i;
 	float f;
 
 	len = LittleLong(net_message.cursize);
 	fwrite(&len, 4, 1, cls.demofile);
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		f = LittleFloat(cl.viewangles[i]);
 		fwrite(&f, 4, 1, cls.demofile);
@@ -97,7 +96,7 @@ Handles recording and playback of demos, on top of NET_ code
 */
 int CL_GetMessage(void)
 {
-	int r, i;
+	int r;
 	float f;
 
 	if (cls.demoplayback)
@@ -124,7 +123,7 @@ int CL_GetMessage(void)
 		// get the next message
 		fread(&net_message.cursize, 4, 1, cls.demofile);
 		VectorCopy(cl.mviewangles[0], cl.mviewangles[1]);
-		for (i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			r = fread(&f, 4, 1, cls.demofile);
 			cl.mviewangles[0][i] = LittleFloat(f);
@@ -203,14 +202,13 @@ record <demoname> <map> [cd track]
 */
 void CL_Record_f(void)
 {
-	int c;
 	char name[MAX_OSPATH];
 	int track;
 
 	if (cmd_source != src_command)
 		return;
 
-	c = Cmd_Argc();
+	int c = Cmd_Argc();
 	if (c != 2 && c != 3 && c != 4)
 	{
 		Con_Printf((char*)"record <demoname> [<map> [cd track]]\n");
@@ -333,14 +331,11 @@ CL_FinishTimeDemo
 */
 void CL_FinishTimeDemo(void)
 {
-	int frames;
-	float time;
-
 	cls.timedemo = false;
 
 	// the first frame didn't count
-	frames = (host_framecount - cls.td_startframe) - 1;
-	time = realtime - cls.td_starttime;
+	int frames = (host_framecount - cls.td_startframe) - 1;
+	float time = realtime - cls.td_starttime;
 	if (!time)
 		time = 1;
 	Con_Printf((char*)"%i frames %5.1f seconds %5.1f fps\n", frames, time, frames / time);

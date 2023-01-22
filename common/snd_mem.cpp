@@ -39,20 +39,16 @@ ResampleSfx
 */
 void ResampleSfx(sfx_t* sfx, int inrate, int inwidth, byte* data)
 {
-	int outcount;
-	int srcsample;
-	float stepscale;
 	int i;
-	int sample, samplefrac, fracstep;
-	sfxcache_t* sc;
+	int sample;
 
-	sc = static_cast<sfxcache_t*>(Cache_Check(&sfx->cache));
+	sfxcache_t* sc = static_cast<sfxcache_t*>(Cache_Check(&sfx->cache));
 	if (!sc)
 		return;
 
-	stepscale = (float)inrate / shm->speed; // this_ is usually 0.5, 1, or 2
+	float stepscale = (float)inrate / shm->speed; // this_ is usually 0.5, 1, or 2
 
-	outcount = sc->length / stepscale;
+	int outcount = sc->length / stepscale;
 	sc->length = outcount;
 	if (sc->loopstart != -1)
 		sc->loopstart = sc->loopstart / stepscale;
@@ -76,11 +72,11 @@ void ResampleSfx(sfx_t* sfx, int inrate, int inwidth, byte* data)
 	else
 	{
 		// general case
-		samplefrac = 0;
-		fracstep = stepscale * 256;
+		int samplefrac = 0;
+		int fracstep = stepscale * 256;
 		for (i = 0; i < outcount; i++)
 		{
-			srcsample = samplefrac >> 8;
+			int srcsample = samplefrac >> 8;
 			samplefrac += fracstep;
 			if (inwidth == 2)
 				sample = LittleShort(((short*)data)[srcsample]);
@@ -104,15 +100,10 @@ S_LoadSound
 sfxcache_t* S_LoadSound(sfx_t* s)
 {
 	char namebuffer[256];
-	byte* data;
-	wavinfo_t info;
-	int len;
-	float stepscale;
-	sfxcache_t* sc;
 	byte stackbuf[1 * 1024]; // avoid dirtying the cache heap
 
 	// see if still in memory
-	sc = static_cast<sfxcache_t*>(Cache_Check(&s->cache));
+	sfxcache_t* sc = static_cast<sfxcache_t*>(Cache_Check(&s->cache));
 	if (sc)
 		return sc;
 
@@ -123,7 +114,7 @@ sfxcache_t* S_LoadSound(sfx_t* s)
 
 	// Con_Printf ((char*)"loading %s\n",namebuffer);
 
-	data = COM_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
+	byte* data = COM_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
 
 	if (!data)
 	{
@@ -131,15 +122,15 @@ sfxcache_t* S_LoadSound(sfx_t* s)
 		return NULL;
 	}
 
-	info = GetWavinfo(s->name, data, com_filesize);
+	wavinfo_t info = GetWavinfo(s->name, data, com_filesize);
 	if (info.channels != 1)
 	{
 		Con_Printf((char*)"%s is a stereo sample\n", s->name);
 		return NULL;
 	}
 
-	stepscale = (float)info.rate / shm->speed;
-	len = info.samples / stepscale;
+	float stepscale = (float)info.rate / shm->speed;
+	int len = info.samples / stepscale;
 
 	len = len * info.width * info.channels;
 
@@ -177,8 +168,7 @@ int iff_chunk_len;
 
 short GetLittleShort(void)
 {
-	short val = 0;
-	val = *data_p;
+	short val = *data_p;
 	val = val + (*(data_p + 1) << 8);
 	data_p += 2;
 	return val;
@@ -186,8 +176,7 @@ short GetLittleShort(void)
 
 int GetLittleLong(void)
 {
-	int val = 0;
-	val = *data_p;
+	int val = *data_p;
 	val = val + (*(data_p + 1) << 8);
 	val = val + (*(data_p + 2) << 16);
 	val = val + (*(data_p + 3) << 24);
@@ -256,9 +245,6 @@ GetWavinfo
 wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 {
 	wavinfo_t info;
-	int i;
-	int format;
-	int samples;
 
 	memset(&info, 0, sizeof(info));
 
@@ -287,7 +273,7 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 		return info;
 	}
 	data_p += 8;
-	format = GetLittleShort();
+	int format = GetLittleShort();
 	if (format != 1)
 	{
 		Con_Printf((char*)"Microsoft PCM format only\n");
@@ -315,7 +301,7 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 			{
 				// this_ is not a proper parse, but it works with cooledit...
 				data_p += 24;
-				i = GetLittleLong(); // samples in loop
+				int i = GetLittleLong(); // samples in loop
 				info.samples = info.loopstart + i;
 				// Con_Printf((char*)"looped length: %i\n", i);
 			}
@@ -333,7 +319,7 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 	}
 
 	data_p += 4;
-	samples = GetLittleLong() / info.width;
+	int samples = GetLittleLong() / info.width;
 
 	if (info.samples)
 	{

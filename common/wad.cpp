@@ -45,11 +45,10 @@ Can safely be performed in place.
 void W_CleanupName(char* in, char* out)
 {
 	int i;
-	int c;
 
 	for (i = 0; i < 16; i++)
 	{
-		c = in[i];
+		int c = in[i];
 		if (!c)
 			break;
 
@@ -71,15 +70,13 @@ W_LoadWadFile
 void W_LoadWadFile(char* filename)
 {
 	lumpinfo_t* lump_p;
-	wadinfo_t* header;
 	unsigned i;
-	int infotableofs;
 
 	wad_base = COM_LoadHunkFile(filename);
 	if (!wad_base)
 		Sys_Error((char*)"W_LoadWadFile: couldn't load %s", filename);
 
-	header = (wadinfo_t*)wad_base;
+	wadinfo_t* header = (wadinfo_t*)wad_base;
 
 	if (header->identification[0] != 'W'
 		|| header->identification[1] != 'A'
@@ -88,7 +85,7 @@ void W_LoadWadFile(char* filename)
 		Sys_Error((char*)"Wad file %s doesn't have WAD2 id\n", filename);
 
 	wad_numlumps = LittleLong(header->numlumps);
-	infotableofs = LittleLong(header->infotableofs);
+	int infotableofs = LittleLong(header->infotableofs);
 	wad_lumps = (lumpinfo_t*)(wad_base + infotableofs);
 
 	for (i = 0, lump_p = wad_lumps; i < wad_numlumps; i++, lump_p++)
@@ -127,21 +124,17 @@ lumpinfo_t* W_GetLumpinfo(char* name)
 
 void* W_GetLumpName(char* name)
 {
-	lumpinfo_t* lump;
-
-	lump = W_GetLumpinfo(name);
+	lumpinfo_t* lump = W_GetLumpinfo(name);
 
 	return wad_base + lump->filepos;
 }
 
 void* W_GetLumpNum(int num)
 {
-	lumpinfo_t* lump;
-
 	if (num < 0 || num > wad_numlumps)
 		Sys_Error((char*)"W_GetLumpNum: bad number: %i", num);
 
-	lump = wad_lumps + num;
+	lumpinfo_t* lump = wad_lumps + num;
 
 	return wad_base + lump->filepos;
 }

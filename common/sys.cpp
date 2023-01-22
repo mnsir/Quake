@@ -74,16 +74,16 @@ Sys_PageIn
 void Sys_PageIn(void* ptr, int size)
 {
 	byte* x;
-	int j, m, n;
+	int j;
 
 	// touch all the memory to make sure it's there. The 16-page skip is to
 	// keep Win 95 from thinking we're trying to page ourselves in (we are
 	// doing that, of course, but there's no reason we shouldn't)
 	x = (byte*)ptr;
 
-	for (n = 0; n < 4; n++)
+	for (int n = 0; n < 4; n++)
 	{
-		for (m = 0; m < (size - 16 * 0x1000); m += 4)
+		for (int m = 0; m < (size - 16 * 0x1000); m += 4)
 		{
 			sys_checksum += *(int*)&x[m];
 			sys_checksum += *(int*)&x[m + 16 * 0x1000];
@@ -105,9 +105,7 @@ FILE* sys_handles[MAX_HANDLES];
 
 int findhandle(void)
 {
-	int i;
-
-	for (i = 1; i < MAX_HANDLES; i++)
+	for (int i = 1; i < MAX_HANDLES; i++)
 		if (!sys_handles[i])
 			return i;
 	Sys_Error((char*)"out of handles");
@@ -121,15 +119,11 @@ filelength
 */
 int filelength(FILE* f)
 {
-	int pos;
-	int end;
-	int t;
+	int t = VID_ForceUnlockedAndReturnState();
 
-	t = VID_ForceUnlockedAndReturnState();
-
-	pos = ftell(f);
+	int pos = ftell(f);
 	fseek(f, 0, SEEK_END);
-	end = ftell(f);
+	int end = ftell(f);
 	fseek(f, pos, SEEK_SET);
 
 	VID_ForceLockState(t);
@@ -139,15 +133,13 @@ int filelength(FILE* f)
 
 int Sys_FileOpenRead(char* path, int* hndl)
 {
-	FILE* f;
-	int i, retval;
-	int t;
+	int retval;
 
-	t = VID_ForceUnlockedAndReturnState();
+	int t = VID_ForceUnlockedAndReturnState();
 
-	i = findhandle();
+	int i = findhandle();
 
-	f = fopen(path, (char*)"rb");
+	FILE* f = fopen(path, (char*)"rb");
 
 	if (!f)
 	{
@@ -168,15 +160,11 @@ int Sys_FileOpenRead(char* path, int* hndl)
 
 int Sys_FileOpenWrite(char* path)
 {
-	FILE* f;
-	int i;
-	int t;
+	int t = VID_ForceUnlockedAndReturnState();
 
-	t = VID_ForceUnlockedAndReturnState();
+	int i = findhandle();
 
-	i = findhandle();
-
-	f = fopen(path, (char*)"wb");
+	FILE* f = fopen(path, (char*)"wb");
 	if (!f)
 		Sys_Error((char*)"Error opening %s: %s", path, strerror(errno));
 	sys_handles[i] = f;
@@ -188,9 +176,7 @@ int Sys_FileOpenWrite(char* path)
 
 void Sys_FileClose(int handle)
 {
-	int t;
-
-	t = VID_ForceUnlockedAndReturnState();
+	int t = VID_ForceUnlockedAndReturnState();
 	fclose(sys_handles[handle]);
 	sys_handles[handle] = NULL;
 	VID_ForceLockState(t);
@@ -198,41 +184,34 @@ void Sys_FileClose(int handle)
 
 void Sys_FileSeek(int handle, int position)
 {
-	int t;
-
-	t = VID_ForceUnlockedAndReturnState();
+	int t = VID_ForceUnlockedAndReturnState();
 	fseek(sys_handles[handle], position, SEEK_SET);
 	VID_ForceLockState(t);
 }
 
 int Sys_FileRead(int handle, void* dest, int count)
 {
-	int t, x;
-
-	t = VID_ForceUnlockedAndReturnState();
-	x = fread(dest, 1, count, sys_handles[handle]);
+	int t = VID_ForceUnlockedAndReturnState();
+	int x = fread(dest, 1, count, sys_handles[handle]);
 	VID_ForceLockState(t);
 	return x;
 }
 
 int Sys_FileWrite(int handle, void* data, int count)
 {
-	int t, x;
-
-	t = VID_ForceUnlockedAndReturnState();
-	x = fwrite(data, 1, count, sys_handles[handle]);
+	int t = VID_ForceUnlockedAndReturnState();
+	int x = fwrite(data, 1, count, sys_handles[handle]);
 	VID_ForceLockState(t);
 	return x;
 }
 
 int Sys_FileTime(char* path)
 {
-	FILE* f;
-	int t, retval;
+	int retval;
 
-	t = VID_ForceUnlockedAndReturnState();
+	int t = VID_ForceUnlockedAndReturnState();
 
-	f = fopen(path, (char*)"rb");
+	FILE* f = fopen(path, (char*)"rb");
 
 	if (f)
 	{
@@ -309,7 +288,6 @@ Sys_Init
 void Sys_Init(void)
 {
 	LARGE_INTEGER PerformanceFreq;
-	unsigned int lowpart, highpart;
 
 	MaskExceptions();
 	Sys_SetFPCW();
@@ -319,8 +297,8 @@ void Sys_Init(void)
 
 	// get 32 out of the 64 time bits such that we have around
 	// 1 microsecond resolution
-	lowpart = (unsigned int)PerformanceFreq.LowPart;
-	highpart = (unsigned int)PerformanceFreq.HighPart;
+	unsigned int lowpart = (unsigned int)PerformanceFreq.LowPart;
+	unsigned int highpart = (unsigned int)PerformanceFreq.HighPart;
 	lowshift = 0;
 
 	while (highpart || (lowpart > 2000000.0))
@@ -347,7 +325,6 @@ void Sys_Error(char* error, ...)
 	char* text4 = (char*)"***********************************\n";
 	char* text5 = (char*)"\n";
 	DWORD dummy;
-	double starttime;
 	static int in_sys_error0 = 0;
 	static int in_sys_error1 = 0;
 	static int in_sys_error2 = 0;
@@ -377,7 +354,7 @@ void Sys_Error(char* error, ...)
 		WriteFile(houtput, text4, strlen(text4), &dummy, NULL);
 
 
-		starttime = Sys_FloatTime();
+		double starttime = Sys_FloatTime();
 		sc_return_on_enter = true; // so Enter will get us out of here
 
 		while (!Sys_ConsoleInput() &&
@@ -465,14 +442,12 @@ double Sys_FloatTime(void)
 	static unsigned int oldtime;
 	static int first = 1;
 	LARGE_INTEGER PerformanceCount;
-	unsigned int temp, t2;
-	double time;
 
 	Sys_PushFPCW_SetHigh();
 
 	QueryPerformanceCounter(&PerformanceCount);
 
-	temp = ((unsigned int)PerformanceCount.LowPart >> lowshift) |
+	unsigned int temp = ((unsigned int)PerformanceCount.LowPart >> lowshift) |
 		((unsigned int)PerformanceCount.HighPart << (32 - lowshift));
 
 	if (first)
@@ -489,9 +464,9 @@ double Sys_FloatTime(void)
 		}
 		else
 		{
-			t2 = temp - oldtime;
+			unsigned int t2 = temp - oldtime;
 
-			time = (double)t2 * pfreq;
+			double time = (double)t2 * pfreq;
 			oldtime = temp;
 
 			curtime += time;
@@ -528,11 +503,9 @@ Sys_InitFloatTime
 */
 void Sys_InitFloatTime(void)
 {
-	int j;
-
 	Sys_FloatTime();
 
-	j = COM_CheckParm((char*)"-starttime");
+	int j = COM_CheckParm((char*)"-starttime");
 
 	if (j)
 	{
@@ -686,7 +659,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	MSG msg;
 	quakeparms_t parms;
-	double time, oldtime, new_time;
+	double time, new_time;
 	MEMORYSTATUS lpBuffer;
 	static char cwd[1024];
 	int t;
@@ -841,7 +814,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Sys_Printf((char*)"Host_Init\n");
 	Host_Init(&parms);
 
-	oldtime = Sys_FloatTime();
+	double oldtime = Sys_FloatTime();
 
 	/* main window message loop */
 	while (1)

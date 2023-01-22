@@ -64,9 +64,7 @@ R_InitParticles
 */
 void R_InitParticles(void)
 {
-	int i;
-
-	i = COM_CheckParm((char*)"-particles");
+	int i = COM_CheckParm((char*)"-particles");
 
 	if (i)
 	{
@@ -100,16 +98,11 @@ float timescale = 0.01;
 
 void R_EntityParticles(entity_t* ent)
 {
-	int count;
 	int i;
-	particle_t* p;
-	float angle;
-	float sr, sp, sy, cr, cp, cy;
 	vec3_t forward;
-	float dist;
 
-	dist = 64;
-	count = 50;
+	float dist = 64;
+	int count = 50;
 
 	if (!avelocities[0][0])
 	{
@@ -120,15 +113,15 @@ void R_EntityParticles(entity_t* ent)
 
 	for (i = 0; i < NUMVERTEXNORMALS; i++)
 	{
-		angle = cl.time * avelocities[i][0];
-		sy = sin(angle);
-		cy = cos(angle);
+		float angle = cl.time * avelocities[i][0];
+		float sy = sin(angle);
+		float cy = cos(angle);
 		angle = cl.time * avelocities[i][1];
-		sp = sin(angle);
-		cp = cos(angle);
+		float sp = sin(angle);
+		float cp = cos(angle);
 		angle = cl.time * avelocities[i][2];
-		sr = sin(angle);
-		cr = cos(angle);
+		float sr = sin(angle);
+		float cr = cos(angle);
 
 		forward[0] = cp * cy;
 		forward[1] = cp * sy;
@@ -136,7 +129,7 @@ void R_EntityParticles(entity_t* ent)
 
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -159,12 +152,10 @@ R_ClearParticles
 */
 void R_ClearParticles(void)
 {
-	int i;
-
 	free_particles = &particles[0];
 	active_particles = NULL;
 
-	for (i = 0; i < r_numparticles; i++)
+	for (int i = 0; i < r_numparticles; i++)
 		particles[i].next = &particles[i + 1];
 	particles[r_numparticles - 1].next = NULL;
 }
@@ -174,9 +165,6 @@ void R_ReadPointFile_f(void)
 {
 	FILE* f;
 	vec3_t org;
-	int r;
-	int c;
-	particle_t* p;
 	char name[MAX_OSPATH];
 
 	sprintf(name, (char*)"maps/%s.pts", sv.name);
@@ -189,10 +177,10 @@ void R_ReadPointFile_f(void)
 	}
 
 	Con_Printf((char*)"Reading %s...\n", name);
-	c = 0;
+	int c = 0;
 	for (;;)
 	{
-		r = fscanf(f, (char*)"%f %f %f\n", &org[0], &org[1], &org[2]);
+		int r = fscanf(f, (char*)"%f %f %f\n", &org[0], &org[1], &org[2]);
 		if (r != 3)
 			break;
 		c++;
@@ -202,7 +190,7 @@ void R_ReadPointFile_f(void)
 			Con_Printf((char*)"Not enough free particles\n");
 			break;
 		}
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -228,14 +216,14 @@ Parse an effect out of the server message
 void R_ParseParticleEffect(void)
 {
 	vec3_t org, dir;
-	int i, count, msgcount, color;
+	int i, count;
 
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord();
 	for (i = 0; i < 3; i++)
 		dir[i] = MSG_ReadChar() * (1.0 / 16);
-	msgcount = MSG_ReadByte();
-	color = MSG_ReadByte();
+	int msgcount = MSG_ReadByte();
+	int color = MSG_ReadByte();
 
 	if (msgcount == 255)
 		count = 1024;
@@ -253,14 +241,13 @@ R_ParticleExplosion
 */
 void R_ParticleExplosion(vec3_t org)
 {
-	int i, j;
-	particle_t* p;
+	int j;
 
-	for (i = 0; i < 1024; i++)
+	for (int i = 0; i < 1024; i++)
 	{
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -297,15 +284,13 @@ R_ParticleExplosion2
 */
 void R_ParticleExplosion2(vec3_t org, int colorStart, int colorLength)
 {
-	int i, j;
-	particle_t* p;
 	int colorMod = 0;
 
-	for (i = 0; i < 512; i++)
+	for (int i = 0; i < 512; i++)
 	{
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -315,7 +300,7 @@ void R_ParticleExplosion2(vec3_t org, int colorStart, int colorLength)
 		colorMod++;
 
 		p->type = pt_blob;
-		for (j = 0; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			p->org[j] = org[j] + ((rand() % 32) - 16);
 			p->vel[j] = (rand() % 512) - 256;
@@ -331,14 +316,13 @@ R_BlobExplosion
 */
 void R_BlobExplosion(vec3_t org)
 {
-	int i, j;
-	particle_t* p;
+	int j;
 
-	for (i = 0; i < 1024; i++)
+	for (int i = 0; i < 1024; i++)
 	{
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -376,14 +360,13 @@ R_RunParticleEffect
 */
 void R_RunParticleEffect(vec3_t org, vec3_t dir, int color, int count)
 {
-	int i, j;
-	particle_t* p;
+	int j;
 
-	for (i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 	{
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -436,18 +419,15 @@ R_LavaSplash
 */
 void R_LavaSplash(vec3_t org)
 {
-	int i, j, k;
-	particle_t* p;
-	float vel;
 	vec3_t dir;
 
-	for (i = -16; i < 16; i++)
-		for (j = -16; j < 16; j++)
-			for (k = 0; k < 1; k++)
+	for (int i = -16; i < 16; i++)
+		for (int j = -16; j < 16; j++)
+			for (int k = 0; k < 1; k++)
 			{
 				if (!free_particles)
 					return;
-				p = free_particles;
+				particle_t* p = free_particles;
 				free_particles = p->next;
 				p->next = active_particles;
 				active_particles = p;
@@ -465,7 +445,7 @@ void R_LavaSplash(vec3_t org)
 				p->org[2] = org[2] + (rand() & 63);
 
 				VectorNormalize(dir);
-				vel = 50 + (rand() & 63);
+				float vel = 50 + (rand() & 63);
 				VectorScale(dir, vel, p->vel);
 			}
 }
@@ -478,18 +458,15 @@ R_TeleportSplash
 */
 void R_TeleportSplash(vec3_t org)
 {
-	int i, j, k;
-	particle_t* p;
-	float vel;
 	vec3_t dir;
 
-	for (i = -16; i < 16; i += 4)
-		for (j = -16; j < 16; j += 4)
-			for (k = -24; k < 32; k += 4)
+	for (int i = -16; i < 16; i += 4)
+		for (int j = -16; j < 16; j += 4)
+			for (int k = -24; k < 32; k += 4)
 			{
 				if (!free_particles)
 					return;
-				p = free_particles;
+				particle_t* p = free_particles;
 				free_particles = p->next;
 				p->next = active_particles;
 				active_particles = p;
@@ -507,7 +484,7 @@ void R_TeleportSplash(vec3_t org)
 				p->org[2] = org[2] + k + (rand() & 3);
 
 				VectorNormalize(dir);
-				vel = 50 + (rand() & 63);
+				float vel = 50 + (rand() & 63);
 				VectorScale(dir, vel, p->vel);
 			}
 }
@@ -515,14 +492,12 @@ void R_TeleportSplash(vec3_t org)
 void R_RocketTrail(vec3_t start, vec3_t end, int type)
 {
 	vec3_t vec;
-	float len;
 	int j;
-	particle_t* p;
 	int dec;
 	static int tracercount;
 
 	VectorSubtract(end, start, vec);
-	len = VectorNormalize(vec);
+	float len = VectorNormalize(vec);
 	if (type < 128)
 		dec = 3;
 	else
@@ -537,7 +512,7 @@ void R_RocketTrail(vec3_t start, vec3_t end, int type)
 
 		if (!free_particles)
 			return;
-		p = free_particles;
+		particle_t* p = free_particles;
 		free_particles = p->next;
 		p->next = active_particles;
 		active_particles = p;
@@ -626,7 +601,7 @@ extern cvar_t sv_gravity;
 
 void R_DrawParticles(void)
 {
-	particle_t *p, *kill;
+	particle_t*kill;
 	float grav;
 	int i;
 	float time2, time3;
@@ -672,7 +647,7 @@ void R_DrawParticles(void)
 		break;
 	}
 
-	for (p = active_particles; p; p = p->next)
+	for (particle_t* p = active_particles; p; p = p->next)
 	{
 		for (;;)
 		{

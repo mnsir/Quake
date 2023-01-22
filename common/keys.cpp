@@ -165,8 +165,6 @@ Interactive line editing and console scrollback
 */
 void Key_Console(int key)
 {
-	char* cmd;
-
 	if (key == K_ENTER)
 	{
 		Cbuf_AddText(key_lines[edit_line] + 1); // skip the >
@@ -185,7 +183,7 @@ void Key_Console(int key)
 	if (key == K_TAB)
 	{
 		// command completion
-		cmd = Cmd_CompleteCommand(key_lines[edit_line] + 1);
+		char* cmd = Cmd_CompleteCommand(key_lines[edit_line] + 1);
 		if (!cmd)
 			cmd = Cvar_CompleteVariable(key_lines[edit_line] + 1);
 		if (cmd)
@@ -348,14 +346,12 @@ the K_* names are matched up.
 */
 int Key_StringToKeynum(char* str)
 {
-	keyname_t* kn;
-
 	if (!str || !str[0])
 		return -1;
 	if (!str[1])
 		return str[0];
 
-	for (kn = keynames; kn->name; kn++)
+	for (keyname_t* kn = keynames; kn->name; kn++)
 	{
 		if (!Q_strcasecmp(str, kn->name))
 			return kn->keynum;
@@ -374,7 +370,6 @@ FIXME: handle quote special (general escape sequence?)
 */
 char* Key_KeynumToString(int keynum)
 {
-	keyname_t* kn;
 	static char tinystr[2];
 
 	if (keynum == -1)
@@ -387,7 +382,7 @@ char* Key_KeynumToString(int keynum)
 		return tinystr;
 	}
 
-	for (kn = keynames; kn->name; kn++)
+	for (keyname_t* kn = keynames; kn->name; kn++)
 		if (keynum == kn->keynum)
 			return kn->name;
 
@@ -402,9 +397,6 @@ Key_SetBinding
 */
 void Key_SetBinding(int keynum, char* binding)
 {
-	char* new_;
-	int l;
-
 	if (keynum == -1)
 		return;
 
@@ -416,8 +408,8 @@ void Key_SetBinding(int keynum, char* binding)
 	}
 
 	// allocate memory for new_ binding
-	l = Q_strlen(binding);
-	new_ = (char*)Z_Malloc(l + 1);
+	int l = Q_strlen(binding);
+	char* new_ = (char*)Z_Malloc(l + 1);
 	Q_strcpy(new_, binding);
 	new_[l] = 0;
 	keybindings[keynum] = new_;
@@ -430,15 +422,13 @@ Key_Unbind_f
 */
 void Key_Unbind_f(void)
 {
-	int b;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf((char*)"unbind <key> : remove commands from a key\n");
 		return;
 	}
 
-	b = Key_StringToKeynum(Cmd_Argv(1));
+	int b = Key_StringToKeynum(Cmd_Argv(1));
 	if (b == -1)
 	{
 		Con_Printf((char*)"\"%s\" isn't a valid key\n", Cmd_Argv(1));
@@ -450,9 +440,7 @@ void Key_Unbind_f(void)
 
 void Key_Unbindall_f(void)
 {
-	int i;
-
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 		if (keybindings[i])
 			Key_SetBinding(i, (char*)"");
 }
@@ -465,17 +453,16 @@ Key_Bind_f
 */
 void Key_Bind_f(void)
 {
-	int i, c, b;
 	char cmd[1024];
 
-	c = Cmd_Argc();
+	int c = Cmd_Argc();
 
 	if (c != 2 && c != 3)
 	{
 		Con_Printf((char*)"bind <key> [command] : attach a command to a key\n");
 		return;
 	}
-	b = Key_StringToKeynum(Cmd_Argv(1));
+	int b = Key_StringToKeynum(Cmd_Argv(1));
 	if (b == -1)
 	{
 		Con_Printf((char*)"\"%s\" isn't a valid key\n", Cmd_Argv(1));
@@ -493,7 +480,7 @@ void Key_Bind_f(void)
 
 	// copy the rest of the command line
 	cmd[0] = 0; // start out with a null string
-	for (i = 2; i < c; i++)
+	for (int i = 2; i < c; i++)
 	{
 		if (i > 2)
 			strcat(cmd, (char*)" ");
@@ -512,9 +499,7 @@ Writes lines containing "bind key value"
 */
 void Key_WriteBindings(FILE* f)
 {
-	int i;
-
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 		if (keybindings[i])
 			if (*keybindings[i])
 				fprintf(f, (char*)"bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
@@ -756,9 +741,7 @@ Key_ClearStates
 */
 void Key_ClearStates(void)
 {
-	int i;
-
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		keydown[i] = false;
 		key_repeats[i] = 0;

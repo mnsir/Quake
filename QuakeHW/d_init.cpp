@@ -120,8 +120,6 @@ D_SetupFrame
 */
 void D_SetupFrame(void)
 {
-	int i;
-
 	if (r_dowarp)
 		d_viewbuffer = r_warpbuffer;
 	else
@@ -141,7 +139,7 @@ void D_SetupFrame(void)
 	else if (d_minmip < 0)
 		d_minmip = 0;
 
-	for (i = 0; i < (NUM_MIPS - 1); i++)
+	for (int i = 0; i < (NUM_MIPS - 1); i++)
 		d_scalemip[i] = basemip[i] * d_mipscale.value;
 	
 	d_drawspans = D_DrawSpans8;

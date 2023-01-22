@@ -162,12 +162,11 @@ byte translationTable[256];
 void M_BuildTranslationTable(int top, int bottom)
 {
 	int j;
-	byte *dest, *source;
 
 	for (j = 0; j < 256; j++)
 		identityTable[j] = j;
-	dest = translationTable;
-	source = identityTable;
+	byte* dest = translationTable;
+	byte* source = identityTable;
 	memcpy(dest, source, 256);
 
 	if (top < 128) // the artists made some backwards ranges.  sigh.
@@ -192,14 +191,12 @@ void M_DrawTransPicTranslate(int x, int y, qpic_t* pic)
 
 void M_DrawTextBox(int x, int y, int width, int lines)
 {
-	qpic_t* p;
-	int cx, cy;
 	int n;
 
 	// draw left side
-	cx = x;
-	cy = y;
-	p = Draw_CachePic((char*)"gfx/box_tl.lmp");
+	int cx = x;
+	int cy = y;
+	qpic_t* p = Draw_CachePic((char*)"gfx/box_tl.lmp");
 	M_DrawTransPic(cx, cy, p);
 	p = Draw_CachePic((char*)"gfx/box_ml.lmp");
 	for (n = 0; n < lines; n++)
@@ -302,15 +299,12 @@ void M_Menu_Main_f(void)
 
 void M_Main_Draw(void)
 {
-	int f;
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/ttl_main.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/ttl_main.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 	M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/mainmenu.lmp"));
 
-	f = (int)(host_time * 10) % 6;
+	int f = (int)(host_time * 10) % 6;
 
 	M_DrawTransPic(54, 32 + m_main_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
 }
@@ -385,15 +379,12 @@ void M_Menu_SinglePlayer_f(void)
 
 void M_SinglePlayer_Draw(void)
 {
-	int f;
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/ttl_sgl.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/ttl_sgl.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 	M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/sp_menu.lmp"));
 
-	f = (int)(host_time * 10) % 6;
+	int f = (int)(host_time * 10) % 6;
 
 	M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
 }
@@ -457,17 +448,15 @@ int loadable[MAX_SAVEGAMES];
 
 void M_ScanSaves(void)
 {
-	int i, j;
 	char name[MAX_OSPATH];
-	FILE* f;
 	int version;
 
-	for (i = 0; i < MAX_SAVEGAMES; i++)
+	for (int i = 0; i < MAX_SAVEGAMES; i++)
 	{
 		strcpy(m_filenames[i], (char*)"--- UNUSED SLOT ---");
 		loadable[i] = false;
 		sprintf(name, (char*)"%s/s%i.sav", com_gamedir, i);
-		f = fopen(name, (char*)"r");
+		FILE* f = fopen(name, (char*)"r");
 		if (!f)
 			continue;
 		fscanf(f, (char*)"%i\n", &version);
@@ -475,7 +464,7 @@ void M_ScanSaves(void)
 		strncpy(m_filenames[i], name, sizeof(m_filenames[i]) - 1);
 
 		// change _ back to space
-		for (j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)
+		for (int j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)
 			if (m_filenames[i][j] == '_')
 				m_filenames[i][j] = ' ';
 		loadable[i] = true;
@@ -509,13 +498,10 @@ void M_Menu_Save_f(void)
 
 void M_Load_Draw(void)
 {
-	int i;
-	qpic_t* p;
-
-	p = Draw_CachePic((char*)"gfx/p_load.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_load.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
-	for (i = 0; i < MAX_SAVEGAMES; i++)
+	for (int i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print(16, 32 + 8 * i, m_filenames[i]);
 
 	// line cursor
@@ -525,13 +511,10 @@ void M_Load_Draw(void)
 
 void M_Save_Draw(void)
 {
-	int i;
-	qpic_t* p;
-
-	p = Draw_CachePic((char*)"gfx/p_save.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_save.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
-	for (i = 0; i < MAX_SAVEGAMES; i++)
+	for (int i = 0; i < MAX_SAVEGAMES; i++)
 		M_Print(16, 32 + 8 * i, m_filenames[i]);
 
 	// line cursor
@@ -630,15 +613,12 @@ void M_Menu_MultiPlayer_f(void)
 
 void M_MultiPlayer_Draw(void)
 {
-	int f;
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 	M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/mp_menu.lmp"));
 
-	f = (int)(host_time * 10) % 6;
+	int f = (int)(host_time * 10) % 6;
 
 	M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
 
@@ -718,10 +698,8 @@ void M_Menu_Setup_f(void)
 
 void M_Setup_Draw(void)
 {
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
 	M_Print(64, 40, (char*)"Hostname");
@@ -912,14 +890,11 @@ void M_Menu_Net_f(void)
 
 void M_Net_Draw(void)
 {
-	int f;
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
-	f = 32;
+	int f = 32;
 
 	if (serialAvailable)
 	{
@@ -1165,11 +1140,8 @@ void M_DrawCheckbox(int x, int y, int on)
 
 void M_Options_Draw(void)
 {
-	float r;
-	qpic_t* p;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_option.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_option.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
 	M_Print(16, 32, (char*)"    Customize controls");
@@ -1177,7 +1149,7 @@ void M_Options_Draw(void)
 	M_Print(16, 48, (char*)"     Reset to defaults");
 
 	M_Print(16, 56, (char*)"           Screen size");
-	r = (scr_viewsize.value - 30) / (120 - 30);
+	float r = (scr_viewsize.value - 30) / (120 - 30);
 	M_DrawSlider(220, 56, r);
 
 	M_Print(16, 64, (char*)"            Brightness");
@@ -1333,18 +1305,13 @@ void M_Menu_Keys_f(void)
 
 void M_FindKeysForCommand(char* command, int* twokeys)
 {
-	int count;
-	int j;
-	int l;
-	char* b;
-
 	twokeys[0] = twokeys[1] = -1;
-	l = strlen(command);
-	count = 0;
+	int l = strlen(command);
+	int count = 0;
 
-	for (j = 0; j < 256; j++)
+	for (int j = 0; j < 256; j++)
 	{
-		b = keybindings[j];
+		char* b = keybindings[j];
 		if (!b)
 			continue;
 		if (!strncmp(b, command, l))
@@ -1359,15 +1326,11 @@ void M_FindKeysForCommand(char* command, int* twokeys)
 
 void M_UnbindCommand(char* command)
 {
-	int j;
-	int l;
-	char* b;
+	int l = strlen(command);
 
-	l = strlen(command);
-
-	for (j = 0; j < 256; j++)
+	for (int j = 0; j < 256; j++)
 	{
-		b = keybindings[j];
+		char* b = keybindings[j];
 		if (!b)
 			continue;
 		if (!strncmp(b, command, l))
@@ -1378,13 +1341,9 @@ void M_UnbindCommand(char* command)
 
 void M_Keys_Draw(void)
 {
-	int i, l;
 	int keys[2];
-	char* name;
-	int x, y;
-	qpic_t* p;
 
-	p = Draw_CachePic((char*)"gfx/ttl_cstm.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/ttl_cstm.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
 	if (bind_grab)
@@ -1393,13 +1352,13 @@ void M_Keys_Draw(void)
 		M_Print(18, 32, (char*)"Enter to change, backspace to clear");
 
 	// search for known bindings
-	for (i = 0; i < NUMCOMMANDS; i++)
+	for (int i = 0; i < NUMCOMMANDS; i++)
 	{
-		y = 48 + 8 * i;
+		int y = 48 + 8 * i;
 
 		M_Print(16, y, bindnames[i][1]);
 
-		l = strlen(bindnames[i][0]);
+		int l = strlen(bindnames[i][0]);
 
 		M_FindKeysForCommand(bindnames[i][0], keys);
 
@@ -1409,9 +1368,9 @@ void M_Keys_Draw(void)
 		}
 		else
 		{
-			name = Key_KeynumToString(keys[0]);
+			char* name = Key_KeynumToString(keys[0]);
 			M_Print(140, y, name);
-			x = strlen(name) * 8;
+			int x = strlen(name) * 8;
 			if (keys[1] != -1)
 			{
 				M_Print(140 + x + 8, y, (char*)"or");
@@ -1702,14 +1661,12 @@ void M_Menu_SerialConfig_f(void)
 
 void M_SerialConfig_Draw(void)
 {
-	qpic_t* p;
-	int basex;
 	char* startJoin;
 	char* directModem;
 
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
-	basex = (320 - p->width) / 2;
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	int basex = (320 - p->width) / 2;
 	M_DrawPic(basex, 4, p);
 
 	if (StartingGame)
@@ -1770,8 +1727,6 @@ void M_SerialConfig_Draw(void)
 
 void M_SerialConfig_Key(int key)
 {
-	int l;
-
 	switch (key)
 	{
 	case K_ESCAPE:
@@ -1912,7 +1867,7 @@ void M_SerialConfig_Key(int key)
 			break;
 		if (serialConfig_cursor == 4)
 		{
-			l = strlen(serialConfig_phone);
+			int l = strlen(serialConfig_phone);
 			if (l < 15)
 			{
 				serialConfig_phone[l + 1] = 0;
@@ -1957,12 +1912,9 @@ void M_Menu_ModemConfig_f(void)
 
 void M_ModemConfig_Draw(void)
 {
-	qpic_t* p;
-	int basex;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
-	basex = (320 - p->width) / 2;
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	int basex = (320 - p->width) / 2;
 	M_DrawPic(basex, 4, p);
 	basex += 8;
 
@@ -2145,14 +2097,12 @@ void M_Menu_LanConfig_f(void)
 
 void M_LanConfig_Draw(void)
 {
-	qpic_t* p;
-	int basex;
 	char* startJoin;
 	char* protocol;
 
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
-	basex = (320 - p->width) / 2;
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	int basex = (320 - p->width) / 2;
 	M_DrawPic(basex, 4, p);
 
 	if (StartingGame)
@@ -2485,11 +2435,8 @@ int gameoptions_cursor;
 
 void M_GameOptions_Draw(void)
 {
-	qpic_t* p;
-	int x;
-
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
 	M_DrawTextBox(152, 32, 10, 1);
@@ -2602,7 +2549,7 @@ void M_GameOptions_Draw(void)
 	{
 		if ((realtime - m_serverInfoMessageTime) < 5.0)
 		{
-			x = (320 - 26 * 8) / 2;
+			int x = (320 - 26 * 8) / 2;
 			M_DrawTextBox(x, 138, 24, 4);
 			x += 8;
 			M_Print(x, 146, (char*)"  More than 4 players   ");
@@ -2802,12 +2749,9 @@ void M_Menu_Search_f(void)
 
 void M_Search_Draw(void)
 {
-	qpic_t* p;
-	int x;
-
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
-	x = (320 / 2) - ((12 * 8) / 2) + 4;
+	int x = (320 / 2) - ((12 * 8) / 2) + 4;
 	M_DrawTextBox(x - 8, 32, 12, 1);
 	M_Print(x, 40, (char*)"Searching...");
 
@@ -2861,18 +2805,15 @@ void M_Menu_ServerList_f(void)
 
 void M_ServerList_Draw(void)
 {
-	int n;
 	char string[64];
-	qpic_t* p;
 
 	if (!slist_sorted)
 	{
 		if (hostCacheCount > 1)
 		{
-			int i, j;
 			hostcache_t temp;
-			for (i = 0; i < hostCacheCount; i++)
-				for (j = i + 1; j < hostCacheCount; j++)
+			for (int i = 0; i < hostCacheCount; i++)
+				for (int j = i + 1; j < hostCacheCount; j++)
 					if (strcmp(hostcache[j].name, hostcache[i].name) < 0)
 					{
 						Q_memcpy(&temp, &hostcache[j], sizeof(hostcache_t));
@@ -2883,9 +2824,9 @@ void M_ServerList_Draw(void)
 		slist_sorted = true;
 	}
 
-	p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
-	for (n = 0; n < hostCacheCount; n++)
+	for (int n = 0; n < hostCacheCount; n++)
 	{
 		if (hostcache[n].maxusers)
 			sprintf(string, (char*)"%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users,

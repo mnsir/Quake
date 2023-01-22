@@ -123,11 +123,9 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 		unsigned char data; // unbounded
 	} pcx_t;
 
-	int i, j, length;
-	pcx_t* pcx;
-	byte* pack;
+	int i;
 
-	pcx = static_cast<pcx_t*>(Hunk_TempAlloc(width * height * 2 + 1000));
+	pcx_t* pcx = static_cast<pcx_t*>(Hunk_TempAlloc(width * height * 2 + 1000));
 	if (pcx == NULL)
 	{
 		Con_Printf((char*)"SCR_ScreenShot_f: not enough memory\n");
@@ -151,11 +149,11 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 	Q_memset(pcx->filler, 0, sizeof(pcx->filler));
 
 	// pack the image
-	pack = &pcx->data;
+	byte* pack = &pcx->data;
 
 	for (i = 0; i < height; i++)
 	{
-		for (j = 0; j < width; j++)
+		for (int j = 0; j < width; j++)
 		{
 			if ((*data & 0xc0) != 0xc0)
 				*pack++ = *data++;
@@ -175,7 +173,7 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 		*pack++ = *palette++;
 
 	// write output file 
-	length = pack - (byte*)pcx;
+	int length = pack - (byte*)pcx;
 	COM_WriteFile(filename, pcx, length);
 }
 
@@ -183,10 +181,9 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 void SCR_ScreenShot_f(void)
 {
 #ifdef GLQUAKE
-	byte* buffer;
 	char pcxname[80];
 	char checkname[MAX_OSPATH];
-	int i, c, temp;
+	int i;
 	// 
 	// find a file name to save it to 
 	// 
@@ -207,7 +204,7 @@ void SCR_ScreenShot_f(void)
 	}
 
 
-	buffer = static_cast<byte*>(malloc(glwidth * glheight * 3 + 18));
+	byte* buffer = static_cast<byte*>(malloc(glwidth * glheight * 3 + 18));
 	memset(buffer, 0, 18);
 	buffer[2] = 2; // uncompressed type
 	buffer[12] = glwidth & 255;
@@ -219,10 +216,10 @@ void SCR_ScreenShot_f(void)
 	glReadPixels(glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer + 18);
 
 	// swap rgb to bgr
-	c = 18 + glwidth * glheight * 3;
+	int c = 18 + glwidth * glheight * 3;
 	for (i = 18; i < c; i += 3)
 	{
-		temp = buffer[i];
+		int temp = buffer[i];
 		buffer[i] = buffer[i + 2];
 		buffer[i + 2] = temp;
 	}
@@ -273,10 +270,8 @@ void SCR_ScreenShot_f(void)
 
 void SCR_DrawCenterString(void)
 {
-	char* start;
 	int l;
-	int j;
-	int x, y;
+	int y;
 	int remaining;
 
 	// the finale prints the characters one at a time
@@ -286,7 +281,7 @@ void SCR_DrawCenterString(void)
 		remaining = 9999;
 
 	scr_erase_center = 0;
-	start = scr_centerstring;
+	char* start = scr_centerstring;
 
 	if (scr_center_lines <= 4)
 		y = vid.height * 0.35;
@@ -299,8 +294,8 @@ void SCR_DrawCenterString(void)
 		for (l = 0; l < 40; l++)
 			if (start[l] == '\n' || !start[l])
 				break;
-		x = (vid.width - l * 8) / 2;
-		for (j = 0; j < l; j++, x += 8)
+		int x = (vid.width - l * 8) / 2;
+		for (int j = 0; j < l; j++, x += 8)
 		{
 			Draw_Character(x, y, start[j]);
 			if (!remaining--)
@@ -338,15 +333,12 @@ void SCR_CheckDrawCenterString(void)
 
 float CalcFov(float fov_x, float width, float height)
 {
-	float a;
-	float x;
-
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error((char*)"Bad fov: %f", fov_x);
 
-	x = width / tan(fov_x / 360 * M_PI);
+	float x = width / tan(fov_x / 360 * M_PI);
 
-	a = atan(height / x);
+	float a = atan(height / x);
 
 	a = a * 360 / M_PI;
 
@@ -365,7 +357,6 @@ static void SCR_CalcRefdef(void)
 #ifdef GLQUAKE
 	vrect_t vrect;
 	float size;
-	int h;
 	qboolean full = false;
 
 
@@ -417,7 +408,7 @@ static void SCR_CalcRefdef(void)
 	}
 	size /= 100.0;
 
-	h = vid.height - sb_lines;
+	int h = vid.height - sb_lines;
 
 	r_refdef.vrect.width = vid.width * size;
 	if (r_refdef.vrect.width < 96)
@@ -547,15 +538,13 @@ void SCR_DrawNet(void)
 
 void SCR_DrawPause(void)
 {
-	qpic_t* pic;
-
 	if (!scr_showpause.value) // turn off for screenshots
 		return;
 
 	if (!cl.paused)
 		return;
 
-	pic = Draw_CachePic((char*)"gfx/pause.lmp");
+	qpic_t* pic = Draw_CachePic((char*)"gfx/pause.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
 		(vid.height - 48 - pic->height) / 2, pic);
 }
@@ -563,12 +552,10 @@ void SCR_DrawPause(void)
 
 void SCR_DrawLoading(void)
 {
-	qpic_t* pic;
-
 	if (!scr_drawloading)
 		return;
 
-	pic = Draw_CachePic((char*)"gfx/loading.lmp");
+	qpic_t* pic = Draw_CachePic((char*)"gfx/loading.lmp");
 	Draw_Pic((vid.width - pic->width) / 2,
 		(vid.height - 48 - pic->height) / 2, pic);
 }
@@ -646,14 +633,11 @@ void SCR_DrawConsole(void)
 
 void SCR_DrawNotifyString(void)
 {
-	char* start;
 	int l;
-	int j;
-	int x, y;
 
-	start = scr_notifystring;
+	char* start = scr_notifystring;
 
-	y = vid.height * 0.35;
+	int y = vid.height * 0.35;
 
 	do
 	{
@@ -661,8 +645,8 @@ void SCR_DrawNotifyString(void)
 		for (l = 0; l < 40; l++)
 			if (start[l] == '\n' || !start[l])
 				break;
-		x = (vid.width - l * 8) / 2;
-		for (j = 0; j < l; j++, x += 8)
+		int x = (vid.width - l * 8) / 2;
+		for (int j = 0; j < l; j++, x += 8)
 			Draw_Character(x, y, start[j]);
 
 		y += 8;
@@ -1041,11 +1025,9 @@ Brings the console down and fades the palettes back to normal
 */
 void SCR_BringDownConsole(void)
 {
-	int i;
-
 	scr_centertime_off = 0;
 
-	for (i = 0; i < 20 && scr_conlines != scr_con_current; i++)
+	for (int i = 0; i < 20 && scr_conlines != scr_con_current; i++)
 		SCR_UpdateScreen();
 
 	cl.cshifts[0].percent = 0; // no area contents palette on next frame

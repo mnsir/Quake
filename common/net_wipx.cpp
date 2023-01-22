@@ -54,8 +54,6 @@ int WIPX_Init(void)
 	char buff[MAXHOSTNAMELEN];
 	struct qsockaddr addr;
 	char* p;
-	int r;
-	WORD wVersionRequested;
 
 	if (COM_CheckParm((char*)"-noipx"))
 		return -1;
@@ -66,9 +64,9 @@ int WIPX_Init(void)
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1);
+		WORD wVersionRequested = MAKEWORD(1, 1);
 
-		r = pWSAStartup(MAKEWORD(1, 1), &winsockdata);
+		int r = pWSAStartup(MAKEWORD(1, 1), &winsockdata);
 
 		if (r)
 		{
@@ -206,9 +204,8 @@ ErrorReturn:
 int WIPX_CloseSocket(int handle)
 {
 	int socket = ipxsocket[handle];
-	int ret;
 
-	ret = pclosesocket(socket);
+	int ret = pclosesocket(socket);
 	ipxsocket[handle] = 0;
 	return ret;
 }
@@ -245,9 +242,8 @@ int WIPX_Read(int handle, byte* buf, int len, struct qsockaddr* addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
 	int socket = ipxsocket[handle];
-	int ret;
 
-	ret = precvfrom(socket, (char*)packetBuffer, len + 4, 0, (struct sockaddr*)addr, &addrlen);
+	int ret = precvfrom(socket, (char*)packetBuffer, len + 4, 0, (struct sockaddr*)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = pWSAGetLastError();
@@ -278,7 +274,6 @@ int WIPX_Broadcast(int handle, byte* buf, int len)
 int WIPX_Write(int handle, byte* buf, int len, struct qsockaddr* addr)
 {
 	int socket = ipxsocket[handle];
-	int ret;
 
 	// build packet with sequence number
 	*(int*)(&packetBuffer[0]) = sequence[handle];
@@ -286,7 +281,7 @@ int WIPX_Write(int handle, byte* buf, int len, struct qsockaddr* addr)
 	memcpy(&packetBuffer[4], buf, len);
 	len += 4;
 
-	ret = psendto(socket, (char*)packetBuffer, len, 0, (struct sockaddr*)addr, sizeof(struct qsockaddr));
+	int ret = psendto(socket, (char*)packetBuffer, len, 0, (struct sockaddr*)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 		if (pWSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -381,10 +376,9 @@ int WIPX_GetNameFromAddr(struct qsockaddr* addr, char* name)
 
 int WIPX_GetAddrFromName(char* name, struct qsockaddr* addr)
 {
-	int n;
 	char buf[32];
 
-	n = Q_strlen(name);
+	int n = Q_strlen(name);
 
 	if (n == 12)
 	{

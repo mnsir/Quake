@@ -37,9 +37,7 @@ Cvar_FindVar
 */
 cvar_t* Cvar_FindVar(char* var_name)
 {
-	cvar_t* var;
-
-	for (var = cvar_vars; var; var = var->next)
+	for (cvar_t* var = cvar_vars; var; var = var->next)
 		if (!Q_strcmp(var_name, var->name))
 			return var;
 
@@ -53,9 +51,7 @@ Cvar_VariableValue
 */
 float Cvar_VariableValue(char* var_name)
 {
-	cvar_t* var;
-
-	var = Cvar_FindVar(var_name);
+	cvar_t* var = Cvar_FindVar(var_name);
 	if (!var)
 		return 0;
 	return Q_atof(var->string);
@@ -69,9 +65,7 @@ Cvar_VariableString
 */
 char* Cvar_VariableString(char* var_name)
 {
-	cvar_t* var;
-
-	var = Cvar_FindVar(var_name);
+	cvar_t* var = Cvar_FindVar(var_name);
 	if (!var)
 		return cvar_null_string;
 	return var->string;
@@ -85,16 +79,13 @@ Cvar_CompleteVariable
 */
 char* Cvar_CompleteVariable(char* partial)
 {
-	cvar_t* cvar;
-	int len;
-
-	len = Q_strlen(partial);
+	int len = Q_strlen(partial);
 
 	if (!len)
 		return NULL;
 
 	// check functions
-	for (cvar = cvar_vars; cvar; cvar = cvar->next)
+	for (cvar_t* cvar = cvar_vars; cvar; cvar = cvar->next)
 		if (!Q_strncmp(partial, cvar->name, len))
 			return cvar->name;
 
@@ -109,10 +100,7 @@ Cvar_Set
 */
 void Cvar_Set(char* var_name, char* value)
 {
-	cvar_t* var;
-	qboolean changed;
-
-	var = Cvar_FindVar(var_name);
+	cvar_t* var = Cvar_FindVar(var_name);
 	if (!var)
 	{
 		// there is an error in C code if this_ happens
@@ -120,7 +108,7 @@ void Cvar_Set(char* var_name, char* value)
 		return;
 	}
 
-	changed = Q_strcmp(var->string, value);
+	qboolean changed = Q_strcmp(var->string, value);
 
 	Z_Free(var->string); // free the old value string
 
@@ -157,8 +145,6 @@ Adds a freestanding variable to the variable list.
 */
 void Cvar_RegisterVariable(cvar_t* variable)
 {
-	char* oldstr;
-
 	// first check to see if it has allready been defined
 	if (Cvar_FindVar(variable->name))
 	{
@@ -174,7 +160,7 @@ void Cvar_RegisterVariable(cvar_t* variable)
 	}
 
 	// copy the value off, because future sets will Z_Free it
-	oldstr = variable->string;
+	char* oldstr = variable->string;
 	variable->string = static_cast<char*>(Z_Malloc(Q_strlen(variable->string) + 1));
 	Q_strcpy(variable->string, oldstr);
 	variable->value = Q_atof(variable->string);
@@ -193,10 +179,8 @@ Handles variable inspection and changing from the console
 */
 qboolean Cvar_Command(void)
 {
-	cvar_t* v;
-
 	// check variables
-	v = Cvar_FindVar(Cmd_Argv(0));
+	cvar_t* v = Cvar_FindVar(Cmd_Argv(0));
 	if (!v)
 		return false;
 
@@ -222,9 +206,7 @@ with the archive flag set to true.
 */
 void Cvar_WriteVariables(FILE* f)
 {
-	cvar_t* var;
-
-	for (var = cvar_vars; var; var = var->next)
+	for (cvar_t* var = cvar_vars; var; var = var->next)
 		if (var->archive)
 			fprintf(f, (char*)"%s \"%s\"\n", var->name, var->string);
 }

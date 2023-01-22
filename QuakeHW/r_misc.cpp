@@ -73,15 +73,12 @@ For program optimization
 */
 void R_TimeRefresh_f(void)
 {
-	int i;
-	float start, stop, time;
-	int startangle;
 	vrect_t vr;
 
-	startangle = r_refdef.viewangles[1];
+	int startangle = r_refdef.viewangles[1];
 
-	start = Sys_FloatTime();
-	for (i = 0; i < 128; i++)
+	float start = Sys_FloatTime();
+	for (int i = 0; i < 128; i++)
 	{
 		r_refdef.viewangles[1] = i / 128.0 * 360.0;
 
@@ -98,8 +95,8 @@ void R_TimeRefresh_f(void)
 		vr.pnext = NULL;
 		VID_Update(&vr);
 	}
-	stop = Sys_FloatTime();
-	time = stop - start;
+	float stop = Sys_FloatTime();
+	float time = stop - start;
 	Con_Printf((char*)"%f seconds (%f fps)\n", time, 128 / time);
 
 	r_refdef.viewangles[1] = startangle;
@@ -116,17 +113,15 @@ Only called by R_DisplayTime
 void R_LineGraph(int x, int y, int h)
 {
 	int i;
-	byte* dest;
-	int s;
 
 	// FIXME: should be disabled on no-buffer adapters, or should be in the driver
 
 	x += r_refdef.vrect.x;
 	y += r_refdef.vrect.y;
 
-	dest = vid.buffer + vid.rowbytes * y + x;
+	byte* dest = vid.buffer + vid.rowbytes * y + x;
 
-	s = r_graphheight.value;
+	int s = r_graphheight.value;
 
 	if (h > s)
 		h = s;
@@ -156,14 +151,12 @@ extern float mouse_x, mouse_y;
 void R_TimeGraph(void)
 {
 	static int timex;
-	int a;
-	float r_time2;
 	static byte r_timings[MAX_TIMINGS];
 	int x;
 
-	r_time2 = Sys_FloatTime();
+	float r_time2 = Sys_FloatTime();
 
-	a = (r_time2 - r_time1) / 0.01;
+	int a = (r_time2 - r_time1) / 0.01;
 	//a = fabs(mouse_y * 0.05);
 	//a = (int)((r_refdef.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
 	//a = fabs(velocity[0])/20;
@@ -200,12 +193,9 @@ R_PrintTimes
 */
 void R_PrintTimes(void)
 {
-	float r_time2;
-	float ms;
+	float r_time2 = Sys_FloatTime();
 
-	r_time2 = Sys_FloatTime();
-
-	ms = 1000 * (r_time2 - r_time1);
+	float ms = 1000 * (r_time2 - r_time1);
 
 	Con_Printf((char*)"%5.1f ms %3i/%3i/%3i poly %3i surf\n",
 	           ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
@@ -220,17 +210,15 @@ R_PrintDSpeeds
 */
 void R_PrintDSpeeds(void)
 {
-	float ms, dp_time, r_time2, rw_time, db_time, se_time, de_time, dv_time;
+	float r_time2 = Sys_FloatTime();
 
-	r_time2 = Sys_FloatTime();
-
-	dp_time = (dp_time2 - dp_time1) * 1000;
-	rw_time = (rw_time2 - rw_time1) * 1000;
-	db_time = (db_time2 - db_time1) * 1000;
-	se_time = (se_time2 - se_time1) * 1000;
-	de_time = (de_time2 - de_time1) * 1000;
-	dv_time = (dv_time2 - dv_time1) * 1000;
-	ms = (r_time2 - r_time1) * 1000;
+	float dp_time = (dp_time2 - dp_time1) * 1000;
+	float rw_time = (rw_time2 - rw_time1) * 1000;
+	float db_time = (db_time2 - db_time1) * 1000;
+	float se_time = (se_time2 - se_time1) * 1000;
+	float de_time = (de_time2 - de_time1) * 1000;
+	float dv_time = (dv_time2 - dv_time1) * 1000;
+	float ms = (r_time2 - r_time1) * 1000;
 
 	Con_Printf((char*)"%3i %4.1fp %3iw %4.1fb %3is %4.1fe %4.1fv\n",
 	           (int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
@@ -251,7 +239,6 @@ void R_PrintAliasStats(void)
 
 void WarpPalette(void)
 {
-	int i, j;
 	byte new_palette[768];
 	int basecolor[3];
 
@@ -260,9 +247,9 @@ void WarpPalette(void)
 	basecolor[2] = 50;
 
 	// pull the colors halfway to bright brown
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
-		for (j = 0; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			new_palette[i * 3 + j] = (host_basepal[i * 3 + j] + basecolor[j]) / 2;
 		}
@@ -279,10 +266,9 @@ R_TransformFrustum
 */
 void R_TransformFrustum(void)
 {
-	int i;
 	vec3_t v, v2;
 
-	for (i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		v[0] = screenedge[i].normal[2];
 		v[1] = -screenedge[i].normal[0];
@@ -319,9 +305,7 @@ R_TransformPlane
 */
 void R_TransformPlane(mplane_t* p, float* normal, float* dist)
 {
-	float d;
-
-	d = DotProduct(r_origin, p->normal);
+	float d = DotProduct(r_origin, p->normal);
 	*dist = p->dist - d;
 	// TODO: when we have rotating entities, this_ will need to use the view matrix
 	TransformVector(p->normal, normal);
@@ -335,13 +319,11 @@ R_SetUpFrustumIndexes
 */
 void R_SetUpFrustumIndexes(void)
 {
-	int i, j, *pindex;
+	int* pindex = r_frustum_indexes;
 
-	pindex = r_frustum_indexes;
-
-	for (i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		for (j = 0; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			if (view_clipplanes[i].normal[j] < 0)
 			{
@@ -369,9 +351,7 @@ R_SetupFrame
 */
 void R_SetupFrame(void)
 {
-	int edgecount;
 	vrect_t vrect;
-	float w, h;
 
 	// don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
@@ -393,7 +373,7 @@ void R_SetupFrame(void)
 
 	if (r_numedges.value)
 	{
-		edgecount = edge_p - r_edges;
+		int edgecount = edge_p - r_edges;
 
 		if (edgecount > r_maxedgesseen)
 			r_maxedgesseen = edgecount;
@@ -447,8 +427,8 @@ void R_SetupFrame(void)
 			}
 			else
 			{
-				w = vid.width;
-				h = vid.height;
+				float w = vid.width;
+				float h = vid.height;
 
 				if (w > vid.maxwarpwidth)
 				{

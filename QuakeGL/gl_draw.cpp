@@ -160,17 +160,15 @@ int scrap_texnum;
 int Scrap_AllocBlock(int w, int h, int* x, int* y)
 {
 	int i, j;
-	int best, best2;
 	int bestx;
-	int texnum;
 
-	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
+	for (int texnum = 0; texnum < MAX_SCRAPS; texnum++)
 	{
-		best = BLOCK_HEIGHT;
+		int best = BLOCK_HEIGHT;
 
 		for (i = 0; i < BLOCK_WIDTH - w; i++)
 		{
-			best2 = 0;
+			int best2 = 0;
 
 			for (j = 0; j < w; j++)
 			{
@@ -203,11 +201,9 @@ int scrap_uploads;
 
 void Scrap_Upload(void)
 {
-	int texnum;
-
 	scrap_uploads++;
 
-	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
+	for (int texnum = 0; texnum < MAX_SCRAPS; texnum++)
 	{
 		GL_Bind(scrap_texnum + texnum);
 		GL_Upload8(scrap_texels[texnum], BLOCK_WIDTH, BLOCK_HEIGHT, false, true);
@@ -236,24 +232,19 @@ int pic_count;
 
 qpic_t* Draw_PicFromWad(char* name)
 {
-	qpic_t* p;
-	glpic_t* gl;
-
-	p = static_cast<qpic_t*>(W_GetLumpName(name));
-	gl = (glpic_t*)p->data;
+	qpic_t* p = static_cast<qpic_t*>(W_GetLumpName(name));
+	glpic_t* gl = (glpic_t*)p->data;
 
 	// load little ones into the scrap
 	if (p->width < 64 && p->height < 64)
 	{
 		int x, y;
-		int i, j, k;
-		int texnum;
 
-		texnum = Scrap_AllocBlock(p->width, p->height, &x, &y);
+		int texnum = Scrap_AllocBlock(p->width, p->height, &x, &y);
 		scrap_dirty = true;
-		k = 0;
-		for (i = 0; i < p->height; i++)
-			for (j = 0; j < p->width; j++, k++)
+		int k = 0;
+		for (int i = 0; i < p->height; i++)
+			for (int j = 0; j < p->width; j++, k++)
 				scrap_texels[texnum][(y + i) * BLOCK_WIDTH + x + j] = p->data[k];
 		texnum += scrap_texnum;
 		gl->texnum = texnum;
@@ -286,8 +277,6 @@ qpic_t* Draw_CachePic(char* path)
 {
 	cachepic_t* pic;
 	int i;
-	qpic_t* dat;
-	glpic_t* gl;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
 		if (!strcmp(path, pic->name))
@@ -301,7 +290,7 @@ qpic_t* Draw_CachePic(char* path)
 	//
 	// load the pic from disk
 	//
-	dat = (qpic_t*)COM_LoadTempFile(path);
+	qpic_t* dat = (qpic_t*)COM_LoadTempFile(path);
 	if (!dat)
 		Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
 	SwapPic(dat);
@@ -315,7 +304,7 @@ qpic_t* Draw_CachePic(char* path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	gl = (glpic_t*)pic->pic.data;
+	glpic_t* gl = (glpic_t*)pic->pic.data;
 	gl->texnum = GL_LoadPicTexture(dat);
 	gl->sl = 0;
 	gl->sh = 1;
@@ -328,20 +317,15 @@ qpic_t* Draw_CachePic(char* path)
 
 void Draw_CharToConback(int num, byte* dest)
 {
-	int row, col;
-	byte* source;
-	int drawline;
-	int x;
+	int row = num >> 4;
+	int col = num & 15;
+	byte* source = draw_chars + (row << 10) + (col << 3);
 
-	row = num >> 4;
-	col = num & 15;
-	source = draw_chars + (row << 10) + (col << 3);
-
-	drawline = 8;
+	int drawline = 8;
 
 	while (drawline--)
 	{
-		for (x = 0; x < 8; x++)
+		for (int x = 0; x < 8; x++)
 			if (source[x] != 255)
 				dest[x] = 0x60 + source[x];
 		source += 128;
@@ -419,14 +403,8 @@ Draw_Init
 */
 void Draw_Init(void)
 {
-	int i;
-	qpic_t* cb;
-	byte *dest, *src;
-	int x, y;
+	byte*src;
 	char ver[40];
-	glpic_t* gl;
-	int start;
-	byte* ncdata;
 	int f, fstep;
 
 
@@ -446,35 +424,35 @@ void Draw_Init(void)
 	// string into the background before turning
 	// it into a texture
 	draw_chars = static_cast<byte*>(W_GetLumpName((char*)"conchars"));
-	for (i = 0; i < 256 * 64; i++)
+	for (int i = 0; i < 256 * 64; i++)
 		if (draw_chars[i] == 0)
 			draw_chars[i] = 255; // proper transparent color
 
 	// now turn them into textures
 	char_texture = GL_LoadTexture((char*)"charset", 128, 128, draw_chars, false, true);
 
-	start = Hunk_LowMark();
+	int start = Hunk_LowMark();
 
-	cb = (qpic_t*)COM_LoadTempFile((char*)"gfx/conback.lmp");
+	qpic_t* cb = (qpic_t*)COM_LoadTempFile((char*)"gfx/conback.lmp");
 	if (!cb)
 		Sys_Error((char*)"Couldn't load gfx/conback.lmp");
 	SwapPic(cb);
 
 	// hack the version number directly into the pic
 	sprintf(ver, (char*)"(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
-	dest = cb->data + 320 * 186 + 320 - 11 - 8 * strlen(ver);
-	y = strlen(ver);
-	for (x = 0; x < y; x++)
+	byte* dest = cb->data + 320 * 186 + 320 - 11 - 8 * strlen(ver);
+	int y = strlen(ver);
+	for (int x = 0; x < y; x++)
 		Draw_CharToConback(ver[x], dest + (x << 3));
 	
 	conback->width = cb->width;
 	conback->height = cb->height;
-	ncdata = cb->data;
+	byte* ncdata = cb->data;
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	gl = (glpic_t*)conback->data;
+	glpic_t* gl = (glpic_t*)conback->data;
 	gl->texnum = GL_LoadTexture((char*)"conback", conback->width, conback->height, ncdata, false, false);
 	gl->sl = 0;
 	gl->sh = 1;
@@ -516,8 +494,6 @@ void Draw_Character(int x, int y, int num)
 	byte* source;
 	unsigned short* pusdest;
 	int drawline;
-	int row, col;
-	float frow, fcol, size;
 
 	if (num == 32)
 		return; // space
@@ -527,12 +503,12 @@ void Draw_Character(int x, int y, int num)
 	if (y <= -8)
 		return; // totally off screen
 
-	row = num >> 4;
-	col = num & 15;
+	int row = num >> 4;
+	int col = num & 15;
 
-	frow = row * 0.0625;
-	fcol = col * 0.0625;
-	size = 0.0625;
+	float frow = row * 0.0625;
+	float fcol = col * 0.0625;
+	float size = 0.0625;
 
 	GL_Bind(char_texture);
 
@@ -586,11 +562,10 @@ void Draw_AlphaPic(int x, int y, qpic_t* pic, float alpha)
 	byte *dest, *source;
 	unsigned short* pusdest;
 	int v, u;
-	glpic_t* gl;
 
 	if (scrap_dirty)
 		Scrap_Upload();
-	gl = (glpic_t*)pic->data;
+	glpic_t* gl = (glpic_t*)pic->data;
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_BLEND);
 	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -623,11 +598,10 @@ void Draw_Pic(int x, int y, qpic_t* pic)
 	byte *dest, *source;
 	unsigned short* pusdest;
 	int v, u;
-	glpic_t* gl;
 
 	if (scrap_dirty)
 		Scrap_Upload();
-	gl = (glpic_t*)pic->data;
+	glpic_t* gl = (glpic_t*)pic->data;
 	glColor4f(1, 1, 1, 1);
 	GL_Bind(gl->texnum);
 	glBegin(GL_QUADS);
@@ -673,22 +647,19 @@ Only used for the player color selection menu
 */
 void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 {
-	int v, u, c;
-	unsigned trans[64 * 64], *dest;
-	byte* src;
-	int p;
+	unsigned trans[64 * 64];
 
 	GL_Bind(translate_texture);
 
-	c = pic->width * pic->height;
+	int c = pic->width * pic->height;
 
-	dest = trans;
-	for (v = 0; v < 64; v++, dest += 64)
+	unsigned* dest = trans;
+	for (int v = 0; v < 64; v++, dest += 64)
 	{
-		src = &menuplyr_pixels[((v * pic->height) >> 6) * pic->width];
-		for (u = 0; u < 64; u++)
+		byte* src = &menuplyr_pixels[((v * pic->height) >> 6) * pic->width];
+		for (int u = 0; u < 64; u++)
 		{
-			p = src[(u * pic->width) >> 6];
+			int p = src[(u * pic->width) >> 6];
 			if (p == 255)
 				dest[u] = p;
 			else
@@ -898,16 +869,12 @@ GL_ResampleTexture
 */
 void GL_ResampleTexture(unsigned* in, int inwidth, int inheight, unsigned* out, int outwidth, int outheight)
 {
-	int i, j;
-	unsigned* inrow;
-	unsigned frac, fracstep;
-
-	fracstep = inwidth * 0x10000 / outwidth;
-	for (i = 0; i < outheight; i++, out += outwidth)
+	unsigned fracstep = inwidth * 0x10000 / outwidth;
+	for (int i = 0; i < outheight; i++, out += outwidth)
 	{
-		inrow = in + inwidth * (i * inheight / outheight);
-		frac = fracstep >> 1;
-		for (j = 0; j < outwidth; j += 4)
+		unsigned* inrow = in + inwidth * (i * inheight / outheight);
+		unsigned frac = fracstep >> 1;
+		for (int j = 0; j < outwidth; j += 4)
 		{
 			out[j] = inrow[frac >> 16];
 			frac += fracstep;
@@ -929,16 +896,12 @@ GL_Resample8BitTexture -- JACK
 void GL_Resample8BitTexture(unsigned char* in, int inwidth, int inheight, unsigned char* out, int outwidth,
                             int outheight)
 {
-	int i, j;
-	unsigned char* inrow;
-	unsigned frac, fracstep;
-
-	fracstep = inwidth * 0x10000 / outwidth;
-	for (i = 0; i < outheight; i++, out += outwidth)
+	unsigned fracstep = inwidth * 0x10000 / outwidth;
+	for (int i = 0; i < outheight; i++, out += outwidth)
 	{
-		inrow = in + inwidth * (i * inheight / outheight);
-		frac = fracstep >> 1;
-		for (j = 0; j < outwidth; j += 4)
+		unsigned char* inrow = in + inwidth * (i * inheight / outheight);
+		unsigned frac = fracstep >> 1;
+		for (int j = 0; j < outwidth; j += 4)
 		{
 			out[j] = inrow[frac >> 16];
 			frac += fracstep;
@@ -962,15 +925,12 @@ Operates in place, quartering the size of the texture
 */
 void GL_MipMap(byte* in, int width, int height)
 {
-	int i, j;
-	byte* out;
-
 	width <<= 2;
 	height >>= 1;
-	out = in;
-	for (i = 0; i < height; i++, in += width)
+	byte* out = in;
+	for (int i = 0; i < height; i++, in += width)
 	{
-		for (j = 0; j < width; j += 8, out += 4, in += 8)
+		for (int j = 0; j < width; j += 8, out += 4, in += 8)
 		{
 			out[0] = (in[0] + in[4] + in[width + 0] + in[width + 4]) >> 2;
 			out[1] = (in[1] + in[5] + in[width + 1] + in[width + 5]) >> 2;
@@ -989,27 +949,23 @@ Mipping for 8 bit textures
 */
 void GL_MipMap8Bit(byte* in, int width, int height)
 {
-	int i, j;
-	unsigned short r, g, b;
-	byte *out, *at1, *at2, *at3, *at4;
-
 	// width <<=2;
 	height >>= 1;
-	out = in;
-	for (i = 0; i < height; i++, in += width)
+	byte* out = in;
+	for (int i = 0; i < height; i++, in += width)
 	{
-		for (j = 0; j < width; j += 2, out += 1, in += 2)
+		for (int j = 0; j < width; j += 2, out += 1, in += 2)
 		{
-			at1 = (byte*)(d_8to24table + in[0]);
-			at2 = (byte*)(d_8to24table + in[1]);
-			at3 = (byte*)(d_8to24table + in[width + 0]);
-			at4 = (byte*)(d_8to24table + in[width + 1]);
+			byte* at1 = (byte*)(d_8to24table + in[0]);
+			byte* at2 = (byte*)(d_8to24table + in[1]);
+			byte* at3 = (byte*)(d_8to24table + in[width + 0]);
+			byte* at4 = (byte*)(d_8to24table + in[width + 1]);
 
-			r = (at1[0] + at2[0] + at3[0] + at4[0]);
+			unsigned short r = (at1[0] + at2[0] + at3[0] + at4[0]);
 			r >>= 5;
-			g = (at1[1] + at2[1] + at3[1] + at4[1]);
+			unsigned short g = (at1[1] + at2[1] + at3[1] + at4[1]);
 			g >>= 5;
-			b = (at1[2] + at2[2] + at3[2] + at4[2]);
+			unsigned short b = (at1[2] + at2[2] + at3[2] + at4[2]);
 			b >>= 5;
 
 			out[0] = d_15to8table[(r << 0) + (g << 5) + (b << 10)];
@@ -1024,7 +980,6 @@ GL_Upload32
 */
 void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolean alpha)
 {
-	int samples;
 	static unsigned scaled[1024 * 512]; // [512*256];
 	int scaled_width, scaled_height;
 
@@ -1042,7 +997,7 @@ void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolea
 	if (scaled_width * scaled_height > sizeof(scaled) / 4)
 		Sys_Error((char*)"GL_LoadTexture: too big");
 
-	samples = alpha ? gl_alpha_format : gl_solid_format;
+	int samples = alpha ? gl_alpha_format : gl_solid_format;
 	
 	texels += scaled_width * scaled_height;
 
@@ -1061,9 +1016,7 @@ void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolea
 	glTexImage2D(GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
 	{
-		int miplevel;
-
-		miplevel = 0;
+		int miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
 			GL_MipMap((byte*)scaled, scaled_width, scaled_height);
@@ -1095,21 +1048,18 @@ done:;
 
 void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean alpha)
 {
-	int i, s;
-	qboolean noalpha;
 	int p;
 	static unsigned j;
-	int samples;
 	static unsigned char scaled[1024 * 512]; // [512*256];
 	int scaled_width, scaled_height;
 
-	s = width * height;
+	int s = width * height;
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
 	if (alpha)
 	{
-		noalpha = true;
-		for (i = 0; i < s; i++)
+		qboolean noalpha = true;
+		for (int i = 0; i < s; i++)
 		{
 			if (data[i] == 255)
 				noalpha = false;
@@ -1132,7 +1082,7 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 	if (scaled_width * scaled_height > sizeof(scaled))
 		Sys_Error((char*)"GL_LoadTexture: too big");
 
-	samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
+	int samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
 
 	texels += scaled_width * scaled_height;
 
@@ -1153,9 +1103,7 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 	             GL_UNSIGNED_BYTE, scaled);
 	if (mipmap)
 	{
-		int miplevel;
-
-		miplevel = 0;
+		int miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
 			GL_MipMap8Bit(scaled, scaled_width, scaled_height);
@@ -1193,19 +1141,17 @@ GL_Upload8
 void GL_Upload8(byte* data, int width, int height, qboolean mipmap, qboolean alpha)
 {
 	static unsigned trans[640 * 480]; // FIXME, temporary
-	int i, s;
-	qboolean noalpha;
-	int p;
+	int i;
 
-	s = width * height;
+	int s = width * height;
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise
 	if (alpha)
 	{
-		noalpha = true;
+		qboolean noalpha = true;
 		for (i = 0; i < s; i++)
 		{
-			p = data[i];
+			int p = data[i];
 			if (p == 255)
 				noalpha = false;
 			trans[i] = d_8to24table[p];

@@ -84,7 +84,7 @@ R_RotateBmodel
 */
 void R_RotateBmodel(void)
 {
-	float angle, s, c, temp1[3][3], temp2[3][3], temp3[3][3];
+	float temp1[3][3], temp2[3][3], temp3[3][3];
 
 	// TODO: should use a look-up table
 	// TODO: should really be stored with the entity instead of being reconstructed
@@ -92,10 +92,10 @@ void R_RotateBmodel(void)
 	// TODO: share work with R_SetUpAliasTransform
 
 	// yaw
-	angle = currententity->angles[YAW];
+	float angle = currententity->angles[YAW];
 	angle = angle * M_PI * 2 / 360;
-	s = sin(angle);
-	c = cos(angle);
+	float s = sin(angle);
+	float c = cos(angle);
 
 	temp1[0][0] = c;
 	temp1[0][1] = s;
@@ -164,11 +164,8 @@ R_RecursiveClipBPoly
 void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 {
 	bedge_t *psideedges[2], *pnextedge, *ptedge;
-	int i, side, lastside;
-	float dist, frac, lastdist;
-	mplane_t *splitplane, tplane;
-	mvertex_t *pvert, *plastvert, *ptvert;
-	mnode_t* pn;
+	int side, lastside;
+	mplane_t tplane;
 
 	psideedges[0] = psideedges[1] = NULL;
 
@@ -176,7 +173,7 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 
 	// transform the BSP plane into model space
 	// FIXME: cache these?
-	splitplane = pnode->plane;
+	mplane_t* splitplane = pnode->plane;
 	tplane.dist = splitplane->dist -
 		DotProduct(r_entorigin, splitplane->normal);
 	tplane.normal[0] = DotProduct(entity_rotation[0], splitplane->normal);
@@ -190,8 +187,8 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 
 		// set the status for the last point as the previous point
 		// FIXME: cache this_ stuff somehow?
-		plastvert = pedges->v[0];
-		lastdist = DotProduct(plastvert->position, tplane.normal) -
+		mvertex_t* plastvert = pedges->v[0];
+		float lastdist = DotProduct(plastvert->position, tplane.normal) -
 			tplane.dist;
 
 		if (lastdist > 0)
@@ -199,9 +196,9 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 		else
 			lastside = 1;
 
-		pvert = pedges->v[1];
+		mvertex_t* pvert = pedges->v[1];
 
-		dist = DotProduct(pvert->position, tplane.normal) - tplane.dist;
+		float dist = DotProduct(pvert->position, tplane.normal) - tplane.dist;
 
 		if (dist > 0)
 			side = 0;
@@ -215,8 +212,8 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 				return;
 
 			// generate the clipped vertex
-			frac = lastdist / (lastdist - dist);
-			ptvert = &pbverts[numbverts++];
+			float frac = lastdist / (lastdist - dist);
+			mvertex_t* ptvert = &pbverts[numbverts++];
 			ptvert->position[0] = plastvert->position[0] +
 				frac * (pvert->position[0] -
 					plastvert->position[0]);
@@ -296,13 +293,13 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 	}
 
 	// draw or recurse further
-	for (i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		if (psideedges[i])
 		{
 			// draw if we've reached a non-solid leaf, done if all that's left is a
 			// solid leaf, and continue down the tree if it's not a leaf
-			pn = pnode->children[i];
+			mnode_t* pn = pnode->children[i];
 
 			// we're done with this_ branch if the node or leaf isn't in the PVS
 			if (pn->visframe == r_visframecount)
@@ -333,27 +330,23 @@ R_DrawSolidClippedSubmodelPolygons
 */
 void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 {
-	int i, j, lindex;
-	vec_t dot;
-	msurface_t* psurf;
-	int numsurfaces;
-	mplane_t* pplane;
+	int j;
 	mvertex_t bverts[MAX_BMODEL_VERTS];
 	bedge_t bedges[MAX_BMODEL_EDGES], *pbedge;
 	medge_t *pedge, *pedges;
 
 	// FIXME: use bounding-box-based frustum clipping info?
 
-	psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	numsurfaces = pmodel->nummodelsurfaces;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
+	int numsurfaces = pmodel->nummodelsurfaces;
 	pedges = pmodel->edges;
 
-	for (i = 0; i < numsurfaces; i++, psurf++)
+	for (int i = 0; i < numsurfaces; i++, psurf++)
 	{
 		// find which side of the node we are on
-		pplane = psurf->plane;
+		mplane_t* pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		vec_t dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
@@ -376,7 +369,7 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 
 				for (j = 0; j < psurf->numedges; j++)
 				{
-					lindex = pmodel->surfedges[psurf->firstedge + j];
+					int lindex = pmodel->surfedges[psurf->firstedge + j];
 
 					if (lindex > 0)
 					{
@@ -415,23 +408,17 @@ R_DrawSubmodelPolygons
 */
 void R_DrawSubmodelPolygons(model_t* pmodel, int clipflags)
 {
-	int i;
-	vec_t dot;
-	msurface_t* psurf;
-	int numsurfaces;
-	mplane_t* pplane;
-
 	// FIXME: use bounding-box-based frustum clipping info?
 
-	psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	numsurfaces = pmodel->nummodelsurfaces;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
+	int numsurfaces = pmodel->nummodelsurfaces;
 
-	for (i = 0; i < numsurfaces; i++, psurf++)
+	for (int i = 0; i < numsurfaces; i++, psurf++)
 	{
 		// find which side of the node we are on
-		pplane = psurf->plane;
+		mplane_t* pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		vec_t dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
@@ -453,12 +440,9 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 {
-	int i, c, side, *pindex;
+	int c, side;
 	vec3_t acceptpt, rejectpt;
-	mplane_t* plane;
-	msurface_t *surf, **mark;
-	mleaf_t* pleaf;
-	double d, dot;
+	double dot;
 
 	if (node->contents == CONTENTS_SOLID)
 		return; // solid
@@ -471,7 +455,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 	//  twice as fast in ASM
 	if (clipflags)
 	{
-		for (i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			if (!(clipflags & (1 << i)))
 				continue; // don't need to clip against it
@@ -480,13 +464,13 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 			// FIXME: do with fast look-ups or integer tests based on the sign bit
 			// of the floating point values
 
-			pindex = pfrustum_indexes[i];
+			int* pindex = pfrustum_indexes[i];
 
 			rejectpt[0] = (float)node->minmaxs[pindex[0]];
 			rejectpt[1] = (float)node->minmaxs[pindex[1]];
 			rejectpt[2] = (float)node->minmaxs[pindex[2]];
 
-			d = DotProduct(rejectpt, view_clipplanes[i].normal);
+			double d = DotProduct(rejectpt, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
 			if (d <= 0)
@@ -507,9 +491,9 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 	// if a leaf node, draw stuff
 	if (node->contents < 0)
 	{
-		pleaf = (mleaf_t*)node;
+		mleaf_t* pleaf = (mleaf_t*)node;
 
-		mark = pleaf->firstmarksurface;
+		msurface_t** mark = pleaf->firstmarksurface;
 		c = pleaf->nummarksurfaces;
 
 		if (c)
@@ -536,7 +520,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 		// node is just a decision point, so go down the apropriate sides
 
 		// find which side of the node we are on
-		plane = node->plane;
+		mplane_t* plane = node->plane;
 
 		switch (plane->type)
 		{
@@ -567,7 +551,7 @@ void R_RecursiveWorldNode(mnode_t* node, int clipflags)
 
 		if (c)
 		{
-			surf = cl.worldmodel->surfaces + node->firstsurface;
+			msurface_t* surf = cl.worldmodel->surfaces + node->firstsurface;
 
 			if (dot < -BACKFACE_EPSILON)
 			{
@@ -655,15 +639,13 @@ R_RenderWorld
 */
 void R_RenderWorld(void)
 {
-	int i;
-	model_t* clmodel;
 	btofpoly_t btofpolys[MAX_BTOFPOLYS];
 
 	pbtofpolys = btofpolys;
 
 	currententity = &cl_entities[0];
 	VectorCopy(r_origin, modelorg);
-	clmodel = currententity->model;
+	model_t* clmodel = currententity->model;
 	r_pcurrentvertbase = clmodel->vertexes;
 
 	R_RecursiveWorldNode(clmodel->nodes, 15);
@@ -672,7 +654,7 @@ void R_RenderWorld(void)
 	// in that order
 	if (r_worldpolysbacktofront)
 	{
-		for (i = numbtofpolys - 1; i >= 0; i--)
+		for (int i = numbtofpolys - 1; i >= 0; i--)
 		{
 			R_RenderPoly(btofpolys[i].psurf, btofpolys[i].clipflags);
 		}

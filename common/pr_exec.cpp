@@ -158,12 +158,10 @@ PR_PrintStatement
 */
 void PR_PrintStatement(dstatement_t* s)
 {
-	int i;
-
 	if ((unsigned)s->op < sizeof(pr_opnames) / sizeof(pr_opnames[0]))
 	{
 		Con_Printf((char*)"%s ", pr_opnames[s->op]);
-		i = strlen(pr_opnames[s->op]);
+		int i = strlen(pr_opnames[s->op]);
 		for (; i < 10; i++)
 			Con_Printf((char*)" ");
 	}
@@ -198,9 +196,6 @@ PR_StackTrace
 */
 void PR_StackTrace(void)
 {
-	dfunction_t* f;
-	int i;
-
 	if (pr_depth == 0)
 	{
 		Con_Printf((char*)"<NO STACK>\n");
@@ -208,9 +203,9 @@ void PR_StackTrace(void)
 	}
 
 	pr_stack[pr_depth].f = pr_xfunction;
-	for (i = pr_depth; i >= 0; i--)
+	for (int i = pr_depth; i >= 0; i--)
 	{
-		f = pr_stack[i].f;
+		dfunction_t* f = pr_stack[i].f;
 
 		if (!f)
 		{
@@ -230,19 +225,16 @@ PR_Profile_f
 */
 void PR_Profile_f(void)
 {
-	dfunction_t *f, *best;
-	int max;
-	int num;
-	int i;
+	dfunction_t*best;
 
-	num = 0;
+	int num = 0;
 	do
 	{
-		max = 0;
+		int max = 0;
 		best = NULL;
-		for (i = 0; i < progs->numfunctions; i++)
+		for (int i = 0; i < progs->numfunctions; i++)
 		{
-			f = &pr_functions[i];
+			dfunction_t* f = &pr_functions[i];
 			if (f->profile > max)
 			{
 				max = f->profile;
@@ -303,7 +295,7 @@ Returns the new_ program statement counter
 */
 int PR_EnterFunction(dfunction_t* f)
 {
-	int i, j, c, o;
+	int i;
 
 	pr_stack[pr_depth].s = pr_xstatement;
 	pr_stack[pr_depth].f = pr_xfunction;
@@ -312,7 +304,7 @@ int PR_EnterFunction(dfunction_t* f)
 		PR_RunError((char*)"stack overflow");
 
 	// save off any locals that the new_ function steps on
-	c = f->locals;
+	int c = f->locals;
 	if (localstack_used + c > LOCALSTACK_SIZE)
 		PR_RunError((char*)"PR_ExecuteProgram: locals stack overflow\n");
 
@@ -321,10 +313,10 @@ int PR_EnterFunction(dfunction_t* f)
 	localstack_used += c;
 
 	// copy parameters
-	o = f->parm_start;
+	int o = f->parm_start;
 	for (i = 0; i < f->numparms; i++)
 	{
-		for (j = 0; j < f->parm_size[i]; j++)
+		for (int j = 0; j < f->parm_size[i]; j++)
 		{
 			((int*)pr_globals)[o] = ((int*)pr_globals)[OFS_PARM0 + i * 3 + j];
 			o++;
@@ -342,18 +334,16 @@ PR_LeaveFunction
 */
 int PR_LeaveFunction(void)
 {
-	int i, c;
-
 	if (pr_depth <= 0)
 		Sys_Error((char*)"prog stack underflow");
 
 	// restore locals from the stack
-	c = pr_xfunction->locals;
+	int c = pr_xfunction->locals;
 	localstack_used -= c;
 	if (localstack_used < 0)
 		PR_RunError((char*)"PR_ExecuteProgram: locals stack underflow\n");
 
-	for (i = 0; i < c; i++)
+	for (int i = 0; i < c; i++)
 		((int*)pr_globals)[pr_xfunction->parm_start + i] = localstack[localstack_used + i];
 
 	// up stack
@@ -370,14 +360,8 @@ PR_ExecuteProgram
 */
 void PR_ExecuteProgram(func_t fnum)
 {
-	eval_t *a, *b, *c;
-	int s;
-	dstatement_t* st;
-	dfunction_t *f, *new_f;
-	int runaway;
-	int i;
+	dfunction_t*new_f;
 	edict_t* ed;
-	int exitdepth;
 	eval_t* ptr;
 
 	if (!fnum || fnum >= progs->numfunctions)
@@ -387,24 +371,24 @@ void PR_ExecuteProgram(func_t fnum)
 		Host_Error((char*)"PR_ExecuteProgram: NULL function");
 	}
 
-	f = &pr_functions[fnum];
+	dfunction_t* f = &pr_functions[fnum];
 
-	runaway = 100000;
+	int runaway = 100000;
 	pr_trace = false;
 
 	// make a stack frame
-	exitdepth = pr_depth;
+	int exitdepth = pr_depth;
 
-	s = PR_EnterFunction(f);
+	int s = PR_EnterFunction(f);
 
 	while (1)
 	{
 		s++; // next statement
 
-		st = &pr_statements[s];
-		a = (eval_t*)&pr_globals[st->a];
-		b = (eval_t*)&pr_globals[st->b];
-		c = (eval_t*)&pr_globals[st->c];
+		dstatement_t* st = &pr_statements[s];
+		eval_t* a = (eval_t*)&pr_globals[st->a];
+		eval_t* b = (eval_t*)&pr_globals[st->b];
+		eval_t* c = (eval_t*)&pr_globals[st->c];
 
 		if (!--runaway)
 			PR_RunError((char*)"runaway loop error");
@@ -627,7 +611,7 @@ void PR_ExecuteProgram(func_t fnum)
 			if (new_f->first_statement < 0)
 			{
 				// negative statements are built in functions
-				i = -new_f->first_statement;
+				int i = -new_f->first_statement;
 				if (i >= pr_numbuiltins)
 					PR_RunError((char*)"Bad builtin call number");
 				pr_builtins[i]();

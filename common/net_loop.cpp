@@ -132,14 +132,11 @@ static int IntAlign(int value)
 
 int Loop_GetMessage(qsocket_t* sock)
 {
-	int ret;
-	int length;
-
 	if (sock->receiveMessageLength == 0)
 		return 0;
 
-	ret = sock->receiveMessage[0];
-	length = sock->receiveMessage[1] + (sock->receiveMessage[2] << 8);
+	int ret = sock->receiveMessage[0];
+	int length = sock->receiveMessage[1] + (sock->receiveMessage[2] << 8);
 	// alignment byte skipped here
 	SZ_Clear(&net_message);
 	SZ_Write(&net_message, &sock->receiveMessage[4], length);
@@ -159,18 +156,15 @@ int Loop_GetMessage(qsocket_t* sock)
 
 int Loop_SendMessage(qsocket_t* sock, sizebuf_t* data)
 {
-	byte* buffer;
-	int* bufferLength;
-
 	if (!sock->driverdata)
 		return -1;
 
-	bufferLength = &((qsocket_t*)sock->driverdata)->receiveMessageLength;
+	int* bufferLength = &((qsocket_t*)sock->driverdata)->receiveMessageLength;
 
 	if ((*bufferLength + data->cursize + 4) > NET_MAXMESSAGE)
 		Sys_Error((char*)"Loop_SendMessage: overflow\n");
 
-	buffer = ((qsocket_t*)sock->driverdata)->receiveMessage + *bufferLength;
+	byte* buffer = ((qsocket_t*)sock->driverdata)->receiveMessage + *bufferLength;
 
 	// message type
 	*buffer++ = 1;
@@ -193,18 +187,15 @@ int Loop_SendMessage(qsocket_t* sock, sizebuf_t* data)
 
 int Loop_SendUnreliableMessage(qsocket_t* sock, sizebuf_t* data)
 {
-	byte* buffer;
-	int* bufferLength;
-
 	if (!sock->driverdata)
 		return -1;
 
-	bufferLength = &((qsocket_t*)sock->driverdata)->receiveMessageLength;
+	int* bufferLength = &((qsocket_t*)sock->driverdata)->receiveMessageLength;
 
 	if ((*bufferLength + data->cursize + sizeof(byte) + sizeof(short)) > NET_MAXMESSAGE)
 		return 0;
 
-	buffer = ((qsocket_t*)sock->driverdata)->receiveMessage + *bufferLength;
+	byte* buffer = ((qsocket_t*)sock->driverdata)->receiveMessage + *bufferLength;
 
 	// message type
 	*buffer++ = 2;

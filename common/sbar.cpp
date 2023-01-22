@@ -322,11 +322,9 @@ Sbar_itoa
 */
 int Sbar_itoa(int num, char* buf)
 {
-	char* str;
 	int pow10;
-	int dig;
 
-	str = buf;
+	char* str = buf;
 
 	if (num < 0)
 	{
@@ -339,7 +337,7 @@ int Sbar_itoa(int num, char* buf)
 	do
 	{
 		pow10 /= 10;
-		dig = num / pow10;
+		int dig = num / pow10;
 		*str++ = '0' + dig;
 		num -= dig * pow10;
 	}
@@ -359,11 +357,10 @@ Sbar_DrawNum
 void Sbar_DrawNum(int x, int y, int num, int digits, int color)
 {
 	char str[12];
-	char* ptr;
-	int l, frame;
+	int frame;
 
-	l = Sbar_itoa(num, str);
-	ptr = str;
+	int l = Sbar_itoa(num, str);
+	char* ptr = str;
 	if (l > digits)
 		ptr += (l - digits);
 	if (l < digits)
@@ -399,7 +396,7 @@ Sbar_SortFrags
 */
 void Sbar_SortFrags(void)
 {
-	int i, j, k;
+	int i;
 
 	// sort by frags
 	scoreboardlines = 0;
@@ -413,10 +410,10 @@ void Sbar_SortFrags(void)
 	}
 
 	for (i = 0; i < scoreboardlines; i++)
-		for (j = 0; j < scoreboardlines - 1 - i; j++)
+		for (int j = 0; j < scoreboardlines - 1 - i; j++)
 			if (cl.scores[fragsort[j]].frags < cl.scores[fragsort[j + 1]].frags)
 			{
-				k = fragsort[j];
+				int k = fragsort[j];
 				fragsort[j] = fragsort[j + 1];
 				fragsort[j + 1] = k;
 			}
@@ -434,23 +431,19 @@ Sbar_UpdateScoreboard
 */
 void Sbar_UpdateScoreboard(void)
 {
-	int i, k;
-	int top, bottom;
-	scoreboard_t* s;
-
 	Sbar_SortFrags();
 
 	// draw the text
 	memset(scoreboardtext, 0, sizeof(scoreboardtext));
 
-	for (i = 0; i < scoreboardlines; i++)
+	for (int i = 0; i < scoreboardlines; i++)
 	{
-		k = fragsort[i];
-		s = &cl.scores[k];
+		int k = fragsort[i];
+		scoreboard_t* s = &cl.scores[k];
 		sprintf(&scoreboardtext[i][1], (char*)"%3i %s", s->frags, s->name);
 
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15) << 4;
+		int top = s->colors & 0xf0;
+		int bottom = (s->colors & 15) << 4;
 		scoreboardtop[i] = Sbar_ColorForMap(top);
 		scoreboardbottom[i] = Sbar_ColorForMap(bottom);
 	}
@@ -465,8 +458,6 @@ Sbar_SoloScoreboard
 void Sbar_SoloScoreboard(void)
 {
 	char str[80];
-	int minutes, seconds, tens, units;
-	int l;
 
 	sprintf(str, (char*)"Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
 	Sbar_DrawString(8, 4, str);
@@ -475,15 +466,15 @@ void Sbar_SoloScoreboard(void)
 	Sbar_DrawString(8, 12, str);
 
 	// time
-	minutes = cl.time / 60;
-	seconds = cl.time - 60 * minutes;
-	tens = seconds / 10;
-	units = seconds - 10 * tens;
+	int minutes = cl.time / 60;
+	int seconds = cl.time - 60 * minutes;
+	int tens = seconds / 10;
+	int units = seconds - 10 * tens;
 	sprintf(str, (char*)"Time :%3i:%i%i", minutes, tens, units);
 	Sbar_DrawString(184, 4, str);
 
 	// draw level name
-	l = strlen(cl.levelname);
+	int l = strlen(cl.levelname);
 	Sbar_DrawString(232 - l * 4, 12, cl.levelname);
 }
 
@@ -732,35 +723,31 @@ Sbar_DrawFrags
 */
 void Sbar_DrawFrags(void)
 {
-	int i, k, l;
-	int top, bottom;
-	int x, y, f;
 	int xofs;
 	char num[12];
-	scoreboard_t* s;
 
 	Sbar_SortFrags();
 
 	// draw the text
-	l = scoreboardlines <= 4 ? scoreboardlines : 4;
+	int l = scoreboardlines <= 4 ? scoreboardlines : 4;
 
-	x = 23;
+	int x = 23;
 	if (cl.gametype == GAME_DEATHMATCH)
 		xofs = 0;
 	else
 		xofs = (vid.width - 320) >> 1;
-	y = vid.height - SBAR_HEIGHT - 23;
+	int y = vid.height - SBAR_HEIGHT - 23;
 
-	for (i = 0; i < l; i++)
+	for (int i = 0; i < l; i++)
 	{
-		k = fragsort[i];
-		s = &cl.scores[k];
+		int k = fragsort[i];
+		scoreboard_t* s = &cl.scores[k];
 		if (!s->name[0])
 			continue;
 
 		// draw background
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15) << 4;
+		int top = s->colors & 0xf0;
+		int bottom = (s->colors & 15) << 4;
 		top = Sbar_ColorForMap(top);
 		bottom = Sbar_ColorForMap(bottom);
 
@@ -768,7 +755,7 @@ void Sbar_DrawFrags(void)
 		Draw_Fill(xofs + x * 8 + 10, y + 4, 28, 3, bottom);
 
 		// draw number
-		f = s->frags;
+		int f = s->frags;
 		sprintf(num, (char*)"%3i", f);
 
 		Sbar_DrawCharacter((x + 1) * 8, -24, num[0]);
@@ -803,15 +790,13 @@ void Sbar_DrawFace(void)
 		(teamplay.value > 3) &&
 		(teamplay.value < 7))
 	{
-		int top, bottom;
 		int xofs;
 		char num[12];
-		scoreboard_t* s;
 
-		s = &cl.scores[cl.viewentity - 1];
+		scoreboard_t* s = &cl.scores[cl.viewentity - 1];
 		// draw background
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15) << 4;
+		int top = s->colors & 0xf0;
+		int bottom = (s->colors & 15) << 4;
 		top = Sbar_ColorForMap(top);
 		bottom = Sbar_ColorForMap(bottom);
 
@@ -1022,11 +1007,10 @@ Sbar_IntermissionNumber
 void Sbar_IntermissionNumber(int x, int y, int num, int digits, int color)
 {
 	char str[12];
-	char* ptr;
-	int l, frame;
+	int frame;
 
-	l = Sbar_itoa(num, str);
-	ptr = str;
+	int l = Sbar_itoa(num, str);
+	char* ptr = str;
 	if (l > digits)
 		ptr += (l - digits);
 	if (l < digits)
@@ -1053,37 +1037,32 @@ Sbar_DeathmatchOverlay
 */
 void Sbar_DeathmatchOverlay(void)
 {
-	qpic_t* pic;
-	int i, k, l;
-	int top, bottom;
-	int x, y, f;
 	char num[12];
-	scoreboard_t* s;
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
 
-	pic = Draw_CachePic((char*)"gfx/ranking.lmp");
+	qpic_t* pic = Draw_CachePic((char*)"gfx/ranking.lmp");
 	M_DrawPic((320 - pic->width) / 2, 8, pic);
 
 	// scores
 	Sbar_SortFrags();
 
 	// draw the text
-	l = scoreboardlines;
+	int l = scoreboardlines;
 
-	x = 80 + ((vid.width - 320) >> 1);
-	y = 40;
-	for (i = 0; i < l; i++)
+	int x = 80 + ((vid.width - 320) >> 1);
+	int y = 40;
+	for (int i = 0; i < l; i++)
 	{
-		k = fragsort[i];
-		s = &cl.scores[k];
+		int k = fragsort[i];
+		scoreboard_t* s = &cl.scores[k];
 		if (!s->name[0])
 			continue;
 
 		// draw background
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15) << 4;
+		int top = s->colors & 0xf0;
+		int bottom = (s->colors & 15) << 4;
 		top = Sbar_ColorForMap(top);
 		bottom = Sbar_ColorForMap(bottom);
 
@@ -1091,7 +1070,7 @@ void Sbar_DeathmatchOverlay(void)
 		Draw_Fill(x, y + 4, 40, 4, bottom);
 
 		// draw number
-		f = s->frags;
+		int f = s->frags;
 		sprintf(num, (char*)"%3i", f);
 
 		Draw_Character(x + 8, y, num[0]);
@@ -1117,12 +1096,8 @@ Sbar_DeathmatchOverlay
 void Sbar_MiniDeathmatchOverlay(void)
 {
 	qpic_t* pic;
-	int i, k, l;
-	int top, bottom;
-	int x, y, f;
+	int i;
 	char num[12];
-	scoreboard_t* s;
-	int numlines;
 
 	if (vid.width < 512 || !sb_lines)
 		return;
@@ -1134,9 +1109,9 @@ void Sbar_MiniDeathmatchOverlay(void)
 	Sbar_SortFrags();
 
 	// draw the text
-	l = scoreboardlines;
-	y = vid.height - sb_lines;
-	numlines = sb_lines / 8;
+	int l = scoreboardlines;
+	int y = vid.height - sb_lines;
+	int numlines = sb_lines / 8;
 	if (numlines < 3)
 		return;
 
@@ -1155,17 +1130,17 @@ void Sbar_MiniDeathmatchOverlay(void)
 	if (i < 0)
 		i = 0;
 
-	x = 324;
+	int x = 324;
 	for (/* */; i < scoreboardlines && y < vid.height - 8; i++)
 	{
-		k = fragsort[i];
-		s = &cl.scores[k];
+		int k = fragsort[i];
+		scoreboard_t* s = &cl.scores[k];
 		if (!s->name[0])
 			continue;
 
 		// draw background
-		top = s->colors & 0xf0;
-		bottom = (s->colors & 15) << 4;
+		int top = s->colors & 0xf0;
+		int bottom = (s->colors & 15) << 4;
 		top = Sbar_ColorForMap(top);
 		bottom = Sbar_ColorForMap(bottom);
 
@@ -1173,7 +1148,7 @@ void Sbar_MiniDeathmatchOverlay(void)
 		Draw_Fill(x, y + 4, 40, 4, bottom);
 
 		// draw number
-		f = s->frags;
+		int f = s->frags;
 		sprintf(num, (char*)"%3i", f);
 
 		Draw_Character(x + 8, y, num[0]);
@@ -1201,10 +1176,6 @@ Sbar_IntermissionOverlay
 */
 void Sbar_IntermissionOverlay(void)
 {
-	qpic_t* pic;
-	int dig;
-	int num;
-
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
 
@@ -1214,16 +1185,16 @@ void Sbar_IntermissionOverlay(void)
 		return;
 	}
 
-	pic = Draw_CachePic((char*)"gfx/complete.lmp");
+	qpic_t* pic = Draw_CachePic((char*)"gfx/complete.lmp");
 	Draw_Pic(64, 24, pic);
 
 	pic = Draw_CachePic((char*)"gfx/inter.lmp");
 	Draw_TransPic(0, 56, pic);
 
 	// time
-	dig = cl.completed_time / 60;
+	int dig = cl.completed_time / 60;
 	Sbar_IntermissionNumber(160, 64, dig, 3, 0);
-	num = cl.completed_time - dig * 60;
+	int num = cl.completed_time - dig * 60;
 	Draw_TransPic(234, 64, sb_colon);
 	Draw_TransPic(246, 64, sb_nums[0][num / 10]);
 	Draw_TransPic(266, 64, sb_nums[0][num % 10]);
@@ -1246,10 +1217,8 @@ Sbar_FinaleOverlay
 */
 void Sbar_FinaleOverlay(void)
 {
-	qpic_t* pic;
-
 	scr_copyeverything = 1;
 
-	pic = Draw_CachePic((char*)"gfx/finale.lmp");
+	qpic_t* pic = Draw_CachePic((char*)"gfx/finale.lmp");
 	Draw_TransPic((vid.width - pic->width) / 2, 16, pic);
 }

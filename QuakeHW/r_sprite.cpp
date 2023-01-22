@@ -62,13 +62,12 @@ Throws out the back side
 */
 int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 {
-	int i, outcount;
+	int i;
 	float dists[MAXWORKINGVERTS + 1];
-	float frac, clipdist, *pclipnormal;
-	float *in, *instep, *outstep, *vert2;
+	float *in, *outstep;
 
-	clipdist = pclipplane->dist;
-	pclipnormal = pclipplane->normal;
+	float clipdist = pclipplane->dist;
+	float* pclipnormal = pclipplane->normal;
 
 	// calc dists
 	if (clip_current)
@@ -84,7 +83,7 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 		clip_current = 1;
 	}
 
-	instep = in;
+	float* instep = in;
 	for (i = 0; i < nump; i++, instep += sizeof(vec5_t) / sizeof(float))
 	{
 		dists[i] = DotProduct(instep, pclipnormal) - clipdist;
@@ -97,7 +96,7 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 
 	// clip the winding
 	instep = in;
-	outcount = 0;
+	int outcount = 0;
 
 	for (i = 0; i < nump; i++, instep += sizeof(vec5_t) / sizeof(float))
 	{
@@ -115,9 +114,9 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 			continue;
 
 		// split it into a new_ vertex
-		frac = dists[i] / (dists[i] - dists[i + 1]);
+		float frac = dists[i] / (dists[i] - dists[i + 1]);
 
-		vert2 = instep + sizeof(vec5_t) / sizeof(float);
+		float* vert2 = instep + sizeof(vec5_t) / sizeof(float);
 
 		outstep[0] = instep[0] + frac * (vert2[0] - instep[0]);
 		outstep[1] = instep[1] + frac * (vert2[1] - instep[1]);
@@ -140,13 +139,11 @@ R_SetupAndDrawSprite
 */
 void R_SetupAndDrawSprite()
 {
-	int i, nump;
-	float dot, scale, *pv;
-	vec5_t* pverts;
+	int i;
 	vec3_t left, up, right, down, transformed, local;
-	emitpoint_t outverts[MAXWORKINGVERTS + 1], *pout;
+	emitpoint_t outverts[MAXWORKINGVERTS + 1];
 
-	dot = DotProduct(r_spritedesc.vpn, modelorg);
+	float dot = DotProduct(r_spritedesc.vpn, modelorg);
 
 	// backface cull
 	if (dot >= 0)
@@ -158,7 +155,7 @@ void R_SetupAndDrawSprite()
 	VectorScale(r_spritedesc.vright, r_spritedesc.pspriteframe->left, left);
 	VectorScale(r_spritedesc.vup, r_spritedesc.pspriteframe->down, down);
 
-	pverts = clip_verts[0];
+	vec5_t* pverts = clip_verts[0];
 
 	pverts[0][0] = r_entorigin[0] + up[0] + left[0];
 	pverts[0][1] = r_entorigin[1] + up[1] + left[1];
@@ -185,7 +182,7 @@ void R_SetupAndDrawSprite()
 	pverts[3][4] = sprite_height;
 
 	// clip to the frustum in worldspace
-	nump = 4;
+	int nump = 4;
 	clip_current = 0;
 
 	for (i = 0; i < 4; i++)
@@ -198,7 +195,7 @@ void R_SetupAndDrawSprite()
 	}
 
 	// transform vertices into viewspace and project
-	pv = &clip_verts[clip_current][0][0];
+	float* pv = &clip_verts[clip_current][0][0];
 	r_spritedesc.nearzi = -999999;
 
 	for (i = 0; i < nump; i++)
@@ -209,7 +206,7 @@ void R_SetupAndDrawSprite()
 		if (transformed[2] < NEAR_CLIP)
 			transformed[2] = NEAR_CLIP;
 
-		pout = &outverts[i];
+		emitpoint_t* pout = &outverts[i];
 		pout->zi = 1.0 / transformed[2];
 		if (pout->zi > r_spritedesc.nearzi)
 			r_spritedesc.nearzi = pout->zi;
@@ -217,7 +214,7 @@ void R_SetupAndDrawSprite()
 		pout->s = pv[3];
 		pout->t = pv[4];
 
-		scale = xscale * pout->zi;
+		float scale = xscale * pout->zi;
 		pout->u = (xcenter + scale * transformed[0]);
 
 		scale = yscale * pout->zi;
@@ -240,12 +237,10 @@ R_GetSpriteframe
 */
 mspriteframe_t* R_GetSpriteframe(msprite_t* psprite)
 {
-	mspritegroup_t* pspritegroup;
 	mspriteframe_t* pspriteframe;
-	int i, numframes, frame;
-	float *pintervals, fullinterval, targettime, time;
+	int i;
 
-	frame = currententity->frame;
+	int frame = currententity->frame;
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
@@ -259,16 +254,16 @@ mspriteframe_t* R_GetSpriteframe(msprite_t* psprite)
 	}
 	else
 	{
-		pspritegroup = (mspritegroup_t*)psprite->frames[frame].frameptr;
-		pintervals = pspritegroup->intervals;
-		numframes = pspritegroup->numframes;
-		fullinterval = pintervals[numframes - 1];
+		mspritegroup_t* pspritegroup = (mspritegroup_t*)psprite->frames[frame].frameptr;
+		float* pintervals = pspritegroup->intervals;
+		int numframes = pspritegroup->numframes;
+		float fullinterval = pintervals[numframes - 1];
 
-		time = cl.time + currententity->syncbase;
+		float time = cl.time + currententity->syncbase;
 
 		// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
 		// are positive, so we don't have to worry about division by 0
-		targettime = time - ((int)(time / fullinterval)) * fullinterval;
+		float targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
 		for (i = 0; i < (numframes - 1); i++)
 		{
@@ -291,11 +286,10 @@ R_DrawSprite
 void R_DrawSprite(void)
 {
 	int i;
-	msprite_t* psprite;
 	vec3_t tvec;
-	float dot, angle, sr, cr;
+	float dot;
 
-	psprite = (msprite_t*)currententity->model->cache.data;
+	msprite_t* psprite = (msprite_t*)currententity->model->cache.data;
 
 	r_spritedesc.pspriteframe = R_GetSpriteframe(psprite);
 
@@ -383,9 +377,9 @@ void R_DrawSprite(void)
 		// generate the sprite's axes, parallel to the viewplane, but rotated in
 		// that plane around the center according to the sprite entity's roll
 		// angle. So vpn stays the same, but vright and vup rotate
-		angle = currententity->angles[ROLL] * (M_PI * 2 / 360);
-		sr = sin(angle);
-		cr = cos(angle);
+		float angle = currententity->angles[ROLL] * (M_PI * 2 / 360);
+		float sr = sin(angle);
+		float cr = cos(angle);
 
 		for (i = 0; i < 3; i++)
 		{

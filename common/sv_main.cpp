@@ -50,7 +50,6 @@ SV_Init
 */
 void SV_Init(void)
 {
-	int i;
 	extern cvar_t sv_maxvelocity;
 	extern cvar_t sv_gravity;
 	extern cvar_t sv_nostep;
@@ -73,7 +72,7 @@ void SV_Init(void)
 	Cvar_RegisterVariable(&sv_aim);
 	Cvar_RegisterVariable(&sv_nostep);
 
-	for (i = 0; i < MAX_MODELS; i++)
+	for (int i = 0; i < MAX_MODELS; i++)
 		sprintf(localmodels[i], (char*)"*%i", i);
 }
 
@@ -94,17 +93,15 @@ Make sure the event gets sent to all clients
 */
 void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count)
 {
-	int i, v;
-
 	if (sv.datagram.cursize > MAX_DATAGRAM - 16)
 		return;
 	MSG_WriteByte(&sv.datagram, svc_particle);
 	MSG_WriteCoord(&sv.datagram, org[0]);
 	MSG_WriteCoord(&sv.datagram, org[1]);
 	MSG_WriteCoord(&sv.datagram, org[2]);
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		v = dir[i] * 16;
+		int v = dir[i] * 16;
 		if (v > 127)
 			v = 127;
 		else if (v < -128)
@@ -134,9 +131,6 @@ void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
                    float attenuation)
 {
 	int sound_num;
-	int field_mask;
-	int i;
-	int ent;
 
 	if (volume < 0 || volume > 255)
 		Sys_Error((char*)"SV_StartSound: volume = %i", volume);
@@ -162,11 +156,11 @@ void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
 		return;
 	}
 
-	ent = NUM_FOR_EDICT(entity);
+	int ent = NUM_FOR_EDICT(entity);
 
 	channel = (ent << 3) | channel;
 
-	field_mask = 0;
+	int field_mask = 0;
 	if (volume != DEFAULT_SOUND_PACKET_VOLUME)
 		field_mask |= SND_VOLUME;
 	if (attenuation != DEFAULT_SOUND_PACKET_ATTENUATION)
@@ -181,7 +175,7 @@ void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
 		MSG_WriteByte(&sv.datagram, attenuation * 64);
 	MSG_WriteShort(&sv.datagram, channel);
 	MSG_WriteByte(&sv.datagram, sound_num);
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		MSG_WriteCoord(&sv.datagram, entity->v.origin[i] + 0.5 * (entity->v.mins[i] + entity->v.maxs[i]));
 }
 
@@ -257,23 +251,18 @@ once for a player each game, not once for each level change.
 */
 void SV_ConnectClient(int clientnum)
 {
-	edict_t* ent;
-	client_t* client;
-	int edictnum;
-	struct qsocket_s* netconnection;
-	int i;
 	float spawn_parms[NUM_SPAWN_PARMS];
 
-	client = svs.clients + clientnum;
+	client_t* client = svs.clients + clientnum;
 
 	Con_DPrintf((char*)"Client %s connected\n", client->netconnection->address);
 
-	edictnum = clientnum + 1;
+	int edictnum = clientnum + 1;
 
-	ent = EDICT_NUM(edictnum);
+	edict_t* ent = EDICT_NUM(edictnum);
 
 	// set up the client_t
-	netconnection = client->netconnection;
+	struct qsocket_s* netconnection = client->netconnection;
 
 	if (sv.loadgame)
 		memcpy(spawn_parms, client->spawn_parms, sizeof(spawn_parms));
@@ -295,7 +284,7 @@ void SV_ConnectClient(int clientnum)
 	{
 		// call the progs to get default spawn parms for the new_ client
 		PR_ExecuteProgram(pr_global_struct->SetNewParms);
-		for (i = 0; i < NUM_SPAWN_PARMS; i++)
+		for (int i = 0; i < NUM_SPAWN_PARMS; i++)
 			client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
 	}
 
@@ -311,7 +300,6 @@ SV_CheckForNewClients
 */
 void SV_CheckForNewClients(void)
 {
-	struct qsocket_s* ret;
 	int i;
 
 	//
@@ -319,7 +307,7 @@ void SV_CheckForNewClients(void)
 	//
 	while (1)
 	{
-		ret = NET_CheckNewConnections();
+		struct qsocket_s* ret = NET_CheckNewConnections();
 		if (!ret)
 			break;
 
@@ -375,11 +363,6 @@ byte fatpvs[MAX_MAP_LEAFS / 8];
 
 void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 {
-	int i;
-	byte* pvs;
-	mplane_t* plane;
-	float d;
-
 	while (1)
 	{
 		// if this_ is a leaf, accumulate the pvs bits
@@ -387,15 +370,15 @@ void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 		{
 			if (node->contents != CONTENTS_SOLID)
 			{
-				pvs = Mod_LeafPVS((mleaf_t*)node, sv.worldmodel);
-				for (i = 0; i < fatbytes; i++)
+				byte* pvs = Mod_LeafPVS((mleaf_t*)node, sv.worldmodel);
+				for (int i = 0; i < fatbytes; i++)
 					fatpvs[i] |= pvs[i];
 			}
 			return;
 		}
 
-		plane = node->plane;
-		d = DotProduct(org, plane->normal) - plane->dist;
+		mplane_t* plane = node->plane;
+		float d = DotProduct(org, plane->normal) - plane->dist;
 		if (d > 8)
 			node = node->children[0];
 		else if (d < -8)
@@ -436,20 +419,16 @@ SV_WriteEntitiesToClient
 */
 void SV_WriteEntitiesToClient(edict_t* clent, sizebuf_t* msg)
 {
-	int e, i;
-	int bits;
-	byte* pvs;
+	int i;
 	vec3_t org;
-	float miss;
-	edict_t* ent;
 
 	// find the client's PVS
 	VectorAdd(clent->v.origin, clent->v.view_ofs, org);
-	pvs = SV_FatPVS(org);
+	byte* pvs = SV_FatPVS(org);
 
 	// send over all entities (excpet the client) that touch the pvs
-	ent = NEXT_EDICT(sv.edicts);
-	for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
+	edict_t* ent = NEXT_EDICT(sv.edicts);
+	for (int e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		// ignore if not touching a PV leaf
 		if (ent != clent) // clent is ALLWAYS sent
@@ -473,11 +452,11 @@ void SV_WriteEntitiesToClient(edict_t* clent, sizebuf_t* msg)
 		}
 
 		// send an update
-		bits = 0;
+		int bits = 0;
 
 		for (i = 0; i < 3; i++)
 		{
-			miss = ent->v.origin[i] - ent->baseline.origin[i];
+			float miss = ent->v.origin[i] - ent->baseline.origin[i];
 			if (miss < -0.1 || miss > 0.1)
 				bits |= U_ORIGIN1 << i;
 		}
@@ -560,11 +539,8 @@ SV_CleanupEnts
 */
 void SV_CleanupEnts(void)
 {
-	int e;
-	edict_t* ent;
-
-	ent = NEXT_EDICT(sv.edicts);
-	for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
+	edict_t* ent = NEXT_EDICT(sv.edicts);
+	for (int e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
 	}
@@ -578,18 +554,15 @@ SV_WriteClientdataToMessage
 */
 void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg)
 {
-	int bits;
 	int i;
-	edict_t* other;
 	int items;
-	eval_t* val;
 
 	//
 	// send a damage message
 	//
 	if (ent->v.dmg_take || ent->v.dmg_save)
 	{
-		other = PROG_TO_EDICT(ent->v.dmg_inflictor);
+		edict_t* other = PROG_TO_EDICT(ent->v.dmg_inflictor);
 		MSG_WriteByte(msg, svc_damage);
 		MSG_WriteByte(msg, ent->v.dmg_save);
 		MSG_WriteByte(msg, ent->v.dmg_take);
@@ -614,7 +587,7 @@ void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg)
 		ent->v.fixangle = 0;
 	}
 
-	bits = 0;
+	int bits = 0;
 
 	if (ent->v.view_ofs[2] != DEFAULT_VIEWHEIGHT)
 		bits |= SU_VIEWHEIGHT;
@@ -624,7 +597,7 @@ void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg)
 
 	// stuff the sigil bits into the high bits of items for sbar, or else
 	// mix in items2
-	val = GetEdictFieldValue(ent, (char*)"items2");
+	eval_t* val = GetEdictFieldValue(ent, (char*)"items2");
 
 	if (val)
 		items = (int)ent->v.items | ((int)val->_float << 23);
@@ -921,14 +894,10 @@ SV_CreateBaseline
 */
 void SV_CreateBaseline(void)
 {
-	int i;
-	edict_t* svent;
-	int entnum;
-
-	for (entnum = 0; entnum < sv.num_edicts; entnum++)
+	for (int entnum = 0; entnum < sv.num_edicts; entnum++)
 	{
 		// get the current server version
-		svent = EDICT_NUM(entnum);
+		edict_t* svent = EDICT_NUM(entnum);
 		if (svent->free)
 			continue;
 		if (entnum > svs.maxclients && !svent->v.modelindex)
@@ -963,7 +932,7 @@ void SV_CreateBaseline(void)
 		MSG_WriteByte(&sv.signon, svent->baseline.frame);
 		MSG_WriteByte(&sv.signon, svent->baseline.colormap);
 		MSG_WriteByte(&sv.signon, svent->baseline.skin);
-		for (i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			MSG_WriteCoord(&sv.signon, svent->baseline.origin[i]);
 			MSG_WriteAngle(&sv.signon, svent->baseline.angles[i]);
@@ -1007,7 +976,7 @@ transition to another level
 */
 void SV_SaveSpawnparms(void)
 {
-	int i, j;
+	int i;
 
 	svs.serverflags = pr_global_struct->serverflags;
 
@@ -1019,7 +988,7 @@ void SV_SaveSpawnparms(void)
 		// call the progs to get default spawn parms for the new_ client
 		pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
 		PR_ExecuteProgram(pr_global_struct->SetChangeParms);
-		for (j = 0; j < NUM_SPAWN_PARMS; j++)
+		for (int j = 0; j < NUM_SPAWN_PARMS; j++)
 			host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
 	}
 }

@@ -37,13 +37,11 @@ int nanmask = 255 << 23;
 
 void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {
-	float d;
 	vec3_t n;
-	float inv_denom;
 
-	inv_denom = 1.0F / DotProduct(normal, normal);
+	float inv_denom = 1.0F / DotProduct(normal, normal);
 
-	d = DotProduct(normal, p) * inv_denom;
+	float d = DotProduct(normal, p) * inv_denom;
 
 	n[0] = normal[0] * inv_denom;
 	n[1] = normal[1] * inv_denom;
@@ -99,7 +97,6 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	float zrot[3][3];
 	float tmpmat[3][3];
 	float rot[3][3];
-	int i;
 	vec3_t vr, vup, vf;
 
 	vf[0] = dir[0];
@@ -141,7 +138,7 @@ void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, f
 	R_ConcatRotations(m, zrot, tmpmat);
 	R_ConcatRotations(tmpmat, im, rot);
 
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		dst[i] = rot[i][0] * point[0] + rot[i][1] * point[1] + rot[i][2] * point[2];
 	}
@@ -181,8 +178,7 @@ Returns 1, 2, or 1 + 2
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 {
 	float dist1, dist2;
-	int sides;
-	
+
 	// general case
 	switch (p->signbits)
 	{
@@ -224,7 +220,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 		break;
 	}
 	
-	sides = 0;
+	int sides = 0;
 	if (dist1 >= p->dist)
 		sides = 1;
 	if (dist2 < p->dist)
@@ -236,18 +232,15 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 
 void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
-	float angle;
-	float sr, sp, sy, cr, cp, cy;
-
-	angle = angles[YAW] * (M_PI * 2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	float angle = angles[YAW] * (M_PI * 2 / 360);
+	float sy = sin(angle);
+	float cy = cos(angle);
 	angle = angles[PITCH] * (M_PI * 2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	float sp = sin(angle);
+	float cp = cos(angle);
 	angle = angles[ROLL] * (M_PI * 2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	float sr = sin(angle);
+	float cr = cos(angle);
 
 	forward[0] = cp * cy;
 	forward[1] = cp * sy;
@@ -262,9 +255,7 @@ void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 
 int VectorCompare(vec3_t v1, vec3_t v2)
 {
-	int i;
-
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		if (v1[i] != v2[i])
 			return 0;
 
@@ -316,11 +307,8 @@ double sqrt(double x);
 
 vec_t Length(vec3_t v)
 {
-	int i;
-	float length;
-
-	length = 0;
-	for (i = 0; i < 3; i++)
+	float length = 0;
+	for (int i = 0; i < 3; i++)
 		length += v[i] * v[i];
 	length = sqrt(length); // FIXME
 
@@ -329,14 +317,12 @@ vec_t Length(vec3_t v)
 
 float VectorNormalize(vec3_t v)
 {
-	float length, ilength;
-
-	length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+	float length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
 	length = sqrt(length); // FIXME
 
 	if (length)
 	{
-		ilength = 1 / length;
+		float ilength = 1 / length;
 		v[0] *= ilength;
 		v[1] *= ilength;
 		v[2] *= ilength;

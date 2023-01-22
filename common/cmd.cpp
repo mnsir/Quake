@@ -92,9 +92,7 @@ Adds command text at the end of the buffer
 */
 void Cbuf_AddText(char* text)
 {
-	int l;
-
-	l = Q_strlen(text);
+	int l = Q_strlen(text);
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
 	{
@@ -118,10 +116,9 @@ FIXME: actually change the command buffer to do less copying
 void Cbuf_InsertText(char* text)
 {
 	char* temp;
-	int templen;
 
 	// copy off any commands still remaining in the exec buffer
-	templen = cmd_text.cursize;
+	int templen = cmd_text.cursize;
 	if (templen)
 	{
 		temp = static_cast<char*>(Z_Malloc(templen));
@@ -150,16 +147,14 @@ Cbuf_Execute
 void Cbuf_Execute(void)
 {
 	int i;
-	char* text;
 	char line[1024];
-	int quotes;
 
 	while (cmd_text.cursize)
 	{
 		// find a \n or ; line break
-		text = (char*)cmd_text.data;
+		char* text = (char*)cmd_text.data;
 
-		quotes = 0;
+		int quotes = 0;
 		for (i = 0; i < cmd_text.cursize; i++)
 		{
 			if (text[i] == '"')
@@ -221,8 +216,6 @@ quake -nosound +cmd amlev1
 void Cmd_StuffCmds_f(void)
 {
 	int i, j;
-	int s;
-	char *text, *build, c;
 
 	if (Cmd_Argc() != 1)
 	{
@@ -231,7 +224,7 @@ void Cmd_StuffCmds_f(void)
 	}
 
 	// build the combined string to parse from
-	s = 0;
+	int s = 0;
 	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
@@ -241,7 +234,7 @@ void Cmd_StuffCmds_f(void)
 	if (!s)
 		return;
 
-	text = static_cast<char*>(Z_Malloc(s + 1));
+	char* text = static_cast<char*>(Z_Malloc(s + 1));
 	text[0] = 0;
 	for (i = 1; i < com_argc; i++)
 	{
@@ -253,7 +246,7 @@ void Cmd_StuffCmds_f(void)
 	}
 
 	// pull out the commands
-	build = static_cast<char*>(Z_Malloc(s + 1));
+	char* build = static_cast<char*>(Z_Malloc(s + 1));
 	build[0] = 0;
 
 	for (i = 0; i < s - 1; i++)
@@ -264,7 +257,7 @@ void Cmd_StuffCmds_f(void)
 
 			for (j = i; (text[j] != '+') && (text[j] != '-') && (text[j] != 0); j++);
 
-			c = text[j];
+			char c = text[j];
 			text[j] = 0;
 
 			Q_strcat(build, text + i);
@@ -289,17 +282,14 @@ Cmd_Exec_f
 */
 void Cmd_Exec_f(void)
 {
-	char* f;
-	int mark;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf((char*)"exec <filename> : execute a script file\n");
 		return;
 	}
 
-	mark = Hunk_LowMark();
-	f = (char*)COM_LoadHunkFile(Cmd_Argv(1));
+	int mark = Hunk_LowMark();
+	char* f = (char*)COM_LoadHunkFile(Cmd_Argv(1));
 	if (!f)
 	{
 		Con_Printf((char*)"couldn't exec %s\n", Cmd_Argv(1));
@@ -321,9 +311,7 @@ Just prints the rest of the line to the console
 */
 void Cmd_Echo_f(void)
 {
-	int i;
-
-	for (i = 1; i < Cmd_Argc(); i++)
+	for (int i = 1; i < Cmd_Argc(); i++)
 		Con_Printf((char*)"%s ", Cmd_Argv(i));
 	Con_Printf((char*)"\n");
 }
@@ -338,9 +326,7 @@ Creates a new_ command that executes a command string (possibly ; seperated)
 
 char* CopyString(char* in)
 {
-	char* out;
-
-	out = static_cast<char*>(Z_Malloc(strlen(in) + 1));
+	char* out = static_cast<char*>(Z_Malloc(strlen(in) + 1));
 	strcpy(out, in);
 	return out;
 }
@@ -349,8 +335,6 @@ void Cmd_Alias_f(void)
 {
 	cmdalias_t* a;
 	char cmd[1024];
-	int i, c;
-	char* s;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -360,7 +344,7 @@ void Cmd_Alias_f(void)
 		return;
 	}
 
-	s = Cmd_Argv(1);
+	char* s = Cmd_Argv(1);
 	if (strlen(s) >= MAX_ALIAS_NAME)
 	{
 		Con_Printf((char*)"Alias name is too long\n");
@@ -387,8 +371,8 @@ void Cmd_Alias_f(void)
 
 	// copy the rest of the command line
 	cmd[0] = 0; // start out with a null string
-	c = Cmd_Argc();
-	for (i = 2; i < c; i++)
+	int c = Cmd_Argc();
+	for (int i = 2; i < c; i++)
 	{
 		strcat(cmd, Cmd_Argv(i));
 		if (i != c)
@@ -487,10 +471,8 @@ Parses the given string into command line tokens.
 */
 void Cmd_TokenizeString(char* text)
 {
-	int i;
-
 	// clear the args from the last string
-	for (i = 0; i < cmd_argc; i++)
+	for (int i = 0; i < cmd_argc; i++)
 		Z_Free(cmd_argv[i]);
 
 	cmd_argc = 0;
@@ -574,9 +556,7 @@ Cmd_Exists
 */
 qboolean Cmd_Exists(char* cmd_name)
 {
-	cmd_function_t* cmd;
-
-	for (cmd = cmd_functions; cmd; cmd = cmd->next)
+	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
 		if (!Q_strcmp(cmd_name, cmd->name))
 			return true;
@@ -593,16 +573,13 @@ Cmd_CompleteCommand
 */
 char* Cmd_CompleteCommand(char* partial)
 {
-	cmd_function_t* cmd;
-	int len;
-
-	len = Q_strlen(partial);
+	int len = Q_strlen(partial);
 
 	if (!len)
 		return NULL;
 
 	// check functions
-	for (cmd = cmd_functions; cmd; cmd = cmd->next)
+	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 		if (!Q_strncmp(partial, cmd->name, len))
 			return cmd->name;
 
@@ -619,9 +596,6 @@ FIXME: lookupnoadd the token to speed search?
 */
 void Cmd_ExecuteString(char* text, cmd_source_t src)
 {
-	cmd_function_t* cmd;
-	cmdalias_t* a;
-
 	cmd_source = src;
 	Cmd_TokenizeString(text);
 
@@ -630,7 +604,7 @@ void Cmd_ExecuteString(char* text, cmd_source_t src)
 		return; // no tokens
 
 	// check functions
-	for (cmd = cmd_functions; cmd; cmd = cmd->next)
+	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
 		if (!Q_strcasecmp(cmd_argv[0], cmd->name))
 		{
@@ -640,7 +614,7 @@ void Cmd_ExecuteString(char* text, cmd_source_t src)
 	}
 
 	// check alias
-	for (a = cmd_alias; a; a = a->next)
+	for (cmdalias_t* a = cmd_alias; a; a = a->next)
 	{
 		if (!Q_strcasecmp(cmd_argv[0], a->name))
 		{
@@ -697,12 +671,10 @@ where the given parameter apears, or 0 if not present
 
 int Cmd_CheckParm(char* parm)
 {
-	int i;
-
 	if (!parm)
 		Sys_Error((char*)"Cmd_CheckParm: NULL");
 
-	for (i = 1; i < Cmd_Argc(); i++)
+	for (int i = 1; i < Cmd_Argc(); i++)
 		if (!Q_strcasecmp(parm, Cmd_Argv(i)))
 			return i;
 

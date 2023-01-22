@@ -48,10 +48,10 @@ pfv0 is the unclipped vertex, pfv1 is the z-clipped vertex
 void R_Alias_clip_z(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out)
 {
 	float scale;
-	auxvert_t *pav0, *pav1, avout;
+	auxvert_t avout;
 
-	pav0 = &av[pfv0 - &fv[0][0]];
-	pav1 = &av[pfv1 - &fv[0][0]];
+	auxvert_t* pav0 = &av[pfv0 - &fv[0][0]];
+	auxvert_t* pav1 = &av[pfv1 - &fv[0][0]];
 
 	if (pfv0->v[1] >= pfv1->v[1])
 	{
@@ -188,15 +188,12 @@ void R_Alias_clip_bottom(finalvert_t* pfv0, finalvert_t* pfv1,
 int R_AliasClip(finalvert_t* in, finalvert_t* out, int flag, int count,
                 void (*clip)(finalvert_t* pfv0, finalvert_t* pfv1, finalvert_t* out))
 {
-	int i, j, k;
-	int flags, oldflags;
-
-	j = count - 1;
-	k = 0;
-	for (i = 0; i < count; j = i, i++)
+	int j = count - 1;
+	int k = 0;
+	for (int i = 0; i < count; j = i, i++)
 	{
-		oldflags = in[j].flags & flag;
-		flags = in[i].flags & flag;
+		int oldflags = in[j].flags & flag;
+		int flags = in[i].flags & flag;
 
 		if (flags && oldflags)
 			continue;
@@ -234,7 +231,6 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 {
 	int i, k, pingpong;
 	mtriangle_t mtri;
-	unsigned clipflags;
 
 	// copy vertexes and fix seam texture coordinates
 	if (ptri->facesfront)
@@ -255,7 +251,7 @@ void R_AliasClipTriangle(mtriangle_t* ptri)
 	}
 
 	// clip
-	clipflags = fv[0][0].flags | fv[0][1].flags | fv[0][2].flags;
+	unsigned clipflags = fv[0][0].flags | fv[0][1].flags | fv[0][2].flags;
 
 	if (clipflags & ALIAS_Z_CLIP)
 	{

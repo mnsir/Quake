@@ -82,9 +82,7 @@ void D_ViewChanged(void)
 		r_refdef.vrectbottom - (d_pix_max << d_y_aspect_shift);
 
 	{
-		int i;
-
-		for (i = 0; i < vid.height; i++)
+		for (int i = 0; i < vid.height; i++)
 		{
 			d_scantable[i] = i * rowbytes;
 			zspantable[i] = d_pzbuffer + i * d_zwidth;

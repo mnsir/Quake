@@ -203,9 +203,7 @@ void Q_strncpy(char* dest, char* src, int count)
 
 int Q_strlen(char* str)
 {
-	int count;
-
-	count = 0;
+	int count = 0;
 	while (str[count])
 		count++;
 
@@ -261,12 +259,10 @@ int Q_strncmp(char* s1, char* s2, int count)
 
 int Q_strncasecmp(char* s1, char* s2, int n)
 {
-	int c1, c2;
-
 	while (1)
 	{
-		c1 = *s1++;
-		c2 = *s2++;
+		int c1 = *s1++;
+		int c2 = *s2++;
 
 		if (!n--)
 			return 0; // strings are equal until end point
@@ -296,7 +292,6 @@ int Q_strcasecmp(char* s1, char* s2)
 
 int Q_atoi(char* str)
 {
-	int val;
 	int sign;
 	int c;
 
@@ -308,7 +303,7 @@ int Q_atoi(char* str)
 	else
 		sign = 1;
 
-	val = 0;
+	int val = 0;
 
 	//
 	// check for hex
@@ -355,10 +350,8 @@ int Q_atoi(char* str)
 
 float Q_atof(char* str)
 {
-	double val;
 	int sign;
 	int c;
-	int decimal, total;
 
 	if (*str == '-')
 	{
@@ -368,7 +361,7 @@ float Q_atof(char* str)
 	else
 		sign = 1;
 
-	val = 0;
+	double val = 0;
 
 	//
 	// check for hex
@@ -401,8 +394,8 @@ float Q_atof(char* str)
 	//
 	// assume decimal
 	//
-	decimal = -1;
-	total = 0;
+	int decimal = -1;
+	int total = 0;
 	while (1)
 	{
 		c = *str++;
@@ -447,10 +440,8 @@ float (*LittleFloat)(float l);
 
 short ShortSwap(short l)
 {
-	byte b1, b2;
-
-	b1 = l & 255;
-	b2 = (l >> 8) & 255;
+	byte b1 = l & 255;
+	byte b2 = (l >> 8) & 255;
 
 	return (b1 << 8) + b2;
 }
@@ -462,12 +453,10 @@ short ShortNoSwap(short l)
 
 int LongSwap(int l)
 {
-	byte b1, b2, b3, b4;
-
-	b1 = l & 255;
-	b2 = (l >> 8) & 255;
-	b3 = (l >> 16) & 255;
-	b4 = (l >> 24) & 255;
+	byte b1 = l & 255;
+	byte b2 = (l >> 8) & 255;
+	byte b3 = (l >> 16) & 255;
+	byte b4 = (l >> 24) & 255;
 
 	return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
 }
@@ -514,34 +503,26 @@ Handles byte ordering and avoids alignment errors
 
 void MSG_WriteChar(sizebuf_t* sb, int c)
 {
-	byte* buf;
-	
-	buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
+	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
 	buf[0] = c;
 }
 
 void MSG_WriteByte(sizebuf_t* sb, int c)
 {
-	byte* buf;
-	
-	buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
+	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
 	buf[0] = c;
 }
 
 void MSG_WriteShort(sizebuf_t* sb, int c)
 {
-	byte* buf;
-	
-	buf = static_cast<byte*>(SZ_GetSpace(sb, 2));
+	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 2));
 	buf[0] = c & 0xff;
 	buf[1] = c >> 8;
 }
 
 void MSG_WriteLong(sizebuf_t* sb, int c)
 {
-	byte* buf;
-
-	buf = static_cast<byte*>(SZ_GetSpace(sb, 4));
+	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 4));
 	buf[0] = c & 0xff;
 	buf[1] = (c >> 8) & 0xff;
 	buf[2] = (c >> 16) & 0xff;
@@ -596,15 +577,13 @@ void MSG_BeginReading(void)
 // returns -1 and sets msg_badread if no more characters are available
 int MSG_ReadChar(void)
 {
-	int c;
-
 	if (msg_readcount + 1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
 
-	c = (signed char)net_message.data[msg_readcount];
+	int c = (signed char)net_message.data[msg_readcount];
 	msg_readcount++;
 
 	return c;
@@ -612,15 +591,13 @@ int MSG_ReadChar(void)
 
 int MSG_ReadByte(void)
 {
-	int c;
-
 	if (msg_readcount + 1 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
 
-	c = net_message.data[msg_readcount];
+	int c = net_message.data[msg_readcount];
 	msg_readcount++;
 
 	return c;
@@ -628,15 +605,13 @@ int MSG_ReadByte(void)
 
 int MSG_ReadShort(void)
 {
-	int c;
-
 	if (msg_readcount + 2 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
 
-	c = (short)(net_message.data[msg_readcount]
+	int c = (short)(net_message.data[msg_readcount]
 		+ (net_message.data[msg_readcount + 1] << 8));
 
 	msg_readcount += 2;
@@ -646,15 +621,13 @@ int MSG_ReadShort(void)
 
 int MSG_ReadLong(void)
 {
-	int c;
-
 	if (msg_readcount + 4 > net_message.cursize)
 	{
 		msg_badread = true;
 		return -1;
 	}
 
-	c = net_message.data[msg_readcount]
+	int c = net_message.data[msg_readcount]
 		+ (net_message.data[msg_readcount + 1] << 8)
 		+ (net_message.data[msg_readcount + 2] << 16)
 		+ (net_message.data[msg_readcount + 3] << 24);
@@ -687,12 +660,11 @@ float MSG_ReadFloat(void)
 char* MSG_ReadString(void)
 {
 	static char string[2048];
-	int l, c;
 
-	l = 0;
+	int l = 0;
 	do
 	{
-		c = MSG_ReadChar();
+		int c = MSG_ReadChar();
 		if (c == -1 || c == 0)
 			break;
 		string[l] = c;
@@ -743,8 +715,6 @@ void SZ_Clear(sizebuf_t* buf)
 
 void* SZ_GetSpace(sizebuf_t* buf, int length)
 {
-	void* data;
-
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
@@ -758,7 +728,7 @@ void* SZ_GetSpace(sizebuf_t* buf, int length)
 		SZ_Clear(buf);
 	}
 
-	data = buf->data + buf->cursize;
+	void* data = buf->data + buf->cursize;
 	buf->cursize += length;
 
 	return data;
@@ -771,9 +741,7 @@ void SZ_Write(sizebuf_t* buf, void* data, int length)
 
 void SZ_Print(sizebuf_t* buf, char* data)
 {
-	int len;
-
-	len = Q_strlen(data) + 1;
+	int len = Q_strlen(data) + 1;
 
 	// byte * cast to keep VC++ happy
 	if (buf->data[buf->cursize - 1])
@@ -793,9 +761,7 @@ COM_SkipPath
 */
 char* COM_SkipPath(char* pathname)
 {
-	char* last;
-
-	last = pathname;
+	char* last = pathname;
 	while (*pathname)
 	{
 		if (*pathname == '/')
@@ -845,9 +811,9 @@ COM_FileBase
 */
 void COM_FileBase(char* in, char* out)
 {
-	char *s, *s2;
+	char*s2;
 
-	s = in + strlen(in) - 1;
+	char* s = in + strlen(in) - 1;
 
 	while (s != in && *s != '.')
 		s--;
@@ -872,12 +838,11 @@ COM_DefaultExtension
 */
 void COM_DefaultExtension(char* path, char* extension)
 {
-	char* src;
 	//
 	// if path doesn't have a .EXT, append extension
 	// (extension should include the .)
 	//
-	src = path + strlen(path) - 1;
+	char* src = path + strlen(path) - 1;
 
 	while (*src != '/' && src != path)
 	{
@@ -900,9 +865,8 @@ Parse a token out of a string
 char* COM_Parse(char* data)
 {
 	int c;
-	int len;
 
-	len = 0;
+	int len = 0;
 	com_token[0] = 0;
 
 	if (!data)
@@ -979,9 +943,7 @@ where the given parameter apears, or 0 if not present
 */
 int COM_CheckParm(char* parm)
 {
-	int i;
-
-	for (i = 1; i < com_argc; i++)
+	for (int i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue; // NEXTSTEP sometimes clears appkit vars.
@@ -1006,7 +968,6 @@ void COM_CheckRegistered(void)
 {
 	int h;
 	unsigned short check[128];
-	int i;
 
 	COM_OpenFile((char*)"gfx/pop.lmp", &h);
 	static_registered = 0;
@@ -1022,7 +983,7 @@ void COM_CheckRegistered(void)
 	Sys_FileRead(h, check, sizeof(check));
 	COM_CloseFile(h);
 
-	for (i = 0; i < 128; i++)
+	for (int i = 0; i < 128; i++)
 		if (pop[i] != (unsigned short)BigShort(check[i]))
 			Sys_Error((char*)"Corrupted data file.");
 
@@ -1043,13 +1004,12 @@ COM_InitArgv
 */
 void COM_InitArgv(int argc, char** argv)
 {
-	qboolean safe;
-	int i, j, n;
+	int i;
 
 	// reconstitute the command line for the cmdline externally visible cvar
-	n = 0;
+	int n = 0;
 
-	for (j = 0; (j < MAX_NUM_ARGVS) && (j < argc); j++)
+	for (int j = 0; (j < MAX_NUM_ARGVS) && (j < argc); j++)
 	{
 		i = 0;
 
@@ -1066,7 +1026,7 @@ void COM_InitArgv(int argc, char** argv)
 
 	com_cmdline[n] = 0;
 
-	safe = false;
+	qboolean safe = false;
 
 	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc);
 	     com_argc++)
@@ -1169,9 +1129,7 @@ char* va(char* format, ...)
 /// just for debugging
 int memsearch(byte* start, int count, int search)
 {
-	int i;
-
-	for (i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 		if (start[i] == search)
 			return i;
 	return -1;
@@ -1244,10 +1202,8 @@ COM_Path_f
 */
 void COM_Path_f(void)
 {
-	searchpath_t* s;
-
 	Con_Printf((char*)"Current search path:\n");
-	for (s = com_searchpaths; s; s = s->next)
+	for (searchpath_t* s = com_searchpaths; s; s = s->next)
 	{
 		if (s->pack)
 		{
@@ -1267,12 +1223,11 @@ The filename will be prefixed by the current game directory
 */
 void COM_WriteFile(char* filename, void* data, int len)
 {
-	int handle;
 	char name[MAX_OSPATH];
 
 	sprintf(name, (char*)"%s/%s", com_gamedir, filename);
 
-	handle = Sys_FileOpenWrite(name);
+	int handle = Sys_FileOpenWrite(name);
 	if (handle == -1)
 	{
 		Sys_Printf((char*)"COM_WriteFile: failed on %s\n", name);
@@ -1294,9 +1249,7 @@ Only used for CopyFile
 */
 void COM_CreatePath(char* path)
 {
-	char* ofs;
-
-	for (ofs = path + 1; *ofs; ofs++)
+	for (char* ofs = path + 1; *ofs; ofs++)
 	{
 		if (*ofs == '/')
 		{
@@ -1319,13 +1272,13 @@ needed.  This is for the convenience of developers using ISDN from home.
 */
 void COM_CopyFile(char* netpath, char* cachepath)
 {
-	int in, out;
-	int remaining, count;
+	int in;
+	int count;
 	char buf[4096];
 
-	remaining = Sys_FileOpenRead(netpath, &in);
+	int remaining = Sys_FileOpenRead(netpath, &in);
 	COM_CreatePath(cachepath); // create directories up to the cache file
-	out = Sys_FileOpenWrite(cachepath);
+	int out = Sys_FileOpenWrite(cachepath);
 
 	while (remaining)
 	{
@@ -1352,12 +1305,9 @@ Sets com_filesize and one of handle or file
 */
 int COM_FindFile(char* filename, int* handle, FILE** file)
 {
-	searchpath_t* search;
 	char netpath[MAX_OSPATH];
 	char cachepath[MAX_OSPATH];
-	pack_t* pak;
 	int i;
-	int findtime, cachetime;
 
 	if (file && handle)
 		Sys_Error((char*)"COM_FindFile: both handle and file set");
@@ -1367,7 +1317,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 	//
 	// search through the path, one element at a time
 	//
-	search = com_searchpaths;
+	searchpath_t* search = com_searchpaths;
 	if (proghack)
 	{
 		// gross hack to use quake 1 progs with quake 2 maps
@@ -1381,7 +1331,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 		if (search->pack)
 		{
 			// look through all the pak file elements
-			pak = search->pack;
+			pack_t* pak = search->pack;
 			for (i = 0; i < pak->numfiles; i++)
 				if (!strcmp(pak->files[i].name, filename))
 				{
@@ -1415,7 +1365,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 
 			sprintf(netpath, (char*)"%s/%s", search->filename, filename);
 
-			findtime = Sys_FileTime(netpath);
+			int findtime = Sys_FileTime(netpath);
 			if (findtime == -1)
 				continue;
 
@@ -1429,7 +1379,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 				else
 					sprintf(cachepath, (char*)"%s%s", com_cachedir, netpath + 2);
 
-				cachetime = Sys_FileTime(cachepath);
+				int cachetime = Sys_FileTime(cachepath);
 
 				if (cachetime < findtime)
 					COM_CopyFile(netpath, cachepath);
@@ -1496,9 +1446,7 @@ If it is a pak file handle, don't really close it
 */
 void COM_CloseFile(int h)
 {
-	searchpath_t* s;
-
-	for (s = com_searchpaths; s; s = s->next)
+	for (searchpath_t* s = com_searchpaths; s; s = s->next)
 		if (s->pack && s->pack->handle == h)
 			return;
 
@@ -1521,14 +1469,12 @@ int loadsize;
 byte* COM_LoadFile(char* path, int usehunk)
 {
 	int h;
-	byte* buf;
 	char base[32];
-	int len;
 
-	buf = NULL; // quiet compiler warning
+	byte* buf = NULL; // quiet compiler warning
 
 	// look for it in the filesystem or pack files
-	len = COM_OpenFile(path, &h);
+	int len = COM_OpenFile(path, &h);
 	if (h == -1)
 		return NULL;
 
@@ -1585,11 +1531,9 @@ void COM_LoadCacheFile(char* path, cache_user_t* cu)
 // uses temp hunk if larger than bufsize
 byte* COM_LoadStackFile(char* path, void* buffer, int bufsize)
 {
-	byte* buf;
-
 	loadbuf = (byte*)buffer;
 	loadsize = bufsize;
-	buf = COM_LoadFile(path, 4);
+	byte* buf = COM_LoadFile(path, 4);
 
 	return buf;
 }
@@ -1608,9 +1552,6 @@ pack_t* COM_LoadPackFile(char* packfile)
 {
 	dpackheader_t header;
 	int i;
-	packfile_t* new_files;
-	int numpackfiles;
-	pack_t* pack;
 	int packhandle;
 	dpackfile_t info[MAX_FILES_IN_PACK];
 	unsigned short crc;
@@ -1627,7 +1568,7 @@ pack_t* COM_LoadPackFile(char* packfile)
 	header.dirofs = LittleLong(header.dirofs);
 	header.dirlen = LittleLong(header.dirlen);
 
-	numpackfiles = header.dirlen / sizeof(dpackfile_t);
+	int numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error((char*)"%s has %i files", packfile, numpackfiles);
@@ -1635,7 +1576,8 @@ pack_t* COM_LoadPackFile(char* packfile)
 	if (numpackfiles != PAK0_COUNT)
 		com_modified = true; // not the original file
 
-	new_files = static_cast<packfile_t*>(Hunk_AllocName(numpackfiles * sizeof(packfile_t), (char*)"packfile"));
+	packfile_t* new_files = static_cast<packfile_t*>(Hunk_AllocName(numpackfiles * sizeof(packfile_t),
+	                                                                (char*)"packfile"));
 
 	Sys_FileSeek(packhandle, header.dirofs);
 	Sys_FileRead(packhandle, info, header.dirlen);
@@ -1655,7 +1597,7 @@ pack_t* COM_LoadPackFile(char* packfile)
 		new_files[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = static_cast<pack_t*>(Hunk_Alloc(sizeof(pack_t)));
+	pack_t* pack = static_cast<pack_t*>(Hunk_Alloc(sizeof(pack_t)));
 	strcpy(pack->filename, packfile);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -1676,9 +1618,6 @@ then loads and adds pak1.pak pak2.pak ...
 */
 void COM_AddGameDirectory(char* dir)
 {
-	int i;
-	searchpath_t* search;
-	pack_t* pak;
 	char pakfile[MAX_OSPATH];
 
 	strcpy(com_gamedir, dir);
@@ -1686,7 +1625,7 @@ void COM_AddGameDirectory(char* dir)
 	//
 	// add the directory to the search path
 	//
-	search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
+	searchpath_t* search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
 	strcpy(search->filename, dir);
 	search->next = com_searchpaths;
 	com_searchpaths = search;
@@ -1694,10 +1633,10 @@ void COM_AddGameDirectory(char* dir)
 	//
 	// add any pak files in the format pak0.pak pak1.pak, ...
 	//
-	for (i = 0; ; i++)
+	for (int i = 0; ; i++)
 	{
 		sprintf(pakfile, (char*)"%s/pak%i.pak", dir, i);
-		pak = COM_LoadPackFile(pakfile);
+		pack_t* pak = COM_LoadPackFile(pakfile);
 		if (!pak)
 			break;
 		search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
@@ -1718,21 +1657,19 @@ COM_InitFilesystem
 */
 void COM_InitFilesystem(void)
 {
-	int i, j;
 	char basedir[MAX_OSPATH];
-	searchpath_t* search;
 
 	//
 	// -basedir <path>
 	// Overrides the system supplied base directory (under GAMENAME)
 	//
-	i = COM_CheckParm((char*)"-basedir");
+	int i = COM_CheckParm((char*)"-basedir");
 	if (i && i < com_argc - 1)
 		strcpy(basedir, com_argv[i + 1]);
 	else
 		strcpy(basedir, host_parms.basedir);
 
-	j = strlen(basedir);
+	int j = strlen(basedir);
 
 	if (j > 0)
 	{
@@ -1793,7 +1730,7 @@ void COM_InitFilesystem(void)
 			if (!com_argv[i] || com_argv[i][0] == '+' || com_argv[i][0] == '-')
 				break;
 
-			search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
+			searchpath_t* search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
 			if (!strcmp(COM_FileExtension(com_argv[i]), (char*)"pak"))
 			{
 				search->pack = COM_LoadPackFile(com_argv[i]);

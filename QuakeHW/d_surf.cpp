@@ -39,7 +39,7 @@ surfcache_t *sc_rover, *sc_base;
 
 int D_SurfaceCacheForRes(int width, int height)
 {
-	int size, pix;
+	int size;
 
 	if (COM_CheckParm((char*)"-surfcachesize"))
 	{
@@ -49,7 +49,7 @@ int D_SurfaceCacheForRes(int width, int height)
 
 	size = SURFCACHE_SIZE_AT_320X200;
 
-	pix = width * height;
+	int pix = width * height;
 	if (pix > 64000)
 		size += (pix - 64000) * 3;
 
@@ -59,22 +59,16 @@ int D_SurfaceCacheForRes(int width, int height)
 
 void D_CheckCacheGuard(void)
 {
-	byte* s;
-	int i;
-
-	s = (byte*)sc_base + sc_size;
-	for (i = 0; i < GUARDSIZE; i++)
+	byte* s = (byte*)sc_base + sc_size;
+	for (int i = 0; i < GUARDSIZE; i++)
 		if (s[i] != (byte)i)
 			Sys_Error((char*)"D_CheckCacheGuard: failed");
 }
 
 void D_ClearCacheGuard(void)
 {
-	byte* s;
-	int i;
-
-	s = (byte*)sc_base + sc_size;
-	for (i = 0; i < GUARDSIZE; i++)
+	byte* s = (byte*)sc_base + sc_size;
+	for (int i = 0; i < GUARDSIZE; i++)
 		s[i] = (byte)i;
 }
 
@@ -109,12 +103,10 @@ D_FlushCaches
 */
 void D_FlushCaches(void)
 {
-	surfcache_t* c;
-
 	if (!sc_base)
 		return;
 
-	for (c = sc_base; c; c = c->next)
+	for (surfcache_t* c = sc_base; c; c = c->next)
 	{
 		if (c->owner)
 			*c->owner = NULL;
@@ -133,9 +125,6 @@ D_SCAlloc
 */
 surfcache_t* D_SCAlloc(int width, int size)
 {
-	surfcache_t* new_;
-	qboolean wrapped_this__time;
-
 	if ((width < 0) || (width > 256))
 		Sys_Error((char*)"D_SCAlloc: bad cache width %d\n", width);
 
@@ -148,7 +137,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 		Sys_Error((char*)"D_SCAlloc: %i > cache size", size);
 
 	// if there is not size bytes after the rover, reset to the start
-	wrapped_this__time = false;
+	qboolean wrapped_this__time = false;
 
 	if (!sc_rover || (byte*)sc_rover - (byte*)sc_base > sc_size - size)
 	{
@@ -160,7 +149,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 	}
 
 	// colect and free surfcache_t blocks until the rover block is large enough
-	new_ = sc_rover;
+	surfcache_t* new_ = sc_rover;
 	if (sc_rover->owner)
 		*sc_rover->owner = NULL;
 
@@ -220,9 +209,7 @@ D_SCDump
 */
 void D_SCDump(void)
 {
-	surfcache_t* test;
-
-	for (test = sc_base; test; test = test->next)
+	for (surfcache_t* test = sc_base; test; test = test->next)
 	{
 		if (test == sc_rover)
 			Sys_Printf((char*)"ROVER:\n");
@@ -249,9 +236,7 @@ int MaskForNum(int num)
 
 int D_log2(int num)
 {
-	int c;
-
-	c = 0;
+	int c = 0;
 
 	while (num >>= 1)
 		c++;
@@ -267,8 +252,6 @@ D_CacheSurface
 */
 surfcache_t* D_CacheSurface(msurface_t* surface, int miplevel)
 {
-	surfcache_t* cache;
-
 	//
 	// if the surface is animating or flashing, flush the cache
 	//
@@ -281,7 +264,7 @@ surfcache_t* D_CacheSurface(msurface_t* surface, int miplevel)
 	//
 	// see if the cache holds apropriate data
 	//
-	cache = surface->cachespots[miplevel];
+	surfcache_t* cache = surface->cachespots[miplevel];
 
 	if (cache && !cache->dlight && surface->dlightframe != r_framecount
 		&& cache->texture == r_drawsurf.texture

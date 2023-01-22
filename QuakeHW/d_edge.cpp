@@ -86,16 +86,12 @@ D_DrawSolidSurface
 
 void D_DrawSolidSurface(surf_t* surf, int color)
 {
-	espan_t* span;
-	byte* pdest;
-	int u, u2, pix;
-
-	pix = (color << 24) | (color << 16) | (color << 8) | color;
-	for (span = surf->spans; span; span = span->pnext)
+	int pix = (color << 24) | (color << 16) | (color << 8) | color;
+	for (espan_t* span = surf->spans; span; span = span->pnext)
 	{
-		pdest = d_viewbuffer + screenwidth * span->v;
-		u = span->u;
-		u2 = span->u + span->count - 1;
+		byte* pdest = d_viewbuffer + screenwidth * span->v;
+		int u = span->u;
+		int u2 = span->u + span->count - 1;
 		pdest[u] = pix;
 
 		if (u2 - u < 8)
@@ -126,20 +122,17 @@ D_CalcGradients
 */
 void D_CalcGradients(msurface_t* pface)
 {
-	mplane_t* pplane;
-	float mipscale;
 	vec3_t p_temp1;
 	vec3_t p_saxis, p_taxis;
-	float t;
 
-	pplane = pface->plane;
+	mplane_t* pplane = pface->plane;
 
-	mipscale = 1.0 / (float)(1 << miplevel);
+	float mipscale = 1.0 / (float)(1 << miplevel);
 
 	TransformVector(pface->texinfo->vecs[0], p_saxis);
 	TransformVector(pface->texinfo->vecs[1], p_taxis);
 
-	t = xscaleinv * mipscale;
+	float t = xscaleinv * mipscale;
 	d_sdivzstepu = p_saxis[0] * t;
 	d_tdivzstepu = p_taxis[0] * t;
 
@@ -179,7 +172,6 @@ void D_DrawSurfaces(void)
 {
 	surf_t* s;
 	msurface_t* pface;
-	surfcache_t* pcurrentcache;
 	vec3_t world_transformed_modelorg;
 	vec3_t local_modelorg;
 
@@ -300,7 +292,7 @@ void D_DrawSurfaces(void)
 					* pface->texinfo->mipadjust);
 
 				// FIXME: make this_ passed in to D_CacheSurface
-				pcurrentcache = D_CacheSurface(pface, miplevel);
+				surfcache_t* pcurrentcache = D_CacheSurface(pface, miplevel);
 
 				cacheblock = (pixel_t*)pcurrentcache->data;
 				cachewidth = pcurrentcache->width;

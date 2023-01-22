@@ -155,9 +155,6 @@ R_InitTextures
 */
 void R_InitTextures(void)
 {
-	int x, y, m;
-	byte* dest;
-
 	// create a simple checkerboard texture for the default
 	r_notexture_mip = static_cast<texture_s*>(Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, (char*)"notexture"));
 
@@ -167,11 +164,11 @@ void R_InitTextures(void)
 	r_notexture_mip->offsets[2] = r_notexture_mip->offsets[1] + 8 * 8;
 	r_notexture_mip->offsets[3] = r_notexture_mip->offsets[2] + 4 * 4;
 
-	for (m = 0; m < 4; m++)
+	for (int m = 0; m < 4; m++)
 	{
-		dest = (byte*)r_notexture_mip + r_notexture_mip->offsets[m];
-		for (y = 0; y < (16 >> m); y++)
-			for (x = 0; x < (16 >> m); x++)
+		byte* dest = (byte*)r_notexture_mip + r_notexture_mip->offsets[m];
+		for (int y = 0; y < (16 >> m); y++)
+			for (int x = 0; x < (16 >> m); x++)
 			{
 				if ((y < (8 >> m)) ^ (x < (8 >> m)))
 					*dest++ = 0;
@@ -247,11 +244,9 @@ R_NewMap
 */
 void R_NewMap(void)
 {
-	int i;
-
 	// clear out efrags in case the level hasn't been reloaded
 	// FIXME: is this_ one short?
-	for (i = 0; i < cl.worldmodel->numleafs; i++)
+	for (int i = 0; i < cl.worldmodel->numleafs; i++)
 		cl.worldmodel->leafs[i].efrags = NULL;
 
 	r_viewleaf = NULL;
@@ -308,10 +303,7 @@ R_SetVrect
 */
 void R_SetVrect(vrect_t* pvrectin, vrect_t* pvrect, int lineadj)
 {
-	int h;
-	float size;
-
-	size = scr_viewsize.value > 100 ? 100 : scr_viewsize.value;
+	float size = scr_viewsize.value > 100 ? 100 : scr_viewsize.value;
 	if (cl.intermission)
 	{
 		size = 100;
@@ -319,7 +311,7 @@ void R_SetVrect(vrect_t* pvrectin, vrect_t* pvrect, int lineadj)
 	}
 	size /= 100;
 
-	h = pvrectin->height - lineadj;
+	int h = pvrectin->height - lineadj;
 	pvrect->width = pvrectin->width * size;
 	if (pvrect->width < 96)
 	{
@@ -356,9 +348,6 @@ Guaranteed to be called before the first refresh
 */
 void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 {
-	int i;
-	float res_scale;
-
 	r_viewchanged = true;
 
 	R_SetVrect(pvrect, &r_refdef.vrect, lineadj);
@@ -446,10 +435,10 @@ void R_ViewChanged(vrect_t* pvrect, int lineadj, float aspect)
 	screenedge[3].normal[2] = 1;
 	screenedge[3].type = PLANE_ANYZ;
 
-	for (i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 		VectorNormalize(screenedge[i].normal);
 
-	res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
+	float res_scale = sqrt((double)(r_refdef.vrect.width * r_refdef.vrect.height) /
 			(320.0 * 152.0)) *
 		(2.0 / r_refdef.horizontalFieldOfView);
 	r_aliastransition = r_aliastransbase.value * res_scale;
@@ -471,23 +460,19 @@ R_MarkLeaves
 */
 void R_MarkLeaves(void)
 {
-	byte* vis;
-	mnode_t* node;
-	int i;
-
 	if (r_oldviewleaf == r_viewleaf)
 		return;
 
 	r_visframecount++;
 	r_oldviewleaf = r_viewleaf;
 
-	vis = Mod_LeafPVS(r_viewleaf, cl.worldmodel);
+	byte* vis = Mod_LeafPVS(r_viewleaf, cl.worldmodel);
 
-	for (i = 0; i < cl.worldmodel->numleafs; i++)
+	for (int i = 0; i < cl.worldmodel->numleafs; i++)
 	{
 		if (vis[i >> 3] & (1 << (i & 7)))
 		{
-			node = (mnode_t*)&cl.worldmodel->leafs[i + 1];
+			mnode_t* node = (mnode_t*)&cl.worldmodel->leafs[i + 1];
 			do
 			{
 				if (node->visframe == r_visframecount)
@@ -508,18 +493,15 @@ R_DrawEntitiesOnList
 */
 void R_DrawEntitiesOnList(void)
 {
-	int i, j;
-	int lnum;
 	alight_t lighting;
 	// FIXME: remove and do real lighting
 	float lightvec[3] = {-1, 0, 0};
 	vec3_t dist;
-	float add;
 
 	if (!r_drawentities.value)
 		return;
 
-	for (i = 0; i < cl_numvisedicts; i++)
+	for (int i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -542,21 +524,21 @@ void R_DrawEntitiesOnList(void)
 		// trivial accept status
 			if (R_AliasCheckBBox())
 			{
-				j = R_LightPoint(currententity->origin);
+				int j = R_LightPoint(currententity->origin);
 
 				lighting.ambientlight = j;
 				lighting.shadelight = j;
 
 				lighting.plightvec = lightvec;
 
-				for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+				for (int lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 				{
 					if (cl_dlights[lnum].die >= cl.time)
 					{
 						VectorSubtract(currententity->origin,
 						               cl_dlights[lnum].origin,
 						               dist);
-						add = cl_dlights[lnum].radius - Length(dist);
+						float add = cl_dlights[lnum].radius - Length(dist);
 
 						if (add > 0)
 							lighting.ambientlight += add;
@@ -589,11 +571,7 @@ void R_DrawViewModel(void)
 {
 	// FIXME: remove and do real lighting
 	float lightvec[3] = {-1, 0, 0};
-	int j;
-	int lnum;
 	vec3_t dist;
-	float add;
-	dlight_t* dl;
 
 	if (!r_drawviewmodel.value || r_fov_greater_than_90)
 		return;
@@ -614,7 +592,7 @@ void R_DrawViewModel(void)
 	VectorCopy(vup, viewlightvec);
 	VectorInverse(viewlightvec);
 
-	j = R_LightPoint(currententity->origin);
+	int j = R_LightPoint(currententity->origin);
 
 	if (j < 24)
 		j = 24; // allways give some light on gun
@@ -622,9 +600,9 @@ void R_DrawViewModel(void)
 	r_viewlighting.shadelight = j;
 
 	// add dynamic lights 
-	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+	for (int lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
-		dl = &cl_dlights[lnum];
+		dlight_t* dl = &cl_dlights[lnum];
 		if (!dl->radius)
 			continue;
 		if (!dl->radius)
@@ -633,7 +611,7 @@ void R_DrawViewModel(void)
 			continue;
 
 		VectorSubtract(currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		float add = dl->radius - Length(dist);
 		if (add > 0)
 			r_viewlighting.ambientlight += add;
 	}
@@ -657,11 +635,11 @@ R_BmodelCheckBBox
 */
 int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 {
-	int i, *pindex, clipflags;
+	int i;
 	vec3_t acceptpt, rejectpt;
 	double d;
 
-	clipflags = 0;
+	int clipflags = 0;
 
 	if (currententity->angles[0] || currententity->angles[1]
 		|| currententity->angles[2])
@@ -686,7 +664,7 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 			// FIXME: do with fast look-ups or integer tests based on the sign bit
 			// of the floating point values
 
-			pindex = pfrustum_indexes[i];
+			int* pindex = pfrustum_indexes[i];
 
 			rejectpt[0] = minmaxs[pindex[0]];
 			rejectpt[1] = minmaxs[pindex[1]];
@@ -721,7 +699,7 @@ R_DrawBEntitiesOnList
 */
 void R_DrawBEntitiesOnList(void)
 {
-	int i, j, k, clipflags;
+	int j, clipflags;
 	vec3_t oldorigin;
 	model_t* clmodel;
 	float minmaxs[6];
@@ -733,7 +711,7 @@ void R_DrawBEntitiesOnList(void)
 	insubmodel = true;
 	r_dlightframecount = r_framecount;
 
-	for (i = 0; i < cl_numvisedicts; i++)
+	for (int i = 0; i < cl_numvisedicts; i++)
 	{
 		currententity = cl_visedicts[i];
 
@@ -771,7 +749,7 @@ void R_DrawBEntitiesOnList(void)
 				// instanced model
 				if (clmodel->firstmodelsurface != 0)
 				{
-					for (k = 0; k < MAX_DLIGHTS; k++)
+					for (int k = 0; k < MAX_DLIGHTS; k++)
 					{
 						if ((cl_dlights[k].die < cl.time) ||
 							(!cl_dlights[k].radius))
@@ -1023,9 +1001,8 @@ void R_RenderView_(void)
 void R_RenderView(void)
 {
 	int dummy;
-	int delta;
 
-	delta = (byte*)&dummy - r_stack_start;
+	int delta = (byte*)&dummy - r_stack_start;
 	if (delta < -10000 || delta > 10000)
 		Sys_Error((char*)"R_RenderView: called without enough stack");
 
@@ -1048,9 +1025,7 @@ R_InitTurb
 */
 void R_InitTurb(void)
 {
-	int i;
-
-	for (i = 0; i < (SIN_BUFFER_SIZE); i++)
+	for (int i = 0; i < (SIN_BUFFER_SIZE); i++)
 	{
 		sintable[i] = AMP + sin(i * 3.14159 * 2 / CYCLE) * AMP;
 		intsintable[i] = AMP2 + sin(i * 3.14159 * 2 / CYCLE) * AMP2; // AMP2, not 20

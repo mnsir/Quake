@@ -66,12 +66,11 @@ CL_ParseBeam
 */
 void CL_ParseBeam(model_t* m)
 {
-	int ent;
 	vec3_t start, end;
 	beam_t* b;
 	int i;
 
-	ent = MSG_ReadShort();
+	int ent = MSG_ReadShort();
 
 	start[0] = MSG_ReadCoord();
 	start[1] = MSG_ReadCoord();
@@ -116,13 +115,12 @@ CL_ParseTEnt
 */
 void CL_ParseTEnt(void)
 {
-	int type;
 	vec3_t pos;
 	dlight_t* dl;
 	int rnd;
 	int colorStart, colorLength;
 
-	type = MSG_ReadByte();
+	int type = MSG_ReadByte();
 	switch (type)
 	{
 	case TE_WIZSPIKE: // spike hitting wall
@@ -268,13 +266,11 @@ CL_NewTempEntity
 */
 entity_t* CL_NewTempEntity(void)
 {
-	entity_t* ent;
-
 	if (cl_numvisedicts == MAX_VISEDICTS)
 		return NULL;
 	if (num_temp_entities == MAX_TEMP_ENTITIES)
 		return NULL;
-	ent = &cl_temp_entities[num_temp_entities];
+	entity_t* ent = &cl_temp_entities[num_temp_entities];
 	memset(ent, 0, sizeof(*ent));
 	num_temp_entities++;
 	cl_visedicts[cl_numvisedicts] = ent;
@@ -295,10 +291,7 @@ void CL_UpdateTEnts(void)
 	int i;
 	beam_t* b;
 	vec3_t dist, org;
-	float d;
-	entity_t* ent;
 	float yaw, pitch;
-	float forward;
 
 	num_temp_entities = 0;
 
@@ -331,7 +324,7 @@ void CL_UpdateTEnts(void)
 			if (yaw < 0)
 				yaw += 360;
 
-			forward = sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
+			float forward = sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
 			pitch = (int)(atan2(dist[2], forward) * 180 / M_PI);
 			if (pitch < 0)
 				pitch += 360;
@@ -339,10 +332,10 @@ void CL_UpdateTEnts(void)
 
 		// add new_ entities for the lightning
 		VectorCopy(b->start, org);
-		d = VectorNormalize(dist);
+		float d = VectorNormalize(dist);
 		while (d > 0)
 		{
-			ent = CL_NewTempEntity();
+			entity_t* ent = CL_NewTempEntity();
 			if (!ent)
 				return;
 			VectorCopy(org, ent->origin);

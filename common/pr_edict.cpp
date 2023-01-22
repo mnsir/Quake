@@ -162,12 +162,9 @@ ED_GlobalAtOfs
 */
 ddef_t* ED_GlobalAtOfs(int ofs)
 {
-	ddef_t* def;
-	int i;
-
-	for (i = 0; i < progs->numglobaldefs; i++)
+	for (int i = 0; i < progs->numglobaldefs; i++)
 	{
-		def = &pr_globaldefs[i];
+		ddef_t* def = &pr_globaldefs[i];
 		if (def->ofs == ofs)
 			return def;
 	}
@@ -181,12 +178,9 @@ ED_FieldAtOfs
 */
 ddef_t* ED_FieldAtOfs(int ofs)
 {
-	ddef_t* def;
-	int i;
-
-	for (i = 0; i < progs->numfielddefs; i++)
+	for (int i = 0; i < progs->numfielddefs; i++)
 	{
-		def = &pr_fielddefs[i];
+		ddef_t* def = &pr_fielddefs[i];
 		if (def->ofs == ofs)
 			return def;
 	}
@@ -200,12 +194,9 @@ ED_FindField
 */
 ddef_t* ED_FindField(char* name)
 {
-	ddef_t* def;
-	int i;
-
-	for (i = 0; i < progs->numfielddefs; i++)
+	for (int i = 0; i < progs->numfielddefs; i++)
 	{
-		def = &pr_fielddefs[i];
+		ddef_t* def = &pr_fielddefs[i];
 		if (!strcmp(pr_strings + def->s_name, name))
 			return def;
 	}
@@ -220,12 +211,9 @@ ED_FindGlobal
 */
 ddef_t* ED_FindGlobal(char* name)
 {
-	ddef_t* def;
-	int i;
-
-	for (i = 0; i < progs->numglobaldefs; i++)
+	for (int i = 0; i < progs->numglobaldefs; i++)
 	{
-		def = &pr_globaldefs[i];
+		ddef_t* def = &pr_globaldefs[i];
 		if (!strcmp(pr_strings + def->s_name, name))
 			return def;
 	}
@@ -240,12 +228,9 @@ ED_FindFunction
 */
 dfunction_t* ED_FindFunction(char* name)
 {
-	dfunction_t* func;
-	int i;
-
-	for (i = 0; i < progs->numfunctions; i++)
+	for (int i = 0; i < progs->numfunctions; i++)
 	{
-		func = &pr_functions[i];
+		dfunction_t* func = &pr_functions[i];
 		if (!strcmp(pr_strings + func->s_name, name))
 			return func;
 	}
@@ -256,10 +241,9 @@ dfunction_t* ED_FindFunction(char* name)
 eval_t* GetEdictFieldValue(edict_t* ed, char* field)
 {
 	ddef_t* def = NULL;
-	int i;
 	static int rep = 0;
 
-	for (i = 0; i < GEFV_CACHESIZE; i++)
+	for (int i = 0; i < GEFV_CACHESIZE; i++)
 	{
 		if (!strcmp(field, gefvCache[i].field))
 		{
@@ -403,23 +387,19 @@ padded to 20 field width
 */
 char* PR_GlobalString(int ofs)
 {
-	char* s;
-	int i;
-	ddef_t* def;
-	void* val;
 	static char line[128];
 
-	val = (void*)&pr_globals[ofs];
-	def = ED_GlobalAtOfs(ofs);
+	void* val = (void*)&pr_globals[ofs];
+	ddef_t* def = ED_GlobalAtOfs(ofs);
 	if (!def)
 		sprintf(line, (char*)"%i(???)", ofs);
 	else
 	{
-		s = PR_ValueString((etype_t)def->type, (eval_t*)val);
+		char* s = PR_ValueString((etype_t)def->type, (eval_t*)val);
 		sprintf(line, (char*)"%i(%s)%s", ofs, pr_strings + def->s_name, s);
 	}
 
-	i = strlen(line);
+	int i = strlen(line);
 	for (; i < 20; i++)
 		strcat(line, (char*)" ");
 	strcat(line, (char*)" ");
@@ -429,17 +409,15 @@ char* PR_GlobalString(int ofs)
 
 char* PR_GlobalStringNoContents(int ofs)
 {
-	int i;
-	ddef_t* def;
 	static char line[128];
 
-	def = ED_GlobalAtOfs(ofs);
+	ddef_t* def = ED_GlobalAtOfs(ofs);
 	if (!def)
 		sprintf(line, (char*)"%i(???)", ofs);
 	else
 		sprintf(line, (char*)"%i(%s)", ofs, pr_strings + def->s_name);
 
-	i = strlen(line);
+	int i = strlen(line);
 	for (; i < 20; i++)
 		strcat(line, (char*)" ");
 	strcat(line, (char*)" ");
@@ -457,12 +435,7 @@ For debugging
 */
 void ED_Print(edict_t* ed)
 {
-	int l;
-	ddef_t* d;
-	int* v;
-	int i, j;
-	char* name;
-	int type;
+	int j;
 
 	if (ed->free)
 	{
@@ -471,17 +444,17 @@ void ED_Print(edict_t* ed)
 	}
 
 	Con_Printf((char*)"\nEDICT %i:\n", NUM_FOR_EDICT(ed));
-	for (i = 1; i < progs->numfielddefs; i++)
+	for (int i = 1; i < progs->numfielddefs; i++)
 	{
-		d = &pr_fielddefs[i];
-		name = pr_strings + d->s_name;
+		ddef_t* d = &pr_fielddefs[i];
+		char* name = pr_strings + d->s_name;
 		if (name[strlen(name) - 2] == '_')
 			continue; // skip _x, _y, _z vars
 
-		v = (int*)((char*)&ed->v + d->ofs * 4);
+		int* v = (int*)((char*)&ed->v + d->ofs * 4);
 
 		// if the value is still all 0, skip the field
-		type = d->type & ~DEF_SAVEGLOBAL;
+		int type = d->type & ~DEF_SAVEGLOBAL;
 
 		for (j = 0; j < type_size[type]; j++)
 			if (v[j])
@@ -490,7 +463,7 @@ void ED_Print(edict_t* ed)
 			continue;
 
 		Con_Printf((char*)"%s", name);
-		l = strlen(name);
+		int l = strlen(name);
 		while (l++ < 15)
 			Con_Printf((char*)" ");
 
@@ -507,11 +480,7 @@ For savegames
 */
 void ED_Write(FILE* f, edict_t* ed)
 {
-	ddef_t* d;
-	int* v;
-	int i, j;
-	char* name;
-	int type;
+	int j;
 
 	fprintf(f, (char*)"{\n");
 
@@ -521,17 +490,17 @@ void ED_Write(FILE* f, edict_t* ed)
 		return;
 	}
 
-	for (i = 1; i < progs->numfielddefs; i++)
+	for (int i = 1; i < progs->numfielddefs; i++)
 	{
-		d = &pr_fielddefs[i];
-		name = pr_strings + d->s_name;
+		ddef_t* d = &pr_fielddefs[i];
+		char* name = pr_strings + d->s_name;
 		if (name[strlen(name) - 2] == '_')
 			continue; // skip _x, _y, _z vars
 
-		v = (int*)((char*)&ed->v + d->ofs * 4);
+		int* v = (int*)((char*)&ed->v + d->ofs * 4);
 
 		// if the value is still all 0, skip the field
-		type = d->type & ~DEF_SAVEGLOBAL;
+		int type = d->type & ~DEF_SAVEGLOBAL;
 		for (j = 0; j < type_size[type]; j++)
 			if (v[j])
 				break;
@@ -559,10 +528,8 @@ For debugging, prints all the entities in the current server
 */
 void ED_PrintEdicts(void)
 {
-	int i;
-
 	Con_Printf((char*)"%i entities\n", sv.num_edicts);
-	for (i = 0; i < sv.num_edicts; i++)
+	for (int i = 0; i < sv.num_edicts; i++)
 		ED_PrintNum(i);
 }
 
@@ -575,9 +542,7 @@ For debugging, prints a single edicy
 */
 void ED_PrintEdict_f(void)
 {
-	int i;
-
-	i = Q_atoi(Cmd_Argv(1));
+	int i = Q_atoi(Cmd_Argv(1));
 	if (i >= sv.num_edicts)
 	{
 		Con_Printf((char*)"Bad edict number\n");
@@ -595,14 +560,12 @@ For debugging
 */
 void ED_Count(void)
 {
-	int i;
-	edict_t* ent;
-	int active, models, solid, step;
+	int models, solid, step;
 
-	active = models = solid = step = 0;
-	for (i = 0; i < sv.num_edicts; i++)
+	int active = models = solid = step = 0;
+	for (int i = 0; i < sv.num_edicts; i++)
 	{
-		ent = EDICT_NUM(i);
+		edict_t* ent = EDICT_NUM(i);
 		if (ent->free)
 			continue;
 		active++;
@@ -637,16 +600,11 @@ ED_WriteGlobals
 */
 void ED_WriteGlobals(FILE* f)
 {
-	ddef_t* def;
-	int i;
-	char* name;
-	int type;
-
 	fprintf(f, (char*)"{\n");
-	for (i = 0; i < progs->numglobaldefs; i++)
+	for (int i = 0; i < progs->numglobaldefs; i++)
 	{
-		def = &pr_globaldefs[i];
-		type = def->type;
+		ddef_t* def = &pr_globaldefs[i];
+		int type = def->type;
 		if (!(def->type & DEF_SAVEGLOBAL))
 			continue;
 		type &= ~DEF_SAVEGLOBAL;
@@ -656,7 +614,7 @@ void ED_WriteGlobals(FILE* f)
 			&& type != ev_entity)
 			continue;
 
-		name = pr_strings + def->s_name;
+		char* name = pr_strings + def->s_name;
 		fprintf(f, (char*)"\"%s\" ", name);
 		fprintf(f, (char*)"\"%s\"\n", PR_UglyValueString((etype_t)type, (eval_t*)&pr_globals[def->ofs]));
 	}
@@ -671,7 +629,6 @@ ED_ParseGlobals
 void ED_ParseGlobals(char* data)
 {
 	char keyname[64];
-	ddef_t* key;
 
 	while (1)
 	{
@@ -692,7 +649,7 @@ void ED_ParseGlobals(char* data)
 		if (com_token[0] == '}')
 			Sys_Error((char*)"ED_ParseEntity: closing brace without data");
 
-		key = ED_FindGlobal(keyname);
+		ddef_t* key = ED_FindGlobal(keyname);
 		if (!key)
 		{
 			Con_Printf((char*)"'%s' is not a global\n", keyname);
@@ -714,14 +671,11 @@ ED_NewString
 */
 char* ED_NewString(char* string)
 {
-	char *new_, *new__p;
-	int i, l;
+	int l = strlen(string) + 1;
+	char* new_ = static_cast<char*>(Hunk_Alloc(l));
+	char* new__p = new_;
 
-	l = strlen(string) + 1;
-	new_ = static_cast<char*>(Hunk_Alloc(l));
-	new__p = new_;
-
-	for (i = 0; i < l; i++)
+	for (int i = 0; i < l; i++)
 	{
 		if (string[i] == '\\' && i < l - 1)
 		{
@@ -753,10 +707,9 @@ qboolean ED_ParseEpair(void* base, ddef_t* key, char* s)
 	char string[128];
 	ddef_t* def;
 	char *v, *w;
-	void* d;
 	dfunction_t* func;
 
-	d = (void*)((int*)base + key->ofs);
+	void* d = (void*)((int*)base + key->ofs);
 
 	switch (key->type & ~DEF_SAVEGLOBAL)
 	{
@@ -823,13 +776,10 @@ Used for initial level load and for savegames.
 */
 char* ED_ParseEdict(char* data, edict_t* ent)
 {
-	ddef_t* key;
 	qboolean anglehack;
-	qboolean init;
 	char keyname[256];
-	int n;
 
-	init = false;
+	qboolean init = false;
 
 	// clear it
 	if (ent != sv.edicts) // hack
@@ -862,7 +812,7 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 		strcpy(keyname, com_token);
 
 		// another hack to fix heynames with trailing spaces
-		n = strlen(keyname);
+		int n = strlen(keyname);
 		while (n && keyname[n - 1] == ' ')
 		{
 			keyname[n - 1] = 0;
@@ -884,7 +834,7 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 		if (keyname[0] == '_')
 			continue;
 
-		key = ED_FindField(keyname);
+		ddef_t* key = ED_FindField(keyname);
 		if (!key)
 		{
 			Con_Printf((char*)"'%s' is not a field\n", keyname);
@@ -926,12 +876,8 @@ to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 */
 void ED_LoadFromFile(char* data)
 {
-	edict_t* ent;
-	int inhibit;
-	dfunction_t* func;
-
-	ent = NULL;
-	inhibit = 0;
+	edict_t* ent = NULL;
+	int inhibit = 0;
 	pr_global_struct->time = sv.time;
 
 	// parse ents
@@ -981,7 +927,7 @@ void ED_LoadFromFile(char* data)
 		}
 
 		// look for the spawn function
-		func = ED_FindFunction(pr_strings + ent->v.classname);
+		dfunction_t* func = ED_FindFunction(pr_strings + ent->v.classname);
 
 		if (!func)
 		{
@@ -1116,9 +1062,7 @@ edict_t* EDICT_NUM(int n)
 
 int NUM_FOR_EDICT(edict_t* e)
 {
-	int b;
-
-	b = (byte*)e - (byte*)sv.edicts;
+	int b = (byte*)e - (byte*)sv.edicts;
 	b = b / pr_edict_size;
 
 	if (b < 0 || b >= sv.num_edicts)

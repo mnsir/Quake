@@ -115,8 +115,6 @@ FreeSound
 */
 void FreeSound(void)
 {
-	int i;
-
 	if (pDSBuf)
 	{
 		pDSBuf->Stop();
@@ -141,7 +139,7 @@ void FreeSound(void)
 
 		if (lpWaveHdr)
 		{
-			for (i = 0; i < WAV_BUFFERS; i++)
+			for (int i = 0; i < WAV_BUFFERS; i++)
 				waveOutUnprepareHeader(hWaveOut, lpWaveHdr + i, sizeof(WAVEHDR));
 		}
 
@@ -188,7 +186,6 @@ sndinitstat SNDDMA_InitDirect(void)
 	DSCAPS dscaps;
 	WAVEFORMATEX format, pformat;
 	HRESULT hresult;
-	int reps;
 
 	memset((void*)&sn, 0, sizeof(sn));
 
@@ -366,7 +363,7 @@ sndinitstat SNDDMA_InitDirect(void)
 	gSndBufSize = dsbcaps.dwBufferBytes;
 
 	// initialize the buffer
-	reps = 0;
+	int reps = 0;
 
 	while ((hresult = pDSBuf->Lock(0, gSndBufSize, (LPVOID*)&lpData, &dwSize, NULL, NULL, 0)) != DS_OK)
 	{
@@ -421,7 +418,6 @@ Crappy windows multimedia base
 qboolean SNDDMA_InitWav(void)
 {
 	WAVEFORMATEX format;
-	int i;
 	HRESULT hr;
 
 	snd_sent = 0;
@@ -517,7 +513,7 @@ qboolean SNDDMA_InitWav(void)
 	memset(lpWaveHdr, 0, sizeof(WAVEHDR) * WAV_BUFFERS);
 
 	/* After allocation, set up and prepare headers. */
-	for (i = 0; i < WAV_BUFFERS; i++)
+	for (int i = 0; i < WAV_BUFFERS; i++)
 	{
 		lpWaveHdr[i].dwBufferLength = WAV_BUFFER_SIZE;
 		lpWaveHdr[i].lpData = lpData + i * WAV_BUFFER_SIZE;
@@ -555,14 +551,12 @@ Returns false if nothing is found.
 
 qboolean SNDDMA_Init(void)
 {
-	sndinitstat stat;
-
 	if (COM_CheckParm((char*)"-wavonly"))
 		wavonly = true;
 
 	dsound_init = wav_init = 0;
 
-	stat = SIS_FAILURE; // assume DirectSound won't initialize
+	sndinitstat stat = SIS_FAILURE; // assume DirectSound won't initialize
 
 	/* Init DirectSound */
 	if (!wavonly)
@@ -664,9 +658,6 @@ Send sound to device if buffer isn't really the dma buffer
 */
 void SNDDMA_Submit(void)
 {
-	LPWAVEHDR h;
-	int wResult;
-
 	if (!wav_init)
 		return;
 
@@ -694,7 +685,7 @@ void SNDDMA_Submit(void)
 	//
 	while (((snd_sent - snd_completed) >> sample16) < 4)
 	{
-		h = lpWaveHdr + (snd_sent & WAV_MASK);
+		LPWAVEHDR h = lpWaveHdr + (snd_sent & WAV_MASK);
 
 		snd_sent++;
 		/*
@@ -702,7 +693,7 @@ void SNDDMA_Submit(void)
 		 * waveOutWrite function returns immediately and waveform
 		 * data is sent to the output device in the background.
 		 */
-		wResult = waveOutWrite(hWaveOut, h, sizeof(WAVEHDR));
+		int wResult = waveOutWrite(hWaveOut, h, sizeof(WAVEHDR));
 
 		if (wResult != MMSYSERR_NOERROR)
 		{

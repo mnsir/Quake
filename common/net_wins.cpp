@@ -67,7 +67,6 @@ static double blocktime;
 BOOL PASCAL FAR BlockingHook(void)
 {
 	MSG msg;
-	BOOL ret;
 
 	if ((Sys_FloatTime() - blocktime) > 2.0)
 	{
@@ -76,7 +75,7 @@ BOOL PASCAL FAR BlockingHook(void)
 	}
 
 	/* get the next message, if any */
-	ret = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+	BOOL ret = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 
 	/* if we got one, process it */
 	if (ret)
@@ -92,9 +91,7 @@ BOOL PASCAL FAR BlockingHook(void)
 
 void WINS_GetLocalAddress()
 {
-	struct hostent* local = NULL;
 	char buff[MAXHOSTNAMELEN];
-	unsigned long addr;
 
 	if (myAddr != INADDR_ANY)
 		return;
@@ -104,14 +101,14 @@ void WINS_GetLocalAddress()
 
 	blocktime = Sys_FloatTime();
 	WSASetBlockingHook(BlockingHook);
-	local = pgethostbyname(buff);
+	struct hostent* local = pgethostbyname(buff);
 	WSAUnhookBlockingHook();
 	if (local == NULL)
 		return;
 
 	myAddr = *(int*)local->h_addr_list[0];
 
-	addr = ntohl(myAddr);
+	unsigned long addr = ntohl(myAddr);
 	sprintf(my_tcpip_address, (char*)"%d.%d.%d.%d", (addr >> 24) & 0xff, (addr >> 16) & 0xff, (addr >> 8) & 0xff, addr & 0xff);
 }
 
@@ -121,13 +118,10 @@ int WINS_Init(void)
 	int i;
 	char buff[MAXHOSTNAMELEN];
 	char* p;
-	int r;
-	WORD wVersionRequested;
-	HINSTANCE hInst;
 
 	// initialize the Winsock function vectors (we do this_ instead of statically linking
 	// so we can run on Win 3.1, where there isn't necessarily Winsock)
-	hInst = LoadLibrary((char*)"wsock32.dll");
+	HINSTANCE hInst = LoadLibrary((char*)"wsock32.dll");
 
 	if (hInst == NULL)
 	{
@@ -167,9 +161,9 @@ int WINS_Init(void)
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1);
+		WORD wVersionRequested = MAKEWORD(1, 1);
 
-		r = pWSAStartup(MAKEWORD(1, 1), &winsockdata);
+		int r = pWSAStartup(MAKEWORD(1, 1), &winsockdata);
 
 		if (r)
 		{
@@ -326,26 +320,21 @@ the local network components to fill in the rest
 static int PartialIPAddress(char* in, struct qsockaddr* hostaddr)
 {
 	char buff[256];
-	char* b;
-	int addr;
-	int num;
-	int mask;
-	int run;
 	int port;
 
 	buff[0] = '.';
-	b = buff;
+	char* b = buff;
 	strcpy(buff + 1, in);
 	if (buff[1] == '.')
 		b++;
 
-	addr = 0;
-	mask = -1;
+	int addr = 0;
+	int mask = -1;
 	while (*b == '.')
 	{
 		b++;
-		num = 0;
-		run = 0;
+		int num = 0;
+		int run = 0;
 		while (!(*b < '0' || *b > '9'))
 		{
 			num = num * 10 + *b++ - '0';
@@ -400,9 +389,8 @@ int WINS_CheckNewConnections(void)
 int WINS_Read(int socket, byte* buf, int len, struct qsockaddr* addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
-	int ret;
 
-	ret = precvfrom(socket, (char*)buf, len, 0, (struct sockaddr*)addr, &addrlen);
+	int ret = precvfrom(socket, (char*)buf, len, 0, (struct sockaddr*)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = pWSAGetLastError();
@@ -431,14 +419,12 @@ int WINS_MakeSocketBroadcastCapable(int socket)
 
 int WINS_Broadcast(int socket, byte* buf, int len)
 {
-	int ret;
-
 	if (socket != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
 			Sys_Error((char*)"Attempted to use multiple broadcasts sockets\n");
 		WINS_GetLocalAddress();
-		ret = WINS_MakeSocketBroadcastCapable(socket);
+		int ret = WINS_MakeSocketBroadcastCapable(socket);
 		if (ret == -1)
 		{
 			Con_Printf((char*)"Unable to make socket broadcast capable\n");
@@ -453,9 +439,7 @@ int WINS_Broadcast(int socket, byte* buf, int len)
 
 int WINS_Write(int socket, byte* buf, int len, struct qsockaddr* addr)
 {
-	int ret;
-
-	ret = psendto(socket, (char*)buf, len, 0, (struct sockaddr*)addr, sizeof(struct qsockaddr));
+	int ret = psendto(socket, (char*)buf, len, 0, (struct sockaddr*)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 		if (pWSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -468,9 +452,8 @@ int WINS_Write(int socket, byte* buf, int len, struct qsockaddr* addr)
 char* WINS_AddrToString(struct qsockaddr* addr)
 {
 	static char buffer[22];
-	int haddr;
 
-	haddr = ntohl(((struct sockaddr_in*)addr)->sin_addr.s_addr);
+	int haddr = ntohl(((struct sockaddr_in*)addr)->sin_addr.s_addr);
 	sprintf(buffer, (char*)"%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
 	        ntohs(((struct sockaddr_in*)addr)->sin_port));
 	return buffer;
@@ -481,10 +464,9 @@ char* WINS_AddrToString(struct qsockaddr* addr)
 int WINS_StringToAddr(char* string, struct qsockaddr* addr)
 {
 	int ha1, ha2, ha3, ha4, hp;
-	int ipaddr;
 
 	sscanf(string, (char*)"%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
-	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
+	int ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
 
 	addr->sa_family = AF_INET;
 	((struct sockaddr_in*)addr)->sin_addr.s_addr = htonl(ipaddr);
@@ -497,11 +479,10 @@ int WINS_StringToAddr(char* string, struct qsockaddr* addr)
 int WINS_GetSocketAddr(int socket, struct qsockaddr* addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
-	unsigned int a;
 
 	Q_memset(addr, 0, sizeof(struct qsockaddr));
 	pgetsockname(socket, (struct sockaddr*)addr, &addrlen);
-	a = ((struct sockaddr_in*)addr)->sin_addr.s_addr;
+	unsigned int a = ((struct sockaddr_in*)addr)->sin_addr.s_addr;
 	if (a == 0 || a == inet_addr((char*)"127.0.0.1"))
 		((struct sockaddr_in*)addr)->sin_addr.s_addr = myAddr;
 
@@ -512,9 +493,8 @@ int WINS_GetSocketAddr(int socket, struct qsockaddr* addr)
 
 int WINS_GetNameFromAddr(struct qsockaddr* addr, char* name)
 {
-	struct hostent* hostentry;
-
-	hostentry = pgethostbyaddr((char*)&((struct sockaddr_in*)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
+	struct hostent* hostentry = pgethostbyaddr((char*)&((struct sockaddr_in*)addr)->sin_addr, sizeof(struct in_addr),
+	                                           AF_INET);
 	if (hostentry)
 	{
 		Q_strncpy(name, hostentry->h_name, NET_NAMELEN - 1);
@@ -529,12 +509,10 @@ int WINS_GetNameFromAddr(struct qsockaddr* addr, char* name)
 
 int WINS_GetAddrFromName(char* name, struct qsockaddr* addr)
 {
-	struct hostent* hostentry;
-
 	if (name[0] >= '0' && name[0] <= '9')
 		return PartialIPAddress(name, addr);
 
-	hostentry = pgethostbyname(name);
+	struct hostent* hostentry = pgethostbyname(name);
 	if (!hostentry)
 		return -1;
 

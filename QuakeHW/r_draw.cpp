@@ -79,14 +79,11 @@ R_EmitEdge
 */
 void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 {
-	edge_t *edge, *pcheck;
-	int u_check;
 	float u, u_step;
 	vec3_t local, transformed;
 	float* world;
 	int v, v2, ceilv0;
 	float scale, lzi0, u0, v0;
-	int side;
 
 	if (r_lastvertvalid)
 	{
@@ -179,9 +176,9 @@ void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 		return; // horizontal edge
 	}
 
-	side = ceilv0 > r_ceilv1;
+	int side = ceilv0 > r_ceilv1;
 
-	edge = edge_p++;
+	edge_t* edge = edge_p++;
 
 	edge->owner = r_pedge;
 
@@ -228,7 +225,7 @@ void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 	//
 	// sort the edge in normally
 	//
-	u_check = edge->u;
+	int u_check = edge->u;
 	if (edge->surfs[0])
 		u_check++; // sort trailers after leaders
 
@@ -239,7 +236,7 @@ void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1)
 	}
 	else
 	{
-		pcheck = new_edges[v];
+		edge_t* pcheck = new_edges[v];
 		while (pcheck->next && pcheck->next->u < u_check)
 			pcheck = pcheck->next;
 		edge->next = pcheck->next;
@@ -258,15 +255,15 @@ R_ClipEdge
 */
 void R_ClipEdge(mvertex_t* pv0, mvertex_t* pv1, clipplane_t* clip)
 {
-	float d0, d1, f;
+	float f;
 	mvertex_t clipvert;
 
 	if (clip)
 	{
 		do
 		{
-			d0 = DotProduct(pv0->position, clip->normal) - clip->dist;
-			d1 = DotProduct(pv1->position, clip->normal) - clip->dist;
+			float d0 = DotProduct(pv0->position, clip->normal) - clip->dist;
+			float d1 = DotProduct(pv1->position, clip->normal) - clip->dist;
 
 			if (d0 >= 0)
 			{
@@ -358,9 +355,7 @@ R_EmitCachedEdge
 */
 void R_EmitCachedEdge(void)
 {
-	edge_t* pedge_t;
-
-	pedge_t = (edge_t*)((unsigned long)r_edges + r_pedge->cachededgeoffset);
+	edge_t* pedge_t = (edge_t*)((unsigned long)r_edges + r_pedge->cachededgeoffset);
 
 	if (!pedge_t->surfs[0])
 		pedge_t->surfs[0] = surface_p - surfaces;
@@ -381,13 +376,10 @@ R_RenderFace
 */
 void R_RenderFace(msurface_t* fa, int clipflags)
 {
-	int i, lindex;
+	int i;
 	unsigned mask;
-	mplane_t* pplane;
-	float distinv;
 	vec3_t p_normal;
 	medge_t *pedges, tedge;
-	clipplane_t* pclip;
 
 	// skip out if no more surfs
 	if ((surface_p) >= surf_max)
@@ -406,7 +398,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 	c_faceclip++;
 
 	// set up clip planes
-	pclip = NULL;
+	clipplane_t* pclip = NULL;
 
 	for (i = 3, mask = 0x08; i >= 0; i--, mask >>= 1)
 	{
@@ -427,7 +419,7 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 
 	for (i = 0; i < fa->numedges; i++)
 	{
-		lindex = currententity->model->surfedges[fa->firstedge + i];
+		int lindex = currententity->model->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
 		{
@@ -555,11 +547,11 @@ void R_RenderFace(msurface_t* fa, int clipflags)
 	surface_p->key = r_currentkey++;
 	surface_p->spans = NULL;
 
-	pplane = fa->plane;
+	mplane_t* pplane = fa->plane;
 	// FIXME: cache this_?
 	TransformVector(pplane->normal, p_normal);
 	// FIXME: cache this_?
-	distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
+	float distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -581,11 +573,8 @@ void R_RenderBmodelFace(bedge_t* pedges, msurface_t* psurf)
 {
 	int i;
 	unsigned mask;
-	mplane_t* pplane;
-	float distinv;
 	vec3_t p_normal;
 	medge_t tedge;
-	clipplane_t* pclip;
 
 	// skip out if no more surfs
 	if (surface_p >= surf_max)
@@ -607,7 +596,7 @@ void R_RenderBmodelFace(bedge_t* pedges, msurface_t* psurf)
 	r_pedge = &tedge;
 
 	// set up clip planes
-	pclip = NULL;
+	clipplane_t* pclip = NULL;
 
 	for (i = 3, mask = 0x08; i >= 0; i--, mask >>= 1)
 	{
@@ -670,11 +659,11 @@ void R_RenderBmodelFace(bedge_t* pedges, msurface_t* psurf)
 	surface_p->key = r_currentbkey;
 	surface_p->spans = NULL;
 
-	pplane = psurf->plane;
+	mplane_t* pplane = psurf->plane;
 	// FIXME: cache this_?
 	TransformVector(pplane->normal, p_normal);
 	// FIXME: cache this_?
-	distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
+	float distinv = 1.0 / (pplane->dist - DotProduct(modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -694,25 +683,20 @@ R_RenderPoly
 */
 void R_RenderPoly(msurface_t* fa, int clipflags)
 {
-	int i, lindex, lnumverts, s_axis, t_axis;
-	float dist, lastdist, lzi, scale, u, v, frac;
+	int i, t_axis;
 	unsigned mask;
 	vec3_t local, transformed;
-	clipplane_t* pclip;
 	medge_t* pedges;
-	mplane_t* pplane;
 	mvertex_t verts[2][100]; //FIXME: do real number
 	polyvert_t pverts[100]; //FIXME: do real number, safely
-	int vertpage, new_verts, new_page, lastvert;
-	qboolean visible;
 
 	// FIXME: clean this_ up and make it faster
 	// FIXME: guard against running out of vertices
 
-	s_axis = t_axis = 0; // keep compiler happy
+	int s_axis = t_axis = 0; // keep compiler happy
 
 	// set up clip planes
-	pclip = NULL;
+	clipplane_t* pclip = NULL;
 
 	for (i = 3, mask = 0x08; i >= 0; i--, mask >>= 1)
 	{
@@ -726,12 +710,12 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	// reconstruct the polygon
 	// FIXME: these should be precalculated and loaded off disk
 	pedges = currententity->model->edges;
-	lnumverts = fa->numedges;
-	vertpage = 0;
+	int lnumverts = fa->numedges;
+	int vertpage = 0;
 
 	for (i = 0; i < lnumverts; i++)
 	{
-		lindex = currententity->model->surfedges[fa->firstedge + i];
+		int lindex = currententity->model->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
 		{
@@ -748,22 +732,22 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 	// clip the polygon, done if not visible
 	while (pclip)
 	{
-		lastvert = lnumverts - 1;
-		lastdist = DotProduct(verts[vertpage][lastvert].position,
-		                      pclip->normal) - pclip->dist;
+		int lastvert = lnumverts - 1;
+		float lastdist = DotProduct(verts[vertpage][lastvert].position,
+		                            pclip->normal) - pclip->dist;
 
-		visible = false;
-		new_verts = 0;
-		new_page = vertpage ^ 1;
+		qboolean visible = false;
+		int new_verts = 0;
+		int new_page = vertpage ^ 1;
 
 		for (i = 0; i < lnumverts; i++)
 		{
-			dist = DotProduct(verts[vertpage][i].position, pclip->normal) -
+			float dist = DotProduct(verts[vertpage][i].position, pclip->normal) -
 				pclip->dist;
 
 			if ((lastdist > 0) != (dist > 0))
 			{
-				frac = dist / (dist - lastdist);
+				float frac = dist / (dist - lastdist);
 				verts[new_page][new_verts].position[0] =
 					verts[vertpage][i].position[0] +
 					((verts[vertpage][lastvert].position[0] -
@@ -800,7 +784,7 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 
 	// transform and project, remembering the z values at the vertices and
 	// r_nearzi, and extract the s and t coordinates at the vertices
-	pplane = fa->plane;
+	mplane_t* pplane = fa->plane;
 	switch (pplane->type)
 	{
 	case PLANE_X:
@@ -831,21 +815,21 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 		if (transformed[2] < NEAR_CLIP)
 			transformed[2] = NEAR_CLIP;
 
-		lzi = 1.0 / transformed[2];
+		float lzi = 1.0 / transformed[2];
 
 		if (lzi > r_nearzi) // for mipmap finding
 			r_nearzi = lzi;
 
 		// FIXME: build x/yscale into transform?
-		scale = xscale * lzi;
-		u = (xcenter + scale * transformed[0]);
+		float scale = xscale * lzi;
+		float u = (xcenter + scale * transformed[0]);
 		if (u < r_refdef.fvrectx_adj)
 			u = r_refdef.fvrectx_adj;
 		if (u > r_refdef.fvrectright_adj)
 			u = r_refdef.fvrectright_adj;
 
 		scale = yscale * lzi;
-		v = (ycenter - scale * transformed[1]);
+		float v = (ycenter - scale * transformed[1]);
 		if (v < r_refdef.fvrecty_adj)
 			v = r_refdef.fvrecty_adj;
 		if (v > r_refdef.fvrectbottom_adj)
@@ -877,20 +861,15 @@ R_ZDrawSubmodelPolys
 */
 void R_ZDrawSubmodelPolys(model_t* pmodel)
 {
-	int i, numsurfaces;
-	msurface_t* psurf;
-	float dot;
-	mplane_t* pplane;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
+	int numsurfaces = pmodel->nummodelsurfaces;
 
-	psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	numsurfaces = pmodel->nummodelsurfaces;
-
-	for (i = 0; i < numsurfaces; i++, psurf++)
+	for (int i = 0; i < numsurfaces; i++, psurf++)
 	{
 		// find which side of the node we are on
-		pplane = psurf->plane;
+		mplane_t* pplane = psurf->plane;
 
-		dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
+		float dot = DotProduct(modelorg, pplane->normal) - pplane->dist;
 
 		// draw the polygon
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||

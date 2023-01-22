@@ -249,10 +249,9 @@ void D_EndDirectRect(int x, int y, int width, int height)
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
 	RECT rect;
-	int CenterX, CenterY;
 
-	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
-	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
+	int CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
+	int CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
 	if (CenterX > CenterY * 2)
 		CenterX >>= 1; // dual screens
 	CenterX = (CenterX < 0) ? 0 : CenterX;
@@ -263,11 +262,9 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 
 qboolean VID_SetWindowedMode(int modenum)
 {
-	HDC hdc;
-	int lastmodestate, width, height;
 	RECT rect;
 
-	lastmodestate = modestate;
+	int lastmodestate = modestate;
 
 	WindowRect.top = WindowRect.left = 0;
 
@@ -284,8 +281,8 @@ qboolean VID_SetWindowedMode(int modenum)
 	rect = WindowRect;
 	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
 
-	width = rect.right - rect.left;
-	height = rect.bottom - rect.top;
+	int width = rect.right - rect.left;
+	int height = rect.bottom - rect.top;
 
 	// Create the DIB window
 	dibwindow = CreateWindowEx(
@@ -317,7 +314,7 @@ qboolean VID_SetWindowedMode(int modenum)
 	// (to avoid flickering when re-sizing the window on the desktop),
 	// we clear the window to black when created, otherwise it will be
 	// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
+	HDC hdc = GetDC(dibwindow);
 	PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
@@ -341,8 +338,6 @@ qboolean VID_SetWindowedMode(int modenum)
 
 qboolean VID_SetFullDIBMode(int modenum)
 {
-	HDC hdc;
-	int lastmodestate, width, height;
 	RECT rect;
 
 	if (!leavecurrentmode)
@@ -358,7 +353,7 @@ qboolean VID_SetFullDIBMode(int modenum)
 			Sys_Error((char*)"Couldn't set fullscreen DIB mode");
 	}
 
-	lastmodestate = modestate;
+	int lastmodestate = modestate;
 	modestate = MS_FULLDIB;
 
 	WindowRect.top = WindowRect.left = 0;
@@ -375,8 +370,8 @@ qboolean VID_SetFullDIBMode(int modenum)
 	rect = WindowRect;
 	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
 
-	width = rect.right - rect.left;
-	height = rect.bottom - rect.top;
+	int width = rect.right - rect.left;
+	int height = rect.bottom - rect.top;
 
 	// Create the DIB window
 	dibwindow = CreateWindowEx(
@@ -402,7 +397,7 @@ qboolean VID_SetFullDIBMode(int modenum)
 	// (to avoid flickering when re-sizing the window on the desktop), we
 	// clear the window to black when created, otherwise it will be
 	// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
+	HDC hdc = GetDC(dibwindow);
 	PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
 	ReleaseDC(dibwindow, hdc);
 
@@ -430,7 +425,7 @@ qboolean VID_SetFullDIBMode(int modenum)
 
 int VID_SetMode(int modenum, unsigned char* palette)
 {
-	int original_mode, temp;
+	int original_mode;
 	qboolean stat;
 	MSG msg;
 	HDC hdc;
@@ -443,7 +438,7 @@ int VID_SetMode(int modenum, unsigned char* palette)
 	}
 
 	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	temp = scr_disabled_for_loading;
+	int temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
 	CDAudio_Pause();
@@ -558,13 +553,9 @@ BINDTEXFUNCPTR bindTexFunc;
 
 void CheckTextureExtensions(void)
 {
-	char* tmp;
-	qboolean texture_ext;
-	HINSTANCE hInstGL;
-
-	texture_ext = FALSE;
+	qboolean texture_ext = FALSE;
 	/* check for texture extension */
-	tmp = (char*)glGetString(GL_EXTENSIONS);
+	char* tmp = (char*)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp(tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
@@ -574,7 +565,7 @@ void CheckTextureExtensions(void)
 
 	if (!texture_ext || COM_CheckParm((char*)"-gl11"))
 	{
-		hInstGL = LoadLibrary((char*)"opengl32.dll");
+		HINSTANCE hInstGL = LoadLibrary((char*)"opengl32.dll");
 
 		if (hInstGL == NULL)
 			Sys_Error((char*)"Couldn't load opengl32.dll\n");
@@ -596,10 +587,8 @@ void CheckTextureExtensions(void)
 
 void CheckArrayExtensions(void)
 {
-	char* tmp;
-
 	/* check for texture extension */
-	tmp = (char*)glGetString(GL_EXTENSIONS);
+	char* tmp = (char*)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp(tmp, (char*)"GL_EXT_vertex_array", strlen((char*)"GL_EXT_vertex_array")) == 0)
@@ -749,13 +738,10 @@ void GL_EndRendering(void)
 
 void VID_SetPalette(unsigned char* palette)
 {
-	byte* pal;
 	unsigned r, g, b;
 	unsigned v;
-	int r1, g1, b1;
-	int j, k, l, m;
+	int k, l, m;
 	unsigned short i;
-	unsigned* table;
 	FILE* f;
 	char s[255];
 	HWND hDlg, hProgress;
@@ -764,8 +750,8 @@ void VID_SetPalette(unsigned char* palette)
 	//
 	// 8 8 8 encoding
 	//
-	pal = palette;
-	table = d_8to24table;
+	byte* pal = palette;
+	unsigned* table = d_8to24table;
 	for (i = 0; i < 256; i++)
 	{
 		r = pal[0];
@@ -796,10 +782,10 @@ void VID_SetPalette(unsigned char* palette)
 		pal = (unsigned char*)d_8to24table;
 		for (v = 0, k = 0, l = 10000 * 10000; v < 256; v++, pal += 4)
 		{
-			r1 = r - pal[0];
-			g1 = g - pal[1];
-			b1 = b - pal[2];
-			j = (r1 * r1) + (g1 * g1) + (b1 * b1);
+			int r1 = r - pal[0];
+			int g1 = g - pal[1];
+			int b1 = b - pal[2];
+			int j = (r1 * r1) + (g1 * g1) + (b1 * b1);
 			if (j < l)
 			{
 				k = v;
@@ -830,14 +816,11 @@ void VID_SetDefaultMode(void)
 
 void VID_Shutdown(void)
 {
-	HGLRC hRC;
-	HDC hDC;
-
 	if (vid_initialized)
 	{
 		vid_canalttab = false;
-		hRC = wglGetCurrentContext();
-		hDC = wglGetCurrentDC();
+		HGLRC hRC = wglGetCurrentContext();
+		HDC hDC = wglGetCurrentDC();
 
 		wglMakeCurrent(NULL, NULL);
 
@@ -978,10 +961,8 @@ ClearAllStates
 */
 void ClearAllStates(void)
 {
-	int i;
-
 	// send an up event for each key, to make sure the server clears them all
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		Key_Event(i, false);
 	}
@@ -1226,7 +1207,6 @@ VID_GetModeDescription
 char* VID_GetModeDescription(int mode)
 {
 	char* pinfo;
-	vmode_t* pv;
 	static char temp[100];
 
 	if ((mode < 0) || (mode >= nummodes))
@@ -1234,7 +1214,7 @@ char* VID_GetModeDescription(int mode)
 
 	if (!leavecurrentmode)
 	{
-		pv = VID_GetModePtr(mode);
+		vmode_t* pv = VID_GetModePtr(mode);
 		pinfo = pv->modedesc;
 	}
 	else
@@ -1254,12 +1234,11 @@ char* VID_GetModeDescription(int mode)
 char* VID_GetExtModeDescription(int mode)
 {
 	static char pinfo[40];
-	vmode_t* pv;
 
 	if ((mode < 0) || (mode >= nummodes))
 		return NULL;
 
-	pv = VID_GetModePtr(mode);
+	vmode_t* pv = VID_GetModePtr(mode);
 	if (modelist[mode].type == MS_FULLDIB)
 	{
 		if (!leavecurrentmode)
@@ -1317,11 +1296,9 @@ VID_DescribeMode_f
 */
 void VID_DescribeMode_f(void)
 {
-	int t, modenum;
+	int modenum = Q_atoi(Cmd_Argv(1));
 
-	modenum = Q_atoi(Cmd_Argv(1));
-
-	t = leavecurrentmode;
+	int t = leavecurrentmode;
 	leavecurrentmode = 0;
 
 	Con_Printf((char*)"%s\n", VID_GetExtModeDescription(modenum));
@@ -1337,19 +1314,15 @@ VID_DescribeModes_f
 */
 void VID_DescribeModes_f(void)
 {
-	int i, lnummodes, t;
-	char* pinfo;
-	vmode_t* pv;
+	int lnummodes = VID_NumModes();
 
-	lnummodes = VID_NumModes();
-
-	t = leavecurrentmode;
+	int t = leavecurrentmode;
 	leavecurrentmode = 0;
 
-	for (i = 1; i < lnummodes; i++)
+	for (int i = 1; i < lnummodes; i++)
 	{
-		pv = VID_GetModePtr(i);
-		pinfo = VID_GetExtModeDescription(i);
+		vmode_t* pv = VID_GetModePtr(i);
+		char* pinfo = VID_GetExtModeDescription(i);
 		Con_Printf((char*)"%2d: %s\n", i, pinfo);
 	}
 
@@ -1417,13 +1390,12 @@ VID_InitFullDIB
 void VID_InitFullDIB(HINSTANCE hInstance)
 {
 	DEVMODE devmode;
-	int i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
-	int j, bpp, done;
+	int i, cmodes, existingmode;
 	BOOL stat;
 
 	// enumerate >8 bpp modes
-	originalnummodes = nummodes;
-	modenum = 0;
+	int originalnummodes = nummodes;
+	int modenum = 0;
 
 	do
 	{
@@ -1491,13 +1463,13 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 	while (stat);
 
 	// see if there are any low-res modes that aren't being reported
-	numlowresmodes = sizeof(lowresmodes) / sizeof(lowresmodes[0]);
-	bpp = 16;
-	done = 0;
+	int numlowresmodes = sizeof(lowresmodes) / sizeof(lowresmodes[0]);
+	int bpp = 16;
+	int done = 0;
 
 	do
 	{
-		for (j = 0; (j < numlowresmodes) && (nummodes < MAX_MODE_LIST); j++)
+		for (int j = 0; (j < numlowresmodes) && (nummodes < MAX_MODE_LIST); j++)
 		{
 			devmode.dmBitsPerPel = bpp;
 			devmode.dmPelsWidth = lowresmodes[j].width;
@@ -1566,10 +1538,7 @@ qboolean VID_Is8bit()
 
 void VID_Init8bitPalette()
 {
-	// Check for 8bit Extensions and initialize them.
-	int i;
 	char thePalette[256 * 3];
-	char *oldPalette, *new_Palette;
 
 	glColorTableEXT = (decltype(glColorTableEXT))wglGetProcAddress((char*)"glColorTableEXT");
 	if (!glColorTableEXT || strstr(gl_extensions, (char*)"GL_EXT_shared_texture_palette") ||
@@ -1578,9 +1547,9 @@ void VID_Init8bitPalette()
 
 	Con_SafePrintf((char*)"8-bit GL extensions enabled.\n");
 	glEnable(GL_SHARED_TEXTURE_PALETTE_EXT);
-	oldPalette = (char*)d_8to24table; //d_8to24table3dfx;
-	new_Palette = thePalette;
-	for (i = 0; i < 256; i++)
+	char* oldPalette = (char*)d_8to24table; //d_8to24table3dfx;
+	char* new_Palette = thePalette;
+	for (int i = 0; i < 256; i++)
 	{
 		*new_Palette++ = *oldPalette++;
 		*new_Palette++ = *oldPalette++;
@@ -1594,7 +1563,6 @@ void VID_Init8bitPalette()
 
 static void Check_Gamma(unsigned char* pal)
 {
-	float f, inf;
 	unsigned char palette[768];
 	int i;
 
@@ -1611,8 +1579,8 @@ static void Check_Gamma(unsigned char* pal)
 
 	for (i = 0; i < 768; i++)
 	{
-		f = pow((pal[i] + 1) / 256.0, vid_gamma);
-		inf = f * 255 + 0.5;
+		float f = pow((pal[i] + 1) / 256.0, vid_gamma);
+		float inf = f * 255 + 0.5;
 		if (inf < 0)
 			inf = 0;
 		if (inf > 255)
@@ -1631,10 +1599,9 @@ VID_Init
 void VID_Init(unsigned char* palette)
 {
 	int i, existingmode;
-	int basenummodes, width, height, bpp, findbpp, done;
+	int width, height, bpp, findbpp;
 	byte* ptmp;
 	char gldir[MAX_OSPATH];
-	HDC hdc;
 	DEVMODE devmode;
 
 	memset(&devmode, 0, sizeof(devmode));
@@ -1661,13 +1628,13 @@ void VID_Init(unsigned char* palette)
 	InitCommonControls();
 
 	VID_InitDIB(global_hInstance);
-	basenummodes = nummodes = 1;
+	int basenummodes = nummodes = 1;
 
 	VID_InitFullDIB(global_hInstance);
 
 	if (COM_CheckParm((char*)"-window"))
 	{
-		hdc = GetDC(NULL);
+		HDC hdc = GetDC(NULL);
 
 		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
 		{
@@ -1759,7 +1726,7 @@ void VID_Init(unsigned char* palette)
 					}
 				}
 
-				done = 0;
+				int done = 0;
 
 				do
 				{
@@ -1924,24 +1891,21 @@ VID_MenuDraw
 */
 void VID_MenuDraw(void)
 {
-	qpic_t* p;
-	char* ptr;
-	int lnummodes, i, j, k, column, row, dup, dupmode;
+	int i, j, dup, dupmode;
 	char temp[100];
-	vmode_t* pv;
 
-	p = Draw_CachePic((char*)"gfx/vidmodes.lmp");
+	qpic_t* p = Draw_CachePic((char*)"gfx/vidmodes.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
 
 	vid_wmodes = 0;
-	lnummodes = VID_NumModes();
+	int lnummodes = VID_NumModes();
 
 	for (i = 1; (i < lnummodes) && (vid_wmodes < MAX_MODEDESCS); i++)
 	{
-		ptr = VID_GetModeDescription(i);
-		pv = VID_GetModePtr(i);
+		char* ptr = VID_GetModeDescription(i);
+		vmode_t* pv = VID_GetModePtr(i);
 
-		k = vid_wmodes;
+		int k = vid_wmodes;
 
 		modedescs[k].modenum = i;
 		modedescs[k].desc = ptr;
@@ -1957,8 +1921,8 @@ void VID_MenuDraw(void)
 	{
 		M_Print(2 * 8, 36 + 0 * 8, (char*)"Fullscreen Modes (WIDTHxHEIGHTxBPP)");
 
-		column = 8;
-		row = 36 + 2 * 8;
+		int column = 8;
+		int row = 36 + 2 * 8;
 
 		for (i = 0; i < vid_wmodes; i++)
 		{

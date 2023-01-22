@@ -150,8 +150,6 @@ qsocket_t* VCR_Connect(char* host)
 
 qsocket_t* VCR_CheckNewConnections(void)
 {
-	qsocket_t* sock;
-
 	if (host_time != next.time || next.op != VCR_OP_CONNECT)
 		Sys_Error((char*)"VCR missmatch");
 
@@ -161,7 +159,7 @@ qsocket_t* VCR_CheckNewConnections(void)
 		return NULL;
 	}
 
-	sock = NET_NewQSocket();
+	qsocket_t* sock = NET_NewQSocket();
 	*(long*)(&sock->driverdata) = next.session;
 
 	Sys_FileRead(vcrFile, sock->address, NET_NAMELEN);

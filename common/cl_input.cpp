@@ -69,9 +69,8 @@ int in_impulse;
 void KeyDown(kbutton_t* b)
 {
 	int k;
-	char* c;
 
-	c = Cmd_Argv(1);
+	char* c = Cmd_Argv(1);
 	if (c[0])
 		k = atoi(c);
 	else
@@ -98,9 +97,8 @@ void KeyDown(kbutton_t* b)
 void KeyUp(kbutton_t* b)
 {
 	int k;
-	char* c;
 
-	c = Cmd_Argv(1);
+	char* c = Cmd_Argv(1);
 	if (c[0])
 		k = atoi(c);
 	else
@@ -185,13 +183,10 @@ Returns 0.25 if a key was pressed and released during the frame,
 */
 float CL_KeyState(kbutton_t* key)
 {
-	float val;
-	qboolean impulsedown, impulseup, down;
-
-	impulsedown = key->state & 2;
-	impulseup = key->state & 4;
-	down = key->state & 1;
-	val = 0;
+	qboolean impulsedown = key->state & 2;
+	qboolean impulseup = key->state & 4;
+	qboolean down = key->state & 1;
+	float val = 0;
 
 	if (impulsedown && !impulseup)
 		if (down)
@@ -245,7 +240,6 @@ Moves the local angle positions
 void CL_AdjustAngles(void)
 {
 	float speed;
-	float up, down;
 
 	if (in_speed.state & 1)
 		speed = host_frametime * cl_anglespeedkey.value;
@@ -265,8 +259,8 @@ void CL_AdjustAngles(void)
 		cl.viewangles[PITCH] += speed * cl_pitchspeed.value * CL_KeyState(&in_back);
 	}
 
-	up = CL_KeyState(&in_lookup);
-	down = CL_KeyState(&in_lookdown);
+	float up = CL_KeyState(&in_lookup);
+	float down = CL_KeyState(&in_lookdown);
 
 	cl.viewangles[PITCH] -= speed * cl_pitchspeed.value * up;
 	cl.viewangles[PITCH] += speed * cl_pitchspeed.value * down;
@@ -339,8 +333,6 @@ CL_SendMove
 */
 void CL_SendMove(usercmd_t* cmd)
 {
-	int i;
-	int bits;
 	sizebuf_t buf;
 	byte data[128];
 
@@ -357,7 +349,7 @@ void CL_SendMove(usercmd_t* cmd)
 
 	MSG_WriteFloat(&buf, cl.mtime[0]); // so server can get ping times
 
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		MSG_WriteAngle(&buf, cl.viewangles[i]);
 
 	MSG_WriteShort(&buf, cmd->forwardmove);
@@ -367,7 +359,7 @@ void CL_SendMove(usercmd_t* cmd)
 	//
 	// send button bits
 	//
-	bits = 0;
+	int bits = 0;
 
 	if (in_attack.state & 3)
 		bits |= 1;

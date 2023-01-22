@@ -96,7 +96,6 @@ void DeinitConProc(void)
 DWORD RequestProc(DWORD dwNichts)
 {
 	int* pBuffer;
-	DWORD dwRet;
 	HANDLE heventWait[2];
 	int iBeginLine, iEndLine;
 
@@ -105,7 +104,7 @@ DWORD RequestProc(DWORD dwNichts)
 
 	while (1)
 	{
-		dwRet = WaitForMultipleObjects(2, heventWait, FALSE, INFINITE);
+		DWORD dwRet = WaitForMultipleObjects(2, heventWait, FALSE, INFINITE);
 
 		// heventDone fired, so we're exiting.
 		if (dwRet == WAIT_OBJECT_0 + 1)
@@ -157,10 +156,8 @@ DWORD RequestProc(DWORD dwNichts)
 
 LPVOID GetMappedBuffer(HANDLE hfileBuffer)
 {
-	LPVOID pBuffer;
-
-	pBuffer = MapViewOfFile(hfileBuffer,
-	                        FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+	LPVOID pBuffer = MapViewOfFile(hfileBuffer,
+	                               FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
 
 	return pBuffer;
 }
@@ -175,9 +172,8 @@ void ReleaseMappedBuffer(LPVOID pBuffer)
 BOOL GetScreenBufferLines(int* piLines)
 {
 	CONSOLE_SCREEN_BUFFER_INFO info;
-	BOOL bRet;
 
-	bRet = GetConsoleScreenBufferInfo(hStdout, &info);
+	BOOL bRet = GetConsoleScreenBufferInfo(hStdout, &info);
 
 	if (bRet)
 		*piLines = info.dwSize.Y;
@@ -196,12 +192,11 @@ BOOL ReadText(LPTSTR pszText, int iBeginLine, int iEndLine)
 {
 	COORD coord;
 	DWORD dwRead;
-	BOOL bRet;
 
 	coord.X = 0;
 	coord.Y = iBeginLine;
 
-	bRet = ReadConsoleOutputCharacter(
+	BOOL bRet = ReadConsoleOutputCharacter(
 		hStdout,
 		pszText,
 		80 * (iEndLine - iBeginLine + 1),
@@ -264,9 +259,7 @@ BOOL WriteText(LPCTSTR szText)
 
 int CharToCode(char c)
 {
-	char upper;
-
-	upper = toupper(c);
+	char upper = toupper(c);
 
 	switch (c)
 	{
@@ -290,9 +283,8 @@ int CharToCode(char c)
 BOOL SetConsoleCXCY(HANDLE hStdout, int cx, int cy)
 {
 	CONSOLE_SCREEN_BUFFER_INFO info;
-	COORD coordMax;
 
-	coordMax = GetLargestConsoleWindowSize(hStdout);
+	COORD coordMax = GetLargestConsoleWindowSize(hStdout);
 
 	if (cy > coordMax.Y)
 		cy = coordMax.Y;

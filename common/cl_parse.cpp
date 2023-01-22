@@ -123,14 +123,10 @@ CL_ParseStartSoundPacket
 void CL_ParseStartSoundPacket(void)
 {
 	vec3_t pos;
-	int channel, ent;
-	int sound_num;
 	int volume;
-	int field_mask;
 	float attenuation;
-	int i;
 
-	field_mask = MSG_ReadByte();
+	int field_mask = MSG_ReadByte();
 
 	if (field_mask & SND_VOLUME)
 		volume = MSG_ReadByte();
@@ -142,16 +138,16 @@ void CL_ParseStartSoundPacket(void)
 	else
 		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
 
-	channel = MSG_ReadShort();
-	sound_num = MSG_ReadByte();
+	int channel = MSG_ReadShort();
+	int sound_num = MSG_ReadByte();
 
-	ent = channel >> 3;
+	int ent = channel >> 3;
 	channel &= 7;
 
 	if (ent > MAX_EDICTS)
 		Host_Error((char*)"CL_ParseStartSoundPacket: ent = %i", ent);
 
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		pos[i] = MSG_ReadCoord();
 
 	S_StartSound(ent, channel, cl.sound_precache[sound_num], pos, volume / 255.0, attenuation);
@@ -167,10 +163,8 @@ so the server doesn't disconnect.
 */
 void CL_KeepaliveMessage(void)
 {
-	float time;
 	static float lastmsg;
 	int ret;
-	sizebuf_t old;
 	byte olddata[8192];
 
 	if (sv.active)
@@ -179,7 +173,7 @@ void CL_KeepaliveMessage(void)
 		return;
 
 	// read messages from server, should just be nops
-	old = net_message;
+	sizebuf_t old = net_message;
 	memcpy(olddata, net_message.data, net_message.cursize);
 
 	do
@@ -206,7 +200,7 @@ void CL_KeepaliveMessage(void)
 	memcpy(net_message.data, olddata, net_message.cursize);
 
 	// check time
-	time = Sys_FloatTime();
+	float time = Sys_FloatTime();
 	if (time - lastmsg < 5)
 		return;
 	lastmsg = time;
@@ -226,8 +220,6 @@ CL_ParseServerInfo
 */
 void CL_ParseServerInfo(void)
 {
-	char* str;
-	int i;
 	int nummodels, numsounds;
 	char model_precache[MAX_MODELS][MAX_QPATH];
 	char sound_precache[MAX_SOUNDS][MAX_QPATH];
@@ -239,7 +231,7 @@ void CL_ParseServerInfo(void)
 	CL_ClearState();
 
 	// parse protocol version number
-	i = MSG_ReadLong();
+	int i = MSG_ReadLong();
 	if (i != PROTOCOL_VERSION)
 	{
 		Con_Printf((char*)"Server returned version %i, not %i", i, PROTOCOL_VERSION);
@@ -259,7 +251,7 @@ void CL_ParseServerInfo(void)
 	cl.gametype = MSG_ReadByte();
 
 	// parse signon message
-	str = MSG_ReadString();
+	char* str = MSG_ReadString();
 	strncpy(cl.levelname, str, sizeof(cl.levelname) - 1);
 
 	// seperate the printfs so the server message can have a color
@@ -354,10 +346,8 @@ int bitcounts[16];
 void CL_ParseUpdate(int bits)
 {
 	int i;
-	model_t* model;
 	int modnum;
 	qboolean forcelink;
-	entity_t* ent;
 	int num;
 	int skin;
 
@@ -379,7 +369,7 @@ void CL_ParseUpdate(int bits)
 	else
 		num = MSG_ReadByte();
 
-	ent = CL_EntityNum(num);
+	entity_t* ent = CL_EntityNum(num);
 
 	for (i = 0; i < 16; i++)
 		if (bits & (1 << i))
@@ -401,7 +391,7 @@ void CL_ParseUpdate(int bits)
 	else
 		modnum = ent->baseline.modelindex;
 
-	model = cl.model_precache[modnum];
+	model_t* model = cl.model_precache[modnum];
 	if (model != ent->model)
 	{
 		ent->model = model;
@@ -517,13 +507,11 @@ CL_ParseBaseline
 */
 void CL_ParseBaseline(entity_t* ent)
 {
-	int i;
-
 	ent->baseline.modelindex = MSG_ReadByte();
 	ent->baseline.frame = MSG_ReadByte();
 	ent->baseline.colormap = MSG_ReadByte();
 	ent->baseline.skin = MSG_ReadByte();
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		ent->baseline.origin[i] = MSG_ReadCoord();
 		ent->baseline.angles[i] = MSG_ReadAngle();
@@ -657,22 +645,20 @@ CL_NewTranslation
 */
 void CL_NewTranslation(int slot)
 {
-	int i, j;
-	int top, bottom;
-	byte *dest, *source;
+	int j;
 
 	if (slot > cl.maxclients)
 		Sys_Error((char*)"CL_NewTranslation: slot > cl.maxclients");
-	dest = cl.scores[slot].translations;
-	source = vid.colormap;
+	byte* dest = cl.scores[slot].translations;
+	byte* source = vid.colormap;
 	memcpy(dest, vid.colormap, sizeof(cl.scores[slot].translations));
-	top = cl.scores[slot].colors & 0xf0;
-	bottom = (cl.scores[slot].colors & 15) << 4;
+	int top = cl.scores[slot].colors & 0xf0;
+	int bottom = (cl.scores[slot].colors & 15) << 4;
 #ifdef GLQUAKE
 	R_TranslatePlayerSkin(slot);
 #endif
 
-	for (i = 0; i < VID_GRADES; i++, dest += 256, source += 256)
+	for (int i = 0; i < VID_GRADES; i++, dest += 256, source += 256)
 	{
 		if (top < 128) // the artists made some backwards ranges.  sigh.
 			memcpy(dest + TOP_RANGE, source + top, 16);
@@ -695,13 +681,10 @@ CL_ParseStatic
 */
 void CL_ParseStatic(void)
 {
-	entity_t* ent;
-	int i;
-
-	i = cl.num_statics;
+	int i = cl.num_statics;
 	if (i >= MAX_STATIC_ENTITIES)
 		Host_Error((char*)"Too many static entities");
-	ent = &cl_static_entities[i];
+	entity_t* ent = &cl_static_entities[i];
 	cl.num_statics++;
 	CL_ParseBaseline(ent);
 
@@ -725,14 +708,12 @@ CL_ParseStaticSound
 void CL_ParseStaticSound(void)
 {
 	vec3_t org;
-	int sound_num, vol, atten;
-	int i;
 
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord();
-	sound_num = MSG_ReadByte();
-	vol = MSG_ReadByte();
-	atten = MSG_ReadByte();
+	int sound_num = MSG_ReadByte();
+	int vol = MSG_ReadByte();
+	int atten = MSG_ReadByte();
 
 	S_StaticSound(cl.sound_precache[sound_num], org, vol, atten);
 }
@@ -747,7 +728,6 @@ CL_ParseServerMessage
 */
 void CL_ParseServerMessage(void)
 {
-	int cmd;
 	int i;
 
 	//
@@ -769,7 +749,7 @@ void CL_ParseServerMessage(void)
 		if (msg_badread)
 			Host_Error((char*)"CL_ParseServerMessage: Bad server message");
 
-		cmd = MSG_ReadByte();
+		int cmd = MSG_ReadByte();
 
 		if (cmd == -1)
 		{

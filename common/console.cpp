@@ -115,9 +115,7 @@ Con_ClearNotify
 */
 void Con_ClearNotify(void)
 {
-	int i;
-
-	for (i = 0; i < NUM_CON_TIMES; i++)
+	for (int i = 0; i < NUM_CON_TIMES; i++)
 		con_times[i] = 0;
 }
 
@@ -157,10 +155,9 @@ If the line width has changed, reformat the buffer.
 */
 void Con_CheckResize(void)
 {
-	int i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char tbuf[CON_TEXTSIZE];
 
-	width = (vid.width >> 3) - 2;
+	int width = (vid.width >> 3) - 2;
 
 	if (width == con_linew_idth)
 		return;
@@ -174,16 +171,16 @@ void Con_CheckResize(void)
 	}
 	else
 	{
-		oldwidth = con_linew_idth;
+		int oldwidth = con_linew_idth;
 		con_linew_idth = width;
-		oldtotallines = con_totallines;
+		int oldtotallines = con_totallines;
 		con_totallines = CON_TEXTSIZE / con_linew_idth;
-		numlines = oldtotallines;
+		int numlines = oldtotallines;
 
 		if (con_totallines < numlines)
 			numlines = con_totallines;
 
-		numchars = oldwidth;
+		int numchars = oldwidth;
 
 		if (con_linew_idth < numchars)
 			numchars = con_linew_idth;
@@ -191,9 +188,9 @@ void Con_CheckResize(void)
 		Q_memcpy(tbuf, con_text, CON_TEXTSIZE);
 		Q_memset(con_text, ' ', CON_TEXTSIZE);
 
-		for (i = 0; i < numlines; i++)
+		for (int i = 0; i < numlines; i++)
 		{
-			for (j = 0; j < numchars; j++)
+			for (int j = 0; j < numchars; j++)
 			{
 				con_text[(con_totallines - 1 - i) * con_linew_idth + j] =
 					tbuf[((con_current - i + oldtotallines) %
@@ -275,7 +272,6 @@ If no console is visible, the notify window will pop up.
 */
 void Con_Print(char* txt)
 {
-	int y;
 	int c, l;
 	static int cr;
 	int mask;
@@ -338,7 +334,7 @@ void Con_Print(char* txt)
 			break;
 
 		default: // display character and advance
-			y = con_current % con_totallines;
+			int y = con_current % con_totallines;
 			con_text[y * con_linew_idth + con_x] = c | mask;
 			con_x++;
 			if (con_x >= con_linew_idth)
@@ -358,12 +354,11 @@ void Con_DebugLog(char* file, char* fmt, ...)
 {
 	va_list argptr;
 	static char data[1024];
-	FILE* fd;
 
 	va_start(argptr, fmt);
 	vsnprintf(data, 1024, fmt, argptr);
 	va_end(argptr);
-	fd = fopen(file, (char*)"a");
+	FILE* fd = fopen(file, (char*)"a");
 	fwrite(data, sizeof(char), strlen(data), fd);
 	fclose(fd);
 }
@@ -452,13 +447,12 @@ void Con_SafePrintf(char* fmt, ...)
 {
 	va_list argptr;
 	char msg[1024];
-	int temp;
 
 	va_start(argptr, fmt);
 	vsnprintf(msg, MAXPRINTMSG, fmt, argptr);
 	va_end(argptr);
 
-	temp = scr_disabled_for_loading;
+	int temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	Con_Printf((char*)"%s", msg);
 	scr_disabled_for_loading = temp;
@@ -483,14 +477,12 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput(void)
 {
-	int y;
 	int i;
-	char* text;
 
 	if (key_dest != key_console && !con_forcedup)
 		return; // don't draw anything
 
-	text = key_lines[edit_line];
+	char* text = key_lines[edit_line];
 
 	// add the cursor frame
 	text[key_linepos] = 10 + ((int)(realtime * con_cursorspeed) & 1);
@@ -504,7 +496,7 @@ void Con_DrawInput(void)
 		text += 1 + key_linepos - con_linew_idth;
 
 	// draw it
-	y = con_vislines - 16;
+	int y = con_vislines - 16;
 
 	for (i = 0; i < con_linew_idth; i++)
 		Draw_Character((i + 1) << 3, con_vislines - 16, text[i]);
@@ -523,24 +515,21 @@ Draws the last few lines of output transparently over the game top
 */
 void Con_DrawNotify(void)
 {
-	int x, v;
-	char* text;
-	int i;
-	float time;
+	int x;
 	extern char chat_buffer[];
 
-	v = 0;
-	for (i = con_current - NUM_CON_TIMES + 1; i <= con_current; i++)
+	int v = 0;
+	for (int i = con_current - NUM_CON_TIMES + 1; i <= con_current; i++)
 	{
 		if (i < 0)
 			continue;
-		time = con_times[i % NUM_CON_TIMES];
+		float time = con_times[i % NUM_CON_TIMES];
 		if (time == 0)
 			continue;
 		time = realtime - time;
 		if (time > con_notifytime.value)
 			continue;
-		text = con_text + (i % con_totallines) * con_linew_idth;
+		char* text = con_text + (i % con_totallines) * con_linew_idth;
 
 		clearnotify = 0;
 		scr_copytop = 1;
@@ -583,11 +572,6 @@ The typing input line at the bottom should only be drawn if typing is allowed
 */
 void Con_DrawConsole(int lines, qboolean drawinput)
 {
-	int i, x, y;
-	int rows;
-	char* text;
-	int j;
-
 	if (lines <= 0)
 		return;
 
@@ -597,17 +581,17 @@ void Con_DrawConsole(int lines, qboolean drawinput)
 	// draw the text
 	con_vislines = lines;
 
-	rows = (lines - 16) >> 3; // rows of text to draw
-	y = lines - 16 - (rows << 3); // may start slightly negative
+	int rows = (lines - 16) >> 3; // rows of text to draw
+	int y = lines - 16 - (rows << 3); // may start slightly negative
 
-	for (i = con_current - rows + 1; i <= con_current; i++, y += 8)
+	for (int i = con_current - rows + 1; i <= con_current; i++, y += 8)
 	{
-		j = i - con_backscroll;
+		int j = i - con_backscroll;
 		if (j < 0)
 			j = 0;
-		text = con_text + (j % con_totallines) * con_linew_idth;
+		char* text = con_text + (j % con_totallines) * con_linew_idth;
 
-		for (x = 0; x < con_linew_idth; x++)
+		for (int x = 0; x < con_linew_idth; x++)
 			Draw_Character((x + 1) << 3, y, text[x]);
 	}
 
@@ -624,8 +608,6 @@ Con_NotifyBox
 */
 void Con_NotifyBox(char* text)
 {
-	double t1, t2;
-
 	// during startup for sound / cd warnings
 	Con_Printf(
 		(char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
@@ -641,10 +623,10 @@ void Con_NotifyBox(char* text)
 
 	do
 	{
-		t1 = Sys_FloatTime();
+		double t1 = Sys_FloatTime();
 		SCR_UpdateScreen();
 		Sys_SendKeyEvents();
-		t2 = Sys_FloatTime();
+		double t2 = Sys_FloatTime();
 		realtime += t2 - t1; // make the cursor blink
 	}
 	while (key_count < 0);

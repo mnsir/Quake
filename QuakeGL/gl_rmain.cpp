@@ -163,9 +163,7 @@ Returns true if the box is completely outside the frustom
 */
 qboolean R_CullBox(vec3_t mins, vec3_t maxs)
 {
-	int i;
-
-	for (i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 		if (BoxOnPlaneSide(mins, maxs, &frustum[i]) == 2)
 			return true;
 	return false;
@@ -196,14 +194,11 @@ R_GetSpriteFrame
 */
 mspriteframe_t* R_GetSpriteFrame(entity_t* currententity)
 {
-	msprite_t* psprite;
-	mspritegroup_t* pspritegroup;
 	mspriteframe_t* pspriteframe;
-	int i, numframes, frame;
-	float *pintervals, fullinterval, targettime, time;
+	int i;
 
-	psprite = (msprite_t*)currententity->model->cache.data;
-	frame = currententity->frame;
+	msprite_t* psprite = (msprite_t*)currententity->model->cache.data;
+	int frame = currententity->frame;
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
@@ -217,16 +212,16 @@ mspriteframe_t* R_GetSpriteFrame(entity_t* currententity)
 	}
 	else
 	{
-		pspritegroup = (mspritegroup_t*)psprite->frames[frame].frameptr;
-		pintervals = pspritegroup->intervals;
-		numframes = pspritegroup->numframes;
-		fullinterval = pintervals[numframes - 1];
+		mspritegroup_t* pspritegroup = (mspritegroup_t*)psprite->frames[frame].frameptr;
+		float* pintervals = pspritegroup->intervals;
+		int numframes = pspritegroup->numframes;
+		float fullinterval = pintervals[numframes - 1];
 
-		time = cl.time + currententity->syncbase;
+		float time = cl.time + currententity->syncbase;
 
 		// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
 		// are positive, so we don't have to worry about division by 0
-		targettime = time - ((int)(time / fullinterval)) * fullinterval;
+		float targettime = time - ((int)(time / fullinterval)) * fullinterval;
 
 		for (i = 0; i < (numframes - 1); i++)
 		{
@@ -250,15 +245,13 @@ R_DrawSpriteModel
 void R_DrawSpriteModel(entity_t* e)
 {
 	vec3_t point;
-	mspriteframe_t* frame;
 	float *up, *right;
 	vec3_t v_forward, v_right, v_up;
-	msprite_t* psprite;
 
 	// don't even bother culling, because it's just a single
 	// polygon without a surface cache
-	frame = R_GetSpriteFrame(e);
-	psprite = (msprite_t*)currententity->model->cache.data;
+	mspriteframe_t* frame = R_GetSpriteFrame(e);
+	msprite_t* psprite = (msprite_t*)currententity->model->cache.data;
 
 	if (psprite->type == SPR_ORIENTED)
 	{
@@ -777,26 +770,23 @@ GL_DrawAliasFrame
 void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 {
 	float s, t;
-	float l;
 	int i, j;
 	int index;
-	trivertx_t *v, *verts;
+	trivertx_t *v;
 	int list;
-	int* order;
 	vec3_t point;
 	float* normal;
-	int count;
 
 	lastposenum = posenum;
 
-	verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
+	trivertx_t* verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
-	order = (int*)((byte*)paliashdr + paliashdr->commands);
+	int* order = (int*)((byte*)paliashdr + paliashdr->commands);
 
 	while (1)
 	{
 		// get the vertex count and primitive type
-		count = *order++;
+		int count = *order++;
 		if (!count)
 			break; // done
 		if (count < 0)
@@ -814,7 +804,7 @@ void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 			order += 2;
 
 			// normals and vertexes come from the frame list
-			l = shadedots[verts->lightnormalindex] * shadelight;
+			float l = shadedots[verts->lightnormalindex] * shadelight;
 			glColor3f(l, l, l);
 			glVertex3f(verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
@@ -838,27 +828,24 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 	float s, t, l;
 	int i, j;
 	int index;
-	trivertx_t *v, *verts;
+	trivertx_t *v;
 	int list;
-	int* order;
 	vec3_t point;
 	float* normal;
-	float height, lheight;
-	int count;
 
-	lheight = currententity->origin[2] - lightspot[2];
+	float lheight = currententity->origin[2] - lightspot[2];
 
-	height = 0;
-	verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
+	float height = 0;
+	trivertx_t* verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
-	order = (int*)((byte*)paliashdr + paliashdr->commands);
+	int* order = (int*)((byte*)paliashdr + paliashdr->commands);
 
 	height = -lheight + 1.0;
 
 	while (1)
 	{
 		// get the vertex count and primitive type
-		count = *order++;
+		int count = *order++;
 		if (!count)
 			break; // done
 		if (count < 0)
@@ -903,21 +890,18 @@ R_SetupAliasFrame
 */
 void R_SetupAliasFrame(int frame, aliashdr_t* paliashdr)
 {
-	int pose, numposes;
-	float interval;
-
 	if ((frame >= paliashdr->numframes) || (frame < 0))
 	{
 		Con_DPrintf((char*)"R_AliasSetupFrame: no such frame %d\n", frame);
 		frame = 0;
 	}
 
-	pose = paliashdr->frames[frame].firstpose;
-	numposes = paliashdr->frames[frame].numposes;
+	int pose = paliashdr->frames[frame].firstpose;
+	int numposes = paliashdr->frames[frame].numposes;
 
 	if (numposes > 1)
 	{
-		interval = paliashdr->frames[frame].interval;
+		float interval = paliashdr->frames[frame].interval;
 		pose += (int)(cl.time / interval) % numposes;
 	}
 
@@ -933,19 +917,14 @@ R_DrawAliasModel
 */
 void R_DrawAliasModel(entity_t* e)
 {
-	int i, j;
-	int lnum;
+	int j;
 	vec3_t dist;
-	float add;
-	model_t* clmodel;
 	vec3_t mins, maxs;
-	aliashdr_t* paliashdr;
 	trivertx_t *verts, *v;
 	int index;
-	float s, t, an;
-	int anim;
+	float s, t;
 
-	clmodel = currententity->model;
+	model_t* clmodel = currententity->model;
 
 	VectorAdd(currententity->origin, clmodel->mins, mins);
 	VectorAdd(currententity->origin, clmodel->maxs, maxs);
@@ -967,14 +946,14 @@ void R_DrawAliasModel(entity_t* e)
 	if (e == &cl.viewent && ambientlight < 24)
 		ambientlight = shadelight = 24;
 
-	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+	for (int lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
 		if (cl_dlights[lnum].die >= cl.time)
 		{
 			VectorSubtract(currententity->origin,
 			               cl_dlights[lnum].origin,
 			               dist);
-			add = cl_dlights[lnum].radius - Length(dist);
+			float add = cl_dlights[lnum].radius - Length(dist);
 
 			if (add > 0)
 			{
@@ -992,7 +971,7 @@ void R_DrawAliasModel(entity_t* e)
 		shadelight = 192 - ambientlight;
 
 	// ZOID: never allow players to go totally black
-	i = currententity - cl_entities;
+	int i = currententity - cl_entities;
 	if (i >= 1 && i <= cl.maxclients /* && !strcmp (currententity->model->name, (char*)"progs/player.mdl") */)
 		if (ambientlight < 8)
 			ambientlight = shadelight = 8;
@@ -1005,7 +984,7 @@ void R_DrawAliasModel(entity_t* e)
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
 
-	an = e->angles[1] / 180 * M_PI;
+	float an = e->angles[1] / 180 * M_PI;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
@@ -1014,7 +993,7 @@ void R_DrawAliasModel(entity_t* e)
 	//
 	// locate the proper data
 	//
-	paliashdr = (aliashdr_t*)Mod_Extradata(currententity->model);
+	aliashdr_t* paliashdr = (aliashdr_t*)Mod_Extradata(currententity->model);
 
 	c_alias_polys += paliashdr->numtris;
 
@@ -1039,7 +1018,7 @@ void R_DrawAliasModel(entity_t* e)
 		glScalef(paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 	}
 
-	anim = (int)(cl.time * 10) & 3;
+	int anim = (int)(cl.time * 10) & 3;
 	GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
 
 	// we can't dynamically colormap textures, so they are cached
@@ -1138,12 +1117,7 @@ R_DrawViewModel
 void R_DrawViewModel(void)
 {
 	float ambient[4], diffuse[4];
-	int j;
-	int lnum;
 	vec3_t dist;
-	float add;
-	dlight_t* dl;
-	int ambientlight, shadelight;
 
 	if (!r_drawviewmodel.value)
 		return;
@@ -1167,17 +1141,17 @@ void R_DrawViewModel(void)
 	if (!currententity->model)
 		return;
 
-	j = R_LightPoint(currententity->origin);
+	int j = R_LightPoint(currententity->origin);
 
 	if (j < 24)
 		j = 24; // allways give some light on gun
-	ambientlight = j;
-	shadelight = j;
+	int ambientlight = j;
+	int shadelight = j;
 
 	// add dynamic lights 
-	for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
+	for (int lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 	{
-		dl = &cl_dlights[lnum];
+		dlight_t* dl = &cl_dlights[lnum];
 		if (!dl->radius)
 			continue;
 		if (!dl->radius)
@@ -1186,7 +1160,7 @@ void R_DrawViewModel(void)
 			continue;
 
 		VectorSubtract(currententity->origin, dl->origin, dist);
-		add = dl->radius - Length(dist);
+		float add = dl->radius - Length(dist);
 		if (add > 0)
 			ambientlight += add;
 	}
@@ -1243,12 +1217,10 @@ void R_PolyBlend(void)
 
 int SignbitsForPlane(mplane_t* out)
 {
-	int bits, j;
-
 	// for fast box on planeside test
 
-	bits = 0;
-	for (j = 0; j < 3; j++)
+	int bits = 0;
+	for (int j = 0; j < 3; j++)
 	{
 		if (out->normal[j] < 0)
 			bits |= 1 << j;
@@ -1259,8 +1231,6 @@ int SignbitsForPlane(mplane_t* out)
 
 void R_SetFrustum(void)
 {
-	int i;
-
 	if (r_refdef.fov_x == 90)
 	{
 		// front side is visible
@@ -1283,7 +1253,7 @@ void R_SetFrustum(void)
 		RotatePointAroundVector(frustum[3].normal, vright, vpn, -(90 - r_refdef.fov_y / 2));
 	}
 
-	for (i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		frustum[i].type = PLANE_ANYZ;
 		frustum[i].dist = DotProduct(r_origin, frustum[i].normal);
@@ -1333,13 +1303,11 @@ void R_SetupFrame(void)
 void MYgluPerspective(GLdouble fovy, GLdouble aspect,
                       GLdouble zNear, GLdouble zFar)
 {
-	GLdouble xmin, xmax, ymin, ymax;
+	GLdouble ymax = zNear * tan(fovy * M_PI / 360.0);
+	GLdouble ymin = -ymax;
 
-	ymax = zNear * tan(fovy * M_PI / 360.0);
-	ymin = -ymax;
-
-	xmin = ymin * aspect;
-	xmax = ymax * aspect;
+	GLdouble xmin = ymin * aspect;
+	GLdouble xmax = ymax * aspect;
 
 	glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
 }
@@ -1352,21 +1320,19 @@ R_SetupGL
 */
 void R_SetupGL(void)
 {
-	float screenaspect;
 	float yfov;
 	int i;
 	extern int glwidth, glheight;
-	int x, x2, y2, y, w, h;
 
 	//
 	// set up viewpoint
 	//
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	x = r_refdef.vrect.x * glwidth / vid.width;
-	x2 = (r_refdef.vrect.x + r_refdef.vrect.width) * glwidth / vid.width;
-	y = (vid.height - r_refdef.vrect.y) * glheight / vid.height;
-	y2 = (vid.height - (r_refdef.vrect.y + r_refdef.vrect.height)) * glheight / vid.height;
+	int x = r_refdef.vrect.x * glwidth / vid.width;
+	int x2 = (r_refdef.vrect.x + r_refdef.vrect.width) * glwidth / vid.width;
+	int y = (vid.height - r_refdef.vrect.y) * glheight / vid.height;
+	int y2 = (vid.height - (r_refdef.vrect.y + r_refdef.vrect.height)) * glheight / vid.height;
 
 	// fudge around because of frac screen scale
 	if (x > 0)
@@ -1378,8 +1344,8 @@ void R_SetupGL(void)
 	if (y < glheight)
 		y++;
 
-	w = x2 - x;
-	h = y - y2;
+	int w = x2 - x;
+	int h = y - y2;
 
 	if (envmap)
 	{
@@ -1388,7 +1354,7 @@ void R_SetupGL(void)
 	}
 
 	glViewport(glx + x, gly + y2, w, h);
-	screenaspect = (float)r_refdef.vrect.width / r_refdef.vrect.height;
+	float screenaspect = (float)r_refdef.vrect.width / r_refdef.vrect.height;
 	// yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
 	MYgluPerspective(r_refdef.fov_y, screenaspect, 4, 4096);
 
@@ -1518,16 +1484,12 @@ R_Mirror
 */
 void R_Mirror(void)
 {
-	float d;
-	msurface_t* s;
-	entity_t* ent;
-
 	if (!mirror)
 		return;
 
 	memcpy(r_base_world_matrix, r_world_matrix, sizeof(r_base_world_matrix));
 
-	d = DotProduct(r_refdef.vieworg, mirror_plane->normal) - mirror_plane->dist;
+	float d = DotProduct(r_refdef.vieworg, mirror_plane->normal) - mirror_plane->dist;
 	VectorMA(r_refdef.vieworg, -2 * d, mirror_plane->normal, r_refdef.vieworg);
 
 	d = DotProduct(vpn, mirror_plane->normal);
@@ -1537,7 +1499,7 @@ void R_Mirror(void)
 	r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / M_PI * 180;
 	r_refdef.viewangles[2] = -r_refdef.viewangles[2];
 
-	ent = &cl_entities[cl.viewentity];
+	entity_t* ent = &cl_entities[cl.viewentity];
 	if (cl_numvisedicts < MAX_VISEDICTS)
 	{
 		cl_visedicts[cl_numvisedicts] = ent;
@@ -1570,7 +1532,7 @@ void R_Mirror(void)
 	glLoadMatrixf(r_base_world_matrix);
 
 	glColor4f(1, 1, 1, r_mirroralpha.value);
-	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
+	msurface_t* s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
 	for (; s; s = s->texturechain)
 		R_RenderBrushPoly(s);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
@@ -1587,7 +1549,7 @@ r_refdef must be set before the first call
 */
 void R_RenderView(void)
 {
-	double time1, time2;
+	double time1;
 	GLfloat colors[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20};
 
 	if (r_norefresh.value)
@@ -1637,7 +1599,7 @@ void R_RenderView(void)
 	if (r_speeds.value)
 	{
 		// glFinish ();
-		time2 = Sys_FloatTime();
+		double time2 = Sys_FloatTime();
 		Con_Printf((char*)"%3i ms  %4i wpoly %4i epoly\n", (int)((time2 - time1) * 1000), c_brush_polys, c_alias_polys);
 	}
 }

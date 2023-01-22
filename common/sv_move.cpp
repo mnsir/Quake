@@ -44,9 +44,8 @@ int c_yes, c_no;
 qboolean SV_CheckBottom(edict_t* ent)
 {
 	vec3_t mins, maxs, start, stop;
-	trace_t trace;
 	int x, y;
-	float mid, bottom;
+	float bottom;
 
 	VectorAdd(ent->v.origin, ent->v.mins, mins);
 	VectorAdd(ent->v.origin, ent->v.maxs, maxs);
@@ -78,11 +77,11 @@ realcheck:
 	start[0] = stop[0] = (mins[0] + maxs[0]) * 0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1]) * 0.5;
 	stop[2] = start[2] - 2 * STEPSIZE;
-	trace = SV_Move(start, vec3_origin, vec3_origin, stop, true, ent);
+	trace_t trace = SV_Move(start, vec3_origin, vec3_origin, stop, true, ent);
 
 	if (trace.fraction == 1.0)
 		return false;
-	mid = bottom = trace.endpos[2];
+	float mid = bottom = trace.endpos[2];
 
 	// the corners must be within 16 of the midpoint 
 	for (x = 0; x <= 1; x++)
@@ -116,11 +115,8 @@ pr_global_struct->trace_normal is set to the normal of the blocking wall
 */
 qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 {
-	float dz;
 	vec3_t oldorg, new_org, end;
 	trace_t trace;
-	int i;
-	edict_t* enemy;
 
 	// try the move 
 	VectorCopy(ent->v.origin, oldorg);
@@ -130,13 +126,13 @@ qboolean SV_movestep(edict_t* ent, vec3_t move, qboolean relink)
 	if ((int)ent->v.flags & (FL_SWIM | FL_FLY))
 	{
 		// try one move with vertical motion, then one without
-		for (i = 0; i < 2; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			VectorAdd(ent->v.origin, move, new_org);
-			enemy = PROG_TO_EDICT(ent->v.enemy);
+			edict_t* enemy = PROG_TO_EDICT(ent->v.enemy);
 			if (i == 0 && enemy != sv.edicts)
 			{
-				dz = ent->v.origin[2] - PROG_TO_EDICT(ent->v.enemy)->v.origin[2];
+				float dz = ent->v.origin[2] - PROG_TO_EDICT(ent->v.enemy)->v.origin[2];
 				if (dz > 40)
 					new_org[2] -= 8;
 				if (dz < 30)
@@ -242,7 +238,6 @@ void PF_changeyaw(void);
 qboolean SV_StepDirection(edict_t* ent, float yaw, float dist)
 {
 	vec3_t move, oldorigin;
-	float delta;
 
 	ent->v.ideal_yaw = yaw;
 	PF_changeyaw();
@@ -255,7 +250,7 @@ qboolean SV_StepDirection(edict_t* ent, float yaw, float dist)
 	VectorCopy(ent->v.origin, oldorigin);
 	if (SV_movestep(ent, move, false))
 	{
-		delta = ent->v.angles[YAW] - ent->v.ideal_yaw;
+		float delta = ent->v.angles[YAW] - ent->v.ideal_yaw;
 		if (delta > 45 && delta < 315)
 		{
 			// not turned far enough, so don't take the step
@@ -293,15 +288,14 @@ SV_NewChaseDir
 
 void SV_NewChaseDir(edict_t* actor, edict_t* enemy, float dist)
 {
-	float deltax, deltay;
 	float d[3];
-	float tdir, olddir, turnaround;
+	float tdir;
 
-	olddir = anglemod((int)(actor->v.ideal_yaw / 45) * 45);
-	turnaround = anglemod(olddir - 180);
+	float olddir = anglemod((int)(actor->v.ideal_yaw / 45) * 45);
+	float turnaround = anglemod(olddir - 180);
 
-	deltax = enemy->v.origin[0] - actor->v.origin[0];
-	deltay = enemy->v.origin[1] - actor->v.origin[1];
+	float deltax = enemy->v.origin[0] - actor->v.origin[0];
+	float deltay = enemy->v.origin[1] - actor->v.origin[1];
 	if (deltax > 10)
 		d[1] = 0;
 	else if (deltax < -10)
@@ -381,9 +375,7 @@ SV_CloseEnough
 */
 qboolean SV_CloseEnough(edict_t* ent, edict_t* goal, float dist)
 {
-	int i;
-
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		if (goal->v.absmin[i] > ent->v.absmax[i] + dist)
 			return false;
@@ -401,12 +393,9 @@ SV_MoveToGoal
 */
 void SV_MoveToGoal(void)
 {
-	edict_t *ent, *goal;
-	float dist;
-
-	ent = PROG_TO_EDICT(pr_global_struct->self);
-	goal = PROG_TO_EDICT(ent->v.goalentity);
-	dist = G_FLOAT(OFS_PARM0);
+	edict_t* ent = PROG_TO_EDICT(pr_global_struct->self);
+	edict_t* goal = PROG_TO_EDICT(ent->v.goalentity);
+	float dist = G_FLOAT(OFS_PARM0);
 
 	if (!((int)ent->v.flags & (FL_ONGROUND | FL_FLY | FL_SWIM)))
 	{

@@ -343,14 +343,10 @@ CL_DecayLights
 */
 void CL_DecayLights(void)
 {
-	int i;
-	dlight_t* dl;
-	float time;
+	float time = cl.time - cl.oldtime;
 
-	time = cl.time - cl.oldtime;
-
-	dl = cl_dlights;
-	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
+	dlight_t* dl = cl_dlights;
+	for (int i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time || !dl->radius)
 			continue;
@@ -372,9 +368,7 @@ should be put at.
 */
 float CL_LerpPoint(void)
 {
-	float f, frac;
-
-	f = cl.mtime[0] - cl.mtime[1];
+	float f = cl.mtime[0] - cl.mtime[1];
 
 	if (!f || cl_nolerp.value || cls.timedemo || sv.active)
 	{
@@ -388,7 +382,7 @@ float CL_LerpPoint(void)
 		cl.mtime[1] = cl.mtime[0] - 0.1;
 		f = 0.1;
 	}
-	frac = (cl.time - cl.mtime[1]) / f;
+	float frac = (cl.time - cl.mtime[1]) / f;
 	//Con_Printf ((char*)"frac: %f\n",frac);
 	if (frac < 0)
 	{
@@ -426,14 +420,13 @@ void CL_RelinkEntities(void)
 {
 	entity_t* ent;
 	int i, j;
-	float frac, f, d;
+	float d;
 	vec3_t delta;
-	float bobjrotate;
 	vec3_t oldorg;
 	dlight_t* dl;
 
 	// determine partial update time 
-	frac = CL_LerpPoint();
+	float frac = CL_LerpPoint();
 
 	cl_numvisedicts = 0;
 
@@ -458,7 +451,7 @@ void CL_RelinkEntities(void)
 		}
 	}
 
-	bobjrotate = anglemod(100 * cl.time);
+	float bobjrotate = anglemod(100 * cl.time);
 
 	// start on the entity after the world
 	for (i = 1, ent = cl_entities + 1; i < cl.num_entities; i++, ent++)
@@ -490,7 +483,7 @@ void CL_RelinkEntities(void)
 		else
 		{
 			// if the delta is large, assume a teleport and don't lerp
-			f = frac;
+			float f = frac;
 			for (j = 0; j < 3; j++)
 			{
 				delta[j] = ent->msg_origins[0][j] - ent->msg_origins[1][j];

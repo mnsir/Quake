@@ -1211,24 +1211,19 @@ D_PolysetDrawFinalVerts
 */
 void D_PolysetDrawFinalVerts(finalvert_t* fv, int numverts)
 {
-	int i, z;
-	short* zbuf;
-
-	for (i = 0; i < numverts; i++, fv++)
+	for (int i = 0; i < numverts; i++, fv++)
 	{
 		// valid triangle coordinates for filling can include the bottom and
 		// right clip edges, due to the fill rule; these shouldn't be drawn
 		if ((fv->v[0] < r_refdef.vrectright) &&
 			(fv->v[1] < r_refdef.vrectbottom))
 		{
-			z = fv->v[5] >> 16;
-			zbuf = zspantable[fv->v[1]] + fv->v[0];
+			int z = fv->v[5] >> 16;
+			short* zbuf = zspantable[fv->v[1]] + fv->v[0];
 			if (z >= *zbuf)
 			{
-				int pix;
-
 				*zbuf = z;
-				pix = skintable[fv->v[3] >> 16][fv->v[2] >> 16];
+				int pix = skintable[fv->v[3] >> 16][fv->v[2] >> 16];
 				pix = ((byte*)acolormap)[pix + (fv->v[4] & 0xFF00)];
 				d_viewbuffer[d_scantable[fv->v[1]] + fv->v[0]] = pix;
 			}
@@ -1244,20 +1239,15 @@ D_DrawSubdiv
 */
 void D_DrawSubdiv(void)
 {
-	mtriangle_t* ptri;
-	finalvert_t *pfv, *index0, *index1, *index2;
-	int i;
-	int lnumtriangles;
+	finalvert_t* pfv = r_affinetridesc.pfinalverts;
+	mtriangle_t* ptri = r_affinetridesc.ptriangles;
+	int lnumtriangles = r_affinetridesc.numtriangles;
 
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
+	for (int i = 0; i < lnumtriangles; i++)
 	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
+		finalvert_t* index0 = pfv + ptri[i].vertindex[0];
+		finalvert_t* index1 = pfv + ptri[i].vertindex[1];
+		finalvert_t* index2 = pfv + ptri[i].vertindex[2];
 
 		if (((index0->v[1] - index1->v[1]) *
 			(index0->v[0] - index2->v[0]) -
@@ -1275,11 +1265,9 @@ void D_DrawSubdiv(void)
 		}
 		else
 		{
-			int s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
+			int s0 = index0->v[2];
+			int s1 = index1->v[2];
+			int s2 = index2->v[2];
 
 			if (index0->flags & ALIAS_ONSEAM)
 				index0->v[2] += r_affinetridesc.seamfixupX16;
@@ -1305,20 +1293,15 @@ D_DrawNonSubdiv
 */
 void D_DrawNonSubdiv(void)
 {
-	mtriangle_t* ptri;
-	finalvert_t *pfv, *index0, *index1, *index2;
-	int i;
-	int lnumtriangles;
+	finalvert_t* pfv = r_affinetridesc.pfinalverts;
+	mtriangle_t* ptri = r_affinetridesc.ptriangles;
+	int lnumtriangles = r_affinetridesc.numtriangles;
 
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++, ptri++)
+	for (int i = 0; i < lnumtriangles; i++, ptri++)
 	{
-		index0 = pfv + ptri->vertindex[0];
-		index1 = pfv + ptri->vertindex[1];
-		index2 = pfv + ptri->vertindex[2];
+		finalvert_t* index0 = pfv + ptri->vertindex[0];
+		finalvert_t* index1 = pfv + ptri->vertindex[1];
+		finalvert_t* index2 = pfv + ptri->vertindex[2];
 
 		d_xdenom = (index0->v[1] - index1->v[1]) *
 			(index0->v[0] - index2->v[0]) -
@@ -1373,13 +1356,12 @@ D_PolysetRecursiveTriangle
 */
 void D_PolysetRecursiveTriangle(int* lp1, int* lp2, int* lp3)
 {
-	int* temp;
-	int d;
-	int new_[6];
 	int z;
+	int* temp;
+	int new_[6];
 	short* zbuf;
 
-	d = lp2[0] - lp1[0];
+	int d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
 		goto split;
 	d = lp2[1] - lp1[1];
@@ -1435,10 +1417,8 @@ split:
 	zbuf = zspantable[new_[1]] + new_[0];
 	if (z >= *zbuf)
 	{
-		int pix;
-
 		*zbuf = z;
-		pix = d_pcolormap[skintable[new_[3] >> 16][new_[2] >> 16]];
+		int pix = d_pcolormap[skintable[new_[3] >> 16][new_[2] >> 16]];
 		d_viewbuffer[d_scantable[new_[1]] + new_[0]] = pix;
 	}
 
@@ -1456,16 +1436,13 @@ D_PolysetUpdateTables
 */
 void D_PolysetUpdateTables(void)
 {
-	int i;
-	byte* s;
-
 	if (r_affinetridesc.skinwidth != skinwidth ||
 		r_affinetridesc.pskin != skinstart)
 	{
 		skinwidth = r_affinetridesc.skinwidth;
 		skinstart = (byte*)r_affinetridesc.pskin;
-		s = skinstart;
-		for (i = 0; i < MAX_LBM_HEIGHT; i++, s += skinwidth)
+		byte* s = skinstart;
+		for (int i = 0; i < MAX_LBM_HEIGHT; i++, s += skinwidth)
 			skintable[i] = s;
 	}
 }
@@ -1546,29 +1523,25 @@ D_PolysetSetUpForLineScan
 void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
                                fixed8_t endvertu, fixed8_t endvertv)
 {
-	double dm, dn;
-	int tm, tn;
-	adivtab_t* ptemp;
-
 	// TODO: implement x86 version
 
 	errorterm = -1;
 
-	tm = endvertu - startvertu;
-	tn = endvertv - startvertv;
+	int tm = endvertu - startvertu;
+	int tn = endvertv - startvertv;
 
 	if (((tm <= 16) && (tm >= -15)) &&
 		((tn <= 16) && (tn >= -15)))
 	{
-		ptemp = &adivtab[((tm + 15) << 5) + (tn + 15)];
+		adivtab_t* ptemp = &adivtab[((tm + 15) << 5) + (tn + 15)];
 		ubasestep = ptemp->quotient;
 		erroradjustup = ptemp->remainder;
 		erroradjustdown = tn;
 	}
 	else
 	{
-		dm = (double)tm;
-		dn = (double)tn;
+		double dm = (double)tm;
+		double dn = (double)tn;
 
 		FloorDivMod(dm, dn, &ubasestep, &erroradjustup);
 
@@ -1584,23 +1557,20 @@ D_PolysetCalcGradients
 */
 void D_PolysetCalcGradients(int skinwidth)
 {
-	float xstepdenominv, ystepdenominv, t0, t1;
-	float p01_minus_p21, p11_minus_p21, p00_minus_p20, p10_minus_p20;
+	float p00_minus_p20 = r_p0[0] - r_p2[0];
+	float p01_minus_p21 = r_p0[1] - r_p2[1];
+	float p10_minus_p20 = r_p1[0] - r_p2[0];
+	float p11_minus_p21 = r_p1[1] - r_p2[1];
 
-	p00_minus_p20 = r_p0[0] - r_p2[0];
-	p01_minus_p21 = r_p0[1] - r_p2[1];
-	p10_minus_p20 = r_p1[0] - r_p2[0];
-	p11_minus_p21 = r_p1[1] - r_p2[1];
+	float xstepdenominv = 1.0 / (float)d_xdenom;
 
-	xstepdenominv = 1.0 / (float)d_xdenom;
-
-	ystepdenominv = -xstepdenominv;
+	float ystepdenominv = -xstepdenominv;
 
 	// ceil () for light so positive steps are exaggerated, negative steps
 	// diminished,  pushing us away from underflow toward overflow. Underflow is
 	// very visible, overflow is very unlikely, because of ambient lighting
-	t0 = r_p0[4] - r_p2[4];
-	t1 = r_p1[4] - r_p2[4];
+	float t0 = r_p0[4] - r_p2[4];
+	float t1 = r_p1[4] - r_p2[4];
 	r_lstepx = (int)
 		ceil((t1 * p01_minus_p21 - t0 * p11_minus_p21) * xstepdenominv);
 	r_lstepy = (int)
@@ -1641,17 +1611,9 @@ D_PolysetDrawSpans8
 */
 void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 {
-	int lcount;
-	byte* lpdest;
-	byte* lptex;
-	int lsfrac, ltfrac;
-	int llight;
-	int lzi;
-	short* lpz;
-
 	do
 	{
-		lcount = d_aspancount - pspanpackage->count;
+		int lcount = d_aspancount - pspanpackage->count;
 
 		errorterm += erroradjustup;
 		if (errorterm >= 0)
@@ -1666,13 +1628,13 @@ void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 
 		if (lcount)
 		{
-			lpdest = (byte*)pspanpackage->pdest;
-			lptex = pspanpackage->ptex;
-			lpz = pspanpackage->pz;
-			lsfrac = pspanpackage->sfrac;
-			ltfrac = pspanpackage->tfrac;
-			llight = pspanpackage->light;
-			lzi = pspanpackage->zi;
+			byte* lpdest = (byte*)pspanpackage->pdest;
+			byte* lptex = pspanpackage->ptex;
+			short* lpz = pspanpackage->pz;
+			int lsfrac = pspanpackage->sfrac;
+			int ltfrac = pspanpackage->tfrac;
+			int llight = pspanpackage->light;
+			int lzi = pspanpackage->zi;
 
 			do
 			{
@@ -1713,25 +1675,20 @@ D_PolysetFillSpans8
 */
 void D_PolysetFillSpans8(spanpackage_t* pspanpackage)
 {
-	int color;
-
 	// FIXME: do z buffering
 
-	color = d_aflatcolor++;
+	int color = d_aflatcolor++;
 
 	while (1)
 	{
-		int lcount;
-		byte* lpdest;
-
-		lcount = pspanpackage->count;
+		int lcount = pspanpackage->count;
 
 		if (lcount == -1)
 			return;
 
 		if (lcount)
 		{
-			lpdest = (byte*)pspanpackage->pdest;
+			byte* lpdest = (byte*)pspanpackage->pdest;
 
 			do
 			{
@@ -1751,18 +1708,16 @@ D_RasterizeAliasPolySmooth
 */
 void D_RasterizeAliasPolySmooth(void)
 {
-	int initialleftheight, initialrightheight;
-	int *plefttop, *prighttop, *pleftbottom, *prightbottom;
-	int working_lstepx, originalcount;
+	int working_lstepx;
 
-	plefttop = pedgetable->pleftedgevert0;
-	prighttop = pedgetable->prightedgevert0;
+	int* plefttop = pedgetable->pleftedgevert0;
+	int* prighttop = pedgetable->prightedgevert0;
 
-	pleftbottom = pedgetable->pleftedgevert1;
-	prightbottom = pedgetable->prightedgevert1;
+	int* pleftbottom = pedgetable->pleftedgevert1;
+	int* prightbottom = pedgetable->prightedgevert1;
 
-	initialleftheight = pleftbottom[1] - plefttop[1];
-	initialrightheight = prightbottom[1] - prighttop[1];
+	int initialleftheight = pleftbottom[1] - plefttop[1];
+	int initialrightheight = prightbottom[1] - prighttop[1];
 
 	//
 	// set the s, t, and light gradients, which are consistent across the triangle
@@ -1855,12 +1810,10 @@ void D_RasterizeAliasPolySmooth(void)
 	//
 	if (pedgetable->numleftedges == 2)
 	{
-		int height;
-
 		plefttop = pleftbottom;
 		pleftbottom = pedgetable->pleftedgevert2;
 
-		height = pleftbottom[1] - plefttop[1];
+		int height = pleftbottom[1] - plefttop[1];
 
 		// TODO: make this_ a function; modularize this_ function in general
 
@@ -1937,17 +1890,14 @@ void D_RasterizeAliasPolySmooth(void)
 	                          prightbottom[0], prightbottom[1]);
 	d_aspancount = 0;
 	d_countextrastep = ubasestep + 1;
-	originalcount = a_spans[initialrightheight].count;
+	int originalcount = a_spans[initialrightheight].count;
 	a_spans[initialrightheight].count = -999999; // mark end of the spanpackages
 	D_PolysetDrawSpans8(a_spans);
 
 	// scan out the bottom part of the right edge, if it exists
 	if (pedgetable->numrightedges == 2)
 	{
-		int height;
-		spanpackage_t* pstart;
-
-		pstart = a_spans + initialrightheight;
+		spanpackage_t* pstart = a_spans + initialrightheight;
 		pstart->count = originalcount;
 
 		d_aspancount = prightbottom[0] - prighttop[0];
@@ -1955,7 +1905,7 @@ void D_RasterizeAliasPolySmooth(void)
 		prighttop = prightbottom;
 		prightbottom = pedgetable->prightedgevert2;
 
-		height = prightbottom[1] - prighttop[1];
+		int height = prightbottom[1] - prighttop[1];
 
 		D_PolysetSetUpForLineScan(prighttop[0], prighttop[1],
 		                          prightbottom[0], prightbottom[1]);
@@ -1975,9 +1925,7 @@ D_PolysetSetEdgeTable
 */
 void D_PolysetSetEdgeTable(void)
 {
-	int edgetableindex;
-
-	edgetableindex = 0; // assume the vertices are already in
+	int edgetableindex = 0; // assume the vertices are already in
 	//  top to bottom order
 
 	//

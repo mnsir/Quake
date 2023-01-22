@@ -42,13 +42,13 @@ static char* safeargvs[NUM_SAFE_ARGVS] =
 cvar_t registered = {(char*)"registered", (char*)"0"};
 cvar_t cmdline = {(char*)"cmdline", (char*)"0", false, true};
 
-qboolean com_modified; // set true if using non-id files
+bool com_modified; // set true if using non-id files
 
-qboolean proghack;
+bool proghack;
 
 int static_registered = 1; // only for startup check, then set
 
-qboolean msg_suppress_1 = 0;
+bool msg_suppress_1 = false;
 
 void COM_InitFilesystem(void);
 
@@ -63,7 +63,7 @@ char** com_argv;
 #define CMDLINE_LENGTH 256
 char com_cmdline[CMDLINE_LENGTH];
 
-qboolean standard_quake = true, rogue, hipnotic;
+bool standard_quake = true, rogue, hipnotic;
 
 // this_ graphic needs to be in the pak file to use registered features
 unsigned short pop[] =
@@ -227,7 +227,7 @@ void Q_strcat(char* dest, char* src)
 
 int Q_strcmp(char* s1, char* s2)
 {
-	while (1)
+	while (true)
 	{
 		if (*s1 != *s2)
 			return -1; // strings not equal    
@@ -242,7 +242,7 @@ int Q_strcmp(char* s1, char* s2)
 
 int Q_strncmp(char* s1, char* s2, int count)
 {
-	while (1)
+	while (true)
 	{
 		if (!count--)
 			return 0;
@@ -259,7 +259,7 @@ int Q_strncmp(char* s1, char* s2, int count)
 
 int Q_strncasecmp(char* s1, char* s2, int n)
 {
-	while (1)
+	while (true)
 	{
 		int c1 = *s1++;
 		int c2 = *s2++;
@@ -311,7 +311,7 @@ int Q_atoi(char* str)
 	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
 	{
 		str += 2;
-		while (1)
+		while (true)
 		{
 			c = *str++;
 			if (c >= '0' && c <= '9')
@@ -336,7 +336,7 @@ int Q_atoi(char* str)
 	//
 	// assume decimal
 	//
-	while (1)
+	while (true)
 	{
 		c = *str++;
 		if (c < '0' || c > '9')
@@ -369,7 +369,7 @@ float Q_atof(char* str)
 	if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
 	{
 		str += 2;
-		while (1)
+		while (true)
 		{
 			c = *str++;
 			if (c >= '0' && c <= '9')
@@ -396,7 +396,7 @@ float Q_atof(char* str)
 	//
 	int decimal = -1;
 	int total = 0;
-	while (1)
+	while (true)
 	{
 		c = *str++;
 		if (c == '.')
@@ -429,7 +429,7 @@ float Q_atof(char* str)
 ============================================================================
 */
 
-qboolean bigendien;
+bool bigendien;
 
 short (*BigShort)(short l);
 short (*LittleShort)(short l);
@@ -566,7 +566,7 @@ void MSG_WriteAngle(sizebuf_t* sb, float f)
 // reading functions
 //
 int msg_readcount;
-qboolean msg_badread;
+bool msg_badread;
 
 void MSG_BeginReading(void)
 {
@@ -894,7 +894,7 @@ skipwhite:
 	if (c == '\"')
 	{
 		data++;
-		while (1)
+		while (true)
 		{
 			c = *data++;
 			if (c == '\"' || !c)
@@ -1026,7 +1026,7 @@ void COM_InitArgv(int argc, char** argv)
 
 	com_cmdline[n] = 0;
 
-	qboolean safe = false;
+	bool safe = false;
 
 	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc);
 	     com_argc++)

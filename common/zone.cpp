@@ -279,7 +279,7 @@ int hunk_size;
 int hunk_low_used;
 int hunk_high_used;
 
-qboolean hunk_tempactive;
+bool hunk_tempactive;
 int hunk_tempmark;
 
 void R_FreeTextures(void);
@@ -311,7 +311,7 @@ If "all" is specified, every single allocation is printed.
 Otherwise, allocations with the same name will be totaled up before printing.
 ==============
 */
-void Hunk_Print(qboolean all)
+void Hunk_Print(bool all)
 {
 	char name[9];
 
@@ -328,7 +328,7 @@ void Hunk_Print(qboolean all)
 	Con_Printf((char*)"          :%8i total hunk size\n", hunk_size);
 	Con_Printf((char*)"-------------------------\n");
 
-	while (1)
+	while (true)
 	{
 		//
 		// skip to the high hunk if done with low hunk
@@ -544,7 +544,7 @@ typedef struct cache_system_s
 	struct cache_system_s *lru_prev, *lru_next; // for LRU flushing 
 } cache_system_t;
 
-cache_system_t* Cache_TryAlloc(int size, qboolean nobottom);
+cache_system_t* Cache_TryAlloc(int size, bool nobottom);
 
 cache_system_t cache_head;
 
@@ -584,7 +584,7 @@ Throw things out until the hunk can be expanded to the given point
 */
 void Cache_FreeLow(int new__low_hunk)
 {
-	while (1)
+	while (true)
 	{
 		cache_system_t* c = cache_head.next;
 		if (c == &cache_head)
@@ -605,7 +605,7 @@ Throw things out until the hunk can be expanded to the given point
 void Cache_FreeHigh(int new__high_hunk)
 {
 	cache_system_t* prev = NULL;
-	while (1)
+	while (true)
 	{
 		cache_system_t* c = cache_head.prev;
 		if (c == &cache_head)
@@ -652,7 +652,7 @@ Looks for a free block of memory between the high and low hunk marks
 Size should already include the header and padding
 ============
 */
-cache_system_t* Cache_TryAlloc(int size, qboolean nobottom)
+cache_system_t* Cache_TryAlloc(int size, bool nobottom)
 {
 	cache_system_t*new_;
 
@@ -848,7 +848,7 @@ void* Cache_Alloc(cache_user_t* c, int size, char* name)
 	size = (size + sizeof(cache_system_t) + 15) & ~15;
 
 	// find memory for it 
-	while (1)
+	while (true)
 	{
 		cache_system_t* cs = Cache_TryAlloc(size, false);
 		if (cs)

@@ -85,7 +85,7 @@ ALIAS MODEL DISPLAY LIST GENERATION
 model_t* aliasmodel;
 aliashdr_t* paliashdr;
 
-qboolean used[8192];
+bool used[8192];
 
 // the command list holds counts and s/t values that are valid for
 // every frame
@@ -113,7 +113,7 @@ int StripLength(int starttri, int startv)
 	int j;
 	mtriangle_t*check;
 
-	used[starttri] = 2;
+	used[starttri] = true;
 
 	mtriangle_t* last = &triangles[starttri];
 
@@ -156,7 +156,7 @@ nexttri:
 			striptris[stripcount] = j;
 			stripcount++;
 
-			used[j] = 2;
+			used[j] = true;
 			goto nexttri;
 		}
 	}
@@ -165,7 +165,7 @@ done:
 	// clear the temp used flags
 	for (j = starttri + 1; j < pheader->numtris; j++)
 		if (used[j] == 2)
-			used[j] = 0;
+			used[j] = false;
 
 	return stripcount;
 }
@@ -180,7 +180,7 @@ int FanLength(int starttri, int startv)
 	int j;
 	mtriangle_t*check;
 
-	used[starttri] = 2;
+	used[starttri] = true;
 
 	mtriangle_t* last = &triangles[starttri];
 
@@ -221,7 +221,7 @@ nexttri:
 			striptris[stripcount] = j;
 			stripcount++;
 
-			used[j] = 2;
+			used[j] = true;
 			goto nexttri;
 		}
 	}
@@ -230,7 +230,7 @@ done:
 	// clear the temp used flags
 	for (j = starttri + 1; j < pheader->numtris; j++)
 		if (used[j] == 2)
-			used[j] = 0;
+			used[j] = false;
 
 	return stripcount;
 }
@@ -293,7 +293,7 @@ void BuildTris(void)
 
 		// mark the tris on the best strip as used
 		for (j = 0; j < bestlen; j++)
-			used[besttris[j]] = 1;
+			used[besttris[j]] = true;
 
 		if (besttype == 1)
 			commands[numcommands++] = (bestlen + 2);

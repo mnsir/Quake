@@ -82,7 +82,7 @@ char loadname[32]; // for hunk tags
 void Mod_LoadSpriteModel(model_t* mod, void* buffer);
 void Mod_LoadBrushModel(model_t* mod, void* buffer);
 void Mod_LoadAliasModel(model_t* mod, void* buffer);
-model_t* Mod_LoadModel(model_t* mod, qboolean crash);
+model_t* Mod_LoadModel(model_t* mod, bool crash);
 
 byte mod_novis[MAX_MAP_LEAFS / 8];
 
@@ -134,7 +134,7 @@ mleaf_t* Mod_PointInLeaf(vec3_t p, model_t* model)
 		Sys_Error((char*)"Mod_PointInLeaf: bad model");
 
 	mnode_t* node = model->nodes;
-	while (1)
+	while (true)
 	{
 		if (node->contents < 0)
 			return (mleaf_t*)node;
@@ -273,7 +273,7 @@ Mod_LoadModel
 Loads a model into the cache
 ==================
 */
-model_t* Mod_LoadModel(model_t* mod, qboolean crash)
+model_t* Mod_LoadModel(model_t* mod, bool crash)
 {
 	byte stackbuf[1024]; // avoid dirtying the cache heap
 
@@ -346,7 +346,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t* Mod_ForName(char* name, qboolean crash)
+model_t* Mod_ForName(char* name, bool crash)
 {
 	model_t* mod = Mod_FindName(name);
 

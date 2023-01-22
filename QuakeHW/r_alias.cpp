@@ -253,7 +253,7 @@ void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
 R_AliasCheckBBox
 ================
 */
-qboolean R_AliasCheckBBox(void)
+bool R_AliasCheckBBox(void)
 {
 	int i;
 	float basepts[8][3];
@@ -299,8 +299,8 @@ qboolean R_AliasCheckBBox(void)
 	basepts[2][2] = basepts[3][2] = basepts[6][2] = basepts[7][2] =
 		(float)pframedesc->bboxmax.v[2];
 
-	qboolean zclipped = false;
-	qboolean zfullyclipped = true;
+	bool zclipped = false;
+	bool zfullyclipped = true;
 
 	int minz = 9999;
 	for (i = 0; i < 8; i++)

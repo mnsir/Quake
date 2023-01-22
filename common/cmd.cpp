@@ -44,7 +44,7 @@ cmdalias_t* cmd_alias;
 int trashtest;
 int* trashspot;
 
-qboolean cmd_wait;
+bool cmd_wait;
 
 //=============================================================================
 
@@ -446,7 +446,7 @@ Cmd_Argv
 */
 char* Cmd_Argv(int arg)
 {
-	if ((unsigned)arg >= cmd_argc)
+	if (arg >= cmd_argc)
 		return cmd_null_string;
 	return cmd_argv[arg];
 }
@@ -478,7 +478,7 @@ void Cmd_TokenizeString(char* text)
 	cmd_argc = 0;
 	cmd_args = NULL;
 
-	while (1)
+	while (true)
 	{
 		// skip whitespace up to a /n
 		while (*text && *text <= ' ' && *text != '\n')
@@ -554,7 +554,7 @@ void Cmd_AddCommand(char* cmd_name, xcommand_t function)
 Cmd_Exists
 ============
 */
-qboolean Cmd_Exists(char* cmd_name)
+bool Cmd_Exists(char* cmd_name)
 {
 	for (cmd_function_t* cmd = cmd_functions; cmd; cmd = cmd->next)
 	{

@@ -364,7 +364,7 @@ SV_LinkEdict
 
 ===============
 */
-void SV_LinkEdict(edict_t* ent, qboolean touch_triggers)
+void SV_LinkEdict(edict_t* ent, bool touch_triggers)
 {
 	if (ent->area.prev)
 		SV_UnlinkEdict(ent); // unlink from old position
@@ -414,7 +414,7 @@ void SV_LinkEdict(edict_t* ent, qboolean touch_triggers)
 
 	// find the first node that the ent's box crosses
 	areanode_t* node = sv_areanodes;
-	while (1)
+	while (true)
 	{
 		if (node->axis == -1)
 			break;
@@ -536,7 +536,7 @@ SV_RecursiveHullCheck
 
 ==================
 */
-qboolean SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t* trace)
+bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t* trace)
 {
 	float t1, t2;
 	float frac;

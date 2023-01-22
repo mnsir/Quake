@@ -39,7 +39,7 @@ typedef union eval_s
 
 typedef struct edict_s
 {
-	qboolean free;
+	bool free;
 	link_t area; // linked to a division node or leaf
 
 	int num_leafs;

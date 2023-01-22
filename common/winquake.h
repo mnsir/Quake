@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ddraw.h>
 #include <dsound.h>
 #ifndef GLQUAKE
+#define __HAS_BOOL__
 #include <mgraph.h>
 #endif
 

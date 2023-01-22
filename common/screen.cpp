@@ -32,14 +32,14 @@ float scr_con_current;
 float scr_conlines; // lines of console to display
 int scr_fullupdate;
 int clearnotify;
-qboolean scr_disabled_for_loading;
-qboolean scr_skipupdate;
+bool scr_disabled_for_loading;
+bool scr_skipupdate;
 cvar_t scr_viewsize = { (char*)"viewsize", (char*)"100", true };
 
 // only the refresh window will be updated unless these variables are flagged 
 int scr_copytop;
 int scr_copyeverything;
-qboolean block_drawing;
+bool block_drawing;
 
 // private
 
@@ -51,7 +51,7 @@ cvar_t scr_showram = { (char*)"showram", (char*)"1" };
 cvar_t scr_showturtle = { (char*)"showturtle", (char*)"0" };
 cvar_t scr_showpause = { (char*)"showpause", (char*)"1" };
 cvar_t scr_printspeed = { (char*)"scr_printspeed", (char*)"8" };
-qboolean scr_initialized; // ready to draw
+bool scr_initialized; // ready to draw
 
 qpic_t* scr_ram;
 qpic_t* scr_net;
@@ -74,10 +74,10 @@ int scr_erase_center;
 
 extern viddef_t vid; // global video state
 vrect_t scr_vrect;
-qboolean scr_drawloading;
+bool scr_drawloading;
 float scr_disabled_time;
 char* scr_notifystring;
-qboolean scr_drawdialog;
+bool scr_drawdialog;
 
 #ifdef GLQUAKE
 int glx, gly, glwidth, glheight;
@@ -310,7 +310,7 @@ void SCR_DrawCenterString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	} while (true);
 }
 
 
@@ -357,7 +357,7 @@ static void SCR_CalcRefdef(void)
 #ifdef GLQUAKE
 	vrect_t vrect;
 	float size;
-	qboolean full = false;
+	bool full = false;
 
 
 	scr_fullupdate = 0; // force a background redraw
@@ -657,7 +657,7 @@ void SCR_DrawNotifyString(void)
 		if (!*start)
 			break;
 		start++; // skip the \n
-	} while (1);
+	} while (true);
 }
 
 // public functions
@@ -783,7 +783,7 @@ void SCR_UpdateScreen(void)
 				vid.height - sb_lines -
 				(r_refdef.vrect.height + r_refdef.vrect.y));
 		}
-	}while (0);
+	}while (false);
 
 	if (scr_drawdialog)
 	{

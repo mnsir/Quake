@@ -49,7 +49,7 @@ int localstack[LOCALSTACK_SIZE];
 int localstack_used;
 
 
-qboolean pr_trace;
+bool pr_trace;
 dfunction_t* pr_xfunction;
 int pr_xstatement;
 
@@ -381,7 +381,7 @@ void PR_ExecuteProgram(func_t fnum)
 
 	int s = PR_EnterFunction(f);
 
-	while (1)
+	while (true)
 	{
 		s++; // next statement
 

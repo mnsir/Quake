@@ -38,7 +38,7 @@ void S_Play(void);
 void S_PlayVol(void);
 void S_SoundList(void);
 void S_Update_();
-void S_StopAllSounds(qboolean clear);
+void S_StopAllSounds(bool clear);
 void S_StopAllSoundsC(void);
 
 
@@ -52,8 +52,8 @@ channel_t channels[MAX_CHANNELS];
 int total_channels;
 
 int snd_blocked = 0;
-static qboolean snd_ambient = 1;
-qboolean snd_initialized = false;
+static bool snd_ambient = true;
+bool snd_initialized = false;
 
 // pointer should go away
 volatile dma_t* shm = 0;
@@ -105,7 +105,7 @@ cvar_t _snd_mixahead = {(char*)"_snd_mixahead", (char*)"0.1", true};
 // number of times S_Update() is called per second.
 //
 
-qboolean fakedma = false;
+bool fakedma = false;
 int fakedma_updates = 15;
 
 
@@ -220,7 +220,7 @@ void S_Init(void)
 	if (fakedma)
 	{
 		shm = static_cast<volatile dma_t*>(Hunk_AllocName(sizeof*shm, (char*)"shm"));
-		shm->splitbuffer = 0;
+		shm->splitbuffer = false;
 		shm->samplebits = 16;
 		shm->speed = 22050;
 		shm->channels = 2;
@@ -256,7 +256,7 @@ void S_Shutdown(void)
 		return;
 
 	if (shm)
-		shm->gamealive = 0;
+		shm->gamealive = false;
 
 	shm = 0;
 	sound_started = 0;
@@ -517,7 +517,7 @@ void S_StopSound(int entnum, int entchannel)
 	}
 }
 
-void S_StopAllSounds(qboolean clear)
+void S_StopAllSounds(bool clear)
 {
 	if (!sound_started)
 		return;

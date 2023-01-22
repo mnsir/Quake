@@ -214,7 +214,7 @@ R_StepActiveU
 */
 void R_StepActiveU(edge_t* pedge)
 {
-	while (1)
+	while (true)
 	{
 	nextedge:
 		pedge->u += pedge->u_step;

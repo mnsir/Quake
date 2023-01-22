@@ -137,7 +137,7 @@ void PF_setorigin(void)
 }
 
 
-void SetMinMaxSize(edict_t* e, float* min, float* max, qboolean rotate)
+void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 {
 	vec3_t rmin, rmax;
 	float bounds[2][3];
@@ -1135,7 +1135,7 @@ entity nextent(entity)
 void PF_nextent(void)
 {
 	int i = G_EDICTNUM(OFS_PARM0);
-	while (1)
+	while (true)
 	{
 		i++;
 		if (i == sv.num_edicts)

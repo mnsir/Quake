@@ -39,7 +39,7 @@ void IN_ClearStates(void);
 
 void IN_UpdateClipCursor(void);
 
-extern qboolean mouseinitialized;
+extern bool mouseinitialized;
 
 
 void IN_ShowMouse(void);

@@ -32,11 +32,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef struct client_s
 {
-	qboolean active; // false = client is free
-	qboolean spawned; // false = don't send datagrams
-	qboolean dropasap; // has been told to go to another level
-	qboolean privileged; // can execute any host command
-	qboolean sendsignon; // only valid before spawned
+	bool active; // false = client is free
+	bool spawned; // false = don't send datagrams
+	bool dropasap; // has been told to go to another level
+	bool privileged; // can execute any host command
+	bool sendsignon; // only valid before spawned
 
 	double last_message; // reliable messages must be sent
 	// periodically

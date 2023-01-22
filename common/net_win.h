@@ -7,11 +7,11 @@
 typedef struct
 {
 	char* name;
-	qboolean initialized;
+	bool initialized;
 	int controlSock;
 	int (*Init)(void);
 	void (*Shutdown)(void);
-	void (*Listen)(qboolean state);
+	void (*Listen)(bool state);
 	int (*OpenSocket)(int port);
 	int (*CloseSocket)(int socket);
 	int (*Connect)(int socket, struct qsockaddr* addr);
@@ -36,17 +36,17 @@ extern net_landriver_t net_landrivers[MAX_NET_DRIVERS];
 typedef struct
 {
 	char* name;
-	qboolean initialized;
+	bool initialized;
 	int (*Init)(void);
-	void (*Listen)(qboolean state);
-	void (*SearchForHosts)(qboolean xmit);
+	void (*Listen)(bool state);
+	void (*SearchForHosts)(bool xmit);
 	qsocket_t* (*Connect)(char* host);
 	qsocket_t* (*CheckNewConnections)(void);
 	int (*QGetMessage)(qsocket_t* sock);
 	int (*QSendMessage)(qsocket_t* sock, sizebuf_t* data);
 	int (*SendUnreliableMessage)(qsocket_t* sock, sizebuf_t* data);
-	qboolean(*CanSendMessage)(qsocket_t* sock);
-	qboolean(*CanSendUnreliableMessage)(qsocket_t* sock);
+	bool(*CanSendMessage)(qsocket_t* sock);
+	bool(*CanSendUnreliableMessage)(qsocket_t* sock);
 	void (*Close)(qsocket_t* sock);
 	void (*Shutdown)(void);
 	int controlSock;

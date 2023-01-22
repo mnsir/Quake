@@ -48,9 +48,9 @@ clipplane_t world_clipplanes[16];
 
 medge_t* r_pedge;
 
-qboolean r_leftclipped, r_rightclipped;
-static qboolean makeleftedge, makerightedge;
-qboolean r_nearzionly;
+bool r_leftclipped, r_rightclipped;
+static bool makeleftedge, makerightedge;
+bool r_nearzionly;
 
 int sintable[SIN_BUFFER_SIZE];
 int intsintable[SIN_BUFFER_SIZE];
@@ -69,7 +69,7 @@ float r_nearzi;
 float r_u1, r_v1, r_lzi1;
 int r_ceilv1;
 
-qboolean r_lastvertvalid;
+bool r_lastvertvalid;
 
 
 /*
@@ -736,7 +736,7 @@ void R_RenderPoly(msurface_t* fa, int clipflags)
 		float lastdist = DotProduct(verts[vertpage][lastvert].position,
 		                            pclip->normal) - pclip->dist;
 
-		qboolean visible = false;
+		bool visible = false;
 		int new_verts = 0;
 		int new_page = vertpage ^ 1;
 

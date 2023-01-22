@@ -59,7 +59,7 @@ struct
 } packetBuffer;
 
 extern int m_return_state;
-extern qboolean m_return_onerror;
+extern bool m_return_onerror;
 extern char m_return_reason[32];
 
 
@@ -220,7 +220,7 @@ int ReSendMessage(qsocket_t* sock)
 }
 
 
-qboolean Datagram_CanSendMessage(qsocket_t* sock)
+bool Datagram_CanSendMessage(qsocket_t* sock)
 {
 	if (sock->sendNext)
 		SendMessageNext(sock);
@@ -229,7 +229,7 @@ qboolean Datagram_CanSendMessage(qsocket_t* sock)
 }
 
 
-qboolean Datagram_CanSendUnreliableMessage(qsocket_t* sock)
+bool Datagram_CanSendUnreliableMessage(qsocket_t* sock)
 {
 	return true;
 }
@@ -260,7 +260,7 @@ int Datagram_GetMessage(qsocket_t* sock)
 		if ((net_time - sock->lastSendTime) > 1.0)
 			ReSendMessage(sock);
 
-	while (1)
+	while (true)
 	{
 		unsigned int length = sfunc.Read(sock->socket, (byte*)&packetBuffer, NET_DATAGRAMSIZE, &readaddr);
 
@@ -440,7 +440,7 @@ void NET_Stats_f(void)
 }
 
 
-static qboolean testInProgress = false;
+static bool testInProgress = false;
 static int testPollCount;
 static int testDriver;
 static int testSocket;
@@ -456,7 +456,7 @@ static void Test_Poll(void)
 
 	net_landriverlevel = testDriver;
 
-	while (1)
+	while (true)
 	{
 		int len = dfunc.Read(testSocket, net_message.data, net_message.maxsize, &clientaddr);
 		if (len < sizeof(int))
@@ -563,7 +563,7 @@ JustDoIt:
 }
 
 
-static qboolean test2InProgress = false;
+static bool test2InProgress = false;
 static int test2Driver;
 static int test2Socket;
 
@@ -731,7 +731,7 @@ void Datagram_Close(qsocket_t* sock)
 }
 
 
-void Datagram_Listen(qboolean state)
+void Datagram_Listen(bool state)
 {
 	for (int i = 0; i < net_numlandrivers; i++)
 		if (net_landrivers[i].initialized)
@@ -998,7 +998,7 @@ qsocket_t* Datagram_CheckNewConnections(void)
 }
 
 
-static void _Datagram_SearchForHosts(qboolean xmit)
+static void _Datagram_SearchForHosts(bool xmit)
 {
 	int ret;
 	int n;
@@ -1096,7 +1096,7 @@ static void _Datagram_SearchForHosts(qboolean xmit)
 	}
 }
 
-void Datagram_SearchForHosts(qboolean xmit)
+void Datagram_SearchForHosts(bool xmit)
 {
 	for (net_landriverlevel = 0; net_landriverlevel < net_numlandrivers; net_landriverlevel++)
 	{

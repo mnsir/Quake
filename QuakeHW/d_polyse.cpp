@@ -1679,7 +1679,7 @@ void D_PolysetFillSpans8(spanpackage_t* pspanpackage)
 
 	int color = d_aflatcolor++;
 
-	while (1)
+	while (true)
 	{
 		int lcount = pspanpackage->count;
 

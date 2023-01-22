@@ -129,14 +129,14 @@ extern cvar_t r_drawflat; // r_main.h
 extern int d_spanpixcount; // r_main.h
 extern int r_framecount;  // r_main.h // sequence # of current frame since Quake
 //  started
-extern qboolean r_drawpolys; // r_main.h // 1 if driver wants clipped polygons
+extern bool r_drawpolys; // r_main.h // 1 if driver wants clipped polygons
 //  rather than a span list
-extern qboolean r_drawculledpolys; // r_main.h // 1 if driver wants clipped polygons that
+extern bool r_drawculledpolys; // r_main.h // 1 if driver wants clipped polygons that
 //  have been culled by the edge list
-extern qboolean r_worldpolysbacktofront; // r_main.h // 1 if driver wants polygons
+extern bool r_worldpolysbacktofront; // r_main.h // 1 if driver wants polygons
 //  delivered back to front rather
 //  than front to back
-extern qboolean r_recursiveaffinetriangles; // r_main.h // true if a driver wants to use
+extern bool r_recursiveaffinetriangles; // r_main.h // true if a driver wants to use
 //  recursive triangular subdivison
 //  and vertex drawing via
 //  D_PolysetDrawFinalVerts() past
@@ -146,7 +146,7 @@ extern qboolean r_recursiveaffinetriangles; // r_main.h // true if a driver want
 extern float r_aliasuvscale;  // r_main.h// scale-up factor for screen u and v
 //  on Alias vertices passed to driver
 extern int r_pixbytes;  // r_main.h
-extern qboolean r_dowarp; // r_main.h
+extern bool r_dowarp; // r_main.h
 
 extern affinetridesc_t r_affinetridesc; // r_alias.h
 extern spritedesc_t r_spritedesc; // r_sprite.h

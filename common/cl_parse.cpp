@@ -347,7 +347,7 @@ void CL_ParseUpdate(int bits)
 {
 	int i;
 	int modnum;
-	qboolean forcelink;
+	bool forcelink;
 	int num;
 	int skin;
 
@@ -744,7 +744,7 @@ void CL_ParseServerMessage(void)
 	//
 	MSG_BeginReading();
 
-	while (1)
+	while (true)
 	{
 		if (msg_badread)
 			Host_Error((char*)"CL_ParseServerMessage: Bad server message");

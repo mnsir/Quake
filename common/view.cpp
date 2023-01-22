@@ -286,7 +286,7 @@ void BuildGammaTable(float g)
 V_CheckGamma
 =================
 */
-qboolean V_CheckGamma(void)
+bool V_CheckGamma(void)
 {
 	static float oldgammavalue;
 
@@ -517,7 +517,7 @@ void V_UpdatePalette(void)
 
 	V_CalcPowerupCshift();
 
-	qboolean new_ = false;
+	bool new_ = false;
 
 	for (i = 0; i < NUM_CSHIFTS; i++)
 	{
@@ -544,7 +544,7 @@ void V_UpdatePalette(void)
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
-	qboolean force = V_CheckGamma();
+	bool force = V_CheckGamma();
 	if (!new_ && !force)
 		return;
 
@@ -595,11 +595,11 @@ void V_UpdatePalette(void)
 void V_UpdatePalette(void)
 {
 	int i, j;
-	qboolean new_;
+	bool new_;
 	byte* basepal, * new_pal;
 	byte pal[768];
 	int r, g, b;
-	qboolean force;
+	bool force;
 
 	V_CalcPowerupCshift();
 

@@ -50,7 +50,7 @@ unsigned short pr_crc;
 int type_size[8] = {1, sizeof(string_t) / 4, 1, 3, 1, 1, sizeof(func_t) / 4, sizeof(void*) / 4};
 
 ddef_t* ED_FieldAtOfs(int ofs);
-qboolean ED_ParseEpair(void* base, ddef_t* key, char* s);
+bool ED_ParseEpair(void* base, ddef_t* key, char* s);
 
 cvar_t nomonsters = {(char*)"nomonsters", (char*)"0"};
 cvar_t gamecfg = {(char*)"gamecfg", (char*)"0"};
@@ -630,7 +630,7 @@ void ED_ParseGlobals(char* data)
 {
 	char keyname[64];
 
-	while (1)
+	while (true)
 	{
 		// parse key
 		data = COM_Parse(data);
@@ -701,7 +701,7 @@ Can parse either fields or globals
 returns false if error
 =============
 */
-qboolean ED_ParseEpair(void* base, ddef_t* key, char* s)
+bool ED_ParseEpair(void* base, ddef_t* key, char* s)
 {
 	int i;
 	char string[128];
@@ -776,17 +776,17 @@ Used for initial level load and for savegames.
 */
 char* ED_ParseEdict(char* data, edict_t* ent)
 {
-	qboolean anglehack;
+	bool anglehack;
 	char keyname[256];
 
-	qboolean init = false;
+	bool init = false;
 
 	// clear it
 	if (ent != sv.edicts) // hack
 		memset(&ent->v, 0, progs->entityfields * 4);
 
 	// go through all the dictionary pairs
-	while (1)
+	while (true)
 	{
 		// parse key
 		data = COM_Parse(data);
@@ -881,7 +881,7 @@ void ED_LoadFromFile(char* data)
 	pr_global_struct->time = sv.time;
 
 	// parse ents
-	while (1)
+	while (true)
 	{
 		// parse the opening brace 
 		data = COM_Parse(data);

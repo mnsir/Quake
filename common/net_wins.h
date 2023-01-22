@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int WINS_Init(void);
 void WINS_Shutdown(void);
-void WINS_Listen(qboolean state);
+void WINS_Listen(bool state);
 int WINS_OpenSocket(int port);
 int WINS_CloseSocket(int socket);
 int WINS_Connect(int socket, struct qsockaddr* addr);
@@ -43,4 +43,4 @@ int WINS_GetSocketPort(struct qsockaddr* addr);
 int WINS_SetSocketPort(struct qsockaddr* addr, int port);
 
 
-extern qboolean winsock_lib_initialized;
+extern bool winsock_lib_initialized;

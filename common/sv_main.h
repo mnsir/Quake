@@ -14,10 +14,10 @@ typedef enum { ss_loading, ss_active } server_state_t;
 
 typedef struct
 {
-	qboolean active; // false if only a net client
+	bool active; // false if only a net client
 
-	qboolean paused;
-	qboolean loadgame; // handle connections specially
+	bool paused;
+	bool loadgame; // handle connections specially
 
 	double time;
 
@@ -55,7 +55,7 @@ typedef struct
 	int maxclientslimit;
 	struct client_s* clients; // [maxclients]
 	int serverflags; // episode completion information
-	qboolean changelevel_issued; // cleared when at SV_SpawnServer
+	bool changelevel_issued; // cleared when at SV_SpawnServer
 } server_static_t;
 
 extern server_static_t svs; // persistant server info

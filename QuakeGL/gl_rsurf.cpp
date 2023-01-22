@@ -94,7 +94,7 @@ typedef struct glRect_s
 } glRect_t;
 
 glpoly_t* lightmap_polys[MAX_LIGHTMAPS];
-qboolean lightmap_modified[MAX_LIGHTMAPS];
+bool lightmap_modified[MAX_LIGHTMAPS];
 glRect_t lightmap_rectchange[MAX_LIGHTMAPS];
 
 int allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
@@ -314,7 +314,7 @@ void DrawGLWaterPolyLightmap(glpoly_t* p);
 lpMTexFUNC qglMTexCoord2fSGIS = NULL;
 lpSelTexFUNC qglSelectTextureSGIS = NULL;
 
-qboolean mtexenabled = false;
+bool mtexenabled = false;
 
 void GL_SelectTexture(GLenum target);
 
@@ -950,7 +950,7 @@ void R_DrawBrushModel(entity_t* e)
 	int j;
 	vec3_t mins, maxs;
 	int i, numsurfaces;
-	qboolean rotated;
+	bool rotated;
 
 	currententity = e;
 	currenttexture = -1;
@@ -1317,7 +1317,7 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 	medge_t *pedges, *r_pedge;
 	mplane_t* pplane;
 	int new_verts, new_page, lastvert;
-	qboolean visible;
+	bool visible;
 	float* vec;
 
 	// reconstruct the polygon
@@ -1451,7 +1451,7 @@ with all the surfaces from all brush models
 void GL_BuildLightmaps(void)
 {
 	int i;
-	extern qboolean isPermedia;
+	extern bool isPermedia;
 
 	memset(allocated, 0, sizeof(allocated));
 

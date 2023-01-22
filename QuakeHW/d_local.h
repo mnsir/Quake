@@ -60,7 +60,7 @@ extern cvar_t d_subdiv16; // d_init.h
 
 extern float scale_for_mip; // d_edge.h
 
-extern qboolean d_roverwrapped; // d_init.h
+extern bool d_roverwrapped; // d_init.h
 extern surfcache_t* sc_rover; // d_surf.h
 extern surfcache_t* d_initial_rover; // d_init.h
 

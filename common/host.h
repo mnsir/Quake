@@ -34,7 +34,7 @@ extern quakeparms_t host_parms;
 extern cvar_t sys_ticrate;
 extern cvar_t developer;
 
-extern qboolean host_initialized; // true if into command execution
+extern bool host_initialized; // true if into command execution
 extern double host_frametime;
 extern byte* host_basepal;
 extern byte* host_colormap;
@@ -50,7 +50,7 @@ void Host_Error(char* error, ...);
 void Host_EndGame(char* message, ...);
 void Host_Frame(float time);
 void Host_ClientCommands(char* fmt, ...);
-void Host_ShutdownServer(qboolean crash);
+void Host_ShutdownServer(bool crash);
 
 extern int minimum_memory;
 
@@ -65,6 +65,6 @@ extern client_t* host_client;
 extern jmp_buf host_abortserver;
 extern double host_time;
 
-void SV_DropClient(qboolean crash);
+void SV_DropClient(bool crash);
 void SV_ClientPrintf(char* fmt, ...);
 void SV_BroadcastPrintf(char* fmt, ...);

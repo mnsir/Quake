@@ -183,9 +183,9 @@ Returns 0.25 if a key was pressed and released during the frame,
 */
 float CL_KeyState(kbutton_t* key)
 {
-	qboolean impulsedown = key->state & 2;
-	qboolean impulseup = key->state & 4;
-	qboolean down = key->state & 1;
+	bool impulsedown = key->state & 2;
+	bool impulseup = key->state & 4;
+	bool down = key->state & 1;
 	float val = 0;
 
 	if (impulsedown && !impulseup)

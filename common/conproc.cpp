@@ -102,7 +102,7 @@ DWORD RequestProc(DWORD dwNichts)
 	heventWait[0] = heventParentSend;
 	heventWait[1] = heventDone;
 
-	while (1)
+	while (true)
 	{
 		DWORD dwRet = WaitForMultipleObjects(2, heventWait, FALSE, INFINITE);
 

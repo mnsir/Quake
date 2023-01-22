@@ -42,15 +42,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOT_FOCUS_SLEEP 20 // sleep time when not focus
 
 int starttime;
-qboolean ActiveApp, Minimized;
-qboolean WinNT;
+bool ActiveApp, Minimized;
+bool WinNT;
 
 static double pfreq;
 static double curtime = 0.0;
 static double lastcurtime = 0.0;
 static int lowshift;
-qboolean isDedicated;
-static qboolean sc_return_on_enter = false;
+bool isDedicated;
+static bool sc_return_on_enter = false;
 HANDLE hinput, houtput;
 
 static HANDLE tevent;
@@ -612,7 +612,7 @@ void Sys_SendKeyEvents(void)
 	while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
 	{
 		// we always update if there are any event, even if we're paused
-		scr_skipupdate = 0;
+		scr_skipupdate = false;
 
 		if (!GetMessage(&msg, NULL, 0, 0))
 			Sys_Quit();
@@ -817,7 +817,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double oldtime = Sys_FloatTime();
 
 	/* main window message loop */
-	while (1)
+	while (true)
 	{
 		if (isDedicated)
 		{
@@ -837,7 +837,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
 			{
 				SleepUntilInput(PAUSE_SLEEP);
-				scr_skipupdate = 1; // no point in bothering to draw
+				scr_skipupdate = true; // no point in bothering to draw
 			}
 			else if (!ActiveApp && !DDActive)
 			{

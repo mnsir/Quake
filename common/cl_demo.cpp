@@ -142,7 +142,7 @@ int CL_GetMessage(void)
 		return 1;
 	}
 
-	while (1)
+	while (true)
 	{
 		r = NET_GetMessage(cls.netcon);
 
@@ -276,7 +276,7 @@ void CL_PlayDemo_f(void)
 {
 	char name[256];
 	int c;
-	qboolean neg = false;
+	bool neg = false;
 
 	if (cmd_source != src_command)
 		return;

@@ -125,7 +125,7 @@ const char* gl_renderer;
 const char* gl_version;
 const char* gl_extensions;
 
-qboolean DDActive;
+bool DDActive;
 
 static vmode_t modelist[MAX_MODE_LIST];
 static int nummodes;
@@ -133,12 +133,12 @@ static vmode_t* pcurrentmode;
 static vmode_t badmode;
 
 static DEVMODE gdevmode;
-static qboolean vid_initialized = false;
-static qboolean windowed, leavecurrentmode;
-static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
+static bool vid_initialized = false;
+static bool windowed, leavecurrentmode;
+static bool vid_canalttab = false;
+static bool vid_wassuspended = false;
 static int windowed_mouse;
-extern qboolean mouseactive; // from in_win.c
+extern bool mouseactive; // from in_win.c
 static HICON hIcon;
 
 int DIBWidth, DIBHeight;
@@ -152,7 +152,7 @@ int vid_realmode;
 int vid_default = MODE_WINDOWED;
 static int windowed_default;
 unsigned char vid_curpal[256 * 3];
-static qboolean fullsbardraw = false;
+static bool fullsbardraw = false;
 
 static float vid_gamma = 1.0;
 
@@ -192,9 +192,9 @@ PROC glVertexPointerEXT;
 
 typedef void (APIENTRY* lp3DFXFUNC)(int, int, int, int, int, const void*);
 lp3DFXFUNC glColorTableEXT;
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
+bool is8bit = false;
+bool isPermedia = false;
+bool gl_mtexable = false;
 
 //====================================
 
@@ -216,7 +216,7 @@ RECT window_rect;
 
 // direct draw software compatability stuff
 
-void VID_HandlePause(qboolean pause)
+void VID_HandlePause(bool pause)
 {
 }
 
@@ -260,7 +260,7 @@ void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 	             SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
 
-qboolean VID_SetWindowedMode(int modenum)
+bool VID_SetWindowedMode(int modenum)
 {
 	RECT rect;
 
@@ -336,7 +336,7 @@ qboolean VID_SetWindowedMode(int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode(int modenum)
+bool VID_SetFullDIBMode(int modenum)
 {
 	RECT rect;
 
@@ -426,7 +426,7 @@ qboolean VID_SetFullDIBMode(int modenum)
 int VID_SetMode(int modenum, unsigned char* palette)
 {
 	int original_mode;
-	qboolean stat;
+	bool stat;
 	MSG msg;
 	HDC hdc;
 
@@ -553,7 +553,7 @@ BINDTEXFUNCPTR bindTexFunc;
 
 void CheckTextureExtensions(void)
 {
-	qboolean texture_ext = FALSE;
+	bool texture_ext = FALSE;
 	/* check for texture extension */
 	char* tmp = (char*)glGetString(GL_EXTENSIONS);
 	while (*tmp)
@@ -1299,7 +1299,7 @@ void VID_DescribeMode_f(void)
 	int modenum = Q_atoi(Cmd_Argv(1));
 
 	int t = leavecurrentmode;
-	leavecurrentmode = 0;
+	leavecurrentmode = false;
 
 	Con_Printf((char*)"%s\n", VID_GetExtModeDescription(modenum));
 
@@ -1317,7 +1317,7 @@ void VID_DescribeModes_f(void)
 	int lnummodes = VID_NumModes();
 
 	int t = leavecurrentmode;
-	leavecurrentmode = 0;
+	leavecurrentmode = false;
 
 	for (int i = 1; i < lnummodes; i++)
 	{
@@ -1529,7 +1529,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 		Con_SafePrintf((char*)"No fullscreen DIB modes found\n");
 }
 
-qboolean VID_Is8bit()
+bool VID_Is8bit()
 {
 	return is8bit;
 }
@@ -1667,7 +1667,7 @@ void VID_Init(unsigned char* palette)
 				modelist[MODE_FULLSCREEN_DEFAULT].height =
 					GetSystemMetrics(SM_CYSCREEN);
 				vid_default = MODE_FULLSCREEN_DEFAULT;
-				leavecurrentmode = 1;
+				leavecurrentmode = true;
 			}
 			else
 			{

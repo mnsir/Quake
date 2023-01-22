@@ -116,7 +116,7 @@ typedef struct
 	int texnum;
 	char identifier[64];
 	int width, height;
-	qboolean mipmap;
+	bool mipmap;
 } gltexture_t;
 
 #define MAX_GLTEXTURES 1024
@@ -153,7 +153,7 @@ void GL_Bind(int texnum)
 
 int scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
 byte scrap_texels[MAX_SCRAPS][BLOCK_WIDTH * BLOCK_HEIGHT * 4];
-qboolean scrap_dirty;
+bool scrap_dirty;
 int scrap_texnum;
 
 // returns a texture number and the position inside it
@@ -978,7 +978,7 @@ void GL_MipMap8Bit(byte* in, int width, int height)
 GL_Upload32
 ===============
 */
-void GL_Upload32(unsigned* data, int width, int height, qboolean mipmap, qboolean alpha)
+void GL_Upload32(unsigned* data, int width, int height, bool mipmap, bool alpha)
 {
 	static unsigned scaled[1024 * 512]; // [512*256];
 	int scaled_width, scaled_height;
@@ -1046,7 +1046,7 @@ done:;
 	}
 }
 
-void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean alpha)
+void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha)
 {
 	int p;
 	static unsigned j;
@@ -1058,7 +1058,7 @@ void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean
 	// texture even if it was specified as otherwise
 	if (alpha)
 	{
-		qboolean noalpha = true;
+		bool noalpha = true;
 		for (int i = 0; i < s; i++)
 		{
 			if (data[i] == 255)
@@ -1138,7 +1138,7 @@ done:;
 GL_Upload8
 ===============
 */
-void GL_Upload8(byte* data, int width, int height, qboolean mipmap, qboolean alpha)
+void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha)
 {
 	static unsigned trans[640 * 480]; // FIXME, temporary
 	int i;
@@ -1148,7 +1148,7 @@ void GL_Upload8(byte* data, int width, int height, qboolean mipmap, qboolean alp
 	// texture even if it was specified as otherwise
 	if (alpha)
 	{
-		qboolean noalpha = true;
+		bool noalpha = true;
 		for (i = 0; i < s; i++)
 		{
 			int p = data[i];
@@ -1186,9 +1186,9 @@ void GL_Upload8(byte* data, int width, int height, qboolean mipmap, qboolean alp
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture(char* identifier, int width, int height, byte* data, qboolean mipmap, qboolean alpha)
+int GL_LoadTexture(char* identifier, int width, int height, byte* data, bool mipmap, bool alpha)
 {
-	qboolean noalpha;
+	bool noalpha;
 	int i, p, s;
 	gltexture_t* glt;
 

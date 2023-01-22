@@ -54,7 +54,7 @@ float* angles;
 float* origin;
 float* velocity;
 
-qboolean onground;
+bool onground;
 
 usercmd_t cmd;
 
@@ -458,7 +458,7 @@ SV_ReadClientMessage
 Returns false if the client should be killed
 ===================
 */
-qboolean SV_ReadClientMessage(void)
+bool SV_ReadClientMessage(void)
 {
 	int ret;
 	char* s;
@@ -477,7 +477,7 @@ qboolean SV_ReadClientMessage(void)
 
 		MSG_BeginReading();
 
-		while (1)
+		while (true)
 		{
 			if (!host_client->active)
 				return false; // a command caused an error

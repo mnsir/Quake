@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_main.h"
 #include "sys.h"
 
-qboolean localconnectpending = false;
+bool localconnectpending = false;
 qsocket_t* loop_client = NULL;
 qsocket_t* loop_server = NULL;
 
@@ -45,12 +45,12 @@ void Loop_Shutdown(void)
 }
 
 
-void Loop_Listen(qboolean state)
+void Loop_Listen(bool state)
 {
 }
 
 
-void Loop_SearchForHosts(qboolean xmit)
+void Loop_SearchForHosts(bool xmit)
 {
 	if (!sv.active)
 		return;
@@ -214,7 +214,7 @@ int Loop_SendUnreliableMessage(qsocket_t* sock, sizebuf_t* data)
 }
 
 
-qboolean Loop_CanSendMessage(qsocket_t* sock)
+bool Loop_CanSendMessage(qsocket_t* sock)
 {
 	if (!sock->driverdata)
 		return false;
@@ -222,7 +222,7 @@ qboolean Loop_CanSendMessage(qsocket_t* sock)
 }
 
 
-qboolean Loop_CanSendUnreliableMessage(qsocket_t* sock)
+bool Loop_CanSendUnreliableMessage(qsocket_t* sock)
 {
 	return true;
 }

@@ -75,16 +75,16 @@ void Sys_HighFPPrecision(void);
 void Sys_SetFPCW(void);
 
 
-extern qboolean isDedicated;
+extern bool isDedicated;
 
 extern HANDLE hinput, houtput;
 
 extern HWND hwnd_dialog;
 
 
-extern qboolean ActiveApp, Minimized;
+extern bool ActiveApp, Minimized;
 
-extern qboolean WinNT;
+extern bool WinNT;
 
 
 extern HINSTANCE global_hInstance;

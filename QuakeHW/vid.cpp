@@ -45,16 +45,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_MODE_LIST 30
 #define VID_ROW_SIZE 3
 
-qboolean dibonly;
+bool dibonly;
 
-extern qboolean Minimized;
+extern bool Minimized;
 
 HWND mainwindow;
 
 HWND WINAPI InitializeWindow(HINSTANCE hInstance, int nCmdShow);
 
 int DIBWidth, DIBHeight;
-qboolean DDActive;
+bool DDActive;
 RECT WindowRect;
 DWORD WindowStyle, ExWindowStyle;
 
@@ -62,14 +62,14 @@ int window_center_x, window_center_y, window_x, window_y, window_width, window_h
 RECT window_rect;
 
 static DEVMODE gdevmode;
-static qboolean startwindowed = 0, windowed_mode_set;
+static bool startwindowed = false, windowed_mode_set;
 static int firstupdate = 1;
-static qboolean vid_initialized = false, vid_palettized;
+static bool vid_initialized = false, vid_palettized;
 static int lockcount;
 static int vid_fulldib_on_focus_mode;
-static qboolean force_minimized, in_mode_set, is_mode0x13, force_mode_set;
+static bool force_minimized, in_mode_set, is_mode0x13, force_mode_set;
 static int vid_stretched, windowed_mouse;
-static qboolean palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
+static bool palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
 static HICON hIcon;
 
 viddef_t vid; // global video state
@@ -248,7 +248,7 @@ void ClearAllStates(void)
 VID_CheckAdequateMem
 ================
 */
-qboolean VID_CheckAdequateMem(int width, int height)
+bool VID_CheckAdequateMem(int width, int height)
 {
 	int tbuffersize = width * height * sizeof(*d_pzbuffer);
 
@@ -271,7 +271,7 @@ qboolean VID_CheckAdequateMem(int width, int height)
 VID_AllocBuffers
 ================
 */
-qboolean VID_AllocBuffers(int width, int height)
+bool VID_AllocBuffers(int width, int height)
 {
 	int tbuffersize = width * height * sizeof(*d_pzbuffer);
 
@@ -705,7 +705,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 
 	nummodes = 3; // reserve space for windowed mode
 
-	DDActive = 0;
+	DDActive = false;
 }
 
 
@@ -1203,7 +1203,7 @@ void DestroyFullDIBWindow(void)
 }
 
 
-qboolean VID_SetWindowedMode(int modenum)
+bool VID_SetWindowedMode(int modenum)
 {
 	pixel_format_t pf;
 	LONG wlong;
@@ -1221,7 +1221,7 @@ qboolean VID_SetWindowedMode(int modenum)
 
 	VID_CheckModedescFixup(modenum);
 
-	DDActive = 0;
+	DDActive = false;
 	int lastmodestate = modestate;
 
 	DestroyFullscreenWindow();
@@ -1241,7 +1241,7 @@ qboolean VID_SetWindowedMode(int modenum)
 
 	WindowRect.right = modelist[modenum].width;
 	WindowRect.bottom = modelist[modenum].height;
-	qboolean stretched = modelist[modenum].stretched;
+	bool stretched = modelist[modenum].stretched;
 
 	DIBWidth = modelist[modenum].width;
 	DIBHeight = modelist[modenum].height;
@@ -1355,9 +1355,9 @@ qboolean VID_SetWindowedMode(int modenum)
 }
 
 
-qboolean VID_SetFullscreenMode(int modenum)
+bool VID_SetFullscreenMode(int modenum)
 {
-	DDActive = 1;
+	DDActive = true;
 
 	DestroyDIBWindow();
 	DestroyFullDIBWindow();
@@ -1406,11 +1406,11 @@ qboolean VID_SetFullscreenMode(int modenum)
 }
 
 
-qboolean VID_SetFullDIBMode(int modenum)
+bool VID_SetFullDIBMode(int modenum)
 {
 	pixel_format_t pf;
 
-	DDActive = 0;
+	DDActive = false;
 
 	DestroyFullscreenWindow();
 	DestroyDIBWindow();
@@ -1513,7 +1513,7 @@ qboolean VID_SetFullDIBMode(int modenum)
 
 void VID_RestoreOldMode(int original_mode)
 {
-	static qboolean inerror = false;
+	static bool inerror = false;
 
 	if (inerror)
 		return;
@@ -1548,7 +1548,7 @@ void VID_SetDefaultMode(void)
 int VID_SetMode(int modenum, unsigned char* palette)
 {
 	int original_mode, dummy;
-	qboolean stat;
+	bool stat;
 	MSG msg;
 
 	while ((modenum >= nummodes) || (modenum < 0))
@@ -1909,7 +1909,7 @@ VID_DescribeModes_f
 */
 void VID_DescribeModes_f(void)
 {
-	qboolean na = false;
+	bool na = false;
 
 	int lnummodes = VID_NumModes();
 
@@ -2008,9 +2008,9 @@ void VID_ForceMode_f(void)
 	{
 		int modenum = Q_atoi(Cmd_Argv(1));
 
-		force_mode_set = 1;
+		force_mode_set = true;
 		VID_SetMode(modenum, vid_curpal);
-		force_mode_set = 0;
+		force_mode_set = false;
 	}
 }
 
@@ -2102,7 +2102,7 @@ void VID_Init(unsigned char* palette)
 
 	if (COM_CheckParm((char*)"-startwindowed"))
 	{
-		startwindowed = 1;
+		startwindowed = true;
 		vid_default = windowed_default;
 	}
 
@@ -2164,7 +2164,7 @@ void VID_Shutdown(void)
 		MGL_exit();
 
 		vid_testingmode = 0;
-		vid_initialized = 0;
+		vid_initialized = false;
 	}
 }
 
@@ -2738,7 +2738,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 VID_HandlePause
 ================
 */
-void VID_HandlePause(qboolean pause)
+void VID_HandlePause(bool pause)
 {
 	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
 	{

@@ -50,15 +50,15 @@ int mouse_oldbuttonstate;
 POINT current_pos;
 int mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
-static qboolean restore_spi;
+static bool restore_spi;
 static int originalmouseparms[3], new_mouseparms[3] = {0, 0, 1};
 
 unsigned int uiWheelMessage;
-qboolean mouseactive;
-qboolean mouseinitialized;
-static qboolean mouseparmsvalid, mouseactivatetoggle;
-static qboolean mouseshowtoggle = 1;
-static qboolean dinput_acquired;
+bool mouseactive;
+bool mouseinitialized;
+static bool mouseparmsvalid, mouseactivatetoggle;
+static bool mouseshowtoggle = true;
+static bool dinput_acquired;
 
 static unsigned int mstate_di;
 
@@ -117,7 +117,7 @@ cvar_t joy_yawsensitivity = {(char*)"joyyawsensitivity", (char*)"-1.0"};
 cvar_t joy_wwhack1 = {(char*)"joywwhack1", (char*)"0.0"};
 cvar_t joy_wwhack2 = {(char*)"joywwhack2", (char*)"0.0"};
 
-qboolean joy_avail, joy_advancedinit, joy_haspov;
+bool joy_avail, joy_advancedinit, joy_haspov;
 DWORD joy_oldbuttonstate, joy_oldpovstate;
 
 int joy_id;
@@ -131,7 +131,7 @@ static JOYINFOEX ji;
 
 static HINSTANCE hInstDI;
 
-static qboolean dinput;
+static bool dinput;
 
 typedef struct MYDATA
 {
@@ -206,7 +206,7 @@ void IN_ShowMouse(void)
 	if (!mouseshowtoggle)
 	{
 		ShowCursor(TRUE);
-		mouseshowtoggle = 1;
+		mouseshowtoggle = true;
 	}
 }
 
@@ -221,7 +221,7 @@ void IN_HideMouse(void)
 	if (mouseshowtoggle)
 	{
 		ShowCursor(FALSE);
-		mouseshowtoggle = 0;
+		mouseshowtoggle = false;
 	}
 }
 
@@ -340,7 +340,7 @@ void IN_RestoreOriginalMouseState(void)
 IN_InitDInput
 ===========
 */
-qboolean IN_InitDInput(void)
+bool IN_InitDInput(void)
 {
 	DIPROPDWORD dipdw = {
 		{
@@ -1030,7 +1030,7 @@ void IN_Commands(void)
 IN_ReadJoystick
 ===============
 */
-qboolean IN_ReadJoystick(void)
+bool IN_ReadJoystick(void)
 {
 	memset(&ji, 0, sizeof(ji));
 	ji.dwSize = sizeof(ji);

@@ -108,7 +108,7 @@ void Cvar_Set(char* var_name, char* value)
 		return;
 	}
 
-	qboolean changed = Q_strcmp(var->string, value);
+	bool changed = Q_strcmp(var->string, value);
 
 	Z_Free(var->string); // free the old value string
 
@@ -177,7 +177,7 @@ Cvar_Command
 Handles variable inspection and changing from the console
 ============
 */
-qboolean Cvar_Command(void)
+bool Cvar_Command(void)
 {
 	// check variables
 	cvar_t* v = Cvar_FindVar(Cmd_Argv(0));

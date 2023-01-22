@@ -186,7 +186,7 @@ int GetLittleLong(void)
 
 void FindNextChunk(char* name)
 {
-	while (1)
+	while (true)
 	{
 		data_p = last_chunk;
 

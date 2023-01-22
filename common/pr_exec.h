@@ -26,7 +26,7 @@ void PR_ExecuteProgram(func_t fnum);
 void PR_Profile_f(void);
 extern int pr_argc;
 
-extern qboolean pr_trace;
+extern bool pr_trace;
 extern dfunction_t* pr_xfunction;
 extern int pr_xstatement;
 void PR_RunError(char* error, ...);

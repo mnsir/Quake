@@ -19,9 +19,9 @@ typedef struct qsocket_s
 	double lastMessageTime;
 	double lastSendTime;
 
-	qboolean disconnected;
-	qboolean canSend;
-	qboolean sendNext;
+	bool disconnected;
+	bool canSend;
+	bool sendNext;
 
 	int driver;
 	int landriver;
@@ -78,19 +78,19 @@ extern double net_time;
 extern sizebuf_t net_message;
 extern int net_activeconnections;
 
-extern qboolean serialAvailable;
-extern qboolean ipxAvailable;
-extern qboolean tcpipAvailable;
+extern bool serialAvailable;
+extern bool ipxAvailable;
+extern bool tcpipAvailable;
 extern char my_ipx_address[NET_NAMELEN];
 extern char my_tcpip_address[NET_NAMELEN];
-extern void (*GetComPortConfig)(int portNumber, int* port, int* irq, int* baud, qboolean* useModem);
-extern void (*SetComPortConfig)(int portNumber, int port, int irq, int baud, qboolean useModem);
+extern void (*GetComPortConfig)(int portNumber, int* port, int* irq, int* baud, bool* useModem);
+extern void (*SetComPortConfig)(int portNumber, int port, int irq, int baud, bool useModem);
 extern void (*GetModemConfig)(int portNumber, char* dialType, char* clear, char* init, char* hangup);
 extern void (*SetModemConfig)(int portNumber, char* dialType, char* clear, char* init, char* hangup);
 
-extern qboolean slistInProgress;
-extern qboolean slistSilent;
-extern qboolean slistLocal;
+extern bool slistInProgress;
+extern bool slistSilent;
+extern bool slistLocal;
 
 qsocket_t* NET_NewQSocket(void);
 void NET_FreeQSocket(qsocket_t*);
@@ -105,7 +105,7 @@ struct qsocket_s* NET_CheckNewConnections(void);
 struct qsocket_s* NET_Connect(char* host);
 // called by client to connect to a host.  Returns -1 if not able to
 
-qboolean NET_CanSendMessage(qsocket_t* sock);
+bool NET_CanSendMessage(qsocket_t* sock);
 // Returns true or false if the given qsocket can currently accept a
 // message to be transmitted.
 

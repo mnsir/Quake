@@ -305,7 +305,7 @@ void SV_CheckForNewClients(void)
 	//
 	// check for new_ connections
 	//
-	while (1)
+	while (true)
 	{
 		struct qsocket_s* ret = NET_CheckNewConnections();
 		if (!ret)
@@ -363,7 +363,7 @@ byte fatpvs[MAX_MAP_LEAFS / 8];
 
 void SV_AddToFatPVS(vec3_t org, mnode_t* node)
 {
-	while (1)
+	while (true)
 	{
 		// if this_ is a leaf, accumulate the pvs bits
 		if (node->contents < 0)
@@ -687,7 +687,7 @@ void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg)
 SV_SendClientDatagram
 =======================
 */
-qboolean SV_SendClientDatagram(client_t* client)
+bool SV_SendClientDatagram(client_t* client)
 {
 	byte buf[MAX_DATAGRAM];
 	sizebuf_t msg;

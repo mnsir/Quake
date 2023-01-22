@@ -821,7 +821,7 @@ void COM_FileBase(char* in, char* out)
 	for (s2 = s; *s2 && *s2 != '/'; s2--);
 
 	if (s - s2 < 2)
-		strcpy(out, (char*)"?model?");
+		strcpy(out, "?model?");
 	else
 	{
 		s--;
@@ -1321,7 +1321,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 	if (proghack)
 	{
 		// gross hack to use quake 1 progs with quake 2 maps
-		if (!strcmp(filename, (char*)"progs.dat"))
+		if (!strcmp(filename, "progs.dat"))
 			search = search->next;
 	}
 
@@ -1345,7 +1345,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 					else
 					{
 						// open a new_ file on the pakfile
-						*file = fopen(pak->filename, (char*)"rb");
+						*file = fopen(pak->filename, "rb");
 						if (*file)
 							fseek(*file, pak->files[i].filepos, SEEK_SET);
 					}
@@ -1393,7 +1393,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 			else
 			{
 				Sys_FileClose(i);
-				*file = fopen(netpath, (char*)"rb");
+				*file = fopen(netpath, "rb");
 			}
 			return com_filesize;
 		}
@@ -1731,7 +1731,7 @@ void COM_InitFilesystem(void)
 				break;
 
 			searchpath_t* search = static_cast<searchpath_t*>(Hunk_Alloc(sizeof(searchpath_t)));
-			if (!strcmp(COM_FileExtension(com_argv[i]), (char*)"pak"))
+			if (!strcmp(COM_FileExtension(com_argv[i]), "pak"))
 			{
 				search->pack = COM_LoadPackFile(com_argv[i]);
 				if (!search->pack)

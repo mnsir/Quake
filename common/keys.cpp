@@ -483,7 +483,7 @@ void Key_Bind_f(void)
 	for (int i = 2; i < c; i++)
 	{
 		if (i > 2)
-			strcat(cmd, (char*)" ");
+			strcat(cmd, " ");
 		strcat(cmd, Cmd_Argv(i));
 	}
 

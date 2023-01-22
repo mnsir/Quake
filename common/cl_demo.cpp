@@ -215,7 +215,7 @@ void CL_Record_f(void)
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), (char*)".."))
+	if (strstr(Cmd_Argv(1), ".."))
 	{
 		Con_Printf((char*)"Relative pathnames are not allowed.\n");
 		return;
@@ -251,7 +251,7 @@ void CL_Record_f(void)
 	COM_DefaultExtension(name, (char*)".dem");
 
 	Con_Printf((char*)"recording to %s.\n", name);
-	cls.demofile = fopen(name, (char*)"wb");
+	cls.demofile = fopen(name, "wb");
 	if (!cls.demofile)
 	{
 		Con_Printf((char*)"ERROR: couldn't open.\n");

@@ -187,7 +187,7 @@ void SCR_ScreenShot_f(void)
 	// 
 	// find a file name to save it to 
 	// 
-	strcpy(pcxname, (char*)"quake00.tga");
+	strcpy(pcxname, "quake00.tga");
 
 	for (i = 0; i <= 99; i++)
 	{
@@ -235,7 +235,7 @@ void SCR_ScreenShot_f(void)
 	// 
 	// find a file name to save it to 
 	// 
-	strcpy(pcxname, (char*)"quake00.pcx");
+	strcpy(pcxname, "quake00.pcx");
 
 	for (i = 0; i <= 99; i++)
 	{

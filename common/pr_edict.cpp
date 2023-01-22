@@ -389,7 +389,7 @@ char* PR_GlobalString(int ofs)
 {
 	static char line[128];
 
-	void* val = (void*)&pr_globals[ofs];
+	void* val = &pr_globals[ofs];
 	ddef_t* def = ED_GlobalAtOfs(ofs);
 	if (!def)
 		sprintf(line, (char*)"%i(???)", ofs);
@@ -401,8 +401,8 @@ char* PR_GlobalString(int ofs)
 
 	int i = strlen(line);
 	for (; i < 20; i++)
-		strcat(line, (char*)" ");
-	strcat(line, (char*)" ");
+		strcat(line, " ");
+	strcat(line, " ");
 
 	return line;
 }
@@ -419,8 +419,8 @@ char* PR_GlobalStringNoContents(int ofs)
 
 	int i = strlen(line);
 	for (; i < 20; i++)
-		strcat(line, (char*)" ");
-	strcat(line, (char*)" ");
+		strcat(line, " ");
+	strcat(line, " ");
 
 	return line;
 }
@@ -709,7 +709,7 @@ qboolean ED_ParseEpair(void* base, ddef_t* key, char* s)
 	char *v, *w;
 	dfunction_t* func;
 
-	void* d = (void*)((int*)base + key->ofs);
+	void* d = (int*)base + key->ofs;
 
 	switch (key->type & ~DEF_SAVEGLOBAL)
 	{
@@ -797,17 +797,17 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
-		if (!strcmp(com_token, (char*)"angle"))
+		if (!strcmp(com_token, "angle"))
 		{
-			strcpy(com_token, (char*)"angles");
+			strcpy(com_token, "angles");
 			anglehack = true;
 		}
 		else
 			anglehack = false;
 
 		// FIXME: change light to _light to get rid of this_ hack
-		if (!strcmp(com_token, (char*)"light"))
-			strcpy(com_token, (char*)"light_lev"); // hack for single light def
+		if (!strcmp(com_token, "light"))
+			strcpy(com_token, "light_lev"); // hack for single light def
 
 		strcpy(keyname, com_token);
 

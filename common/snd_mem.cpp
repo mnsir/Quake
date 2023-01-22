@@ -297,7 +297,7 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 		FindNextChunk((char*)"LIST");
 		if (data_p)
 		{
-			if (!strncmp((char*)data_p + 28, (char*)"mark", 4))
+			if (!strncmp((char*)data_p + 28, "mark", 4))
 			{
 				// this_ is not a proper parse, but it works with cooledit...
 				data_p += 24;

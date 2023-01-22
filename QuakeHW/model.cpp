@@ -1251,7 +1251,7 @@ void* Mod_LoadAliasGroup(void* pin, int* pframeindex, int numv,
 		pin_intervals++;
 	}
 
-	void* ptemp = (void*)pin_intervals;
+	void* ptemp = pin_intervals;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -1340,7 +1340,7 @@ void* Mod_LoadAliasSkinGroup(void* pin, int* pskinindex, int skinsize,
 		pinskinintervals++;
 	}
 
-	void* ptemp = (void*)pinskinintervals;
+	void* ptemp = pinskinintervals;
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -1599,7 +1599,7 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe)
 
 	if (r_pixbytes == 1)
 	{
-		Q_memcpy(&pspriteframe->pixels[0], (byte*)(pinframe + 1), size);
+		Q_memcpy(&pspriteframe->pixels[0], pinframe + 1, size);
 	}
 	else if (r_pixbytes == 2)
 	{
@@ -1656,7 +1656,7 @@ void* Mod_LoadSpriteGroup(void* pin, mspriteframe_t** ppframe)
 		pin_intervals++;
 	}
 
-	void* ptemp = (void*)pin_intervals;
+	void* ptemp = pin_intervals;
 
 	for (i = 0; i < numframes; i++)
 	{

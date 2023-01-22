@@ -269,7 +269,7 @@ void Host_WriteConfiguration(void)
 	// config.cfg cvars
 	if (host_initialized & !isDedicated)
 	{
-		FILE* f = fopen(va((char*)"%s/config.cfg", com_gamedir), (char*)"w");
+		FILE* f = fopen(va((char*)"%s/config.cfg", com_gamedir), "w");
 		if (!f)
 		{
 			Con_Printf((char*)"Couldn't write config.cfg.\n");

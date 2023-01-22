@@ -121,7 +121,7 @@ int WINS_Init(void)
 
 	// initialize the Winsock function vectors (we do this_ instead of statically linking
 	// so we can run on Win 3.1, where there isn't necessarily Winsock)
-	HINSTANCE hInst = LoadLibrary((char*)"wsock32.dll");
+	HINSTANCE hInst = LoadLibrary("wsock32.dll");
 
 	if (hInst == NULL)
 	{
@@ -132,19 +132,19 @@ int WINS_Init(void)
 
 	winsock_lib_initialized = true;
 
-	pWSAStartup = decltype(pWSAStartup)(GetProcAddress(hInst, (char*)"WSAStartup"));
-	pWSACleanup = (decltype(pWSACleanup))GetProcAddress(hInst, (char*)"WSACleanup");
-	pWSAGetLastError = (decltype(pWSAGetLastError))GetProcAddress(hInst, (char*)"WSAGetLastError");
-	psocket = decltype(psocket)(GetProcAddress(hInst, (char*)"socket"));
-	pioctlsocket = (decltype(pioctlsocket))GetProcAddress(hInst, (char*)"ioctlsocket");
-	psetsockopt = (decltype(psetsockopt))GetProcAddress(hInst, (char*)"setsockopt");
-	precvfrom = (decltype(precvfrom))GetProcAddress(hInst, (char*)"recvfrom");
-	psendto = (decltype(psendto))GetProcAddress(hInst, (char*)"sendto");
-	pclosesocket = (decltype(pclosesocket))GetProcAddress(hInst, (char*)"closesocket");
-	pgethostname = (decltype(pgethostname))GetProcAddress(hInst, (char*)"gethostname");
-	pgethostbyname = (decltype(pgethostbyname))GetProcAddress(hInst, (char*)"gethostbyname");
-	pgethostbyaddr = (decltype(pgethostbyaddr))GetProcAddress(hInst, (char*)"gethostbyaddr");
-	pgetsockname = (decltype(pgetsockname))GetProcAddress(hInst, (char*)"getsockname");
+	pWSAStartup = decltype(pWSAStartup)(GetProcAddress(hInst, "WSAStartup"));
+	pWSACleanup = GetProcAddress(hInst, "WSACleanup");
+	pWSAGetLastError = GetProcAddress(hInst, "WSAGetLastError");
+	psocket = decltype(psocket)(GetProcAddress(hInst, "socket"));
+	pioctlsocket = (decltype(pioctlsocket))GetProcAddress(hInst, "ioctlsocket");
+	psetsockopt = (decltype(psetsockopt))GetProcAddress(hInst, "setsockopt");
+	precvfrom = (decltype(precvfrom))GetProcAddress(hInst, "recvfrom");
+	psendto = (decltype(psendto))GetProcAddress(hInst, "sendto");
+	pclosesocket = (decltype(pclosesocket))GetProcAddress(hInst, "closesocket");
+	pgethostname = (decltype(pgethostname))GetProcAddress(hInst, "gethostname");
+	pgethostbyname = (decltype(pgethostbyname))GetProcAddress(hInst, "gethostbyname");
+	pgethostbyaddr = (decltype(pgethostbyaddr))GetProcAddress(hInst, "gethostbyaddr");
+	pgetsockname = (decltype(pgetsockname))GetProcAddress(hInst, "getsockname");
 
 	if (!pWSAStartup || !pWSACleanup || !pWSAGetLastError ||
 		!psocket || !pioctlsocket || !psetsockopt ||
@@ -219,7 +219,7 @@ int WINS_Init(void)
 	else
 	{
 		myAddr = INADDR_ANY;
-		strcpy(my_tcpip_address, (char*)"INADDR_ANY");
+		strcpy(my_tcpip_address, "INADDR_ANY");
 	}
 
 	if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
@@ -483,7 +483,7 @@ int WINS_GetSocketAddr(int socket, struct qsockaddr* addr)
 	Q_memset(addr, 0, sizeof(struct qsockaddr));
 	pgetsockname(socket, (struct sockaddr*)addr, &addrlen);
 	unsigned int a = ((struct sockaddr_in*)addr)->sin_addr.s_addr;
-	if (a == 0 || a == inet_addr((char*)"127.0.0.1"))
+	if (a == 0 || a == inet_addr("127.0.0.1"))
 		((struct sockaddr_in*)addr)->sin_addr.s_addr = myAddr;
 
 	return 0;

@@ -453,10 +453,10 @@ void M_ScanSaves(void)
 
 	for (int i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		strcpy(m_filenames[i], (char*)"--- UNUSED SLOT ---");
+		strcpy(m_filenames[i], "--- UNUSED SLOT ---");
 		loadable[i] = false;
 		sprintf(name, (char*)"%s/s%i.sav", com_gamedir, i);
-		FILE* f = fopen(name, (char*)"r");
+		FILE* f = fopen(name, "r");
 		if (!f)
 			continue;
 		fscanf(f, (char*)"%i\n", &version);

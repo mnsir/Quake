@@ -376,9 +376,9 @@ void Cmd_Alias_f(void)
 	{
 		strcat(cmd, Cmd_Argv(i));
 		if (i != c)
-			strcat(cmd, (char*)" ");
+			strcat(cmd, " ");
 	}
-	strcat(cmd, (char*)"\n");
+	strcat(cmd, "\n");
 
 	a->value = CopyString(cmd);
 }

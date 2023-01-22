@@ -298,7 +298,7 @@ qpic_t* Draw_CachePic(char* path)
 	// HACK HACK HACK --- we need to keep the bytes for
 	// the translatable player picture just for the menu
 	// configuration dialog
-	if (!strcmp(path, (char*)"gfx/menuplyr.lmp"))
+	if (!strcmp(path, "gfx/menuplyr.lmp"))
 		memcpy(menuplyr_pixels, dat->data, dat->width * dat->height);
 
 	pic->pic.width = dat->width;
@@ -414,7 +414,7 @@ void Draw_Init(void)
 
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp((char*)gl_renderer, (char*)"3dfx", 4) ||
-		strstr((char*)gl_renderer, (char*)"Glide"))
+		strstr((char*)gl_renderer, "Glide"))
 		Cvar_Set((char*)"gl_max_size", (char*)"256");
 
 	Cmd_AddCommand((char*)"gl_texturemode", &Draw_TextureMode_f);

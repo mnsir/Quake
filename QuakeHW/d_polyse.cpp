@@ -1540,8 +1540,8 @@ void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 	}
 	else
 	{
-		double dm = (double)tm;
-		double dn = (double)tn;
+		double dm = tm;
+		double dn = tn;
 
 		FloorDivMod(dm, dn, &ubasestep, &erroradjustup);
 

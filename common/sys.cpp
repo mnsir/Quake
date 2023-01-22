@@ -139,7 +139,7 @@ int Sys_FileOpenRead(char* path, int* hndl)
 
 	int i = findhandle();
 
-	FILE* f = fopen(path, (char*)"rb");
+	FILE* f = fopen(path, "rb");
 
 	if (!f)
 	{
@@ -164,7 +164,7 @@ int Sys_FileOpenWrite(char* path)
 
 	int i = findhandle();
 
-	FILE* f = fopen(path, (char*)"wb");
+	FILE* f = fopen(path, "wb");
 	if (!f)
 		Sys_Error((char*)"Error opening %s: %s", path, strerror(errno));
 	sys_handles[i] = f;
@@ -211,7 +211,7 @@ int Sys_FileTime(char* path)
 
 	int t = VID_ForceUnlockedAndReturnState();
 
-	FILE* f = fopen(path, (char*)"rb");
+	FILE* f = fopen(path, "rb");
 
 	if (f)
 	{
@@ -370,12 +370,12 @@ void Sys_Error(char* error, ...)
 		{
 			in_sys_error0 = 1;
 			VID_SetDefaultMode();
-			MessageBox(NULL, text, (char*)"Quake Error",
+			MessageBox(NULL, text, "Quake Error",
 			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 		else
 		{
-			MessageBox(NULL, text, (char*)"Double Quake Error",
+			MessageBox(NULL, text, "Double Quake Error",
 			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 	}
@@ -556,7 +556,7 @@ char* Sys_ConsoleInput(void)
 				switch (ch)
 				{
 				case '\r':
-					WriteFile(houtput, (char*)"\r\n", 2, (LPDWORD)&dummy, NULL);
+					WriteFile(houtput, "\r\n", 2, (LPDWORD)&dummy, NULL);
 
 					if (len)
 					{
@@ -575,7 +575,7 @@ char* Sys_ConsoleInput(void)
 					break;
 
 				case '\b':
-					WriteFile(houtput, (char*)"\b \b", 3, (LPDWORD)&dummy, NULL);
+					WriteFile(houtput, "\b \b", 3, (LPDWORD)&dummy, NULL);
 					if (len)
 					{
 						len--;

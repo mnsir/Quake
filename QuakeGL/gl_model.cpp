@@ -1281,7 +1281,7 @@ void* Mod_LoadAliasGroup(void* pin, maliasframedesc_t* frame)
 
 	pin_intervals += numframes;
 
-	void* ptemp = (void*)pin_intervals;
+	void* ptemp = pin_intervals;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -1400,7 +1400,7 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 			// if (!strcmp(loadmodel->name,"progs/player.mdl")) {
 			texels = static_cast<byte*>(Hunk_AllocName(s, loadname));
 			pheader->texels[i] = texels - (byte*)pheader;
-			memcpy(texels, (byte*)(pskintype + 1), s);
+			memcpy(texels, pskintype + 1, s);
 			// }
 			sprintf(name, (char*)"%s_%i", loadmodel->name, i);
 			pheader->gl_texturenum[i][0] =
@@ -1428,7 +1428,7 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 				{
 					texels = static_cast<byte*>(Hunk_AllocName(s, loadname));
 					pheader->texels[i] = texels - (byte*)pheader;
-					memcpy(texels, (byte*)(pskintype), s);
+					memcpy(texels, pskintype, s);
 				}
 				sprintf(name, (char*)"%s_%i_%i", loadmodel->name, i, j);
 				pheader->gl_texturenum[i][j & 3] =
@@ -1686,7 +1686,7 @@ void* Mod_LoadSpriteGroup(void* pin, mspriteframe_t** ppframe, int framenum)
 		pin_intervals++;
 	}
 
-	void* ptemp = (void*)pin_intervals;
+	void* ptemp = pin_intervals;
 
 	for (i = 0; i < numframes; i++)
 	{

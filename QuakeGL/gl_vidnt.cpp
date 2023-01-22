@@ -565,12 +565,12 @@ void CheckTextureExtensions(void)
 
 	if (!texture_ext || COM_CheckParm((char*)"-gl11"))
 	{
-		HINSTANCE hInstGL = LoadLibrary((char*)"opengl32.dll");
+		HINSTANCE hInstGL = LoadLibrary("opengl32.dll");
 
 		if (hInstGL == NULL)
 			Sys_Error((char*)"Couldn't load opengl32.dll\n");
 
-		bindTexFunc = (decltype(bindTexFunc))GetProcAddress(hInstGL, (char*)"glBindTexture");
+		bindTexFunc = (decltype(bindTexFunc))GetProcAddress(hInstGL, "glBindTexture");
 
 		if (!bindTexFunc)
 			Sys_Error((char*)"No texture objects!");
@@ -579,7 +579,7 @@ void CheckTextureExtensions(void)
 
 	/* load library and get procedure adresses for texture extension API */
 	if ((bindTexFunc = (BINDTEXFUNCPTR)
-		wglGetProcAddress((char*)"glBindTextureEXT")) == NULL)
+		wglGetProcAddress("glBindTextureEXT")) == NULL)
 	{
 		Sys_Error((char*)"GetProcAddress for BindTextureEXT failed");
 	}
@@ -591,13 +591,13 @@ void CheckArrayExtensions(void)
 	char* tmp = (char*)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
-		if (strncmp(tmp, (char*)"GL_EXT_vertex_array", strlen((char*)"GL_EXT_vertex_array")) == 0)
+		if (strncmp(tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
 		{
 			if (
-				((glArrayElementEXT = wglGetProcAddress((char*)"glArrayElementEXT")) == NULL) ||
-				((glColorPointerEXT = wglGetProcAddress((char*)"glColorPointerEXT")) == NULL) ||
-				((glTexCoordPointerEXT = wglGetProcAddress((char*)"glTexCoordPointerEXT")) == NULL) ||
-				((glVertexPointerEXT = wglGetProcAddress((char*)"glVertexPointerEXT")) == NULL))
+				((glArrayElementEXT = wglGetProcAddress("glArrayElementEXT")) == NULL) ||
+				((glColorPointerEXT = wglGetProcAddress("glColorPointerEXT")) == NULL) ||
+				((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
+				((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL))
 			{
 				Sys_Error((char*)"GetProcAddress for vertex extension failed");
 				return;
@@ -621,11 +621,11 @@ int texture_extension_number = 1;
 
 void CheckMultiTextureExtensions(void)
 {
-	if (strstr(gl_extensions, (char*)"GL_SGIS_multitexture ") && !COM_CheckParm((char*)"-nomtex"))
+	if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm((char*)"-nomtex"))
 	{
 		Con_Printf((char*)"Multitexture extensions found.\n");
-		qglMTexCoord2fSGIS = (decltype(qglMTexCoord2fSGIS))wglGetProcAddress((char*)"glMTexCoord2fSGIS");
-		qglSelectTextureSGIS = (decltype(qglSelectTextureSGIS))wglGetProcAddress((char*)"glSelectTextureSGIS");
+		qglMTexCoord2fSGIS = (decltype(qglMTexCoord2fSGIS))wglGetProcAddress("glMTexCoord2fSGIS");
+		qglSelectTextureSGIS = (decltype(qglSelectTextureSGIS))wglGetProcAddress("glSelectTextureSGIS");
 		gl_mtexable = true;
 	}
 }
@@ -649,10 +649,10 @@ void GL_Init(void)
 
 	// Con_Printf ((char*)"%s %s\n", gl_renderer, gl_version);
 
-	if (_strnicmp(gl_renderer, (char*)"PowerVR", 7) == 0)
+	if (_strnicmp(gl_renderer, "PowerVR", 7) == 0)
 		fullsbardraw = true;
 
-	if (_strnicmp(gl_renderer, (char*)"Permedia", 8) == 0)
+	if (_strnicmp(gl_renderer, "Permedia", 8) == 0)
 		isPermedia = true;
 
 	CheckTextureExtensions();
@@ -870,13 +870,13 @@ BOOL bSetupPixelFormat(HDC hDC)
 
 	if ((pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0)
 	{
-		MessageBox(NULL, (char*)"ChoosePixelFormat failed", (char*)"Error", MB_OK);
+		MessageBox(NULL, "ChoosePixelFormat failed", "Error", MB_OK);
 		return FALSE;
 	}
 
 	if (SetPixelFormat(hDC, pixelformat, &pfd) == FALSE)
 	{
-		MessageBox(NULL, (char*)"SetPixelFormat failed", (char*)"Error", MB_OK);
+		MessageBox(NULL, "SetPixelFormat failed", "Error", MB_OK);
 		return FALSE;
 	}
 
@@ -1540,8 +1540,8 @@ void VID_Init8bitPalette()
 {
 	char thePalette[256 * 3];
 
-	glColorTableEXT = (decltype(glColorTableEXT))wglGetProcAddress((char*)"glColorTableEXT");
-	if (!glColorTableEXT || strstr(gl_extensions, (char*)"GL_EXT_shared_texture_palette") ||
+	glColorTableEXT = (decltype(glColorTableEXT))wglGetProcAddress("glColorTableEXT");
+	if (!glColorTableEXT || strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
 		COM_CheckParm((char*)"-no8bit"))
 		return;
 
@@ -1568,8 +1568,8 @@ static void Check_Gamma(unsigned char* pal)
 
 	if ((i = COM_CheckParm((char*)"-gamma")) == 0)
 	{
-		if ((gl_renderer && strstr(gl_renderer, (char*)"Voodoo")) ||
-			(gl_vendor && strstr(gl_vendor, (char*)"3Dfx")))
+		if ((gl_renderer && strstr(gl_renderer, "Voodoo")) ||
+			(gl_vendor && strstr(gl_vendor, "3Dfx")))
 			vid_gamma = 1;
 		else
 			vid_gamma = 0.7; // default to 0.7 on non-3dfx hardware
@@ -1850,7 +1850,7 @@ void VID_Init(unsigned char* palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	strcpy(badmode.modedesc, (char*)"Bad mode");
+	strcpy(badmode.modedesc, "Bad mode");
 	vid_canalttab = true;
 
 	if (COM_CheckParm((char*)"-fullsbar"))

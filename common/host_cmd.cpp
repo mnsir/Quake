@@ -288,9 +288,9 @@ void Host_Map_f(void)
 	for (i = 0; i < Cmd_Argc(); i++)
 	{
 		strcat(cls.mapstring, Cmd_Argv(i));
-		strcat(cls.mapstring, (char*)" ");
+		strcat(cls.mapstring, " ");
 	}
-	strcat(cls.mapstring, (char*)"\n");
+	strcat(cls.mapstring, "\n");
 
 	svs.serverflags = 0; // haven't completed an episode yet
 	strcpy(name, Cmd_Argv(1));
@@ -300,12 +300,12 @@ void Host_Map_f(void)
 
 	if (cls.state != ca_dedicated)
 	{
-		strcpy(cls.spawnparms, (char*)"");
+		strcpy(cls.spawnparms, "");
 
 		for (i = 2; i < Cmd_Argc(); i++)
 		{
 			strcat(cls.spawnparms, Cmd_Argv(i));
-			strcat(cls.spawnparms, (char*)" ");
+			strcat(cls.spawnparms, " ");
 		}
 
 		Cmd_ExecuteString((char*)"connect local", src_command);
@@ -469,7 +469,7 @@ void Host_Savegame_f(void)
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), (char*)".."))
+	if (strstr(Cmd_Argv(1), ".."))
 	{
 		Con_Printf((char*)"Relative pathnames are not allowed.\n");
 		return;
@@ -488,7 +488,7 @@ void Host_Savegame_f(void)
 	COM_DefaultExtension(name, (char*)".sav");
 
 	Con_Printf((char*)"Saving game to %s...\n", name);
-	FILE* f = fopen(name, (char*)"w");
+	FILE* f = fopen(name, "w");
 	if (!f)
 	{
 		Con_Printf((char*)"ERROR: couldn't open.\n");
@@ -560,7 +560,7 @@ void Host_Loadgame_f(void)
 	// SCR_BeginLoadingPlaque ();
 
 	Con_Printf((char*)"Loading game from %s...\n", name);
-	FILE* f = fopen(name, (char*)"r");
+	FILE* f = fopen(name, "r");
 	if (!f)
 	{
 		Con_Printf((char*)"ERROR: couldn't open.\n");
@@ -628,7 +628,7 @@ void Host_Loadgame_f(void)
 		start = COM_Parse(str);
 		if (!com_token[0])
 			break; // end of file
-		if (strcmp(com_token, (char*)"{(char*)"))
+		if (strcmp(com_token, "{(char*)"))
 			Sys_Error((char*)"First token isn't a brace");
 
 		if (entnum == -1)
@@ -700,7 +700,7 @@ void Host_Name_f(void)
 		return;
 	}
 
-	if (host_client->name[0] && strcmp(host_client->name, (char*)"unconnected"))
+	if (host_client->name[0] && strcmp(host_client->name, "unconnected"))
 		if (Q_strcmp(host_client->name, new_Name) != 0)
 			Con_Printf((char*)"%s renamed to %s\n", host_client->name, new_Name);
 	Q_strcpy(host_client->name, new_Name);
@@ -765,7 +765,7 @@ void Host_Say(qboolean teamonly)
 		p[j] = 0;
 
 	strcat(text, p);
-	strcat(text, (char*)"\n");
+	strcat(text, "\n");
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
@@ -826,7 +826,7 @@ void Host_Tell_f(void)
 		p[j] = 0;
 
 	strcat(text, p);
-	strcat(text, (char*)"\n");
+	strcat(text, "\n");
 
 	client_t* save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
@@ -1379,7 +1379,7 @@ edict_t* FindViewthing(void)
 	for (int i = 0; i < sv.num_edicts; i++)
 	{
 		edict_t* e = EDICT_NUM(i);
-		if (!strcmp(pr_strings + e->v.classname, (char*)"viewthing"))
+		if (!strcmp(pr_strings + e->v.classname, "viewthing"))
 			return e;
 	}
 	Con_Printf((char*)"No viewthing on map\n");

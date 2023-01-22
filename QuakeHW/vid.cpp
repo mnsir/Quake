@@ -535,7 +535,7 @@ void VID_InitMGLFull(HINSTANCE hInstance)
 
 		temp = m[0];
 
-		if (!MGL_init(&driver, &temp, (char*)""))
+		if (!MGL_init(&driver, &temp, ""))
 		{
 			initFatalError();
 		}
@@ -649,12 +649,12 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 	/* Initialise the MGL for windowed operation */
 	MGL_setAppInstance(hInstance);
 	registerAllMemDrivers();
-	MGL_initWindowed((char*)"");
+	MGL_initWindowed("");
 
 	modelist[0].type = MS_WINDOWED;
 	modelist[0].width = 320;
 	modelist[0].height = 240;
-	strcpy(modelist[0].modedesc, (char*)"320x240");
+	strcpy(modelist[0].modedesc, "320x240");
 	modelist[0].mode13 = 0;
 	modelist[0].modenum = MODE_WINDOWED;
 	modelist[0].stretched = 0;
@@ -666,7 +666,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 	modelist[1].type = MS_WINDOWED;
 	modelist[1].width = 640;
 	modelist[1].height = 480;
-	strcpy(modelist[1].modedesc, (char*)"640x480");
+	strcpy(modelist[1].modedesc, "640x480");
 	modelist[1].mode13 = 0;
 	modelist[1].modenum = MODE_WINDOWED + 1;
 	modelist[1].stretched = 1;
@@ -678,7 +678,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 	modelist[2].type = MS_WINDOWED;
 	modelist[2].width = 800;
 	modelist[2].height = 600;
-	strcpy(modelist[2].modedesc, (char*)"800x600");
+	strcpy(modelist[2].modedesc, "800x600");
 	modelist[2].mode13 = 0;
 	modelist[2].modenum = MODE_WINDOWED + 2;
 	modelist[2].stretched = 1;
@@ -1329,10 +1329,10 @@ qboolean VID_SetWindowedMode(int modenum)
 
 	/* Create the MGL window DC and the MGL memory DC */
 	if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
-		MGL_fatalError((char*)"Unable to create Windowed DC!");
+		MGL_fatalError("Unable to create Windowed DC!");
 
 	if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
-		MGL_fatalError((char*)"Unable to create Memory DC!");
+		MGL_fatalError("Unable to create Memory DC!");
 
 	MGL_makeCurrentDC(dibdc);
 
@@ -1484,10 +1484,10 @@ qboolean VID_SetFullDIBMode(int modenum)
 
 	/* Create the MGL window DC and the MGL memory DC */
 	if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
-		MGL_fatalError((char*)"Unable to create Fullscreen DIB DC!");
+		MGL_fatalError("Unable to create Fullscreen DIB DC!");
 
 	if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
-		MGL_fatalError((char*)"Unable to create Memory DC!");
+		MGL_fatalError("Unable to create Memory DC!");
 
 	MGL_makeCurrentDC(dibdc);
 
@@ -2133,7 +2133,7 @@ void VID_Init(unsigned char* palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	strcpy(badmode.modedesc, (char*)"Bad mode");
+	strcpy(badmode.modedesc, "Bad mode");
 }
 
 
@@ -2975,7 +2975,7 @@ LONG WINAPI MainWndProc(
 		// crash on Win95)
 		if (!in_mode_set)
 		{
-			if (MessageBox(mainwindow, (char*)"Are you sure you want to quit?", (char*)"Confirm Exit",
+			if (MessageBox(mainwindow, "Are you sure you want to quit?", "Confirm Exit",
 			               MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
 			{
 				Sys_Quit();

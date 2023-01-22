@@ -269,7 +269,7 @@ void SV_ConnectClient(int clientnum)
 	memset(client, 0, sizeof(*client));
 	client->netconnection = netconnection;
 
-	strcpy(client->name, (char*)"unconnected");
+	strcpy(client->name, "unconnected");
 	client->active = true;
 	client->spawned = false;
 	client->edict = ent;

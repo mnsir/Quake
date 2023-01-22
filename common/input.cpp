@@ -354,7 +354,7 @@ qboolean IN_InitDInput(void)
 
 	if (!hInstDI)
 	{
-		hInstDI = LoadLibrary((char*)"dinput.dll");
+		hInstDI = LoadLibrary("dinput.dll");
 
 		if (hInstDI == NULL)
 		{
@@ -365,7 +365,7 @@ qboolean IN_InitDInput(void)
 
 	if (!pDirectInputCreate)
 	{
-		pDirectInputCreate = (decltype(pDirectInputCreate))GetProcAddress(hInstDI, (char*)"DirectInputCreateA");
+		pDirectInputCreate = (decltype(pDirectInputCreate))GetProcAddress(hInstDI, "DirectInputCreateA");
 
 		if (!pDirectInputCreate)
 		{
@@ -520,7 +520,7 @@ void IN_Init(void)
 	Cmd_AddCommand((char*)"force_centerview", Force_CenterView_f);
 	Cmd_AddCommand((char*)"joyadvancedupdate", Joy_AdvancedUpdate_f);
 
-	uiWheelMessage = RegisterWindowMessage((char*)"MSWHEEL_ROLLMSG");
+	uiWheelMessage = RegisterWindowMessage("MSWHEEL_ROLLMSG");
 
 	IN_StartupMouse();
 	IN_StartupJoystick();

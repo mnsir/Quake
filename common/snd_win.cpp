@@ -208,7 +208,7 @@ sndinitstat SNDDMA_InitDirect(void)
 
 	if (!hInstDS)
 	{
-		hInstDS = LoadLibrary((char*)"dsound.dll");
+		hInstDS = LoadLibrary("dsound.dll");
 
 		if (hInstDS == NULL)
 		{
@@ -216,7 +216,7 @@ sndinitstat SNDDMA_InitDirect(void)
 			return SIS_FAILURE;
 		}
 
-		pDirectSoundCreate = (decltype(pDirectSoundCreate))GetProcAddress(hInstDS, (char*)"DirectSoundCreate");
+		pDirectSoundCreate = (decltype(pDirectSoundCreate))GetProcAddress(hInstDS, "DirectSoundCreate");
 
 		if (!pDirectSoundCreate)
 		{

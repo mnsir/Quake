@@ -37,10 +37,10 @@ static char* largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
 static char* argvdummy = (char*)" ";
 
 static char* safeargvs[NUM_SAFE_ARGVS] =
-	{(char*)"-stdvid", (char*)"-nolan", (char*)"-nosound", (char*)"-nocdaudio", (char*)"-nojoy", (char*)"-nomouse", (char*)"-dibonly"};
+{ (char*)"-stdvid", (char*)"-nolan", (char*)"-nosound", (char*)"-nocdaudio", (char*)"-nojoy", (char*)"-nomouse", (char*)"-dibonly" };
 
-cvar_t registered = {(char*)"registered", (char*)"0"};
-cvar_t cmdline = {(char*)"cmdline", (char*)"0", false, true};
+cvar_t registered = { (char*)"registered", (char*)"0" };
+cvar_t cmdline = { (char*)"cmdline", (char*)"0", false, true };
 
 bool com_modified; // set true if using non-id files
 
@@ -669,8 +669,7 @@ char* MSG_ReadString(void)
 			break;
 		string[l] = c;
 		l++;
-	}
-	while (l < sizeof(string) - 1);
+	} while (l < sizeof(string) - 1);
 
 	string[l] = 0;
 
@@ -811,7 +810,7 @@ COM_FileBase
 */
 void COM_FileBase(char* in, char* out)
 {
-	char*s2;
+	char* s2;
 
 	char* s = in + strlen(in) - 1;
 
@@ -925,8 +924,7 @@ skipwhite:
 		c = *data;
 		if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ':')
 			break;
-	}
-	while (c > 32);
+	} while (c > 32);
 
 	com_token[len] = 0;
 	return data;
@@ -1029,7 +1027,7 @@ void COM_InitArgv(int argc, char** argv)
 	bool safe = false;
 
 	for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc);
-	     com_argc++)
+		com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
 		if (!Q_strcmp((char*)"-safe", argv[com_argc]))
@@ -1071,7 +1069,7 @@ COM_Init
 */
 void COM_Init(char* basedir)
 {
-	byte swaptest[2] = {1, 0};
+	byte swaptest[2] = { 1, 0 };
 
 	// set the byte swapping variables in a portable manner 
 	if (*(short*)swaptest == 1)
@@ -1577,7 +1575,7 @@ pack_t* COM_LoadPackFile(char* packfile)
 		com_modified = true; // not the original file
 
 	packfile_t* new_files = static_cast<packfile_t*>(Hunk_AllocName(numpackfiles * sizeof(packfile_t),
-	                                                                (char*)"packfile"));
+		(char*)"packfile"));
 
 	Sys_FileSeek(packhandle, header.dirofs);
 	Sys_FileRead(packhandle, info, header.dirlen);
@@ -1618,8 +1616,6 @@ then loads and adds pak1.pak pak2.pak ...
 */
 void COM_AddGameDirectory(char* dir)
 {
-	char pakfile[MAX_OSPATH];
-
 	strcpy(com_gamedir, dir);
 
 	//
@@ -1635,6 +1631,7 @@ void COM_AddGameDirectory(char* dir)
 	//
 	for (int i = 0; ; i++)
 	{
+		char pakfile[MAX_OSPATH];
 		sprintf(pakfile, (char*)"%s/pak%i.pak", dir, i);
 		pack_t* pak = COM_LoadPackFile(pakfile);
 		if (!pak)

@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 #pragma once
 
+#include <string_view>
 #include <windows.h>
 #include "common.h"
 
@@ -51,7 +52,7 @@ void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length);
 //
 void Sys_DebugLog(char* file, char* fmt, ...);
 
-void Sys_Error(char* error, ...);
+void Sys_Error(std::string_view err);
 // an error will cause the entire program to exit
 
 void Sys_Printf(char* fmt, ...);

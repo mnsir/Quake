@@ -330,6 +330,7 @@ R_DrawSolidClippedSubmodelPolygons
 */
 void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 {
+	using namespace std::string_view_literals;
 	int j;
 	mvertex_t bverts[MAX_BMODEL_VERTS];
 	bedge_t bedges[MAX_BMODEL_EDGES], *pbedge;
@@ -394,7 +395,7 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 			}
 			else
 			{
-				Sys_Error((char*)"no edges in bmodel");
+				Sys_Error("no edges in bmodel"sv);
 			}
 		}
 	}

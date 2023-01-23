@@ -533,6 +533,7 @@ Host_Loadgame_f
 */
 void Host_Loadgame_f(void)
 {
+	using namespace std::string_view_literals;
 	char name[MAX_OSPATH];
 	char mapname[MAX_QPATH];
 	float time, tfloat;
@@ -622,14 +623,14 @@ void Host_Loadgame_f(void)
 			}
 		}
 		if (i == sizeof(str) - 1)
-			Sys_Error((char*)"Loadgame buffer overflow");
+			Sys_Error("Loadgame buffer overflow"sv);
 		str[i] = 0;
 		char* start = str;
 		start = COM_Parse(str);
 		if (!com_token[0])
 			break; // end of file
 		if (strcmp(com_token, "{(char*)"))
-			Sys_Error((char*)"First token isn't a brace");
+			Sys_Error("First token isn't a brace"sv);
 
 		if (entnum == -1)
 		{

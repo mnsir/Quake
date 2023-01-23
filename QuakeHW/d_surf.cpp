@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_surf.c: rasterization driver surface heap manager
 
+#include <format>
+
 #include "common.h"
 #include "console.h"
 #include "d_iface.h"
@@ -59,10 +61,11 @@ int D_SurfaceCacheForRes(int width, int height)
 
 void D_CheckCacheGuard(void)
 {
+	using namespace std::string_view_literals;
 	byte* s = (byte*)sc_base + sc_size;
 	for (int i = 0; i < GUARDSIZE; i++)
 		if (s[i] != (byte)i)
-			Sys_Error((char*)"D_CheckCacheGuard: failed");
+			Sys_Error("D_CheckCacheGuard: failed"sv);
 }
 
 void D_ClearCacheGuard(void)
@@ -125,16 +128,17 @@ D_SCAlloc
 */
 surfcache_t* D_SCAlloc(int width, int size)
 {
+	using namespace std::string_view_literals;
 	if ((width < 0) || (width > 256))
-		Sys_Error((char*)"D_SCAlloc: bad cache width %d\n", width);
+		Sys_Error(std::format("D_SCAlloc: bad cache width {}\n"sv, width));
 
 	if ((size <= 0) || (size > 0x10000))
-		Sys_Error((char*)"D_SCAlloc: bad cache size %d\n", size);
+		Sys_Error(std::format("D_SCAlloc: bad cache size {}\n"sv, size));
 
 	size = (int)&((surfcache_t*)0)->data[size];
 	size = (size + 3) & ~3;
 	if (size > sc_size)
-		Sys_Error((char*)"D_SCAlloc: %i > cache size", size);
+		Sys_Error(std::format("D_SCAlloc: {} > cache size"sv, size));
 
 	// if there is not size bytes after the rover, reset to the start
 	bool wrapped_this__time = false;
@@ -158,7 +162,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 		// free another
 		sc_rover = sc_rover->next;
 		if (!sc_rover)
-			Sys_Error((char*)"D_SCAlloc: hit the end of memory");
+			Sys_Error("D_SCAlloc: hit the end of memory"sv);
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
 

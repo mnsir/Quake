@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "wad.h"
 
+#include <format>
+
 #include "common.h"
 #include "sys.h"
 
@@ -69,12 +71,13 @@ W_LoadWadFile
 */
 void W_LoadWadFile(char* filename)
 {
+	using namespace std::string_view_literals;
 	lumpinfo_t* lump_p;
 	unsigned i;
 
 	wad_base = COM_LoadHunkFile(filename);
 	if (!wad_base)
-		Sys_Error((char*)"W_LoadWadFile: couldn't load %s", filename);
+		Sys_Error(std::format("W_LoadWadFile: couldn't load {}"sv, filename));
 
 	wadinfo_t* header = (wadinfo_t*)wad_base;
 
@@ -82,7 +85,7 @@ void W_LoadWadFile(char* filename)
 		|| header->identification[1] != 'A'
 		|| header->identification[2] != 'D'
 		|| header->identification[3] != '2')
-		Sys_Error((char*)"Wad file %s doesn't have WAD2 id\n", filename);
+		Sys_Error(std::format("Wad file {} doesn't have WAD2 id\n"sv, filename));
 
 	wad_numlumps = LittleLong(header->numlumps);
 	int infotableofs = LittleLong(header->infotableofs);
@@ -106,6 +109,7 @@ W_GetLumpinfo
 */
 lumpinfo_t* W_GetLumpinfo(char* name)
 {
+	using namespace std::string_view_literals;
 	int i;
 	lumpinfo_t* lump_p;
 	char clean[16];
@@ -118,7 +122,7 @@ lumpinfo_t* W_GetLumpinfo(char* name)
 			return lump_p;
 	}
 
-	Sys_Error((char*)"W_GetLumpinfo: %s not found", name);
+	Sys_Error(std::format("W_GetLumpinfo: {} not found"sv, name));
 	return NULL;
 }
 
@@ -131,8 +135,9 @@ void* W_GetLumpName(char* name)
 
 void* W_GetLumpNum(int num)
 {
+	using namespace std::string_view_literals;
 	if (num < 0 || num > wad_numlumps)
-		Sys_Error((char*)"W_GetLumpNum: bad number: %i", num);
+		Sys_Error(std::format("W_GetLumpNum: bad number: {}"sv, num));
 
 	lumpinfo_t* lump = wad_lumps + num;
 

@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "snd_mem.h"
 
 #include <cstring>
+#include <format>
 
 #include "console.h"
 #include "snd_dma.h"
@@ -244,6 +245,7 @@ GetWavinfo
 */
 wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 {
+	using namespace std::string_view_literals;
 	wavinfo_t info;
 
 	memset(&info, 0, sizeof(info));
@@ -324,7 +326,7 @@ wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
 	if (info.samples)
 	{
 		if (samples < info.samples)
-			Sys_Error((char*)"Sound %s has a bad loop length", name);
+			Sys_Error(std::format("Sound {} has a bad loop length"sv, name));
 	}
 	else
 		info.samples = samples;

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cl_parse.h"
 
+#include <format>
+
 #include "cdaudio.h"
 #include "client.h"
 #include "cl_demo.h"
@@ -345,6 +347,7 @@ int bitcounts[16];
 
 void CL_ParseUpdate(int bits)
 {
+	using namespace std::string_view_literals;
 	int i;
 	int modnum;
 	bool forcelink;
@@ -426,7 +429,7 @@ void CL_ParseUpdate(int bits)
 	else
 	{
 		if (i > cl.maxclients)
-			Sys_Error((char*)"i >= cl.maxclients");
+			Sys_Error("i >= cl.maxclients"sv);
 		ent->colormap = cl.scores[i - 1].translations;
 	}
 
@@ -645,10 +648,11 @@ CL_NewTranslation
 */
 void CL_NewTranslation(int slot)
 {
+	using namespace std::string_view_literals;
 	int j;
 
 	if (slot > cl.maxclients)
-		Sys_Error((char*)"CL_NewTranslation: slot > cl.maxclients");
+		Sys_Error("CL_NewTranslation: slot > cl.maxclients"sv);
 	byte* dest = cl.scores[slot].translations;
 	byte* source = vid.colormap;
 	memcpy(dest, vid.colormap, sizeof(cl.scores[slot].translations));
@@ -728,6 +732,7 @@ CL_ParseServerMessage
 */
 void CL_ParseServerMessage(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 
 	//
@@ -830,7 +835,7 @@ void CL_ParseServerMessage(void)
 		case svc_lightstyle:
 			i = MSG_ReadByte();
 			if (i >= MAX_LIGHTSTYLES)
-				Sys_Error((char*)"svc_lightstyle > MAX_LIGHTSTYLES");
+				Sys_Error("svc_lightstyle > MAX_LIGHTSTYLES"sv);
 			Q_strcpy(cl_lightstyle[i].map, MSG_ReadString());
 			cl_lightstyle[i].length = Q_strlen(cl_lightstyle[i].map);
 			break;
@@ -921,7 +926,7 @@ void CL_ParseServerMessage(void)
 		case svc_updatestat:
 			i = MSG_ReadByte();
 			if (i < 0 || i >= MAX_CL_STATS)
-				Sys_Error((char*)"svc_updatestat: %i is invalid", i);
+				Sys_Error(std::format("svc_updatestat: {} is invalid"sv, i));
 			cl.stats[i] = MSG_ReadLong();
 			break;
 

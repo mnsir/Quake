@@ -625,6 +625,7 @@ MGLDC* createDisplayDC(int forcemem)
 
 void VID_InitMGLDIB(HINSTANCE hInstance)
 {
+	using namespace std::string_view_literals;
 	WNDCLASS wc;
 	int i;
 
@@ -643,7 +644,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 	wc.lpszClassName = "WinQuake";
 
 	if (!RegisterClass(&wc))
-		Sys_Error((char*)"Couldn't register window class");
+		Sys_Error("Couldn't register window class"sv);
 
 	/* Find the size for the DIB window */
 	/* Initialise the MGL for windowed operation */
@@ -1205,6 +1206,7 @@ void DestroyFullDIBWindow(void)
 
 bool VID_SetWindowedMode(int modenum)
 {
+	using namespace std::string_view_literals;
 	pixel_format_t pf;
 	LONG wlong;
 
@@ -1276,7 +1278,7 @@ bool VID_SetWindowedMode(int modenum)
 			NULL);
 
 		if (!mainwindow)
-			Sys_Error((char*)"Couldn't create DIB window");
+			Sys_Error("Couldn't create DIB window"sv);
 
 		// tell MGL to use this_ window for fullscreen modes
 		MGL_registerFullScreenWindow(mainwindow);
@@ -1297,7 +1299,7 @@ bool VID_SetWindowedMode(int modenum)
 	                  SWP_NOCOPYBITS | SWP_NOZORDER |
 	                  SWP_HIDEWINDOW))
 	{
-		Sys_Error((char*)"Couldn't resize DIB window");
+		Sys_Error("Couldn't resize DIB window"sv);
 	}
 
 	if (hide_window)
@@ -1408,6 +1410,7 @@ bool VID_SetFullscreenMode(int modenum)
 
 bool VID_SetFullDIBMode(int modenum)
 {
+	using namespace std::string_view_literals;
 	pixel_format_t pf;
 
 	DDActive = false;
@@ -1433,7 +1436,7 @@ bool VID_SetFullDIBMode(int modenum)
 	gdevmode.dmSize = sizeof(gdevmode);
 
 	if (ChangeDisplaySettings(&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-		Sys_Error((char*)"Couldn't set fullscreen DIB mode");
+		Sys_Error("Couldn't set fullscreen DIB mode"sv);
 
 	int lastmodestate = modestate;
 	modestate = MS_FULLDIB;
@@ -1465,7 +1468,7 @@ bool VID_SetFullDIBMode(int modenum)
 	                  WindowRect.bottom - WindowRect.top,
 	                  SWP_NOCOPYBITS | SWP_NOZORDER))
 	{
-		Sys_Error((char*)"Couldn't resize DIB window");
+		Sys_Error("Couldn't resize DIB window"sv);
 	}
 
 	// position and show the DIB window
@@ -1513,6 +1516,7 @@ bool VID_SetFullDIBMode(int modenum)
 
 void VID_RestoreOldMode(int original_mode)
 {
+	using namespace std::string_view_literals;
 	static bool inerror = false;
 
 	if (inerror)
@@ -1529,7 +1533,7 @@ void VID_RestoreOldMode(int original_mode)
 		vid_modenum = MODE_WINDOWED - 1;
 
 		if (!VID_SetMode(windowed_default, vid_curpal))
-			Sys_Error((char*)"Can't set any video mode");
+			Sys_Error("Can't set any video mode"sv);
 	}
 
 	inerror = false;
@@ -1739,6 +1743,7 @@ void VID_LockBuffer(void)
 
 void VID_UnlockBuffer(void)
 {
+	using namespace std::string_view_literals;
 	if (dibdc)
 		return;
 
@@ -1748,7 +1753,7 @@ void VID_UnlockBuffer(void)
 		return;
 
 	if (lockcount < 0)
-		Sys_Error((char*)"Unbalanced unlock");
+		Sys_Error("Unbalanced unlock"sv);
 
 	MGL_endDirectAccess();
 
@@ -2370,6 +2375,7 @@ D_BeginDirectRect
 */
 void D_BeginDirectRect(int x, int y, byte* pbitmap, int width, int height)
 {
+	using namespace std::string_view_literals;
 	int i, j, reps, repshift;
 	vrect_t rect;
 
@@ -2392,7 +2398,7 @@ void D_BeginDirectRect(int x, int y, byte* pbitmap, int width, int height)
 		VID_LockBuffer();
 
 		if (!vid.direct)
-			Sys_Error((char*)"NULL vid.direct pointer");
+			Sys_Error("NULL vid.direct pointer"sv);
 
 		for (i = 0; i < (height << repshift); i += reps)
 		{
@@ -2465,6 +2471,7 @@ D_EndDirectRect
 */
 void D_EndDirectRect(int x, int y, int width, int height)
 {
+	using namespace std::string_view_literals;
 	int i, j, reps, repshift;
 	vrect_t rect;
 
@@ -2487,7 +2494,7 @@ void D_EndDirectRect(int x, int y, int width, int height)
 		VID_LockBuffer();
 
 		if (!vid.direct)
-			Sys_Error((char*)"NULL vid.direct pointer");
+			Sys_Error("NULL vid.direct pointer"sv);
 
 		for (i = 0; i < (height << repshift); i += reps)
 		{

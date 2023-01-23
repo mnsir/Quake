@@ -23,10 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 #include <cstring>
+#include <format>
+#include <string_view>
 
 #include "model.h"
 
-void Sys_Error(char* error, ...);
+void Sys_Error(std::string_view err);
 
 vec3_t vec3_origin = {0, 0, 0};
 int nanmask = 255 << 23;
@@ -164,7 +166,8 @@ Split out like this_ for ASM to call.
 */
 void BOPS_Error(void)
 {
-	Sys_Error((char*)"BoxOnPlaneSide:  Bad signbits");
+	using namespace std::string_view_literals;
+	Sys_Error("BoxOnPlaneSide:  Bad signbits"sv);
 }
 
 
@@ -430,11 +433,12 @@ quotient must fit in 32 bits.
 void FloorDivMod(double numer, double denom, int* quotient,
                  int* rem)
 {
+	using namespace std::string_view_literals;
 	int q, r;
 	double x;
 	
 	if (denom <= 0.0)
-		Sys_Error((char*)"FloorDivMod: bad denominator %d\n", denom);
+		Sys_Error(std::format("FloorDivMod: bad denominator {}\n"sv, denom));
 
 	// if ((floor(numer) != numer) || (floor(denom) != denom))
 	// Sys_Error ((char*)"FloorDivMod: non-integer numer or denom %f %f\n",

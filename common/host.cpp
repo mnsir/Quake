@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "host.h"
 
 #include <cstdarg>
+#include <format>
 
 #include "cdaudio.h"
 #include "chase.h"
@@ -111,6 +112,7 @@ Host_EndGame
 */
 void Host_EndGame(char* message, ...)
 {
+	using namespace std::string_view_literals;
 	va_list argptr;
 	char string[1024];
 
@@ -123,7 +125,7 @@ void Host_EndGame(char* message, ...)
 		Host_ShutdownServer(false);
 
 	if (cls.state == ca_dedicated)
-		Sys_Error((char*)"Host_EndGame: %s\n", string); // dedicated servers exit
+		Sys_Error(std::format("Host_EndGame: {}\n"sv, string)); // dedicated servers exit
 
 	if (cls.demonum != -1)
 		CL_NextDemo();
@@ -142,12 +144,13 @@ This shuts down both the client and server
 */
 void Host_Error(char* error, ...)
 {
+	using namespace std::string_view_literals;
 	va_list argptr;
 	char string[1024];
 	static bool inerror = false;
 
 	if (inerror)
-		Sys_Error((char*)"Host_Error: recursively entered");
+		Sys_Error("Host_Error: recursively entered"sv);
 	inerror = true;
 
 	SCR_EndLoadingPlaque(); // reenable screen updates
@@ -161,7 +164,7 @@ void Host_Error(char* error, ...)
 		Host_ShutdownServer(false);
 
 	if (cls.state == ca_dedicated)
-		Sys_Error((char*)"Host_Error: %s\n", string); // dedicated servers exit
+		Sys_Error(std::format("Host_Error: {}\n"sv, string)); // dedicated servers exit
 
 	CL_Disconnect();
 	cls.demonum = -1;
@@ -178,6 +181,7 @@ Host_FindMaxClients
 */
 void Host_FindMaxClients(void)
 {
+	using namespace std::string_view_literals;
 	svs.maxclients = 1;
 
 	int i = COM_CheckParm((char*)"-dedicated");
@@ -198,7 +202,7 @@ void Host_FindMaxClients(void)
 	if (i)
 	{
 		if (cls.state == ca_dedicated)
-			Sys_Error((char*)"Only one of -dedicated or -listen can be specified");
+			Sys_Error("Only one of -dedicated or -listen can be specified"sv);
 		if (i != (com_argc - 1))
 			svs.maxclients = Q_atoi(com_argv[i + 1]);
 		else
@@ -732,20 +736,21 @@ extern int vcrFile;
 
 void Host_InitVCR(quakeparms_t* parms)
 {
+	using namespace std::string_view_literals;
 	int i, len, n;
 
 	if (COM_CheckParm((char*)"-playback"))
 	{
 		if (com_argc != 2)
-			Sys_Error((char*)"No other parameters allowed with -playback\n");
+			Sys_Error("No other parameters allowed with -playback\n"sv);
 
 		Sys_FileOpenRead((char*)"quake.vcr", &vcrFile);
 		if (vcrFile == -1)
-			Sys_Error((char*)"playback file not found\n");
+			Sys_Error("playback file not found\n"sv);
 
 		Sys_FileRead(vcrFile, &i, sizeof(int));
 		if (i != VCR_SIGNATURE)
-			Sys_Error((char*)"Invalid signature in vcr file\n");
+			Sys_Error("Invalid signature in vcr file\n"sv);
 
 		Sys_FileRead(vcrFile, &com_argc, sizeof(int));
 		com_argv = static_cast<char**>(malloc(com_argc * sizeof(char*)));
@@ -793,6 +798,7 @@ Host_Init
 */
 void Host_Init(quakeparms_t* parms)
 {
+	using namespace std::string_view_literals;
 	if (standard_quake)
 		minimum_memory = MINIMUM_MEMORY;
 	else
@@ -804,7 +810,7 @@ void Host_Init(quakeparms_t* parms)
 	host_parms = *parms;
 
 	if (parms->memsize < minimum_memory)
-		Sys_Error((char*)"Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
+		Sys_Error(std::format("Only {:4.1f} megs of memory available, can't execute game"sv, parms->memsize / (double)0x100000));
 
 	com_argc = parms->argc;
 	com_argv = parms->argv;
@@ -835,10 +841,10 @@ void Host_Init(quakeparms_t* parms)
 	{
 		host_basepal = COM_LoadHunkFile((char*)"gfx/palette.lmp");
 		if (!host_basepal)
-			Sys_Error((char*)"Couldn't load gfx/palette.lmp");
+			Sys_Error("Couldn't load gfx/palette.lmp"sv);
 		host_colormap = COM_LoadHunkFile((char*)"gfx/colormap.lmp");
 		if (!host_colormap)
-			Sys_Error((char*)"Couldn't load gfx/colormap.lmp");
+			Sys_Error("Couldn't load gfx/colormap.lmp"sv);
 		
 		VID_Init(host_basepal);
 

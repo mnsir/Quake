@@ -141,13 +141,14 @@ void WIPX_Shutdown(void)
 
 void WIPX_Listen(bool state)
 {
+	using namespace std::string_view_literals;
 	// enable listening
 	if (state)
 	{
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = WIPX_OpenSocket(net_hostport)) == -1)
-			Sys_Error((char*)"WIPX_Listen: Unable to open accept socket\n");
+			Sys_Error("WIPX_Listen: Unable to open accept socket\n"sv);
 		return;
 	}
 
@@ -162,6 +163,7 @@ void WIPX_Listen(bool state)
 
 int WIPX_OpenSocket(int port)
 {
+	using namespace std::string_view_literals;
 	int handle;
 	int new_socket;
 	struct sockaddr_ipx address;
@@ -193,7 +195,7 @@ int WIPX_OpenSocket(int port)
 		return handle;
 	}
 
-	Sys_Error((char*)"Winsock IPX bind failed\n");
+	Sys_Error("Winsock IPX bind failed\n"sv);
 ErrorReturn:
 	pclosesocket(new_socket);
 	return -1;
@@ -222,13 +224,14 @@ int WIPX_Connect(int handle, struct qsockaddr* addr)
 
 int WIPX_CheckNewConnections(void)
 {
+	using namespace std::string_view_literals;
 	unsigned long available;
 
 	if (net_acceptsocket == -1)
 		return -1;
 
 	if (pioctlsocket(ipxsocket[net_acceptsocket], FIONREAD, &available) == -1)
-		Sys_Error((char*)"WIPX: ioctlsocket (FIONREAD) failed\n");
+		Sys_Error("WIPX: ioctlsocket (FIONREAD) failed\n"sv);
 	if (available)
 		return net_acceptsocket;
 	return -1;

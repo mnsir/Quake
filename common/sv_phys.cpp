@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_phys.h"
 
 #include <cmath>
+#include <format>
 
 #include "console.h"
 #include "cvar.h"
@@ -224,6 +225,7 @@ If steptrace is not NULL, the trace of any vertical wall hit will be stored
 
 int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 {
+	using namespace std::string_view_literals;
 	vec3_t dir;
 	vec3_t planes[MAX_CLIP_PLANES];
 	vec3_t primal_velocity, original_velocity, new__velocity;
@@ -268,7 +270,7 @@ int SV_FlyMove(edict_t* ent, float time, trace_t* steptrace)
 			break; // moved the entire distance
 
 		if (!trace.ent)
-			Sys_Error((char*)"SV_FlyMove: !trace.ent");
+			Sys_Error("SV_FlyMove: !trace.ent"sv);
 
 		if (trace.plane.normal[2] > 0.7)
 		{
@@ -881,6 +883,7 @@ Player character actions
 */
 void SV_Physics_Client(edict_t* ent, int num)
 {
+	using namespace std::string_view_literals;
 	if (!svs.clients[num - 1].active)
 		return; // unconnected slot
 
@@ -934,7 +937,7 @@ void SV_Physics_Client(edict_t* ent, int num)
 		break;
 
 	default:
-		Sys_Error((char*)"SV_Physics_client: bad movetype %i", (int)ent->v.movetype);
+		Sys_Error(std::format("SV_Physics_client: bad movetype {}"sv, (int)ent->v.movetype));
 	}
 
 	//
@@ -1147,6 +1150,7 @@ SV_Physics
 */
 void SV_Physics(void)
 {
+	using namespace std::string_view_literals;
 	// let the progs know that a new_ frame has started
 	pr_global_struct->self = EDICT_TO_PROG(sv.edicts);
 	pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
@@ -1185,7 +1189,7 @@ void SV_Physics(void)
 			|| ent->v.movetype == MOVETYPE_FLYMISSILE)
 			SV_Physics_Toss(ent);
 		else
-			Sys_Error((char*)"SV_Physics: bad movetype %i", (int)ent->v.movetype);
+			Sys_Error(std::format("SV_Physics: bad movetype {}"sv, (int)ent->v.movetype));
 	}
 
 	if (pr_global_struct->force_retouch)

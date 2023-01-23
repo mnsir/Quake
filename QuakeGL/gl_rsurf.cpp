@@ -179,6 +179,7 @@ Combine and scale multiple lightmaps into the 8.8 format in blocklights
 */
 void R_BuildLightMap(msurface_t* surf, byte* dest, int stride)
 {
+	using namespace std::string_view_literals;
 	int t;
 	int i, j;
 	int lightadj[4];
@@ -256,7 +257,7 @@ store:
 		}
 		break;
 	default:
-		Sys_Error((char*)"Bad lightmap format");
+		Sys_Error("Bad lightmap format"sv);
 	}
 }
 
@@ -270,6 +271,7 @@ Returns the proper texture for a given time and base texture
 */
 texture_t* R_TextureAnimation(texture_t* base)
 {
+	using namespace std::string_view_literals;
 	if (currententity->frame)
 	{
 		if (base->alternate_anims)
@@ -286,9 +288,9 @@ texture_t* R_TextureAnimation(texture_t* base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error((char*)"R_TextureAnimation: broken cycle");
+			Sys_Error("R_TextureAnimation: broken cycle"sv);
 		if (++count > 100)
-			Sys_Error((char*)"R_TextureAnimation: infinite cycle");
+			Sys_Error("R_TextureAnimation: infinite cycle"sv);
 	}
 
 	return base;
@@ -1259,6 +1261,7 @@ void R_MarkLeaves(void)
 // returns a texture number and the position inside it
 int AllocBlock(int w, int h, int* x, int* y)
 {
+	using namespace std::string_view_literals;
 	int i, j;
 	int bestx;
 
@@ -1294,7 +1297,7 @@ int AllocBlock(int w, int h, int* x, int* y)
 		return texnum;
 	}
 
-	Sys_Error((char*)"AllocBlock: full");
+	Sys_Error("AllocBlock: full"sv);
 }
 
 

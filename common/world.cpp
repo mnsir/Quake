@@ -130,6 +130,7 @@ testing object's origin to get a point to use with the returned hull.
 */
 hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 {
+	using namespace std::string_view_literals;
 	vec3_t size;
 	vec3_t hullmins, hullmaxs;
 	hull_t* hull;
@@ -139,12 +140,12 @@ hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
 	{
 		// explicit hulls in the BSP model
 		if (ent->v.movetype != MOVETYPE_PUSH)
-			Sys_Error((char*)"SOLID_BSP without MOVETYPE_PUSH");
+			Sys_Error("SOLID_BSP without MOVETYPE_PUSH"sv);
 
 		model_t* model = sv.models[(int)ent->v.modelindex];
 
 		if (!model || model->type != mod_brush)
-			Sys_Error((char*)"MOVETYPE_PUSH with a non bsp model");
+			Sys_Error("MOVETYPE_PUSH with a non bsp model"sv);
 
 		VectorSubtract(maxs, mins, size);
 		if (size[0] < 3)
@@ -456,12 +457,13 @@ SV_HullPointContents
 */
 int SV_HullPointContents(hull_t* hull, int num, vec3_t p)
 {
+	using namespace std::string_view_literals;
 	float d;
 
 	while (num >= 0)
 	{
 		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error((char*)"SV_HullPointContents: bad node number");
+			Sys_Error("SV_HullPointContents: bad node number"sv);
 
 		dclipnode_t* node = hull->clipnodes + num;
 		mplane_t* plane = hull->planes + node->planenum;
@@ -538,6 +540,7 @@ SV_RecursiveHullCheck
 */
 bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t* trace)
 {
+	using namespace std::string_view_literals;
 	float t1, t2;
 	float frac;
 	int i;
@@ -560,7 +563,7 @@ bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p
 	}
 
 	if (num < hull->firstclipnode || num > hull->lastclipnode)
-		Sys_Error((char*)"SV_RecursiveHullCheck: bad node number");
+		Sys_Error("SV_RecursiveHullCheck: bad node number"sv);
 
 	//
 	// find the point distances
@@ -701,6 +704,7 @@ Mins and maxs enclose the entire area swept by the move
 */
 void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 {
+	using namespace std::string_view_literals;
 	link_t*next;
 	trace_t trace;
 
@@ -714,7 +718,7 @@ void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 		if (touch == clip->passedict)
 			continue;
 		if (touch->v.solid == SOLID_TRIGGER)
-			Sys_Error((char*)"Trigger in clipping list");
+			Sys_Error("Trigger in clipping list"sv);
 
 		if (clip->type == MOVE_NOMONSTERS && touch->v.solid != SOLID_BSP)
 			continue;

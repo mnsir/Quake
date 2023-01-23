@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "draw.h"
 
+#include <format>
+
 #include "d_iface.h"
 #include "snd_dma.h"
 #include "sys.h"
@@ -70,6 +72,7 @@ Draw_CachePic
 */
 qpic_t* Draw_CachePic(char* path)
 {
+	using namespace std::string_view_literals;
 	cachepic_t* pic;
 	int i;
 
@@ -80,7 +83,7 @@ qpic_t* Draw_CachePic(char* path)
 	if (i == menu_numcachepics)
 	{
 		if (menu_numcachepics == MAX_CACHED_PICS)
-			Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
+			Sys_Error("menu_numcachepics == MAX_CACHED_PICS"sv);
 		menu_numcachepics++;
 		strcpy(pic->name, path);
 	}
@@ -98,7 +101,7 @@ qpic_t* Draw_CachePic(char* path)
 	dat = (qpic_t*)pic->cache.data;
 	if (!dat)
 	{
-		Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
+		Sys_Error(std::format("Draw_CachePic: failed to load {}"sv, path));
 	}
 
 	SwapPic(dat);
@@ -278,6 +281,7 @@ Draw_Pic
 */
 void Draw_Pic(int x, int y, qpic_t* pic)
 {
+	using namespace std::string_view_literals;
 	int v;
 
 	if ((x < 0) ||
@@ -285,7 +289,7 @@ void Draw_Pic(int x, int y, qpic_t* pic)
 		(y < 0) ||
 		(y + pic->height > vid.height))
 	{
-		Sys_Error((char*)"Draw_Pic: bad coordinates");
+		Sys_Error("Draw_Pic: bad coordinates"sv);
 	}
 
 	byte* source = pic->data;
@@ -327,13 +331,14 @@ Draw_TransPic
 */
 void Draw_TransPic(int x, int y, qpic_t* pic)
 {
+	using namespace std::string_view_literals;
 	byte tbyte;
 	int v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		(unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error((char*)"Draw_TransPic: bad coordinates");
+		Sys_Error("Draw_TransPic: bad coordinates"sv);
 	}
 
 	byte* source = pic->data;
@@ -415,13 +420,14 @@ Draw_TransPicTranslate
 */
 void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
 {
+	using namespace std::string_view_literals;
 	byte tbyte;
 	int v, u;
 
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		(unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error((char*)"Draw_TransPic: bad coordinates");
+		Sys_Error("Draw_TransPic: bad coordinates"sv);
 	}
 
 	byte* source = pic->data;

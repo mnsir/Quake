@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 
+#include <format>
+
 #include "cmd.h"
 #include "console.h"
 #include "crc.h"
@@ -714,13 +716,14 @@ void SZ_Clear(sizebuf_t* buf)
 
 void* SZ_GetSpace(sizebuf_t* buf, int length)
 {
+	using namespace std::string_view_literals;
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
-			Sys_Error((char*)"SZ_GetSpace: overflow without allowoverflow set");
+			Sys_Error("SZ_GetSpace: overflow without allowoverflow set"sv);
 
 		if (length > buf->maxsize)
-			Sys_Error((char*)"SZ_GetSpace: %i is > full buffer size", length);
+			Sys_Error(std::format("SZ_GetSpace: {} is > full buffer size"sv, length));
 
 		buf->overflowed = true;
 		Con_Printf((char*)"SZ_GetSpace: overflow");
@@ -964,6 +967,7 @@ being registered.
 */
 void COM_CheckRegistered(void)
 {
+	using namespace std::string_view_literals;
 	int h;
 	unsigned short check[128];
 
@@ -974,7 +978,7 @@ void COM_CheckRegistered(void)
 	{
 		Con_Printf((char*)"Playing shareware version.\n");
 		if (com_modified)
-			Sys_Error((char*)"You must have the registered version to use modified games");
+			Sys_Error("You must have the registered version to use modified games"sv);
 		return;
 	}
 
@@ -983,7 +987,7 @@ void COM_CheckRegistered(void)
 
 	for (int i = 0; i < 128; i++)
 		if (pop[i] != (unsigned short)BigShort(check[i]))
-			Sys_Error((char*)"Corrupted data file.");
+			Sys_Error("Corrupted data file."sv);
 
 	Cvar_Set((char*)"cmdline", com_cmdline);
 	Cvar_Set((char*)"registered", (char*)"1");
@@ -1303,14 +1307,15 @@ Sets com_filesize and one of handle or file
 */
 int COM_FindFile(char* filename, int* handle, FILE** file)
 {
+	using namespace std::string_view_literals;
 	char netpath[MAX_OSPATH];
 	char cachepath[MAX_OSPATH];
 	int i;
 
 	if (file && handle)
-		Sys_Error((char*)"COM_FindFile: both handle and file set");
+		Sys_Error("COM_FindFile: both handle and file set"sv);
 	if (!file && !handle)
-		Sys_Error((char*)"COM_FindFile: neither handle or file set");
+		Sys_Error("COM_FindFile: neither handle or file set"sv);
 
 	//
 	// search through the path, one element at a time
@@ -1466,6 +1471,7 @@ int loadsize;
 
 byte* COM_LoadFile(char* path, int usehunk)
 {
+	using namespace std::string_view_literals;
 	int h;
 	char base[32];
 
@@ -1495,10 +1501,10 @@ byte* COM_LoadFile(char* path, int usehunk)
 			buf = loadbuf;
 	}
 	else
-		Sys_Error((char*)"COM_LoadFile: bad usehunk");
+		Sys_Error("COM_LoadFile: bad usehunk"sv);
 
 	if (!buf)
-		Sys_Error((char*)"COM_LoadFile: not enough space for %s", path);
+		Sys_Error(std::format("COM_LoadFile: not enough space for {}"sv, path));
 
 	buf[len] = 0;
 
@@ -1548,6 +1554,7 @@ of the list so they override previous pack files.
 */
 pack_t* COM_LoadPackFile(char* packfile)
 {
+	using namespace std::string_view_literals;
 	dpackheader_t header;
 	int i;
 	int packhandle;
@@ -1562,14 +1569,14 @@ pack_t* COM_LoadPackFile(char* packfile)
 	Sys_FileRead(packhandle, &header, sizeof(header));
 	if (header.id[0] != 'P' || header.id[1] != 'A'
 		|| header.id[2] != 'C' || header.id[3] != 'K')
-		Sys_Error((char*)"%s is not a packfile", packfile);
+		Sys_Error(std::format("{} is not a packfile"sv, packfile));
 	header.dirofs = LittleLong(header.dirofs);
 	header.dirlen = LittleLong(header.dirlen);
 
 	int numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
 	if (numpackfiles > MAX_FILES_IN_PACK)
-		Sys_Error((char*)"%s has %i files", packfile, numpackfiles);
+		Sys_Error(std::format("{} has {} files"sv, packfile, numpackfiles));
 
 	if (numpackfiles != PAK0_COUNT)
 		com_modified = true; // not the original file
@@ -1654,6 +1661,7 @@ COM_InitFilesystem
 */
 void COM_InitFilesystem(void)
 {
+	using namespace std::string_view_literals;
 	char basedir[MAX_OSPATH];
 
 	//
@@ -1732,7 +1740,7 @@ void COM_InitFilesystem(void)
 			{
 				search->pack = COM_LoadPackFile(com_argv[i]);
 				if (!search->pack)
-					Sys_Error((char*)"Couldn't load packfile: %s", com_argv[i]);
+					Sys_Error(std::format("Couldn't load packfile: {}"sv, com_argv[i]));
 			}
 			else
 				strcpy(search->filename, com_argv[i]);

@@ -156,13 +156,14 @@ int Loop_GetMessage(qsocket_t* sock)
 
 int Loop_SendMessage(qsocket_t* sock, sizebuf_t* data)
 {
+	using namespace std::string_view_literals;
 	if (!sock->driverdata)
 		return -1;
 
 	int* bufferLength = &((qsocket_t*)sock->driverdata)->receiveMessageLength;
 
 	if ((*bufferLength + data->cursize + 4) > NET_MAXMESSAGE)
-		Sys_Error((char*)"Loop_SendMessage: overflow\n");
+		Sys_Error("Loop_SendMessage: overflow\n"sv);
 
 	byte* buffer = ((qsocket_t*)sock->driverdata)->receiveMessage + *bufferLength;
 

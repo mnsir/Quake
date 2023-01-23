@@ -590,6 +590,7 @@ Should NOT be called during an interrupt!
 */
 void Key_Event(int key, bool down)
 {
+	using namespace std::string_view_literals;
 	char* kb;
 	char cmd[1024];
 
@@ -641,7 +642,7 @@ void Key_Event(int key, bool down)
 			M_ToggleMenu_f();
 			break;
 		default:
-			Sys_Error((char*)"Bad key_dest");
+			Sys_Error("Bad key_dest"sv);
 		}
 		return;
 	}
@@ -729,7 +730,7 @@ void Key_Event(int key, bool down)
 		Key_Console(key);
 		break;
 	default:
-		Sys_Error((char*)"Bad key_dest");
+		Sys_Error("Bad key_dest"sv);
 	}
 }
 

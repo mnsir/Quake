@@ -70,6 +70,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef GLQUAKE
 #include "glquake.h"
 #endif
+#include <format>
+
 #include "host.h"
 #include "chase.h"
 
@@ -100,6 +102,7 @@ void BoundPoly(int numverts, float* verts, vec3_t mins, vec3_t maxs)
 
 void SubdividePolygon(int numverts, float* verts)
 {
+	using namespace std::string_view_literals;
 	int i, j;
 	vec3_t mins, maxs;
 	vec3_t front[64], back[64];
@@ -107,7 +110,7 @@ void SubdividePolygon(int numverts, float* verts)
 	float dist[64];
 
 	if (numverts > 60)
-		Sys_Error((char*)"numverts = %i", numverts);
+		Sys_Error(std::format("numverts = {}"sv, numverts));
 
 	BoundPoly(numverts, verts, mins, maxs);
 

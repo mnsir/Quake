@@ -1549,6 +1549,7 @@ r_refdef must be set before the first call
 */
 void R_RenderView(void)
 {
+	using namespace std::string_view_literals;
 	double time1;
 	GLfloat colors[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20};
 
@@ -1556,7 +1557,7 @@ void R_RenderView(void)
 		return;
 
 	if (!r_worldentity.model || !cl.worldmodel)
-		Sys_Error((char*)"R_RenderView: NULL worldmodel");
+		Sys_Error("R_RenderView: NULL worldmodel"sv);
 
 	if (r_speeds.value)
 	{

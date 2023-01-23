@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "sv_main.h"
 
+#include <format>
+
 #include "cl_main.h"
 #include "cmd.h"
 #include "console.h"
@@ -130,16 +132,17 @@ Larger attenuations will drop off.  (max 4 attenuation)
 void SV_StartSound(edict_t* entity, int channel, char* sample, int volume,
                    float attenuation)
 {
+	using namespace std::string_view_literals;
 	int sound_num;
 
 	if (volume < 0 || volume > 255)
-		Sys_Error((char*)"SV_StartSound: volume = %i", volume);
+		Sys_Error(std::format("SV_StartSound: volume = {}"sv, volume));
 
 	if (attenuation < 0 || attenuation > 4)
-		Sys_Error((char*)"SV_StartSound: attenuation = %f", attenuation);
+		Sys_Error(std::format("SV_StartSound: attenuation = {}"sv, attenuation));
 
 	if (channel < 0 || channel > 7)
-		Sys_Error((char*)"SV_StartSound: channel = %i", channel);
+		Sys_Error(std::format("SV_StartSound: channel = {}"sv, channel));
 
 	if (sv.datagram.cursize > MAX_DATAGRAM - 16)
 		return;
@@ -300,6 +303,7 @@ SV_CheckForNewClients
 */
 void SV_CheckForNewClients(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 
 	//
@@ -318,7 +322,7 @@ void SV_CheckForNewClients(void)
 			if (!svs.clients[i].active)
 				break;
 		if (i == svs.maxclients)
-			Sys_Error((char*)"Host_CheckForNewClients: no free clients");
+			Sys_Error("Host_CheckForNewClients: no free clients"sv);
 
 		svs.clients[i].netconnection = ret;
 		SV_ConnectClient(i);
@@ -873,6 +877,7 @@ SV_ModelIndex
 */
 int SV_ModelIndex(char* name)
 {
+	using namespace std::string_view_literals;
 	int i;
 
 	if (!name || !name[0])
@@ -882,7 +887,7 @@ int SV_ModelIndex(char* name)
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	if (i == MAX_MODELS || !sv.model_precache[i])
-		Sys_Error((char*)"SV_ModelIndex: model %s not precached", name);
+		Sys_Error(std::format("SV_ModelIndex: model {} not precached"sv, name));
 	return i;
 }
 

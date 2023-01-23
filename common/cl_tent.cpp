@@ -115,6 +115,7 @@ CL_ParseTEnt
 */
 void CL_ParseTEnt(void)
 {
+	using namespace std::string_view_literals;
 	vec3_t pos;
 	dlight_t* dl;
 	int rnd;
@@ -254,7 +255,7 @@ void CL_ParseTEnt(void)
 		break;
 		
 	default:
-		Sys_Error((char*)"CL_ParseTEnt: bad type");
+		Sys_Error("CL_ParseTEnt: bad type"sv);
 	}
 }
 

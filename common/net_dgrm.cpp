@@ -450,6 +450,7 @@ PollProcedure testPollProcedure = {NULL, 0.0, Test_Poll};
 
 static void Test_Poll(void)
 {
+	using namespace std::string_view_literals;
 	struct qsockaddr clientaddr;
 	char name[32];
 	char address[64];
@@ -475,7 +476,7 @@ static void Test_Poll(void)
 			break;
 
 		if (MSG_ReadByte() != CCREP_PLAYER_INFO)
-			Sys_Error((char*)"Unexpected repsonse to Player Info request\n");
+			Sys_Error("Unexpected repsonse to Player Info request\n"sv);
 
 		byte playerNumber = MSG_ReadByte();
 		Q_strcpy(name, MSG_ReadString());

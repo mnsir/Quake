@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "snd_dma.h"
 
 #include <ddraw.h>
+#include <format>
 
 #include "bspfile.h"
 #include "cl_main.h"
@@ -280,13 +281,14 @@ S_FindName
 */
 sfx_t* S_FindName(char* name)
 {
+	using namespace std::string_view_literals;
 	int i;
 
 	if (!name)
-		Sys_Error((char*)"S_FindName: NULL\n");
+		Sys_Error("S_FindName: NULL\n"sv);
 
 	if (Q_strlen(name) >= MAX_QPATH)
-		Sys_Error((char*)"Sound name too long: %s", name);
+		Sys_Error(std::format("Sound name too long: {}"sv, name));
 
 	// see if already loaded
 	for (i = 0; i < num_sfx; i++)
@@ -296,7 +298,7 @@ sfx_t* S_FindName(char* name)
 		}
 
 	if (num_sfx == MAX_SFX)
-		Sys_Error((char*)"S_FindName: out of sfx_t");
+		Sys_Error("S_FindName: out of sfx_t"sv);
 
 	sfx_t* sfx = &known_sfx[i];
 	strcpy(sfx->name, name);

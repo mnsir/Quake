@@ -334,8 +334,9 @@ PR_LeaveFunction
 */
 int PR_LeaveFunction(void)
 {
+	using namespace std::string_view_literals;
 	if (pr_depth <= 0)
-		Sys_Error((char*)"prog stack underflow");
+		Sys_Error("prog stack underflow"sv);
 
 	// restore locals from the stack
 	int c = pr_xfunction->locals;

@@ -274,6 +274,7 @@ Translates a skin texture by the per-player color lookup
 */
 void R_TranslatePlayerSkin(int playernum)
 {
+	using namespace std::string_view_literals;
 	byte translate[256];
 	unsigned translate32[256];
 	int i, j;
@@ -324,7 +325,7 @@ void R_TranslatePlayerSkin(int playernum)
 	else
 		original = (byte*)paliashdr + paliashdr->texels[currententity->skinnum];
 	if (s & 3)
-		Sys_Error((char*)"R_TranslateSkin: s&3");
+		Sys_Error("R_TranslateSkin: s&3"sv);
 
 	int inwidth = paliashdr->skinwidth;
 	int inheight = paliashdr->skinheight;

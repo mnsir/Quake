@@ -837,6 +837,7 @@ R_AliasDrawModel
 */
 void R_AliasDrawModel(alight_t* plighting)
 {
+	using namespace std::string_view_literals;
 	finalvert_t finalverts[MAXALIASVERTS +
 		((CACHE_SIZE - 1) / sizeof(finalvert_t)) + 1];
 	auxvert_t auxverts[MAXALIASVERTS];
@@ -857,7 +858,7 @@ void R_AliasDrawModel(alight_t* plighting)
 	R_AliasSetupFrame();
 
 	if (!currententity->colormap)
-		Sys_Error((char*)"R_AliasDrawModel: !currententity->colormap");
+		Sys_Error("R_AliasDrawModel: !currententity->colormap"sv);
 
 	r_affinetridesc.drawtype = (currententity->trivial_accept == 3) &&
 		r_recursiveaffinetriangles;

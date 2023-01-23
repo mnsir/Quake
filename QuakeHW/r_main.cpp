@@ -908,6 +908,7 @@ r_refdef must be set before the first call
 */
 void R_RenderView_(void)
 {
+	using namespace std::string_view_literals;
 	byte warpbuffer[WARP_WIDTH * WARP_HEIGHT];
 
 	r_warpbuffer = warpbuffer;
@@ -926,7 +927,7 @@ void R_RenderView_(void)
 	Sys_LowFPPrecision();
 
 	if (!cl_entities[0].model || !cl.worldmodel)
-		Sys_Error((char*)"R_RenderView: NULL worldmodel");
+		Sys_Error("R_RenderView: NULL worldmodel"sv);
 
 	if (!r_dspeeds.value)
 	{
@@ -1000,20 +1001,21 @@ void R_RenderView_(void)
 
 void R_RenderView(void)
 {
+	using namespace std::string_view_literals;
 	int dummy;
 
 	int delta = (byte*)&dummy - r_stack_start;
 	if (delta < -10000 || delta > 10000)
-		Sys_Error((char*)"R_RenderView: called without enough stack");
+		Sys_Error("R_RenderView: called without enough stack"sv);
 
 	if (Hunk_LowMark() & 3)
-		Sys_Error((char*)"Hunk is missaligned");
+		Sys_Error("Hunk is missaligned"sv);
 
 	if ((long)(&dummy) & 3)
-		Sys_Error((char*)"Stack is missaligned");
+		Sys_Error("Stack is missaligned"sv);
 
 	if ((long)(&r_warpbuffer) & 3)
-		Sys_Error((char*)"Globals are missaligned");
+		Sys_Error("Globals are missaligned"sv);
 
 	R_RenderView_();
 }

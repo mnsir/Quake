@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sys.h"
 
 #include <direct.h>
+#include <format>
+#include <string_view>
 
 #include "cl_main.h"
 #include "common.h"
@@ -105,10 +107,11 @@ FILE* sys_handles[MAX_HANDLES];
 
 int findhandle(void)
 {
+	using namespace std::string_view_literals;
 	for (int i = 1; i < MAX_HANDLES; i++)
 		if (!sys_handles[i])
 			return i;
-	Sys_Error((char*)"out of handles");
+	Sys_Error("out of handles"sv);
 	return -1;
 }
 
@@ -160,13 +163,14 @@ int Sys_FileOpenRead(char* path, int* hndl)
 
 int Sys_FileOpenWrite(char* path)
 {
+	using namespace std::string_view_literals;
 	int t = VID_ForceUnlockedAndReturnState();
 
 	int i = findhandle();
 
 	FILE* f = fopen(path, "wb");
 	if (!f)
-		Sys_Error((char*)"Error opening %s: %s", path, strerror(errno));
+		Sys_Error(std::format("Error opening {}: {}"sv, path, strerror(errno)));
 	sys_handles[i] = f;
 
 	VID_ForceLockState(t);
@@ -248,10 +252,11 @@ Sys_MakeCodeWriteable
 */
 void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length)
 {
+	using namespace std::string_view_literals;
 	DWORD flOldProtect;
 
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-		Sys_Error((char*)"Protection change failed\n");
+		Sys_Error("Protection change failed\n"sv);
 }
 
 
@@ -287,13 +292,14 @@ Sys_Init
 */
 void Sys_Init(void)
 {
+	using namespace std::string_view_literals;
 	LARGE_INTEGER PerformanceFreq;
 
 	MaskExceptions();
 	Sys_SetFPCW();
 
 	if (!QueryPerformanceFrequency(&PerformanceFreq))
-		Sys_Error((char*)"No hardware timer available");
+		Sys_Error("No hardware timer available"sv);
 
 	// get 32 out of the 64 time bits such that we have around
 	// 1 microsecond resolution
@@ -317,43 +323,33 @@ void Sys_Init(void)
 }
 
 
-void Sys_Error(char* error, ...)
+void Sys_Error(std::string_view err)
 {
-	va_list argptr;
-	char text[1024], text2[1024];
-	char* text3 = (char*)"Press Enter to exit\n";
-	char* text4 = (char*)"***********************************\n";
-	char* text5 = (char*)"\n";
-	DWORD dummy;
-	static int in_sys_error0 = 0;
-	static int in_sys_error1 = 0;
-	static int in_sys_error2 = 0;
-	static int in_sys_error3 = 0;
-
+	using namespace std::string_view_literals;
+	static bool in_sys_error3 = false;
 	if (!in_sys_error3)
 	{
-		in_sys_error3 = 1;
+		in_sys_error3 = true;
 		VID_ForceUnlockedAndReturnState();
 	}
-
-	va_start(argptr, error);
-	vsprintf(text, error, argptr);
-	va_end(argptr);
-
+	
 	if (isDedicated)
 	{
-		va_start(argptr, error);
-		vsprintf(text, error, argptr);
-		va_end(argptr);
+		DWORD dummy;
+		constexpr auto text5 = "\n"sv;
+		WriteFile(houtput, text5.data(), text5.size(), &dummy, NULL);
 
-		sprintf(text2, (char*)"ERROR: %s\n", text);
-		WriteFile(houtput, text5, strlen(text5), &dummy, NULL);
-		WriteFile(houtput, text4, strlen(text4), &dummy, NULL);
-		WriteFile(houtput, text2, strlen(text2), &dummy, NULL);
-		WriteFile(houtput, text3, strlen(text3), &dummy, NULL);
-		WriteFile(houtput, text4, strlen(text4), &dummy, NULL);
+		constexpr auto text4 = "***********************************\n"sv;
+		WriteFile(houtput, text4.data(), text4.size(), &dummy, NULL);
 
+		auto && text2 = std::format("ERROR: {}\n"sv, err);
+		WriteFile(houtput, text2.c_str(), text2.size(), &dummy, NULL);
 
+		constexpr auto text3 = "Press Enter to exit\n"sv;
+		WriteFile(houtput, text3.data(), text3.size(), &dummy, NULL);
+
+		WriteFile(houtput, text4.data(), text4.size(), &dummy, NULL);
+		
 		double starttime = Sys_FloatTime();
 		sc_return_on_enter = true; // so Enter will get us out of here
 
@@ -366,30 +362,31 @@ void Sys_Error(char* error, ...)
 	{
 		// switch to windowed so the message box is visible, unless we already
 		// tried that and failed
+		static bool in_sys_error0 = false;
 		if (!in_sys_error0)
 		{
-			in_sys_error0 = 1;
+			in_sys_error0 = true;
 			VID_SetDefaultMode();
-			MessageBox(NULL, text, "Quake Error",
-			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+			MessageBox(NULL, err.data(), "Quake Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 		else
 		{
-			MessageBox(NULL, text, "Double Quake Error",
-			           MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
+			MessageBox(NULL, err.data(), "Double Quake Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		}
 	}
 
+	static bool in_sys_error1 = false;
 	if (!in_sys_error1)
 	{
-		in_sys_error1 = 1;
+		in_sys_error1 = true;
 		Host_Shutdown();
 	}
 
 	// shut down QHOST hooks if necessary
+	static bool in_sys_error2 = false;
 	if (!in_sys_error2)
 	{
-		in_sys_error2 = 1;
+		in_sys_error2 = true;
 		DeinitConProc();
 	}
 
@@ -522,6 +519,7 @@ void Sys_InitFloatTime(void)
 
 char* Sys_ConsoleInput(void)
 {
+	using namespace std::string_view_literals;
 	static char text[256];
 	static int len;
 	INPUT_RECORD recs[1024];
@@ -536,16 +534,16 @@ char* Sys_ConsoleInput(void)
 	for (;;)
 	{
 		if (!GetNumberOfConsoleInputEvents(hinput, (LPDWORD)&numevents))
-			Sys_Error((char*)"Error getting # of console events");
+			Sys_Error("Error getting # of console events"sv);
 
 		if (numevents <= 0)
 			break;
 
 		if (!ReadConsoleInput(hinput, recs, 1, (LPDWORD)&numread))
-			Sys_Error((char*)"Error reading console input");
+			Sys_Error("Error reading console input"sv);
 
 		if (numread != 1)
-			Sys_Error((char*)"Couldn't read console input");
+			Sys_Error("Couldn't read console input"sv);
 
 		if (recs[0].EventType == KEY_EVENT)
 		{
@@ -657,6 +655,7 @@ HWND hwnd_dialog;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	using namespace std::string_view_literals;
 	MSG msg;
 	quakeparms_t parms;
 	double time, new_time;
@@ -676,7 +675,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	GlobalMemoryStatus(&lpBuffer);
 
 	if (!GetCurrentDirectory(sizeof(cwd), cwd))
-		Sys_Error((char*)"Couldn't determine current directory");
+		Sys_Error("Couldn't determine current directory"sv);
 
 	if (cwd[Q_strlen(cwd) - 1] == '/')
 		cwd[Q_strlen(cwd) - 1] = 0;
@@ -728,9 +727,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (rect.left > (rect.top * 2))
 				{
 					SetWindowPos(hwnd_dialog, 0,
-					             (rect.left / 2) - ((rect.right - rect.left) / 2),
-					             rect.top, 0, 0,
-					             SWP_NOZORDER | SWP_NOSIZE);
+						(rect.left / 2) - ((rect.right - rect.left) / 2),
+						rect.top, 0, 0,
+						SWP_NOZORDER | SWP_NOSIZE);
 				}
 			}
 
@@ -765,20 +764,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	parms.membase = malloc(parms.memsize);
 
 	if (!parms.membase)
-		Sys_Error((char*)"Not enough memory free; check disk space\n");
+		Sys_Error("Not enough memory free; check disk space\n"sv);
 
 	Sys_PageIn(parms.membase, parms.memsize);
 
 	tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	if (!tevent)
-		Sys_Error((char*)"Couldn't create event");
+		Sys_Error("Couldn't create event"sv);
 
 	if (isDedicated)
 	{
 		if (!AllocConsole())
 		{
-			Sys_Error((char*)"Couldn't create dedicated server console");
+			Sys_Error("Couldn't create dedicated server console"sv);
 		}
 
 		hinput = GetStdHandle(STD_INPUT_HANDLE);

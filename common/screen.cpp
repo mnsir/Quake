@@ -1,6 +1,8 @@
 ﻿// screen.c -- master for refresh, status bar, console, chat, notify, etc
 #include "screen.h"
 
+#include <format>
+
 #ifdef GLQUAKE
 void GL_Set2D(void); // TODO убрать в хидер
 #endif
@@ -333,8 +335,9 @@ void SCR_CheckDrawCenterString(void)
 
 float CalcFov(float fov_x, float width, float height)
 {
+	using namespace std::string_view_literals;
 	if (fov_x < 1 || fov_x > 179)
-		Sys_Error((char*)"Bad fov: %f", fov_x);
+		Sys_Error(std::format("Bad fov: {}"sv, fov_x));
 
 	float x = width / tan(fov_x / 360 * M_PI);
 

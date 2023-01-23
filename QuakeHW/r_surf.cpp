@@ -184,6 +184,7 @@ Returns the proper texture for a given time and base texture
 */
 texture_t* R_TextureAnimation(texture_t* base)
 {
+	using namespace std::string_view_literals;
 	if (currententity->frame)
 	{
 		if (base->alternate_anims)
@@ -200,9 +201,9 @@ texture_t* R_TextureAnimation(texture_t* base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error((char*)"R_TextureAnimation: broken cycle");
+			Sys_Error("R_TextureAnimation: broken cycle"sv);
 		if (++count > 100)
-			Sys_Error((char*)"R_TextureAnimation: infinite cycle");
+			Sys_Error("R_TextureAnimation: infinite cycle"sv);
 	}
 
 	return base;
@@ -577,6 +578,7 @@ R_GenTile
 */
 void R_GenTile(msurface_t* psurf, void* pdest)
 {
+	using namespace std::string_view_literals;
 	if (psurf->flags & SURF_DRAWTURB)
 	{
 		if (r_pixbytes == 1)
@@ -601,6 +603,6 @@ void R_GenTile(msurface_t* psurf, void* pdest)
 	}
 	else
 	{
-		Sys_Error((char*)"Unknown tile type");
+		Sys_Error("Unknown tile type"sv);
 	}
 }

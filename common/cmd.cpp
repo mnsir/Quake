@@ -520,10 +520,11 @@ Cmd_AddCommand
 */
 void Cmd_AddCommand(char* cmd_name, xcommand_t function)
 {
+	using namespace std::string_view_literals;
 	cmd_function_t* cmd;
 
 	if (host_initialized) // because hunk allocation would get stomped
-		Sys_Error((char*)"Cmd_AddCommand after host_initialized");
+		Sys_Error("Cmd_AddCommand after host_initialized"sv);
 
 	// fail if the command is a variable name
 	if (Cvar_VariableString(cmd_name)[0])
@@ -671,8 +672,9 @@ where the given parameter apears, or 0 if not present
 
 int Cmd_CheckParm(char* parm)
 {
+	using namespace std::string_view_literals;
 	if (!parm)
-		Sys_Error((char*)"Cmd_CheckParm: NULL");
+		Sys_Error("Cmd_CheckParm: NULL"sv);
 
 	for (int i = 1; i < Cmd_Argc(); i++)
 		if (!Q_strcasecmp(parm, Cmd_Argv(i)))

@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 #include <cstring>
+#include <format>
 
 #include "cmd.h"
 #include "common.h"
@@ -530,6 +531,7 @@ Larger attenuations will drop off.
 */
 void PF_sound(void)
 {
+	using namespace std::string_view_literals;
 	edict_t* entity = G_EDICT(OFS_PARM0);
 	int channel = G_FLOAT(OFS_PARM1);
 	char* sample = G_STRING(OFS_PARM2);
@@ -537,13 +539,13 @@ void PF_sound(void)
 	float attenuation = G_FLOAT(OFS_PARM4);
 
 	if (volume < 0 || volume > 255)
-		Sys_Error((char*)"SV_StartSound: volume = %i", volume);
+		Sys_Error(std::format("SV_StartSound: volume = {}"sv, volume));
 
 	if (attenuation < 0 || attenuation > 4)
-		Sys_Error((char*)"SV_StartSound: attenuation = %f", attenuation);
+		Sys_Error(std::format("SV_StartSound: attenuation = {}"sv, attenuation));
 
 	if (channel < 0 || channel > 7)
-		Sys_Error((char*)"SV_StartSound: channel = %i", channel);
+		Sys_Error(std::format("SV_StartSound: channel = {}"sv, channel));
 
 	SV_StartSound(entity, channel, sample, volume, attenuation);
 }

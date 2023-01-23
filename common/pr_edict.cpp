@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr_edict.h"
 
 #include <cstring>
+#include <format>
 
 #include "cmd.h"
 #include "console.h"
@@ -101,6 +102,7 @@ angles and bad trails.
 */
 edict_t* ED_Alloc(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 	edict_t* e;
 
@@ -117,7 +119,7 @@ edict_t* ED_Alloc(void)
 	}
 
 	if (i == MAX_EDICTS)
-		Sys_Error((char*)"ED_Alloc: no free edicts");
+		Sys_Error("ED_Alloc: no free edicts"sv);
 
 	sv.num_edicts++;
 	e = EDICT_NUM(i);
@@ -628,6 +630,7 @@ ED_ParseGlobals
 */
 void ED_ParseGlobals(char* data)
 {
+	using namespace std::string_view_literals;
 	char keyname[64];
 
 	while (true)
@@ -637,17 +640,17 @@ void ED_ParseGlobals(char* data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error((char*)"ED_ParseEntity: EOF without closing brace");
+			Sys_Error("ED_ParseEntity: EOF without closing brace"sv);
 
 		strcpy(keyname, com_token);
 
 		// parse value 
 		data = COM_Parse(data);
 		if (!data)
-			Sys_Error((char*)"ED_ParseEntity: EOF without closing brace");
+			Sys_Error("ED_ParseEntity: EOF without closing brace"sv);
 
 		if (com_token[0] == '}')
-			Sys_Error((char*)"ED_ParseEntity: closing brace without data");
+			Sys_Error("ED_ParseEntity: closing brace without data"sv);
 
 		ddef_t* key = ED_FindGlobal(keyname);
 		if (!key)
@@ -776,6 +779,7 @@ Used for initial level load and for savegames.
 */
 char* ED_ParseEdict(char* data, edict_t* ent)
 {
+	using namespace std::string_view_literals;
 	bool anglehack;
 	char keyname[256];
 
@@ -793,7 +797,7 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error((char*)"ED_ParseEntity: EOF without closing brace");
+			Sys_Error("ED_ParseEntity: EOF without closing brace"sv);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -822,10 +826,10 @@ char* ED_ParseEdict(char* data, edict_t* ent)
 		// parse value 
 		data = COM_Parse(data);
 		if (!data)
-			Sys_Error((char*)"ED_ParseEntity: EOF without closing brace");
+			Sys_Error("ED_ParseEntity: EOF without closing brace"sv);
 
 		if (com_token[0] == '}')
-			Sys_Error((char*)"ED_ParseEntity: closing brace without data");
+			Sys_Error("ED_ParseEntity: closing brace without data"sv);
 
 		init = true;
 
@@ -876,6 +880,7 @@ to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 */
 void ED_LoadFromFile(char* data)
 {
+	using namespace std::string_view_literals;
 	edict_t* ent = NULL;
 	int inhibit = 0;
 	pr_global_struct->time = sv.time;
@@ -888,7 +893,7 @@ void ED_LoadFromFile(char* data)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			Sys_Error((char*)"ED_LoadFromFile: found %s when expecting {(char*)", com_token);
+			Sys_Error(std::format("ED_LoadFromFile: found {} when expecting {{"sv, com_token));
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -952,6 +957,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 
 	// flush the non-C variable lookup cache
@@ -962,7 +968,7 @@ void PR_LoadProgs(void)
 
 	progs = (dprograms_t*)COM_LoadHunkFile((char*)"progs.dat");
 	if (!progs)
-		Sys_Error((char*)"PR_LoadProgs: couldn't load progs.dat");
+		Sys_Error("PR_LoadProgs: couldn't load progs.dat"sv);
 	Con_DPrintf((char*)"Programs occupy %iK.\n", com_filesize / 1024);
 
 	for (i = 0; i < com_filesize; i++)
@@ -973,9 +979,9 @@ void PR_LoadProgs(void)
 		((int*)progs)[i] = LittleLong(((int*)progs)[i]);
 
 	if (progs->version != PROG_VERSION)
-		Sys_Error((char*)"progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
+		Sys_Error(std::format("progs.dat has wrong version number ({} should be {})"sv, progs->version, PROG_VERSION));
 	if (progs->crc != PROGHEADER_CRC)
-		Sys_Error((char*)"progs.dat system vars have been modified, progdefs.h is out of date");
+		Sys_Error("progs.dat system vars have been modified, progdefs.h is out of date"sv);
 
 	pr_functions = (dfunction_t*)((byte*)progs + progs->ofs_functions);
 	pr_strings = (char*)progs + progs->ofs_strings;
@@ -1018,7 +1024,7 @@ void PR_LoadProgs(void)
 	{
 		pr_fielddefs[i].type = LittleShort(pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			Sys_Error((char*)"PR_LoadProgs: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
+			Sys_Error("PR_LoadProgs: pr_fielddefs[i].type & DEF_SAVEGLOBAL"sv);
 		pr_fielddefs[i].ofs = LittleShort(pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong(pr_fielddefs[i].s_name);
 	}
@@ -1055,17 +1061,19 @@ void PR_Init(void)
 
 edict_t* EDICT_NUM(int n)
 {
+	using namespace std::string_view_literals;
 	if (n < 0 || n >= sv.max_edicts)
-		Sys_Error((char*)"EDICT_NUM: bad number %i", n);
+		Sys_Error(std::format("EDICT_NUM: bad number {}"sv, n));
 	return (edict_t*)((byte*)sv.edicts + (n) * pr_edict_size);
 }
 
 int NUM_FOR_EDICT(edict_t* e)
 {
+	using namespace std::string_view_literals;
 	int b = (byte*)e - (byte*)sv.edicts;
 	b = b / pr_edict_size;
 
 	if (b < 0 || b >= sv.num_edicts)
-		Sys_Error((char*)"NUM_FOR_EDICT: bad pointer");
+		Sys_Error("NUM_FOR_EDICT: bad pointer"sv);
 	return b;
 }

@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_sprite.c
 
 #include <cmath>
+#include <format>
 
 #include "console.h"
 #include "d_iface.h"
@@ -139,6 +140,7 @@ R_SetupAndDrawSprite
 */
 void R_SetupAndDrawSprite()
 {
+	using namespace std::string_view_literals;
 	int i;
 	vec3_t left, up, right, down, transformed, local;
 	emitpoint_t outverts[MAXWORKINGVERTS + 1];
@@ -191,7 +193,7 @@ void R_SetupAndDrawSprite()
 		if (nump < 3)
 			return;
 		if (nump >= MAXWORKINGVERTS)
-			Sys_Error((char*)"R_SetupAndDrawSprite: too many points");
+			Sys_Error("R_SetupAndDrawSprite: too many points"sv);
 	}
 
 	// transform vertices into viewspace and project
@@ -285,6 +287,7 @@ R_DrawSprite
 */
 void R_DrawSprite(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 	vec3_t tvec;
 	float dot;
@@ -390,7 +393,7 @@ void R_DrawSprite(void)
 	}
 	else
 	{
-		Sys_Error((char*)"R_DrawSprite: Bad sprite type %d", psprite->type);
+		Sys_Error(std::format("R_DrawSprite: Bad sprite type {}"sv, psprite->type));
 	}
 
 	R_RotateSprite(psprite->beamlength);

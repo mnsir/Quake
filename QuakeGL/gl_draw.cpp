@@ -74,6 +74,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef GLQUAKE
 #include "glquake.h"
 #endif
+#include <format>
+
 #include "host.h"
 #include "chase.h"
 
@@ -159,6 +161,7 @@ int scrap_texnum;
 // returns a texture number and the position inside it
 int Scrap_AllocBlock(int w, int h, int* x, int* y)
 {
+	using namespace std::string_view_literals;
 	int i, j;
 	int bestx;
 
@@ -194,7 +197,7 @@ int Scrap_AllocBlock(int w, int h, int* x, int* y)
 		return texnum;
 	}
 
-	Sys_Error((char*)"Scrap_AllocBlock: full");
+	Sys_Error("Scrap_AllocBlock: full"sv);
 }
 
 int scrap_uploads;
@@ -275,6 +278,7 @@ Draw_CachePic
 */
 qpic_t* Draw_CachePic(char* path)
 {
+	using namespace std::string_view_literals;
 	cachepic_t* pic;
 	int i;
 
@@ -283,7 +287,7 @@ qpic_t* Draw_CachePic(char* path)
 			return &pic->pic;
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
-		Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
+		Sys_Error("menu_numcachepics == MAX_CACHED_PICS"sv);
 	menu_numcachepics++;
 	strcpy(pic->name, path);
 
@@ -292,7 +296,7 @@ qpic_t* Draw_CachePic(char* path)
 	//
 	qpic_t* dat = (qpic_t*)COM_LoadTempFile(path);
 	if (!dat)
-		Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
+		Sys_Error(std::format("Draw_CachePic: failed to load {}"sv, path));
 	SwapPic(dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
@@ -403,6 +407,7 @@ Draw_Init
 */
 void Draw_Init(void)
 {
+	using namespace std::string_view_literals;
 	byte*src;
 	char ver[40];
 	int f, fstep;
@@ -435,7 +440,7 @@ void Draw_Init(void)
 
 	qpic_t* cb = (qpic_t*)COM_LoadTempFile((char*)"gfx/conback.lmp");
 	if (!cb)
-		Sys_Error((char*)"Couldn't load gfx/conback.lmp");
+		Sys_Error("Couldn't load gfx/conback.lmp"sv);
 	SwapPic(cb);
 
 	// hack the version number directly into the pic
@@ -624,6 +629,7 @@ Draw_TransPic
 */
 void Draw_TransPic(int x, int y, qpic_t* pic)
 {
+	using namespace std::string_view_literals;
 	byte *dest, *source, tbyte;
 	unsigned short* pusdest;
 	int v, u;
@@ -631,7 +637,7 @@ void Draw_TransPic(int x, int y, qpic_t* pic)
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		(unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error((char*)"Draw_TransPic: bad coordinates");
+		Sys_Error("Draw_TransPic: bad coordinates"sv);
 	}
 
 	Draw_Pic(x, y, pic);
@@ -980,6 +986,7 @@ GL_Upload32
 */
 void GL_Upload32(unsigned* data, int width, int height, bool mipmap, bool alpha)
 {
+	using namespace std::string_view_literals;
 	static unsigned scaled[1024 * 512]; // [512*256];
 	int scaled_width, scaled_height;
 
@@ -995,7 +1002,7 @@ void GL_Upload32(unsigned* data, int width, int height, bool mipmap, bool alpha)
 		scaled_height = gl_max_size.value;
 
 	if (scaled_width * scaled_height > sizeof(scaled) / 4)
-		Sys_Error((char*)"GL_LoadTexture: too big");
+		Sys_Error("GL_LoadTexture: too big"sv);
 
 	int samples = alpha ? gl_alpha_format : gl_solid_format;
 	
@@ -1048,6 +1055,7 @@ done:;
 
 void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha)
 {
+	using namespace std::string_view_literals;
 	int p;
 	static unsigned j;
 	static unsigned char scaled[1024 * 512]; // [512*256];
@@ -1080,7 +1088,7 @@ void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha)
 		scaled_height = gl_max_size.value;
 
 	if (scaled_width * scaled_height > sizeof(scaled))
-		Sys_Error((char*)"GL_LoadTexture: too big");
+		Sys_Error("GL_LoadTexture: too big"sv);
 
 	int samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
 
@@ -1140,6 +1148,7 @@ GL_Upload8
 */
 void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha)
 {
+	using namespace std::string_view_literals;
 	static unsigned trans[640 * 480]; // FIXME, temporary
 	int i;
 
@@ -1163,7 +1172,7 @@ void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha)
 	else
 	{
 		if (s & 3)
-			Sys_Error((char*)"GL_Upload8: s&3");
+			Sys_Error("GL_Upload8: s&3"sv);
 		for (i = 0; i < s; i += 4)
 		{
 			trans[i] = d_8to24table[data[i]];
@@ -1188,6 +1197,7 @@ GL_LoadTexture
 */
 int GL_LoadTexture(char* identifier, int width, int height, byte* data, bool mipmap, bool alpha)
 {
+	using namespace std::string_view_literals;
 	bool noalpha;
 	int i, p, s;
 	gltexture_t* glt;
@@ -1200,7 +1210,7 @@ int GL_LoadTexture(char* identifier, int width, int height, byte* data, bool mip
 			if (!strcmp(identifier, glt->identifier))
 			{
 				if (width != glt->width || height != glt->height)
-					Sys_Error((char*)"GL_LoadTexture: cache mismatch");
+					Sys_Error("GL_LoadTexture: cache mismatch"sv);
 				return gltextures[i].texnum;
 			}
 		}

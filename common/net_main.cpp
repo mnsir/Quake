@@ -150,6 +150,7 @@ qsocket_t* NET_NewQSocket(void)
 
 void NET_FreeQSocket(qsocket_t* sock)
 {
+	using namespace std::string_view_literals;
 	qsocket_t* s;
 
 	// remove it from active list
@@ -164,7 +165,7 @@ void NET_FreeQSocket(qsocket_t* sock)
 				break;
 			}
 		if (!s)
-			Sys_Error((char*)"NET_FreeQSocket: not active\n");
+			Sys_Error("NET_FreeQSocket: not active\n"sv);
 	}
 
 	// add it to free list
@@ -789,6 +790,7 @@ NET_Init
 
 void NET_Init(void)
 {
+	using namespace std::string_view_literals;
 	if (COM_CheckParm((char*)"-playback"))
 	{
 		net_numdrivers = 1;
@@ -809,7 +811,7 @@ void NET_Init(void)
 		if (i < com_argc - 1)
 			DEFAULTnet_hostport = Q_atoi(com_argv[i + 1]);
 		else
-			Sys_Error((char*)"NET_Init: you must specify a number after -port");
+			Sys_Error("NET_Init: you must specify a number after -port"sv);
 	}
 	net_hostport = DEFAULTnet_hostport;
 

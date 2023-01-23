@@ -96,6 +96,7 @@ Handles recording and playback of demos, on top of NET_ code
 */
 int CL_GetMessage(void)
 {
+	using namespace std::string_view_literals;
 	int r;
 	float f;
 
@@ -131,7 +132,7 @@ int CL_GetMessage(void)
 
 		net_message.cursize = LittleLong(net_message.cursize);
 		if (net_message.cursize > MAX_MSGLEN)
-			Sys_Error((char*)"Demo message > MAX_MSGLEN");
+			Sys_Error("Demo message > MAX_MSGLEN"sv);
 		r = fread(net_message.data, net_message.cursize, 1, cls.demofile);
 		if (r != 1)
 		{

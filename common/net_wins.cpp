@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "net_wins.h"
 
+#include <format>
+
 #include "cl_main.h"
 #include "console.h"
 #include "cvar.h"
@@ -115,6 +117,7 @@ void WINS_GetLocalAddress()
 
 int WINS_Init(void)
 {
+	using namespace std::string_view_literals;
 	int i;
 	char buff[MAXHOSTNAMELEN];
 	char* p;
@@ -208,12 +211,12 @@ int WINS_Init(void)
 		{
 			myAddr = inet_addr(com_argv[i + 1]);
 			if (myAddr == INADDR_NONE)
-				Sys_Error((char*)"%s is not a valid IP address", com_argv[i + 1]);
+				Sys_Error(std::format("{} is not a valid IP address"sv, com_argv[i + 1]));
 			strcpy(my_tcpip_address, com_argv[i + 1]);
 		}
 		else
 		{
-			Sys_Error((char*)"NET_Init: you must specify an IP address after -ip");
+			Sys_Error("NET_Init: you must specify an IP address after -ip"sv);
 		}
 	}
 	else
@@ -254,6 +257,7 @@ void WINS_Shutdown(void)
 
 void WINS_Listen(bool state)
 {
+	using namespace std::string_view_literals;
 	// enable listening
 	if (state)
 	{
@@ -261,7 +265,7 @@ void WINS_Listen(bool state)
 			return;
 		WINS_GetLocalAddress();
 		if ((net_acceptsocket = WINS_OpenSocket(net_hostport)) == -1)
-			Sys_Error((char*)"WINS_Listen: Unable to open accept socket\n");
+			Sys_Error("WINS_Listen: Unable to open accept socket\n"sv);
 		return;
 	}
 
@@ -276,6 +280,7 @@ void WINS_Listen(bool state)
 
 int WINS_OpenSocket(int port)
 {
+	using namespace std::string_view_literals;
 	int new_socket;
 	struct sockaddr_in address;
 	u_long _true = 1;
@@ -292,7 +297,7 @@ int WINS_OpenSocket(int port)
 	if (bind(new_socket, (sockaddr*)&address, sizeof(address)) == 0)
 		return new_socket;
 
-	Sys_Error((char*)"Unable to bind to %s", WINS_AddrToString((struct qsockaddr*)&address));
+	Sys_Error(std::format("Unable to bind to {}"sv, WINS_AddrToString((struct qsockaddr*)&address)));
 ErrorReturn:
 	pclosesocket(new_socket);
 	return -1;
@@ -419,10 +424,11 @@ int WINS_MakeSocketBroadcastCapable(int socket)
 
 int WINS_Broadcast(int socket, byte* buf, int len)
 {
+	using namespace std::string_view_literals;
 	if (socket != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
-			Sys_Error((char*)"Attempted to use multiple broadcasts sockets\n");
+			Sys_Error("Attempted to use multiple broadcasts sockets\n"sv);
 		WINS_GetLocalAddress();
 		int ret = WINS_MakeSocketBroadcastCapable(socket);
 		if (ret == -1)

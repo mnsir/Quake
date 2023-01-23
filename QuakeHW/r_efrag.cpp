@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_efrag.c
 
+#include <format>
+
 #include "cl_main.h"
 #include "console.h"
 #include "d_iface.h"
@@ -229,6 +231,7 @@ R_StoreEfrags
 */
 void R_StoreEfrags(efrag_t** ppefrag)
 {
+	using namespace std::string_view_literals;
 	efrag_t* pefrag;
 
 
@@ -257,7 +260,7 @@ void R_StoreEfrags(efrag_t** ppefrag)
 			break;
 
 		default:
-			Sys_Error((char*)"R_StoreEfrags: Bad entity type %d\n", clmodel->type);
+			Sys_Error(std::format("R_StoreEfrags: Bad entity type {}\n"sv, (int)clmodel->type));
 		}
 	}
 }

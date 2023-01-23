@@ -94,14 +94,14 @@ extern bool slistInProgress;
 extern bool slistSilent;
 extern bool slistLocal;
 
-qsocket_t* NET_NewQSocket(void);
+qsocket_t* NET_NewQSocket();
 void NET_FreeQSocket(qsocket_t*);
-double SetNetTime(void);
+double SetNetTime();
 
-void NET_Init(void);
-void NET_Shutdown(void);
+void NET_Init();
+void NET_Shutdown();
 
-struct qsocket_s* NET_CheckNewConnections(void);
+struct qsocket_s* NET_CheckNewConnections();
 // returns a new_ connection number if there is one pending, else -1
 
 struct qsocket_s* NET_Connect(char* host);
@@ -139,7 +139,7 @@ void NET_Close(struct qsocket_s* sock);
 // from a server.
 // A netcon_t number will not be reused until this_ function is called for it
 
-void NET_Poll(void);
+void NET_Poll();
 
 
 typedef struct _PollProcedure
@@ -152,5 +152,5 @@ typedef struct _PollProcedure
 
 void SchedulePollProcedure(PollProcedure* pp, double timeOffset);
 
-void NET_Slist_f(void);
+void NET_Slist_f();
 

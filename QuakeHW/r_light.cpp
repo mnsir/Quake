@@ -32,7 +32,7 @@ int r_dlightframecount;
 R_AnimateLight
 ==================
 */
-void R_AnimateLight(void)
+void R_AnimateLight()
 {
 	//
 	// light animations
@@ -107,7 +107,7 @@ void R_MarkLights(dlight_t* light, int bit, mnode_t* node)
 R_PushDlights
 =============
 */
-void R_PushDlights(void)
+void R_PushDlights()
 {
 	r_dlightframecount = r_framecount + 1; // because the count hasn't
 	//  advanced yet for this_ frame

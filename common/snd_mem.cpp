@@ -167,7 +167,7 @@ byte* iff_data;
 int iff_chunk_len;
 
 
-short GetLittleShort(void)
+short GetLittleShort()
 {
 	short val = *data_p;
 	val = val + (*(data_p + 1) << 8);
@@ -175,7 +175,7 @@ short GetLittleShort(void)
 	return val;
 }
 
-int GetLittleLong(void)
+int GetLittleLong()
 {
 	int val = *data_p;
 	val = val + (*(data_p + 1) << 8);
@@ -221,7 +221,7 @@ void FindChunk(char* name)
 }
 
 
-void DumpChunks(void)
+void DumpChunks()
 {
 	char str[5];
 

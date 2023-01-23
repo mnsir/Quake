@@ -70,7 +70,7 @@ void SV_Physics_Toss(edict_t* ent);
 SV_CheckAllEnts
 ================
 */
-void SV_CheckAllEnts(void)
+void SV_CheckAllEnts()
 {
 	// see if any solid entities are inside the final position
 	edict_t* check = NEXT_EDICT(sv.edicts);
@@ -1148,7 +1148,7 @@ SV_Physics
 
 ================
 */
-void SV_Physics(void)
+void SV_Physics()
 {
 	using namespace std::string_view_literals;
 	// let the progs know that a new_ frame has started

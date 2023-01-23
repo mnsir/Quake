@@ -48,7 +48,7 @@ static int sequence[IPXSOCKETS];
 
 //=============================================================================
 
-int WIPX_Init(void)
+int WIPX_Init()
 {
 	int i;
 	char buff[MAXHOSTNAMELEN];
@@ -129,7 +129,7 @@ int WIPX_Init(void)
 
 //=============================================================================
 
-void WIPX_Shutdown(void)
+void WIPX_Shutdown()
 {
 	WIPX_Listen(false);
 	WIPX_CloseSocket(net_controlsocket);
@@ -222,7 +222,7 @@ int WIPX_Connect(int handle, struct qsockaddr* addr)
 
 //=============================================================================
 
-int WIPX_CheckNewConnections(void)
+int WIPX_CheckNewConnections()
 {
 	using namespace std::string_view_literals;
 	unsigned long available;

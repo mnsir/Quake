@@ -35,48 +35,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "view.h"
 
 
-void (*vid_menudrawfn)(void);
+void (*vid_menudrawfn)();
 void (*vid_menukeyfn)(int key);
 
 MState m_state;
 
-void M_Menu_Main_f(void);
-void M_Menu_SinglePlayer_f(void);
-void M_Menu_Load_f(void);
-void M_Menu_Save_f(void);
-void M_Menu_MultiPlayer_f(void);
-void M_Menu_Setup_f(void);
-void M_Menu_Net_f(void);
-void M_Menu_Options_f(void);
-void M_Menu_Keys_f(void);
-void M_Menu_Video_f(void);
-void M_Menu_Help_f(void);
-void M_Menu_Quit_f(void);
-void M_Menu_SerialConfig_f(void);
-void M_Menu_ModemConfig_f(void);
-void M_Menu_LanConfig_f(void);
-void M_Menu_GameOptions_f(void);
-void M_Menu_Search_f(void);
-void M_Menu_ServerList_f(void);
+void M_Menu_Main_f();
+void M_Menu_SinglePlayer_f();
+void M_Menu_Load_f();
+void M_Menu_Save_f();
+void M_Menu_MultiPlayer_f();
+void M_Menu_Setup_f();
+void M_Menu_Net_f();
+void M_Menu_Options_f();
+void M_Menu_Keys_f();
+void M_Menu_Video_f();
+void M_Menu_Help_f();
+void M_Menu_Quit_f();
+void M_Menu_SerialConfig_f();
+void M_Menu_ModemConfig_f();
+void M_Menu_LanConfig_f();
+void M_Menu_GameOptions_f();
+void M_Menu_Search_f();
+void M_Menu_ServerList_f();
 
-void M_Main_Draw(void);
-void M_SinglePlayer_Draw(void);
-void M_Load_Draw(void);
-void M_Save_Draw(void);
-void M_MultiPlayer_Draw(void);
-void M_Setup_Draw(void);
-void M_Net_Draw(void);
-void M_Options_Draw(void);
-void M_Keys_Draw(void);
-void M_Video_Draw(void);
-void M_Help_Draw(void);
-void M_Quit_Draw(void);
-void M_SerialConfig_Draw(void);
-void M_ModemConfig_Draw(void);
-void M_LanConfig_Draw(void);
-void M_GameOptions_Draw(void);
-void M_Search_Draw(void);
-void M_ServerList_Draw(void);
+void M_Main_Draw();
+void M_SinglePlayer_Draw();
+void M_Load_Draw();
+void M_Save_Draw();
+void M_MultiPlayer_Draw();
+void M_Setup_Draw();
+void M_Net_Draw();
+void M_Options_Draw();
+void M_Keys_Draw();
+void M_Video_Draw();
+void M_Help_Draw();
+void M_Quit_Draw();
+void M_SerialConfig_Draw();
+void M_ModemConfig_Draw();
+void M_LanConfig_Draw();
+void M_GameOptions_Draw();
+void M_Search_Draw();
+void M_ServerList_Draw();
 
 void M_Main_Key(int key);
 void M_SinglePlayer_Key(int key);
@@ -112,7 +112,7 @@ char m_return_reason[32];
 #define IPXConfig (m_net_cursor == 2)
 #define TCPIPConfig (m_net_cursor == 3)
 
-void M_ConfigureNetSubsystem(void);
+void M_ConfigureNetSubsystem();
 
 /*
 ================
@@ -251,7 +251,7 @@ int m_save_demonum;
 M_ToggleMenu_f
 ================
 */
-void M_ToggleMenu_f(void)
+void M_ToggleMenu_f()
 {
 	m_entersound = true;
 
@@ -284,7 +284,7 @@ int m_main_cursor;
 #define MAIN_ITEMS 5
 
 
-void M_Menu_Main_f(void)
+void M_Menu_Main_f()
 {
 	if (key_dest != key_menu)
 	{
@@ -297,7 +297,7 @@ void M_Menu_Main_f(void)
 }
 
 
-void M_Main_Draw(void)
+void M_Main_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/ttl_main.lmp");
@@ -369,7 +369,7 @@ int m_singleplayer_cursor;
 #define SINGLEPLAYER_ITEMS 3
 
 
-void M_Menu_SinglePlayer_f(void)
+void M_Menu_SinglePlayer_f()
 {
 	key_dest = key_menu;
 	m_state = m_singleplayer;
@@ -377,7 +377,7 @@ void M_Menu_SinglePlayer_f(void)
 }
 
 
-void M_SinglePlayer_Draw(void)
+void M_SinglePlayer_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/ttl_sgl.lmp");
@@ -446,7 +446,7 @@ int load_cursor; // 0 < load_cursor < MAX_SAVEGAMES
 char m_filenames[MAX_SAVEGAMES][SAVEGAME_COMMENT_LENGTH + 1];
 int loadable[MAX_SAVEGAMES];
 
-void M_ScanSaves(void)
+void M_ScanSaves()
 {
 	char name[MAX_OSPATH];
 	int version;
@@ -472,7 +472,7 @@ void M_ScanSaves(void)
 	}
 }
 
-void M_Menu_Load_f(void)
+void M_Menu_Load_f()
 {
 	m_entersound = true;
 	m_state = m_load;
@@ -481,7 +481,7 @@ void M_Menu_Load_f(void)
 }
 
 
-void M_Menu_Save_f(void)
+void M_Menu_Save_f()
 {
 	if (!sv.active)
 		return;
@@ -496,7 +496,7 @@ void M_Menu_Save_f(void)
 }
 
 
-void M_Load_Draw(void)
+void M_Load_Draw()
 {
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_load.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
@@ -509,7 +509,7 @@ void M_Load_Draw(void)
 }
 
 
-void M_Save_Draw(void)
+void M_Save_Draw()
 {
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_save.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
@@ -603,7 +603,7 @@ int m_multiplayer_cursor;
 #define MULTIPLAYER_ITEMS 3
 
 
-void M_Menu_MultiPlayer_f(void)
+void M_Menu_MultiPlayer_f()
 {
 	key_dest = key_menu;
 	m_state = m_multiplayer;
@@ -611,7 +611,7 @@ void M_Menu_MultiPlayer_f(void)
 }
 
 
-void M_MultiPlayer_Draw(void)
+void M_MultiPlayer_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
@@ -684,7 +684,7 @@ int setup_bottom;
 
 #define NUM_SETUP_CMDS 5
 
-void M_Menu_Setup_f(void)
+void M_Menu_Setup_f()
 {
 	key_dest = key_menu;
 	m_state = m_setup;
@@ -696,7 +696,7 @@ void M_Menu_Setup_f(void)
 }
 
 
-void M_Setup_Draw(void)
+void M_Setup_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
@@ -874,7 +874,7 @@ char* net_helpMessage[] =
 	(char*)" Area Network.          "
 };
 
-void M_Menu_Net_f(void)
+void M_Menu_Net_f()
 {
 	key_dest = key_menu;
 	m_state = m_net;
@@ -888,7 +888,7 @@ void M_Menu_Net_f(void)
 }
 
 
-void M_Net_Draw(void)
+void M_Net_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
@@ -1023,7 +1023,7 @@ again:
 
 int options_cursor;
 
-void M_Menu_Options_f(void)
+void M_Menu_Options_f()
 {
 	key_dest = key_menu;
 	m_state = m_options;
@@ -1138,7 +1138,7 @@ void M_DrawCheckbox(int x, int y, int on)
 		M_Print(x, y, (char*)"off");
 }
 
-void M_Options_Draw(void)
+void M_Options_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_option.lmp");
@@ -1295,7 +1295,7 @@ char* bindnames[][2] =
 int keys_cursor;
 int bind_grab;
 
-void M_Menu_Keys_f(void)
+void M_Menu_Keys_f()
 {
 	key_dest = key_menu;
 	m_state = m_keys;
@@ -1339,7 +1339,7 @@ void M_UnbindCommand(char* command)
 }
 
 
-void M_Keys_Draw(void)
+void M_Keys_Draw()
 {
 	int keys[2];
 
@@ -1450,7 +1450,7 @@ void M_Keys_Key(int k)
 //=============================================================================
 /* VIDEO MENU */
 
-void M_Menu_Video_f(void)
+void M_Menu_Video_f()
 {
 	key_dest = key_menu;
 	m_state = m_video;
@@ -1458,7 +1458,7 @@ void M_Menu_Video_f(void)
 }
 
 
-void M_Video_Draw(void)
+void M_Video_Draw()
 {
 	(*vid_menudrawfn)();
 }
@@ -1476,7 +1476,7 @@ int help_page;
 #define NUM_HELP_PAGES 6
 
 
-void M_Menu_Help_f(void)
+void M_Menu_Help_f()
 {
 	key_dest = key_menu;
 	m_state = m_help;
@@ -1485,7 +1485,7 @@ void M_Menu_Help_f(void)
 }
 
 
-void M_Help_Draw(void)
+void M_Help_Draw()
 {
 	M_DrawPic(0, 0, Draw_CachePic(va((char*)"gfx/help%i.lmp", help_page)));
 }
@@ -1523,7 +1523,7 @@ int m_quit_prevstate;
 bool wasInMenus;
 
 
-void M_Menu_Quit_f(void)
+void M_Menu_Quit_f()
 {
 	if (m_state == m_quit)
 		return;
@@ -1567,7 +1567,7 @@ void M_Quit_Key(int key)
 }
 
 
-void M_Quit_Draw(void)
+void M_Quit_Draw()
 {
 	if (wasInMenus)
 	{
@@ -1618,7 +1618,7 @@ int serialConfig_irq;
 int serialConfig_baud;
 char serialConfig_phone[16];
 
-void M_Menu_SerialConfig_f(void)
+void M_Menu_SerialConfig_f()
 {
 	int n;
 	int port;
@@ -1659,7 +1659,7 @@ void M_Menu_SerialConfig_f(void)
 }
 
 
-void M_SerialConfig_Draw(void)
+void M_SerialConfig_Draw()
 {
 	char* startJoin;
 	char* directModem;
@@ -1901,7 +1901,7 @@ char modemConfig_clear[16];
 char modemConfig_init[32];
 char modemConfig_hangup[16];
 
-void M_Menu_ModemConfig_f(void)
+void M_Menu_ModemConfig_f()
 {
 	key_dest = key_menu;
 	m_state = m_modemconfig;
@@ -1910,7 +1910,7 @@ void M_Menu_ModemConfig_f(void)
 }
 
 
-void M_ModemConfig_Draw(void)
+void M_ModemConfig_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
@@ -2073,7 +2073,7 @@ int lanConfig_port;
 char lanConfig_portname[6];
 char lanConfig_joinname[22];
 
-void M_Menu_LanConfig_f(void)
+void M_Menu_LanConfig_f()
 {
 	key_dest = key_menu;
 	m_state = m_lanconfig;
@@ -2095,7 +2095,7 @@ void M_Menu_LanConfig_f(void)
 }
 
 
-void M_LanConfig_Draw(void)
+void M_LanConfig_Draw()
 {
 	char* startJoin;
 	char* protocol;
@@ -2417,7 +2417,7 @@ int maxplayers;
 bool m_serverInfoMessage = false;
 double m_serverInfoMessageTime;
 
-void M_Menu_GameOptions_f(void)
+void M_Menu_GameOptions_f()
 {
 	key_dest = key_menu;
 	m_state = m_gameoptions;
@@ -2433,7 +2433,7 @@ int gameoptions_cursor_table[] = {40, 56, 64, 72, 80, 88, 96, 112, 120};
 #define NUM_GAMEOPTIONS 9
 int gameoptions_cursor;
 
-void M_GameOptions_Draw(void)
+void M_GameOptions_Draw()
 {
 	M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
@@ -2735,7 +2735,7 @@ void M_GameOptions_Key(int key)
 bool searchComplete = false;
 double searchCompleteTime;
 
-void M_Menu_Search_f(void)
+void M_Menu_Search_f()
 {
 	key_dest = key_menu;
 	m_state = m_search;
@@ -2747,7 +2747,7 @@ void M_Menu_Search_f(void)
 }
 
 
-void M_Search_Draw(void)
+void M_Search_Draw()
 {
 	qpic_t* p = Draw_CachePic((char*)"gfx/p_multi.lmp");
 	M_DrawPic((320 - p->width) / 2, 4, p);
@@ -2791,7 +2791,7 @@ void M_Search_Key(int key)
 int slist_cursor;
 bool slist_sorted;
 
-void M_Menu_ServerList_f(void)
+void M_Menu_ServerList_f()
 {
 	key_dest = key_menu;
 	m_state = m_slist;
@@ -2803,7 +2803,7 @@ void M_Menu_ServerList_f(void)
 }
 
 
-void M_ServerList_Draw(void)
+void M_ServerList_Draw()
 {
 	char string[64];
 
@@ -2889,7 +2889,7 @@ void M_ServerList_Key(int k)
 /* Menu Subsystem */
 
 
-void M_Init(void)
+void M_Init()
 {
 	Cmd_AddCommand((char*)"togglemenu", M_ToggleMenu_f);
 
@@ -2907,7 +2907,7 @@ void M_Init(void)
 }
 
 
-void M_Draw(void)
+void M_Draw()
 {
 	if (m_state == m_none || key_dest != key_menu)
 		return;
@@ -3104,7 +3104,7 @@ void M_Keydown(int key)
 }
 
 
-void M_ConfigureNetSubsystem(void)
+void M_ConfigureNetSubsystem()
 {
 	// enable/disable net systems to match desired config
 

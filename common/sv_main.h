@@ -61,13 +61,13 @@ typedef struct
 extern server_static_t svs; // persistant server info
 extern server_t sv; // local server
 
-void SV_Init(void);
+void SV_Init();
 void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
 void SV_StartSound(edict_t* entity, int channel, char* sample, int volume, float attenuation);
-void SV_SendClientMessages(void);
-void SV_ClearDatagram(void);
+void SV_SendClientMessages();
+void SV_ClearDatagram();
 int SV_ModelIndex(char* name);
 void SV_WriteClientdataToMessage(edict_t* ent, sizebuf_t* msg);
-void SV_CheckForNewClients(void);
+void SV_CheckForNewClients();
 void SV_SaveSpawnparms();
 void SV_SpawnServer(char* server);

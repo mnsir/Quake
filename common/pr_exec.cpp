@@ -194,7 +194,7 @@ void PR_PrintStatement(dstatement_t* s)
 PR_StackTrace
 ============
 */
-void PR_StackTrace(void)
+void PR_StackTrace()
 {
 	if (pr_depth == 0)
 	{
@@ -223,7 +223,7 @@ PR_Profile_f
 
 ============
 */
-void PR_Profile_f(void)
+void PR_Profile_f()
 {
 	dfunction_t*best;
 
@@ -332,7 +332,7 @@ int PR_EnterFunction(dfunction_t* f)
 PR_LeaveFunction
 ====================
 */
-int PR_LeaveFunction(void)
+int PR_LeaveFunction()
 {
 	using namespace std::string_view_literals;
 	if (pr_depth <= 0)

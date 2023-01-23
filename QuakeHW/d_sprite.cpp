@@ -192,7 +192,7 @@ void D_SpriteDrawSpans(sspan_t* pspan)
 D_SpriteScanLeftEdge
 =====================
 */
-void D_SpriteScanLeftEdge(void)
+void D_SpriteScanLeftEdge()
 {
 	sspan_t* pspan = sprite_spans;
 	int i = minindex;
@@ -248,7 +248,7 @@ void D_SpriteScanLeftEdge(void)
 D_SpriteScanRightEdge
 =====================
 */
-void D_SpriteScanRightEdge(void)
+void D_SpriteScanRightEdge()
 {
 	sspan_t* pspan = sprite_spans;
 	int i = minindex;
@@ -324,7 +324,7 @@ void D_SpriteScanRightEdge(void)
 D_SpriteCalculateGradients
 =====================
 */
-void D_SpriteCalculateGradients(void)
+void D_SpriteCalculateGradients()
 {
 	vec3_t p_normal, p_saxis, p_taxis, p_temp1;
 
@@ -369,7 +369,7 @@ void D_SpriteCalculateGradients(void)
 D_DrawSprite
 =====================
 */
-void D_DrawSprite(void)
+void D_DrawSprite()
 {
 	sspan_t spans[MAXHEIGHT + 1];
 

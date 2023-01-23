@@ -22,10 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdint>
 
 
-int CDAudio_Init(void);
+int CDAudio_Init();
 void CDAudio_Play(uint8_t track, bool looping);
-void CDAudio_Stop(void);
-void CDAudio_Pause(void);
-void CDAudio_Resume(void);
-void CDAudio_Shutdown(void);
-void CDAudio_Update(void);
+void CDAudio_Stop();
+void CDAudio_Pause();
+void CDAudio_Resume();
+void CDAudio_Shutdown();
+void CDAudio_Update();

@@ -24,31 +24,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cl_input.h"
 
 
-void IN_Init(void);
+void IN_Init();
 
-void IN_Shutdown(void);
+void IN_Shutdown();
 
-void IN_Commands(void);
+void IN_Commands();
 // oportunity for devices to stick commands on the script buffer
 
 void IN_Move(usercmd_t* cmd);
 // add additional movement on top of the keyboard move cmd
 
-void IN_ClearStates(void);
+void IN_ClearStates();
 // restores all button and position states to defaults
 
-void IN_UpdateClipCursor(void);
+void IN_UpdateClipCursor();
 
 extern bool mouseinitialized;
 
 
-void IN_ShowMouse(void);
-void IN_DeactivateMouse(void);
-void IN_HideMouse(void);
-void IN_ActivateMouse(void);
-void IN_RestoreOriginalMouseState(void);
-void IN_SetQuakeMouseState(void);
+void IN_ShowMouse();
+void IN_DeactivateMouse();
+void IN_HideMouse();
+void IN_ActivateMouse();
+void IN_RestoreOriginalMouseState();
+void IN_SetQuakeMouseState();
 void IN_MouseEvent(int mstate);
 
 
-void IN_Accumulate(void);
+void IN_Accumulate();

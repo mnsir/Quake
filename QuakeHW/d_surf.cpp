@@ -59,7 +59,7 @@ int D_SurfaceCacheForRes(int width, int height)
 	return size;
 }
 
-void D_CheckCacheGuard(void)
+void D_CheckCacheGuard()
 {
 	using namespace std::string_view_literals;
 	byte* s = (uint8_t*)sc_base + sc_size;
@@ -68,7 +68,7 @@ void D_CheckCacheGuard(void)
 			Sys_Error("D_CheckCacheGuard: failed"sv);
 }
 
-void D_ClearCacheGuard(void)
+void D_ClearCacheGuard()
 {
 	byte* s = (uint8_t*)sc_base + sc_size;
 	for (int i = 0; i < GUARDSIZE; i++)
@@ -104,7 +104,7 @@ void D_InitCaches(void* buffer, int size)
 D_FlushCaches
 ==================
 */
-void D_FlushCaches(void)
+void D_FlushCaches()
 {
 	if (!sc_base)
 		return;
@@ -211,7 +211,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 D_SCDump
 =================
 */
-void D_SCDump(void)
+void D_SCDump()
 {
 	for (surfcache_t* test = sc_base; test; test = test->next)
 	{

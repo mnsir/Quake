@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 R_CheckVariables
 ===============
 */
-void R_CheckVariables(void)
+void R_CheckVariables()
 {
 	static float oldbright;
 
@@ -52,7 +52,7 @@ Show
 Debugging use
 ============
 */
-void Show(void)
+void Show()
 {
 	vrect_t vr;
 
@@ -71,7 +71,7 @@ R_TimeRefresh_f
 For program optimization
 ====================
 */
-void R_TimeRefresh_f(void)
+void R_TimeRefresh_f()
 {
 	vrect_t vr;
 
@@ -148,7 +148,7 @@ Performance monitoring tool
 #define MAX_TIMINGS 100
 extern float mouse_x, mouse_y;
 
-void R_TimeGraph(void)
+void R_TimeGraph()
 {
 	static int timex;
 	static byte r_timings[MAX_TIMINGS];
@@ -191,7 +191,7 @@ void R_TimeGraph(void)
 R_PrintTimes
 =============
 */
-void R_PrintTimes(void)
+void R_PrintTimes()
 {
 	float r_time2 = Sys_FloatTime();
 
@@ -208,7 +208,7 @@ void R_PrintTimes(void)
 R_PrintDSpeeds
 =============
 */
-void R_PrintDSpeeds(void)
+void R_PrintDSpeeds()
 {
 	float r_time2 = Sys_FloatTime();
 
@@ -231,13 +231,13 @@ void R_PrintDSpeeds(void)
 R_PrintAliasStats
 =============
 */
-void R_PrintAliasStats(void)
+void R_PrintAliasStats()
 {
 	Con_Printf((char*)"%3i polygon model drawn\n", r_amodels_drawn);
 }
 
 
-void WarpPalette(void)
+void WarpPalette()
 {
 	byte new_palette[768];
 	int basecolor[3];
@@ -264,7 +264,7 @@ void WarpPalette(void)
 R_TransformFrustum
 ===================
 */
-void R_TransformFrustum(void)
+void R_TransformFrustum()
 {
 	vec3_t v, v2;
 
@@ -317,7 +317,7 @@ void R_TransformPlane(mplane_t* p, float* normal, float* dist)
 R_SetUpFrustumIndexes
 ===============
 */
-void R_SetUpFrustumIndexes(void)
+void R_SetUpFrustumIndexes()
 {
 	int* pindex = r_frustum_indexes;
 
@@ -349,7 +349,7 @@ void R_SetUpFrustumIndexes(void)
 R_SetupFrame
 ===============
 */
-void R_SetupFrame(void)
+void R_SetupFrame()
 {
 	vrect_t vrect;
 

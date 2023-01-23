@@ -122,7 +122,7 @@ entity_t* CL_EntityNum(int num)
 CL_ParseStartSoundPacket
 ==================
 */
-void CL_ParseStartSoundPacket(void)
+void CL_ParseStartSoundPacket()
 {
 	vec3_t pos;
 	int volume;
@@ -163,7 +163,7 @@ When the client is taking a long time to load stuff, send keepalive messages
 so the server doesn't disconnect.
 ==================
 */
-void CL_KeepaliveMessage(void)
+void CL_KeepaliveMessage()
 {
 	static float lastmsg;
 	int ret;
@@ -220,7 +220,7 @@ void CL_KeepaliveMessage(void)
 CL_ParseServerInfo
 ==================
 */
-void CL_ParseServerInfo(void)
+void CL_ParseServerInfo()
 {
 	int nummodels, numsounds;
 	char model_precache[MAX_MODELS][MAX_QPATH];
@@ -683,7 +683,7 @@ void CL_NewTranslation(int slot)
 CL_ParseStatic
 =====================
 */
-void CL_ParseStatic(void)
+void CL_ParseStatic()
 {
 	int i = cl.num_statics;
 	if (i >= MAX_STATIC_ENTITIES)
@@ -709,7 +709,7 @@ void CL_ParseStatic(void)
 CL_ParseStaticSound
 ===================
 */
-void CL_ParseStaticSound(void)
+void CL_ParseStaticSound()
 {
 	vec3_t org;
 
@@ -730,7 +730,7 @@ void CL_ParseStaticSound(void)
 CL_ParseServerMessage
 =====================
 */
-void CL_ParseServerMessage(void)
+void CL_ParseServerMessage()
 {
 	using namespace std::string_view_literals;
 	int i;

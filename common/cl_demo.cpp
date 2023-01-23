@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sys.h"
 
 
-void CL_FinishTimeDemo(void);
+void CL_FinishTimeDemo();
 
 /*
 ==============================================================================
@@ -50,7 +50,7 @@ CL_StopPlayback
 Called when a demo file runs out, or the user starts a game
 ==============
 */
-void CL_StopPlayback(void)
+void CL_StopPlayback()
 {
 	if (!cls.demoplayback)
 		return;
@@ -71,7 +71,7 @@ CL_WriteDemoMessage
 Dumps the current net message, prefixed by the length and view angles
 ====================
 */
-void CL_WriteDemoMessage(void)
+void CL_WriteDemoMessage()
 {
 	int len;
 	float f;
@@ -94,7 +94,7 @@ CL_GetMessage
 Handles recording and playback of demos, on top of NET_ code
 ====================
 */
-int CL_GetMessage(void)
+int CL_GetMessage()
 {
 	using namespace std::string_view_literals;
 	int r;
@@ -171,7 +171,7 @@ CL_Stop_f
 stop recording a demo
 ====================
 */
-void CL_Stop_f(void)
+void CL_Stop_f()
 {
 	if (cmd_source != src_command)
 		return;
@@ -201,7 +201,7 @@ CL_Record_f
 record <demoname> <map> [cd track]
 ====================
 */
-void CL_Record_f(void)
+void CL_Record_f()
 {
 	char name[MAX_OSPATH];
 	int track;
@@ -273,7 +273,7 @@ CL_PlayDemo_f
 play [demoname]
 ====================
 */
-void CL_PlayDemo_f(void)
+void CL_PlayDemo_f()
 {
 	char name[256];
 	int c;
@@ -330,7 +330,7 @@ CL_FinishTimeDemo
 
 ====================
 */
-void CL_FinishTimeDemo(void)
+void CL_FinishTimeDemo()
 {
 	cls.timedemo = false;
 
@@ -349,7 +349,7 @@ CL_TimeDemo_f
 timedemo [demoname]
 ====================
 */
-void CL_TimeDemo_f(void)
+void CL_TimeDemo_f()
 {
 	if (cmd_source != src_command)
 		return;

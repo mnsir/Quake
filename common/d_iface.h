@@ -157,23 +157,23 @@ extern vec3_t r_pright, r_pup, r_ppn; // r_part.h
 
 
 void D_BeginDirectRect(int x, int y, uint8_t* pbitmap, int width, int height); // vid.h
-void D_DisableBackBufferAccess(void); // d_init.h
+void D_DisableBackBufferAccess(); // d_init.h
 void D_EndDirectRect(int x, int y, int width, int height); // vid.h
-void D_PolysetDraw(void); // d_polyse.h
+void D_PolysetDraw(); // d_polyse.h
 void D_PolysetDrawFinalVerts(finalvert_t* fv, int numverts); // d_polyse.h
 void D_DrawParticle(particle_t* pparticle); // d_part.h
-void D_DrawPoly(void); // d_edge.h
-void D_DrawSprite(void); // d_sprite.h
-void D_DrawSurfaces(void); // d_edge.h
-void D_DrawZPoint(void); // d_zpoint.h
-void D_EnableBackBufferAccess(void); // d_init.h
-void D_EndParticles(void); // d_part.h
-void D_Init(void); // d_init.h
-void D_ViewChanged(void); // d_modech.h
-void D_SetupFrame(void); // d_init.h
-void D_StartParticles(void); // d_part.h
-void D_TurnZOn(void); // d_init.h
-void D_WarpScreen(void); // d_scan.h
+void D_DrawPoly(); // d_edge.h
+void D_DrawSprite(); // d_sprite.h
+void D_DrawSurfaces(); // d_edge.h
+void D_DrawZPoint(); // d_zpoint.h
+void D_EnableBackBufferAccess(); // d_init.h
+void D_EndParticles(); // d_part.h
+void D_Init(); // d_init.h
+void D_ViewChanged(); // d_modech.h
+void D_SetupFrame(); // d_init.h
+void D_StartParticles(); // d_part.h
+void D_TurnZOn(); // d_init.h
+void D_WarpScreen(); // d_scan.h
 
 void D_FillRect(vrect_t* vrect, int color); // d_fill.h
 void D_UpdateRects(vrect_t* prect); // d_init.h
@@ -181,7 +181,7 @@ void D_UpdateRects(vrect_t* prect); // d_init.h
 // currently for internal use only, and should be a do-nothing function in
 // hardware drivers
 // FIXME: this_ should go away
-void D_PolysetUpdateTables(void); // d_polyse.h
+void D_PolysetUpdateTables(); // d_polyse.h
 
 // these are currently for internal use only, and should not be used by drivers
 extern int r_skydirect; // r_sky.h
@@ -215,7 +215,7 @@ typedef struct
 
 extern drawsurf_t r_drawsurf; // r_surf.h
 
-void R_DrawSurface(void); // r_surf.h
+void R_DrawSurface(); // r_surf.h
 void R_GenTile(msurface_t* psurf, void* pdest); // r_surf.h
 
 

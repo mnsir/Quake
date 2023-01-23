@@ -420,7 +420,7 @@ void Key_SetBinding(int keynum, char* binding)
 Key_Unbind_f
 ===================
 */
-void Key_Unbind_f(void)
+void Key_Unbind_f()
 {
 	if (Cmd_Argc() != 2)
 	{
@@ -438,7 +438,7 @@ void Key_Unbind_f(void)
 	Key_SetBinding(b, (char*)"");
 }
 
-void Key_Unbindall_f(void)
+void Key_Unbindall_f()
 {
 	for (int i = 0; i < 256; i++)
 		if (keybindings[i])
@@ -451,7 +451,7 @@ void Key_Unbindall_f(void)
 Key_Bind_f
 ===================
 */
-void Key_Bind_f(void)
+void Key_Bind_f()
 {
 	char cmd[1024];
 
@@ -511,7 +511,7 @@ void Key_WriteBindings(FILE* f)
 Key_Init
 ===================
 */
-void Key_Init(void)
+void Key_Init()
 {
 	int i;
 
@@ -740,7 +740,7 @@ void Key_Event(int key, bool down)
 Key_ClearStates
 ===================
 */
-void Key_ClearStates(void)
+void Key_ClearStates()
 {
 	for (int i = 0; i < 256; i++)
 	{

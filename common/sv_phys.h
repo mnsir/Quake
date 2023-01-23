@@ -1,3 +1,3 @@
 #pragma once
 
-void SV_Physics(void);
+void SV_Physics();

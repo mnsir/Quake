@@ -80,7 +80,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 R_InitTextures
 ==================
 */
-void R_InitTextures(void)
+void R_InitTextures()
 {
 	// create a simple checkerboard texture for the default
 	r_notexture_mip = static_cast<texture_s*>(Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, (char*)"notexture"));
@@ -117,7 +117,7 @@ byte dottexture[8][8] =
 	{0, 0, 0, 0, 0, 0, 0, 0},
 };
 
-void R_InitParticleTexture(void)
+void R_InitParticleTexture()
 {
 	byte data[8][8][4];
 
@@ -152,7 +152,7 @@ R_Envmap_f
 Grab six views for environment mapping tests
 ===============
 */
-void R_Envmap_f(void)
+void R_Envmap_f()
 {
 	byte buffer[256 * 256 * 4];
 	char name[1024];
@@ -217,7 +217,7 @@ void R_Envmap_f(void)
 R_Init
 ===============
 */
-void R_Init(void)
+void R_Init()
 {
 	extern byte* hunk_base;
 	extern cvar_t gl_finish;
@@ -401,7 +401,7 @@ void R_TranslatePlayerSkin(int playernum)
 R_NewMap
 ===============
 */
-void R_NewMap(void)
+void R_NewMap()
 {
 	int i;
 
@@ -444,7 +444,7 @@ R_TimeRefresh_f
 For program optimization
 ====================
 */
-void R_TimeRefresh_f(void)
+void R_TimeRefresh_f()
 {
 	int startangle;
 	vrect_t vr;
@@ -468,6 +468,6 @@ void R_TimeRefresh_f(void)
 	GL_EndRendering();
 }
 
-void D_FlushCaches(void)
+void D_FlushCaches()
 {
 }

@@ -5,16 +5,16 @@
 #include <windows.h>
 
 // initializes cycling through a DMA buffer and returns information on it
-bool SNDDMA_Init(void);
+bool SNDDMA_Init();
 // gets the current DMA position
-int SNDDMA_GetDMAPos(void);
+int SNDDMA_GetDMAPos();
 // shutdown the DMA xfer.
-void SNDDMA_Shutdown(void);
+void SNDDMA_Shutdown();
 
-void SNDDMA_Submit(void);
+void SNDDMA_Submit();
 
-void S_BlockSound(void);
-void S_UnblockSound(void);
+void S_BlockSound();
+void S_UnblockSound();
 
 extern LPDIRECTSOUND pDS;
 

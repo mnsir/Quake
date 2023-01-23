@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr_comp.h"
 
 void PR_ExecuteProgram(func_t fnum);
-void PR_Profile_f(void);
+void PR_Profile_f();
 extern int pr_argc;
 
 extern bool pr_trace;

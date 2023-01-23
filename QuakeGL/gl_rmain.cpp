@@ -124,7 +124,7 @@ texture_t* r_notexture_mip;
 int d_lightstylevalue[256]; // 8.8 fraction of base light value
 
 
-void R_MarkLeaves(void);
+void R_MarkLeaves();
 
 cvar_t r_norefresh = {(char*)"r_norefresh", (char*)"0"};
 cvar_t r_drawentities = {(char*)"r_drawentities", (char*)"1"};
@@ -1069,7 +1069,7 @@ void R_DrawAliasModel(entity_t* e)
 R_DrawEntitiesOnList
 =============
 */
-void R_DrawEntitiesOnList(void)
+void R_DrawEntitiesOnList()
 {
 	int i;
 
@@ -1114,7 +1114,7 @@ void R_DrawEntitiesOnList(void)
 R_DrawViewModel
 =============
 */
-void R_DrawViewModel(void)
+void R_DrawViewModel()
 {
 	float ambient[4], diffuse[4];
 	vec3_t dist;
@@ -1180,7 +1180,7 @@ void R_DrawViewModel(void)
 R_PolyBlend
 ============
 */
-void R_PolyBlend(void)
+void R_PolyBlend()
 {
 	if (!gl_polyblend.value)
 		return;
@@ -1229,7 +1229,7 @@ int SignbitsForPlane(mplane_t* out)
 }
 
 
-void R_SetFrustum(void)
+void R_SetFrustum()
 {
 	if (r_refdef.fov_x == 90)
 	{
@@ -1267,7 +1267,7 @@ void R_SetFrustum(void)
 R_SetupFrame
 ===============
 */
-void R_SetupFrame(void)
+void R_SetupFrame()
 {
 	int edgecount;
 	vrect_t vrect;
@@ -1318,7 +1318,7 @@ void MYgluPerspective(GLdouble fovy, GLdouble aspect,
 R_SetupGL
 =============
 */
-void R_SetupGL(void)
+void R_SetupGL()
 {
 	float yfov;
 	int i;
@@ -1401,7 +1401,7 @@ R_RenderScene
 r_refdef must be set before the first call
 ================
 */
-void R_RenderScene(void)
+void R_RenderScene()
 {
 	R_SetupFrame();
 
@@ -1430,7 +1430,7 @@ void R_RenderScene(void)
 R_Clear
 =============
 */
-void R_Clear(void)
+void R_Clear()
 {
 	if (r_mirroralpha.value != 1.0)
 	{
@@ -1482,7 +1482,7 @@ void R_Clear(void)
 R_Mirror
 =============
 */
-void R_Mirror(void)
+void R_Mirror()
 {
 	if (!mirror)
 		return;
@@ -1547,7 +1547,7 @@ R_RenderView
 r_refdef must be set before the first call
 ================
 */
-void R_RenderView(void)
+void R_RenderView()
 {
 	using namespace std::string_view_literals;
 	double time1;

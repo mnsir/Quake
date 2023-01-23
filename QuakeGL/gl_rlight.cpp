@@ -81,7 +81,7 @@ int r_dlightframecount;
 R_AnimateLight
 ==================
 */
-void R_AnimateLight(void)
+void R_AnimateLight()
 {
 	//
 	// light animations
@@ -159,7 +159,7 @@ void R_RenderDlight(dlight_t* light)
 R_RenderDlights
 =============
 */
-void R_RenderDlights(void)
+void R_RenderDlights()
 {
 	if (!gl_flashblend.value)
 		return;
@@ -242,7 +242,7 @@ void R_MarkLights(dlight_t* light, int bit, mnode_t* node)
 R_PushDlights
 =============
 */
-void R_PushDlights(void)
+void R_PushDlights()
 {
 	if (gl_flashblend.value)
 		return;

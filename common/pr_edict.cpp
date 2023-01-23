@@ -100,7 +100,7 @@ instead of being removed and recreated, which can cause interpolated
 angles and bad trails.
 =================
 */
-edict_t* ED_Alloc(void)
+edict_t* ED_Alloc()
 {
 	using namespace std::string_view_literals;
 	int i;
@@ -528,7 +528,7 @@ ED_PrintEdicts
 For debugging, prints all the entities in the current server
 =============
 */
-void ED_PrintEdicts(void)
+void ED_PrintEdicts()
 {
 	Con_Printf((char*)"%i entities\n", sv.num_edicts);
 	for (int i = 0; i < sv.num_edicts; i++)
@@ -542,7 +542,7 @@ ED_PrintEdict_f
 For debugging, prints a single edicy
 =============
 */
-void ED_PrintEdict_f(void)
+void ED_PrintEdict_f()
 {
 	int i = Q_atoi(Cmd_Argv(1));
 	if (i >= sv.num_edicts)
@@ -560,7 +560,7 @@ ED_Count
 For debugging
 =============
 */
-void ED_Count(void)
+void ED_Count()
 {
 	int models, solid, step;
 
@@ -955,7 +955,7 @@ void ED_LoadFromFile(char* data)
 PR_LoadProgs
 ===============
 */
-void PR_LoadProgs(void)
+void PR_LoadProgs()
 {
 	using namespace std::string_view_literals;
 	int i;
@@ -1039,7 +1039,7 @@ void PR_LoadProgs(void)
 PR_Init
 ===============
 */
-void PR_Init(void)
+void PR_Init()
 {
 	Cmd_AddCommand((char*)"edict", ED_PrintEdict_f);
 	Cmd_AddCommand((char*)"edicts", ED_PrintEdicts);

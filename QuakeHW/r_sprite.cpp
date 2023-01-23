@@ -285,7 +285,7 @@ mspriteframe_t* R_GetSpriteframe(msprite_t* psprite)
 R_DrawSprite
 ================
 */
-void R_DrawSprite(void)
+void R_DrawSprite()
 {
 	using namespace std::string_view_literals;
 	int i;

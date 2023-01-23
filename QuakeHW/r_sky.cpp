@@ -92,7 +92,7 @@ void R_InitSky(texture_t* mt)
 R_MakeSky
 =================
 */
-void R_MakeSky(void)
+void R_MakeSky()
 {
 	static int xlast = -1, ylast = -1;
 
@@ -201,7 +201,7 @@ void R_GenSkyTile16(void* pdest)
 R_SetSkyFrame
 ==============
 */
-void R_SetSkyFrame(void)
+void R_SetSkyFrame()
 {
 	skyspeed = iskyspeed;
 	skyspeed2 = iskyspeed2;

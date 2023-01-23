@@ -43,8 +43,8 @@ extern LPDIRECTDRAWPALETTE lpDDPal;
 
 
 using pWSAStartup_t = int (PASCAL FAR* )(WORD wVersionRequired, LPWSADATA lpWSAData);
-using pWSACleanup_t = int (PASCAL FAR* )(void);
-using pWSAGetLastError_t = int (PASCAL FAR* )(void);
+using pWSACleanup_t = int (PASCAL FAR* )();
+using pWSAGetLastError_t = int (PASCAL FAR* )();
 using psocket_t = SOCKET (PASCAL FAR* )(int af, int type, int protocol);
 using pioctlsocket_t = int (PASCAL FAR* )(SOCKET s, long cmd, u_long FAR* argp);
 using psetsockopt_t = int (PASCAL FAR* )(SOCKET s, int level, int optname, const char FAR* optval, int optlen);

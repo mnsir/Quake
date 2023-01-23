@@ -34,8 +34,8 @@ int ubasestep, errorterm, erroradjustup, erroradjustdown;
 int vstartscan;
 
 // FIXME: should go away
-extern void R_RotateBmodel(void);
-extern void R_TransformFrustum(void);
+extern void R_RotateBmodel();
+extern void R_TransformFrustum();
 
 vec3_t transformed_modelorg;
 
@@ -45,7 +45,7 @@ D_DrawPoly
 
 ==============
 */
-void D_DrawPoly(void)
+void D_DrawPoly()
 {
 	// this_ driver takes spans, not polygons
 }
@@ -168,7 +168,7 @@ void D_CalcGradients(msurface_t* pface)
 D_DrawSurfaces
 ==============
 */
-void D_DrawSurfaces(void)
+void D_DrawSurfaces()
 {
 	surf_t* s;
 	msurface_t* pface;

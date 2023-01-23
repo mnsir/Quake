@@ -48,7 +48,7 @@ sfx_t* cl_sfx_r_exp3;
 CL_ParseTEnt
 =================
 */
-void CL_InitTEnts(void)
+void CL_InitTEnts()
 {
 	cl_sfx_wizhit = S_PrecacheSound((char*)"wizard/hit.wav");
 	cl_sfx_knighthit = S_PrecacheSound((char*)"hknight/hit.wav");
@@ -113,7 +113,7 @@ void CL_ParseBeam(model_t* m)
 CL_ParseTEnt
 =================
 */
-void CL_ParseTEnt(void)
+void CL_ParseTEnt()
 {
 	using namespace std::string_view_literals;
 	vec3_t pos;
@@ -265,7 +265,7 @@ void CL_ParseTEnt(void)
 CL_NewTempEntity
 =================
 */
-entity_t* CL_NewTempEntity(void)
+entity_t* CL_NewTempEntity()
 {
 	if (cl_numvisedicts == MAX_VISEDICTS)
 		return NULL;
@@ -287,7 +287,7 @@ entity_t* CL_NewTempEntity(void)
 CL_UpdateTEnts
 =================
 */
-void CL_UpdateTEnts(void)
+void CL_UpdateTEnts()
 {
 	int i;
 	beam_t* b;

@@ -52,7 +52,7 @@ int static_registered = 1; // only for startup check, then set
 
 bool msg_suppress_1 = false;
 
-void COM_InitFilesystem(void);
+void COM_InitFilesystem();
 
 // if a packfile directory differs from this_, it is assumed to be hacked
 #define PAK0_COUNT              339
@@ -570,14 +570,14 @@ void MSG_WriteAngle(sizebuf_t* sb, float f)
 int msg_readcount;
 bool msg_badread;
 
-void MSG_BeginReading(void)
+void MSG_BeginReading()
 {
 	msg_readcount = 0;
 	msg_badread = false;
 }
 
 // returns -1 and sets msg_badread if no more characters are available
-int MSG_ReadChar(void)
+int MSG_ReadChar()
 {
 	if (msg_readcount + 1 > net_message.cursize)
 	{
@@ -591,7 +591,7 @@ int MSG_ReadChar(void)
 	return c;
 }
 
-int MSG_ReadByte(void)
+int MSG_ReadByte()
 {
 	if (msg_readcount + 1 > net_message.cursize)
 	{
@@ -605,7 +605,7 @@ int MSG_ReadByte(void)
 	return c;
 }
 
-int MSG_ReadShort(void)
+int MSG_ReadShort()
 {
 	if (msg_readcount + 2 > net_message.cursize)
 	{
@@ -621,7 +621,7 @@ int MSG_ReadShort(void)
 	return c;
 }
 
-int MSG_ReadLong(void)
+int MSG_ReadLong()
 {
 	if (msg_readcount + 4 > net_message.cursize)
 	{
@@ -639,7 +639,7 @@ int MSG_ReadLong(void)
 	return c;
 }
 
-float MSG_ReadFloat(void)
+float MSG_ReadFloat()
 {
 	union
 	{
@@ -659,7 +659,7 @@ float MSG_ReadFloat(void)
 	return dat.f;
 }
 
-char* MSG_ReadString(void)
+char* MSG_ReadString()
 {
 	static char string[2048];
 
@@ -678,12 +678,12 @@ char* MSG_ReadString(void)
 	return string;
 }
 
-float MSG_ReadCoord(void)
+float MSG_ReadCoord()
 {
 	return MSG_ReadShort() * (1.0 / 8);
 }
 
-float MSG_ReadAngle(void)
+float MSG_ReadAngle()
 {
 	return MSG_ReadChar() * (360.0 / 256);
 }
@@ -965,7 +965,7 @@ Immediately exits out if an alternate game was attempted to be started without
 being registered.
 ================
 */
-void COM_CheckRegistered(void)
+void COM_CheckRegistered()
 {
 	using namespace std::string_view_literals;
 	int h;
@@ -996,7 +996,7 @@ void COM_CheckRegistered(void)
 }
 
 
-void COM_Path_f(void);
+void COM_Path_f();
 
 
 /*
@@ -1202,7 +1202,7 @@ COM_Path_f
 
 ============
 */
-void COM_Path_f(void)
+void COM_Path_f()
 {
 	Con_Printf((char*)"Current search path:\n");
 	for (searchpath_t* s = com_searchpaths; s; s = s->next)
@@ -1659,7 +1659,7 @@ void COM_AddGameDirectory(char* dir)
 COM_InitFilesystem
 ================
 */
-void COM_InitFilesystem(void)
+void COM_InitFilesystem()
 {
 	using namespace std::string_view_literals;
 	char basedir[MAX_OSPATH];

@@ -9,13 +9,13 @@ typedef struct
 	char* name;
 	bool initialized;
 	int controlSock;
-	int (*Init)(void);
-	void (*Shutdown)(void);
+	int (*Init)();
+	void (*Shutdown)();
 	void (*Listen)(bool state);
 	int (*OpenSocket)(int port);
 	int (*CloseSocket)(int socket);
 	int (*Connect)(int socket, struct qsockaddr* addr);
-	int (*CheckNewConnections)(void);
+	int (*CheckNewConnections)();
 	int (*Read)(int socket, uint8_t* buf, int len, struct qsockaddr* addr);
 	int (*Write)(int socket, uint8_t* buf, int len, struct qsockaddr* addr);
 	int (*Broadcast)(int socket, uint8_t* buf, int len);
@@ -37,18 +37,18 @@ typedef struct
 {
 	char* name;
 	bool initialized;
-	int (*Init)(void);
+	int (*Init)();
 	void (*Listen)(bool state);
 	void (*SearchForHosts)(bool xmit);
 	qsocket_t* (*Connect)(char* host);
-	qsocket_t* (*CheckNewConnections)(void);
+	qsocket_t* (*CheckNewConnections)();
 	int (*QGetMessage)(qsocket_t* sock);
 	int (*QSendMessage)(qsocket_t* sock, sizebuf_t* data);
 	int (*SendUnreliableMessage)(qsocket_t* sock, sizebuf_t* data);
 	bool(*CanSendMessage)(qsocket_t* sock);
 	bool(*CanSendUnreliableMessage)(qsocket_t* sock);
 	void (*Close)(qsocket_t* sock);
-	void (*Shutdown)(void);
+	void (*Shutdown)();
 	int controlSock;
 } net_driver_t;
 

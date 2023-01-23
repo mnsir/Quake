@@ -39,9 +39,9 @@ extern int pr_edict_size; // in bytes
 
 //============================================================================
 
-void PR_Init(void);
-void PR_LoadProgs(void);
-edict_t* ED_Alloc(void);
+void PR_Init();
+void PR_LoadProgs();
+edict_t* ED_Alloc();
 void ED_Free(edict_t* ed);
 // returns a copy of the string allocated from the server's string heap
 char* ED_NewString(char* string);
@@ -57,7 +57,7 @@ int NUM_FOR_EDICT(edict_t* e);
 
 extern int type_size[8];
 extern unsigned short pr_crc;
-void ED_PrintEdicts(void);
+void ED_PrintEdicts();
 
 void ED_PrintNum(int ent);
 

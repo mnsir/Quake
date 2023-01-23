@@ -6,4 +6,4 @@
 
 bool SV_CheckBottom(edict_t* ent);
 bool SV_movestep(edict_t* ent, vec3_t move, bool relink);
-void SV_MoveToGoal(void);
+void SV_MoveToGoal();

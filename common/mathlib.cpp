@@ -164,7 +164,7 @@ BOPS_Error
 Split out like this_ for ASM to call.
 ==================
 */
-void BOPS_Error(void)
+void BOPS_Error()
 {
 	using namespace std::string_view_literals;
 	Sys_Error("BoxOnPlaneSide:  Bad signbits"sv);

@@ -66,7 +66,7 @@ WSADATA winsockdata;
 
 static double blocktime;
 
-BOOL PASCAL FAR BlockingHook(void)
+BOOL PASCAL FAR BlockingHook()
 {
 	MSG msg;
 
@@ -115,7 +115,7 @@ void WINS_GetLocalAddress()
 }
 
 
-int WINS_Init(void)
+int WINS_Init()
 {
 	using namespace std::string_view_literals;
 	int i;
@@ -245,7 +245,7 @@ int WINS_Init(void)
 
 //=============================================================================
 
-void WINS_Shutdown(void)
+void WINS_Shutdown()
 {
 	WINS_Listen(false);
 	WINS_CloseSocket(net_controlsocket);
@@ -375,7 +375,7 @@ int WINS_Connect(int socket, struct qsockaddr* addr)
 
 //=============================================================================
 
-int WINS_CheckNewConnections(void)
+int WINS_CheckNewConnections()
 {
 	char buf[4096];
 

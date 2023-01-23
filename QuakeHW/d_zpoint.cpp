@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 D_DrawZPoint
 =====================
 */
-void D_DrawZPoint(void)
+void D_DrawZPoint()
 {
 	short* pz = d_pzbuffer + (d_zwidth * r_zpointdesc.v) + r_zpointdesc.u;
 	uint8_t* pdest = d_viewbuffer + d_scantable[r_zpointdesc.v] + r_zpointdesc.u;

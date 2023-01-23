@@ -175,15 +175,15 @@ float gldepthmin, gldepthmax;
 
 modestate_t modestate = MS_UNINIT;
 
-void VID_MenuDraw(void);
+void VID_MenuDraw();
 void VID_MenuKey(int key);
 
 LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 char* VID_GetModeDescription(int mode);
-void ClearAllStates(void);
-void VID_UpdateWindowStatus(void);
-void GL_Init(void);
+void ClearAllStates();
+void VID_UpdateWindowStatus();
+void GL_Init();
 
 PROC glArrayElementEXT;
 PROC glColorPointerEXT;
@@ -224,15 +224,15 @@ void VID_ForceLockState(int lk)
 {
 }
 
-void VID_LockBuffer(void)
+void VID_LockBuffer()
 {
 }
 
-void VID_UnlockBuffer(void)
+void VID_UnlockBuffer()
 {
 }
 
-int VID_ForceUnlockedAndReturnState(void)
+int VID_ForceUnlockedAndReturnState()
 {
 	return 0;
 }
@@ -534,7 +534,7 @@ int VID_SetMode(int modenum, unsigned char* palette)
 VID_UpdateWindowStatus
 ================
 */
-void VID_UpdateWindowStatus(void)
+void VID_UpdateWindowStatus()
 {
 	window_rect.left = window_x;
 	window_rect.top = window_y;
@@ -554,7 +554,7 @@ BINDTEXFUNCPTR bindTexFunc;
 #define TEXTURE_EXT_STRING "GL_EXT_texture_object"
 
 
-void CheckTextureExtensions(void)
+void CheckTextureExtensions()
 {
 	using namespace std::string_view_literals;
 	bool texture_ext = FALSE;
@@ -589,7 +589,7 @@ void CheckTextureExtensions(void)
 	}
 }
 
-void CheckArrayExtensions(void)
+void CheckArrayExtensions()
 {
 	using namespace std::string_view_literals;
 	/* check for texture extension */
@@ -624,7 +624,7 @@ int texture_mode = GL_LINEAR;
 
 int texture_extension_number = 1;
 
-void CheckMultiTextureExtensions(void)
+void CheckMultiTextureExtensions()
 {
 	if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm((char*)"-nomtex"))
 	{
@@ -640,7 +640,7 @@ void CheckMultiTextureExtensions(void)
 GL_Init
 ===============
 */
-void GL_Init(void)
+void GL_Init()
 {
 	gl_vendor = (char*)glGetString(GL_VENDOR);
 	Con_Printf((char*)"GL_VENDOR: %s\n", gl_vendor);
@@ -705,7 +705,7 @@ void GL_BeginRendering(int* x, int* y, int* width, int* height)
 }
 
 
-void GL_EndRendering(void)
+void GL_EndRendering()
 {
 	if (!scr_skipupdate || block_drawing)
 		SwapBuffers(maindc);
@@ -813,13 +813,13 @@ void VID_ShiftPalette(unsigned char* palette)
 }
 
 
-void VID_SetDefaultMode(void)
+void VID_SetDefaultMode()
 {
 	IN_DeactivateMouse();
 }
 
 
-void VID_Shutdown(void)
+void VID_Shutdown()
 {
 	if (vid_initialized)
 	{
@@ -964,7 +964,7 @@ MAIN WINDOW
 ClearAllStates
 ================
 */
-void ClearAllStates(void)
+void ClearAllStates()
 {
 	// send an up event for each key, to make sure the server clears them all
 	for (int i = 0; i < 256; i++)
@@ -1185,7 +1185,7 @@ LONG WINAPI MainWndProc(
 VID_NumModes
 =================
 */
-int VID_NumModes(void)
+int VID_NumModes()
 {
 	return nummodes;
 }
@@ -1274,7 +1274,7 @@ char* VID_GetExtModeDescription(int mode)
 VID_DescribeCurrentMode_f
 =================
 */
-void VID_DescribeCurrentMode_f(void)
+void VID_DescribeCurrentMode_f()
 {
 	Con_Printf((char*)"%s\n", VID_GetExtModeDescription(vid_modenum));
 }
@@ -1285,7 +1285,7 @@ void VID_DescribeCurrentMode_f(void)
 VID_NumModes_f
 =================
 */
-void VID_NumModes_f(void)
+void VID_NumModes_f()
 {
 	if (nummodes == 1)
 		Con_Printf((char*)"%d video mode is available\n", nummodes);
@@ -1299,7 +1299,7 @@ void VID_NumModes_f(void)
 VID_DescribeMode_f
 =================
 */
-void VID_DescribeMode_f(void)
+void VID_DescribeMode_f()
 {
 	int modenum = Q_atoi(Cmd_Argv(1));
 
@@ -1317,7 +1317,7 @@ void VID_DescribeMode_f(void)
 VID_DescribeModes_f
 =================
 */
-void VID_DescribeModes_f(void)
+void VID_DescribeModes_f()
 {
 	int lnummodes = VID_NumModes();
 
@@ -1866,7 +1866,7 @@ void VID_Init(unsigned char* palette)
 // Video menu stuff
 //========================================================
 
-extern void M_Menu_Options_f(void);
+extern void M_Menu_Options_f();
 extern void M_Print(int cx, int cy, char* str);
 extern void M_PrintWhite(int cx, int cy, char* str);
 extern void M_DrawCharacter(int cx, int line, int num);
@@ -1893,7 +1893,7 @@ static modedesc_t modedescs[MAX_MODEDESCS];
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw(void)
+void VID_MenuDraw()
 {
 	int i, j, dup, dupmode;
 	char temp[100];

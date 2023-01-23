@@ -2,4 +2,4 @@
 
 
 void S_PaintChannels(int endtime);
-void SND_InitScaletable(void);
+void SND_InitScaletable();

@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <GL/glu.h>
 
 void GL_BeginRendering(int* x, int* y, int* width, int* height);
-void GL_EndRendering(void);
+void GL_EndRendering();
 
 
 // Function prototypes for the Texture Object Extension routines
@@ -92,8 +92,8 @@ extern PROC glVertexPointerEXT;
 #define BACKFACE_EPSILON 0.01
 
 
-void R_TimeRefresh_f(void);
-void R_ReadPointFile_f(void);
+void R_TimeRefresh_f();
+void R_ReadPointFile_f();
 texture_t* R_TextureAnimation(texture_t* base);
 
 typedef struct surfcache_s
@@ -248,14 +248,14 @@ extern lpSelTexFUNC qglSelectTextureSGIS;
 
 extern bool gl_mtexable;
 
-void GL_DisableMultitexture(void);
-void GL_EnableMultitexture(void);
+void GL_DisableMultitexture();
+void GL_EnableMultitexture();
 
 bool VID_Is8bit();
 void GL_SubdivideSurface(msurface_t* fa);
 void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr);
 int R_LightPoint(vec3_t p);
-void R_DrawWaterSurfaces(void);
+void R_DrawWaterSurfaces();
 void EmitWaterPolys(msurface_t* fa);
 void EmitBothSkyLayers(msurface_t* fa);
 void EmitSkyPolys(msurface_t* fa);
@@ -264,15 +264,15 @@ bool R_CullBox(vec3_t mins, vec3_t maxs);
 void R_MarkLights(dlight_t* light, int bit, mnode_t* node);
 void R_RotateForEntity(entity_t* e);
 void R_StoreEfrags(efrag_t** ppefrag);
-void V_CalcBlend(void);
-void R_AnimateLight(void);
+void V_CalcBlend();
+void R_AnimateLight();
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
 void R_DrawBrushModel(entity_t* e);
-void R_DrawWorld(void);
-void R_RenderDlights(void);
-void R_DrawParticles(void);
+void R_DrawWorld();
+void R_RenderDlights();
+void R_DrawParticles();
 void R_RenderBrushPoly(msurface_t* fa);
-void R_InitParticles(void);
+void R_InitParticles();
 void GL_Upload8_EXT(uint8_t* data, int width, int height, bool mipmap, bool alpha);
-void R_ClearParticles(void);
-void GL_BuildLightmaps(void);
+void R_ClearParticles();
+void GL_BuildLightmaps();

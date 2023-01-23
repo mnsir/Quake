@@ -35,12 +35,12 @@ extern int scr_copyeverything;
 extern bool block_drawing;
 
 
-void SCR_Init(void);
-void SCR_UpdateScreen(void);
-void SCR_BringDownConsole(void);
+void SCR_Init();
+void SCR_UpdateScreen();
+void SCR_BringDownConsole();
 void SCR_CenterPrint(char* str);
-void SCR_BeginLoadingPlaque(void);
-void SCR_EndLoadingPlaque(void);
+void SCR_BeginLoadingPlaque();
+void SCR_EndLoadingPlaque();
 int SCR_ModalMessage(char* text);
-void SCR_UpdateWholeScreen(void);
+void SCR_UpdateWholeScreen();
 

@@ -253,7 +253,7 @@ void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
 R_AliasCheckBBox
 ================
 */
-bool R_AliasCheckBBox(void)
+bool R_AliasCheckBBox()
 {
 	int i;
 	float basepts[8][3];
@@ -427,7 +427,7 @@ R_AliasPreparePoints
 General clipped case
 ================
 */
-void R_AliasPreparePoints(void)
+void R_AliasPreparePoints()
 {
 	int i;
 	finalvert_t* pfv[3];
@@ -676,7 +676,7 @@ void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av)
 R_AliasPrepareUnclippedPoints
 ================
 */
-void R_AliasPrepareUnclippedPoints(void)
+void R_AliasPrepareUnclippedPoints()
 {
 	stvert_t* pstverts = (stvert_t*)((uint8_t*)paliashdr + paliashdr->stverts);
 	r_anumverts = pmdl->numverts;
@@ -701,7 +701,7 @@ void R_AliasPrepareUnclippedPoints(void)
 R_AliasSetupSkin
 ===============
 */
-void R_AliasSetupSkin(void)
+void R_AliasSetupSkin()
 {
 	int i;
 
@@ -787,7 +787,7 @@ R_AliasSetupFrame
 set r_apverts
 =================
 */
-void R_AliasSetupFrame(void)
+void R_AliasSetupFrame()
 {
 	int i;
 

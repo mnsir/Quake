@@ -1171,11 +1171,11 @@ uint8_t* skinstart;
 
 void D_PolysetDrawSpans8(spanpackage_t* pspanpackage);
 void D_PolysetCalcGradients(int skinwidth);
-void D_DrawSubdiv(void);
-void D_DrawNonSubdiv(void);
+void D_DrawSubdiv();
+void D_DrawNonSubdiv();
 void D_PolysetRecursiveTriangle(int* p1, int* p2, int* p3);
-void D_PolysetSetEdgeTable(void);
-void D_RasterizeAliasPolySmooth(void);
+void D_PolysetSetEdgeTable();
+void D_RasterizeAliasPolySmooth();
 void D_PolysetScanLeftEdge(int height);
 
 
@@ -1184,7 +1184,7 @@ void D_PolysetScanLeftEdge(int height);
 D_PolysetDraw
 ================
 */
-void D_PolysetDraw(void)
+void D_PolysetDraw()
 {
 	spanpackage_t spans[DPS_MAXSPANS + 1 +
 		((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
@@ -1237,7 +1237,7 @@ void D_PolysetDrawFinalVerts(finalvert_t* fv, int numverts)
 D_DrawSubdiv
 ================
 */
-void D_DrawSubdiv(void)
+void D_DrawSubdiv()
 {
 	finalvert_t* pfv = r_affinetridesc.pfinalverts;
 	mtriangle_t* ptri = r_affinetridesc.ptriangles;
@@ -1291,7 +1291,7 @@ void D_DrawSubdiv(void)
 D_DrawNonSubdiv
 ================
 */
-void D_DrawNonSubdiv(void)
+void D_DrawNonSubdiv()
 {
 	finalvert_t* pfv = r_affinetridesc.pfinalverts;
 	mtriangle_t* ptri = r_affinetridesc.ptriangles;
@@ -1434,7 +1434,7 @@ nodraw:
 D_PolysetUpdateTables
 ================
 */
-void D_PolysetUpdateTables(void)
+void D_PolysetUpdateTables()
 {
 	if (r_affinetridesc.skinwidth != skinwidth ||
 		r_affinetridesc.pskin != skinstart)
@@ -1706,7 +1706,7 @@ void D_PolysetFillSpans8(spanpackage_t* pspanpackage)
 D_RasterizeAliasPolySmooth
 ================
 */
-void D_RasterizeAliasPolySmooth(void)
+void D_RasterizeAliasPolySmooth()
 {
 	int working_lstepx;
 
@@ -1923,7 +1923,7 @@ void D_RasterizeAliasPolySmooth(void)
 D_PolysetSetEdgeTable
 ================
 */
-void D_PolysetSetEdgeTable(void)
+void D_PolysetSetEdgeTable()
 {
 	int edgetableindex = 0; // assume the vertices are already in
 	//  top to bottom order

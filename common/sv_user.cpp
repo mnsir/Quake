@@ -68,7 +68,7 @@ SV_SetIdealPitch
 */
 #define MAX_FORWARD 6
 
-void SV_SetIdealPitch(void)
+void SV_SetIdealPitch()
 {
 	vec3_t top, bottom;
 	float z[MAX_FORWARD];
@@ -134,7 +134,7 @@ SV_UserFriction
 
 ==================
 */
-void SV_UserFriction(void)
+void SV_UserFriction()
 {
 	vec3_t start, stop;
 	float friction;
@@ -180,7 +180,7 @@ cvar_t sv_maxspeed = {(char*)"sv_maxspeed", (char*)"320", false, true};
 cvar_t sv_accelerate = {(char*)"sv_accelerate", (char*)"10"};
 
 
-void SV_Accelerate(void)
+void SV_Accelerate()
 {
 	float currentspeed = DotProduct(velocity, wishdir);
 	float addspeed = wishspeed - currentspeed;
@@ -213,7 +213,7 @@ void SV_AirAccelerate(vec3_t wishveloc)
 }
 
 
-void DropPunchAngle(void)
+void DropPunchAngle()
 {
 	float len = VectorNormalize(sv_player->v.punchangle);
 
@@ -229,7 +229,7 @@ SV_WaterMove
 
 ===================
 */
-void SV_WaterMove(void)
+void SV_WaterMove()
 {
 	int i;
 	vec3_t wishvel;
@@ -289,7 +289,7 @@ void SV_WaterMove(void)
 		velocity[i] += accelspeed * wishvel[i];
 }
 
-void SV_WaterJump(void)
+void SV_WaterJump()
 {
 	if (sv.time > sv_player->v.teleport_time
 		|| !sv_player->v.waterlevel)
@@ -308,7 +308,7 @@ SV_AirMove
 
 ===================
 */
-void SV_AirMove(void)
+void SV_AirMove()
 {
 	vec3_t wishvel;
 
@@ -362,7 +362,7 @@ the move fields specify an intended velocity in pix/sec
 the angle fields specify an exact angular motion in degrees
 ===================
 */
-void SV_ClientThink(void)
+void SV_ClientThink()
 {
 	vec3_t v_angle;
 
@@ -458,7 +458,7 @@ SV_ReadClientMessage
 Returns false if the client should be killed
 ===================
 */
-bool SV_ReadClientMessage(void)
+bool SV_ReadClientMessage()
 {
 	int ret;
 	char* s;
@@ -576,7 +576,7 @@ bool SV_ReadClientMessage(void)
 SV_RunClients
 ==================
 */
-void SV_RunClients(void)
+void SV_RunClients()
 {
 	int i;
 

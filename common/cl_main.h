@@ -218,14 +218,14 @@ extern int cl_numvisedicts;
 extern entity_t* cl_visedicts[MAX_VISEDICTS];
 
 dlight_t* CL_AllocDlight(int key);
-void CL_DecayLights(void);
-void CL_Init(void);
+void CL_DecayLights();
+void CL_Init();
 void CL_EstablishConnection(char* host);
-void CL_Disconnect(void);
-void CL_Disconnect_f(void);
-void CL_NextDemo(void);
-void CL_SendCmd(void);
-void CL_ClearState(void);
-int CL_ReadFromServer(void);
-void CL_SignonReply(void);
+void CL_Disconnect();
+void CL_Disconnect_f();
+void CL_NextDemo();
+void CL_SendCmd();
+void CL_ClearState();
+int CL_ReadFromServer();
+void CL_SignonReply();
 

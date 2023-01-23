@@ -99,7 +99,7 @@ cvar_t gl_subdivide_size = {(char*)"gl_subdivide_size", (char*)"128", true};
 Mod_Init
 ===============
 */
-void Mod_Init(void)
+void Mod_Init()
 {
 	Cvar_RegisterVariable(&gl_subdivide_size);
 	memset(mod_novis, 0xff, sizeof(mod_novis));
@@ -210,7 +210,7 @@ uint8_t* Mod_LeafPVS(mleaf_t* leaf, model_t* model)
 Mod_ClearAll
 ===================
 */
-void Mod_ClearAll(void)
+void Mod_ClearAll()
 {
 	int i;
 	model_t* mod;
@@ -1009,7 +1009,7 @@ Mod_MakeHull0
 Deplicate the drawing hull structure as a clipping hull
 =================
 */
-void Mod_MakeHull0(void)
+void Mod_MakeHull0()
 {
 	hull_t* hull = &loadmodel->hulls[0];
 
@@ -1793,7 +1793,7 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 Mod_Print
 ================
 */
-void Mod_Print(void)
+void Mod_Print()
 {
 	int i;
 	model_t* mod;

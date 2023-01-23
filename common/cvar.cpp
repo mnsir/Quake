@@ -177,7 +177,7 @@ Cvar_Command
 Handles variable inspection and changing from the console
 ============
 */
-bool Cvar_Command(void)
+bool Cvar_Command()
 {
 	// check variables
 	cvar_t* v = Cvar_FindVar(Cmd_Argv(0));

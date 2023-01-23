@@ -38,17 +38,17 @@ extern float v_blend[4];
 extern cvar_t lcd_x;
 
 
-void V_Init(void);
-void V_RenderView(void);
+void V_Init();
+void V_RenderView();
 float V_CalcRoll(vec3_t angles, vec3_t velocity);
-void V_UpdatePalette(void);
+void V_UpdatePalette();
 
 //
 // view
 //
-void V_StartPitchDrift(void);
-void V_StopPitchDrift(void);
-void V_RenderView(void);
-void V_UpdatePalette(void);
-void V_ParseDamage(void);
+void V_StartPitchDrift();
+void V_StopPitchDrift();
+void V_RenderView();
+void V_UpdatePalette();
+void V_ParseDamage();
 void V_SetContentsColor(int contents);

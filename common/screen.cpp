@@ -4,7 +4,7 @@
 #include <format>
 
 #ifdef GLQUAKE
-void GL_Set2D(void); // TODO убрать в хидер
+void GL_Set2D(); // TODO убрать в хидер
 #endif
 #include <cmath>
 
@@ -91,14 +91,14 @@ cvar_t gl_triplebuffer = { (char*)"gl_triplebuffer", (char*)"1", true };
 // private functions
 
 
-void SCR_SizeUp_f(void)
+void SCR_SizeUp_f()
 {
 	Cvar_SetValue((char*)"viewsize", scr_viewsize.value + 10);
 	vid.recalc_refdef = 1;
 }
 
 
-void SCR_SizeDown_f(void)
+void SCR_SizeDown_f()
 {
 	Cvar_SetValue((char*)"viewsize", scr_viewsize.value - 10);
 	vid.recalc_refdef = 1;
@@ -180,7 +180,7 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 }
 
 
-void SCR_ScreenShot_f(void)
+void SCR_ScreenShot_f()
 {
 #ifdef GLQUAKE
 	char pcxname[80];
@@ -270,7 +270,7 @@ void SCR_ScreenShot_f(void)
 }
 
 
-void SCR_DrawCenterString(void)
+void SCR_DrawCenterString()
 {
 	int l;
 	int y;
@@ -316,7 +316,7 @@ void SCR_DrawCenterString(void)
 }
 
 
-void SCR_CheckDrawCenterString(void)
+void SCR_CheckDrawCenterString()
 {
 	scr_copytop = 1;
 	if (scr_center_lines > scr_erase_lines)
@@ -355,7 +355,7 @@ Must be called whenever vid changes
 Internal use only
 =================
 */
-static void SCR_CalcRefdef(void)
+static void SCR_CalcRefdef()
 {
 #ifdef GLQUAKE
 	vrect_t vrect;
@@ -495,7 +495,7 @@ static void SCR_CalcRefdef(void)
 }
 
 
-void SCR_DrawRam(void)
+void SCR_DrawRam()
 {
 	if (!scr_showram.value)
 		return;
@@ -507,7 +507,7 @@ void SCR_DrawRam(void)
 }
 
 
-void SCR_DrawTurtle(void)
+void SCR_DrawTurtle()
 {
 	static int count;
 
@@ -528,7 +528,7 @@ void SCR_DrawTurtle(void)
 }
 
 
-void SCR_DrawNet(void)
+void SCR_DrawNet()
 {
 	if (realtime - cl.last_received_message < 0.3)
 		return;
@@ -539,7 +539,7 @@ void SCR_DrawNet(void)
 }
 
 
-void SCR_DrawPause(void)
+void SCR_DrawPause()
 {
 	if (!scr_showpause.value) // turn off for screenshots
 		return;
@@ -553,7 +553,7 @@ void SCR_DrawPause(void)
 }
 
 
-void SCR_DrawLoading(void)
+void SCR_DrawLoading()
 {
 	if (!scr_drawloading)
 		return;
@@ -563,7 +563,7 @@ void SCR_DrawLoading(void)
 		(vid.height - 48 - pic->height) / 2, pic);
 }
 
-void SCR_SetUpToDrawConsole(void)
+void SCR_SetUpToDrawConsole()
 {
 	Con_CheckResize();
 
@@ -618,7 +618,7 @@ void SCR_SetUpToDrawConsole(void)
 }
 
 
-void SCR_DrawConsole(void)
+void SCR_DrawConsole()
 {
 	if (scr_con_current)
 	{
@@ -634,7 +634,7 @@ void SCR_DrawConsole(void)
 }
 
 
-void SCR_DrawNotifyString(void)
+void SCR_DrawNotifyString()
 {
 	int l;
 
@@ -665,7 +665,7 @@ void SCR_DrawNotifyString(void)
 
 // public functions
 
-void SCR_Init(void)
+void SCR_Init()
 {
 	Cvar_RegisterVariable(&scr_fov);
 	Cvar_RegisterVariable(&scr_viewsize);
@@ -700,7 +700,7 @@ text to the screen.
 WARNING: be very careful calling this_ from elsewhere, because the refresh
 needs almost the entire 256k of stack space!
 */
-void SCR_UpdateScreen(void)
+void SCR_UpdateScreen()
 {
 #ifdef GLQUAKE
 	static float oldscr_viewsize;
@@ -762,7 +762,7 @@ void SCR_UpdateScreen(void)
 	// draw any areas not covered by the refresh
 	//
 	//SCR_TileClear();
-	//void SCR_TileClear(void)
+	//void SCR_TileClear()
 	do {
 		if (r_refdef.vrect.x > 0)
 		{
@@ -906,7 +906,7 @@ void SCR_UpdateScreen(void)
 
 	SCR_SetUpToDrawConsole();
 	//SCR_EraseCenterString();
-	//void SCR_EraseCenterString(void)
+	//void SCR_EraseCenterString()
 	do {
 		int y;
 
@@ -1026,7 +1026,7 @@ void SCR_UpdateScreen(void)
 Brings the console down and fades the palettes back to normal
 ================
 */
-void SCR_BringDownConsole(void)
+void SCR_BringDownConsole()
 {
 	scr_centertime_off = 0;
 
@@ -1061,7 +1061,7 @@ void SCR_CenterPrint(char* str)
 }
 
 
-void SCR_BeginLoadingPlaque(void)
+void SCR_BeginLoadingPlaque()
 {
 	S_StopAllSounds(true);
 
@@ -1087,7 +1087,7 @@ void SCR_BeginLoadingPlaque(void)
 }
 
 
-void SCR_EndLoadingPlaque(void)
+void SCR_EndLoadingPlaque()
 {
 	scr_disabled_for_loading = false;
 	scr_fullupdate = 0;
@@ -1123,7 +1123,7 @@ int SCR_ModalMessage(char* text)
 }
 
 
-void SCR_UpdateWholeScreen(void)
+void SCR_UpdateWholeScreen()
 {
 	scr_fullupdate = 0;
 	SCR_UpdateScreen();

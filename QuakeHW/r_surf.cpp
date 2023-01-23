@@ -41,12 +41,12 @@ int r_lightwidth;
 int r_numhblocks, r_numvblocks;
 unsigned char *r_source, *r_sourcemax;
 
-void R_DrawSurfaceBlock8_mip0(void);
-void R_DrawSurfaceBlock8_mip1(void);
-void R_DrawSurfaceBlock8_mip2(void);
-void R_DrawSurfaceBlock8_mip3(void);
+void R_DrawSurfaceBlock8_mip0();
+void R_DrawSurfaceBlock8_mip1();
+void R_DrawSurfaceBlock8_mip2();
+void R_DrawSurfaceBlock8_mip3();
 
-static void (*surfmiptable[4])(void) = {
+static void (*surfmiptable[4])() = {
 	R_DrawSurfaceBlock8_mip0,
 	R_DrawSurfaceBlock8_mip1,
 	R_DrawSurfaceBlock8_mip2,
@@ -61,7 +61,7 @@ unsigned blocklights[18 * 18];
 R_AddDynamicLights
 ===============
 */
-void R_AddDynamicLights(void)
+void R_AddDynamicLights()
 {
 	vec3_t impact, local;
 
@@ -124,7 +124,7 @@ R_BuildLightMap
 Combine and scale multiple lightmaps into the 8.8 format in blocklights
 ===============
 */
-void R_BuildLightMap(void)
+void R_BuildLightMap()
 {
 	int i;
 
@@ -215,10 +215,10 @@ texture_t* R_TextureAnimation(texture_t* base)
 R_DrawSurface
 ===============
 */
-void R_DrawSurface(void)
+void R_DrawSurface()
 {
 	int horzblockstep;
-	void (*pblockdrawer)(void);
+	void (*pblockdrawer)();
 
 	// calculate the lightings
 	R_BuildLightMap();
@@ -303,7 +303,7 @@ void R_DrawSurface(void)
 R_DrawSurfaceBlock8_mip0
 ================
 */
-void R_DrawSurfaceBlock8_mip0(void)
+void R_DrawSurfaceBlock8_mip0()
 {
 	unsigned char* psource = pbasesource;
 	unsigned char* prowdest = (unsigned char*)prowdestbase;
@@ -350,7 +350,7 @@ void R_DrawSurfaceBlock8_mip0(void)
 R_DrawSurfaceBlock8_mip1
 ================
 */
-void R_DrawSurfaceBlock8_mip1(void)
+void R_DrawSurfaceBlock8_mip1()
 {
 	unsigned char* psource = pbasesource;
 	unsigned char* prowdest = (unsigned char*)prowdestbase;
@@ -397,7 +397,7 @@ void R_DrawSurfaceBlock8_mip1(void)
 R_DrawSurfaceBlock8_mip2
 ================
 */
-void R_DrawSurfaceBlock8_mip2(void)
+void R_DrawSurfaceBlock8_mip2()
 {
 	unsigned char* psource = pbasesource;
 	unsigned char* prowdest = (unsigned char*)prowdestbase;
@@ -444,7 +444,7 @@ void R_DrawSurfaceBlock8_mip2(void)
 R_DrawSurfaceBlock8_mip3
 ================
 */
-void R_DrawSurfaceBlock8_mip3(void)
+void R_DrawSurfaceBlock8_mip3()
 {
 	unsigned char* psource = pbasesource;
 	unsigned char* prowdest = (unsigned char*)prowdestbase;
@@ -493,7 +493,7 @@ R_DrawSurfaceBlock16
 FIXME: make this_ work
 ================
 */
-void R_DrawSurfaceBlock16(void)
+void R_DrawSurfaceBlock16()
 {
 	unsigned short* prowdest = (unsigned short*)prowdestbase;
 

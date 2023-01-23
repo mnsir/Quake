@@ -29,7 +29,7 @@ float skyspeed, skyspeed2;
 
 float skytime;
 
-byte* r_skysource;
+uint8_t* r_skysource;
 
 int r_skymade;
 int r_skydirect; // not used?
@@ -56,7 +56,7 @@ void R_InitSky(texture_t* mt)
 {
 	int i, j;
 
-	byte* src = (byte*)mt + mt->offsets[0];
+	byte* src = (uint8_t*)mt + mt->offsets[0];
 
 	for (i = 0; i < 128; i++)
 	{
@@ -115,10 +115,10 @@ void R_MakeSky(void)
 		{
 			int ofs = baseofs + ((x + xshift) & SKYMASK);
 
-			*(byte*)pnew_sky = (*((byte*)pnew_sky + 128) &
+			*(uint8_t*)pnew_sky = (*((uint8_t*)pnew_sky + 128) &
 					*&bottommask[ofs]) |
 				*&bottomsky[ofs];
-			pnew_sky = (unsigned*)((byte*)pnew_sky + 1);
+			pnew_sky = (unsigned*)((uint8_t*)pnew_sky + 1);
 		}
 		
 		pnew_sky += 128 / sizeof(unsigned);
@@ -149,11 +149,11 @@ void R_GenSkyTile(void* pdest)
 		{
 			int ofs = baseofs + ((x + xshift) & SKYMASK);
 
-			*(byte*)pd = (*((byte*)pnew_sky + 128) &
+			*(uint8_t*)pd = (*((uint8_t*)pnew_sky + 128) &
 					*&bottommask[ofs]) |
 				*&bottomsky[ofs];
-			pnew_sky = (unsigned*)((byte*)pnew_sky + 1);
-			pd = (unsigned*)((byte*)pd + 1);
+			pnew_sky = (unsigned*)((uint8_t*)pnew_sky + 1);
+			pd = (unsigned*)((uint8_t*)pd + 1);
 		}
 		
 		pnew_sky += 128 / sizeof(unsigned);

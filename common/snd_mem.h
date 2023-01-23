@@ -1,7 +1,7 @@
 #pragma once
 
 #include "sound.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 
 // !!! if this_ is changed, it much be changed in asm_i386.h too !!!
@@ -12,7 +12,7 @@ typedef struct
 	int speed;
 	int width;
 	int stereo;
-	byte data[1]; // variable sized
+	uint8_t data[1]; // variable sized
 } sfxcache_t;
 
 typedef struct
@@ -27,5 +27,5 @@ typedef struct
 
 sfxcache_t* S_LoadSound(sfx_t* s);
 
-wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength);
+wavinfo_t GetWavinfo(char* name, uint8_t* wav, int wavlength);
 

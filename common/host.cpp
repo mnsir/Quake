@@ -78,8 +78,8 @@ client_t* host_client; // current client
 
 jmp_buf host_abortserver;
 
-byte* host_basepal;
-byte* host_colormap;
+uint8_t* host_basepal;
+uint8_t* host_colormap;
 
 cvar_t host_framerate = {(char*)"host_framerate", (char*)"0"}; // set for slow motion
 cvar_t host_speeds = {(char*)"host_speeds", (char*)"0"}; // set for running times
@@ -465,7 +465,7 @@ void Host_ShutdownServer(bool crash)
 	while (count);
 
 	// make sure all the clients know we're disconnecting
-	buf.data = (byte*)message;
+	buf.data = (uint8_t*)message;
 	buf.maxsize = 4;
 	buf.cursize = 0;
 	MSG_WriteByte(&buf, svc_disconnect);

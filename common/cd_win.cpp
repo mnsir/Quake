@@ -38,10 +38,10 @@ static bool initialized = false;
 static bool enabled = false;
 static bool playLooping = false;
 static float cdvolume;
-static byte remap[100];
-static byte cdrom;
-static byte playTrack;
-static byte maxTrack;
+static uint8_t remap[100];
+static uint8_t cdrom;
+static uint8_t playTrack;
+static uint8_t maxTrack;
 
 UINT wDeviceID;
 
@@ -104,7 +104,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 }
 
 
-void CDAudio_Play(byte track, bool looping)
+void CDAudio_Play(uint8_t track, bool looping)
 {
 	MCI_PLAY_PARMS mciPlayParms;
 	MCI_STATUS_PARMS mciStatusParms;
@@ -131,7 +131,7 @@ void CDAudio_Play(byte track, bool looping)
 	mciStatusParms.dwItem = MCI_CDA_STATUS_TYPE_TRACK;
 	mciStatusParms.dwTrack = track;
 	DWORD dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT,
-	                                (DWORD)(LPVOID)&mciStatusParms);
+		(DWORD)(LPVOID)&mciStatusParms);
 	if (dwReturn)
 	{
 		Con_DPrintf((char*)"MCI_STATUS failed (%i)\n", dwReturn);

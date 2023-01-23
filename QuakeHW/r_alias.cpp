@@ -265,7 +265,7 @@ bool R_AliasCheckBBox(void)
 	currententity->trivial_accept = 0;
 	pmodel = currententity->model;
 	aliashdr_t* pahdr = static_cast<aliashdr_t*>(Mod_Extradata(pmodel));
-	pmdl = (mdl_t*)((byte*)pahdr + pahdr->model);
+	pmdl = (mdl_t*)((uint8_t*)pahdr + pahdr->model);
 
 	R_AliasSetUpTransform(0);
 
@@ -432,7 +432,7 @@ void R_AliasPreparePoints(void)
 	int i;
 	finalvert_t* pfv[3];
 
-	stvert_t* pstverts = (stvert_t*)((byte*)paliashdr + paliashdr->stverts);
+	stvert_t* pstverts = (stvert_t*)((uint8_t*)paliashdr + paliashdr->stverts);
 	r_anumverts = pmdl->numverts;
 	finalvert_t* fv = pfinalverts;
 	auxvert_t* av = pauxverts;
@@ -462,7 +462,7 @@ void R_AliasPreparePoints(void)
 	//
 	r_affinetridesc.numtriangles = 1;
 
-	mtriangle_t* ptri = (mtriangle_t*)((byte*)paliashdr + paliashdr->triangles);
+	mtriangle_t* ptri = (mtriangle_t*)((uint8_t*)paliashdr + paliashdr->triangles);
 	for (i = 0; i < pmdl->numtris; i++, ptri++)
 	{
 		pfv[0] = &pfinalverts[ptri->vertindex[0]];
@@ -678,7 +678,7 @@ R_AliasPrepareUnclippedPoints
 */
 void R_AliasPrepareUnclippedPoints(void)
 {
-	stvert_t* pstverts = (stvert_t*)((byte*)paliashdr + paliashdr->stverts);
+	stvert_t* pstverts = (stvert_t*)((uint8_t*)paliashdr + paliashdr->stverts);
 	r_anumverts = pmdl->numverts;
 	// FIXME: just use pfinalverts directly?
 	finalvert_t* fv = pfinalverts;
@@ -690,7 +690,7 @@ void R_AliasPrepareUnclippedPoints(void)
 
 	r_affinetridesc.pfinalverts = pfinalverts;
 	r_affinetridesc.ptriangles = (mtriangle_t*)
-		((byte*)paliashdr + paliashdr->triangles);
+		((uint8_t*)paliashdr + paliashdr->triangles);
 	r_affinetridesc.numtriangles = pmdl->numtris;
 
 	D_PolysetDraw();
@@ -713,15 +713,15 @@ void R_AliasSetupSkin(void)
 	}
 
 	pskindesc = ((maliasskindesc_t*)
-		((byte*)paliashdr + paliashdr->skindesc)) + skinnum;
+		((uint8_t*)paliashdr + paliashdr->skindesc)) + skinnum;
 	a_skinwidth = pmdl->skinwidth;
 
 	if (pskindesc->type == ALIAS_SKIN_GROUP)
 	{
-		maliasskingroup_t* paliasskingroup = (maliasskingroup_t*)((byte*)paliashdr +
+		maliasskingroup_t* paliasskingroup = (maliasskingroup_t*)((uint8_t*)paliashdr +
 			pskindesc->skin);
 		float* pskinintervals = (float*)
-			((byte*)paliashdr + paliasskingroup->intervals);
+			((uint8_t*)paliashdr + paliasskingroup->intervals);
 		int numskins = paliasskingroup->numskins;
 		float fullskininterval = pskinintervals[numskins - 1];
 
@@ -742,7 +742,7 @@ void R_AliasSetupSkin(void)
 	}
 
 	r_affinetridesc.pskindesc = pskindesc;
-	r_affinetridesc.pskin = (void*)((byte*)paliashdr + pskindesc->skin);
+	r_affinetridesc.pskin = (void*)((uint8_t*)paliashdr + pskindesc->skin);
 	r_affinetridesc.skinwidth = a_skinwidth;
 	r_affinetridesc.seamfixupX16 = (a_skinwidth >> 1) << 16;
 	r_affinetridesc.skinheight = pmdl->skinheight;
@@ -801,13 +801,13 @@ void R_AliasSetupFrame(void)
 	if (paliashdr->frames[frame].type == ALIAS_SINGLE)
 	{
 		r_apverts = (trivertx_t*)
-			((byte*)paliashdr + paliashdr->frames[frame].frame);
+			((uint8_t*)paliashdr + paliashdr->frames[frame].frame);
 		return;
 	}
 
 	maliasgroup_t* paliasgroup = (maliasgroup_t*)
-		((byte*)paliashdr + paliashdr->frames[frame].frame);
-	float* pintervals = (float*)((byte*)paliashdr + paliasgroup->intervals);
+		((uint8_t*)paliashdr + paliashdr->frames[frame].frame);
+	float* pintervals = (float*)((uint8_t*)paliashdr + paliasgroup->intervals);
 	int numframes = paliasgroup->numframes;
 	float fullinterval = pintervals[numframes - 1];
 
@@ -826,7 +826,7 @@ void R_AliasSetupFrame(void)
 	}
 
 	r_apverts = (trivertx_t*)
-		((byte*)paliashdr + paliasgroup->frames[i].frame);
+		((uint8_t*)paliashdr + paliasgroup->frames[i].frame);
 }
 
 
@@ -850,7 +850,7 @@ void R_AliasDrawModel(alight_t* plighting)
 	pauxverts = &auxverts[0];
 
 	paliashdr = (aliashdr_t*)Mod_Extradata(currententity->model);
-	pmdl = (mdl_t*)((byte*)paliashdr + paliashdr->model);
+	pmdl = (mdl_t*)((uint8_t*)paliashdr + paliashdr->model);
 
 	R_AliasSetupSkin();
 	R_AliasSetUpTransform(currententity->trivial_accept);

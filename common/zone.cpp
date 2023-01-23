@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd.h"
 #include "console.h"
 #include "sys.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 
 #define DYNAMIC_SIZE 0xc000
@@ -86,7 +86,7 @@ void Z_ClearZone(memzone_t* zone, int size)
 	// set the entire zone to one free block
 
 	zone->blocklist.next = zone->blocklist.prev = block =
-		(memblock_t*)((byte*)zone + sizeof(memzone_t));
+		(memblock_t*)((uint8_t*)zone + sizeof(memzone_t));
 	zone->blocklist.tag = 1; // in use block
 	zone->blocklist.id = 0;
 	zone->blocklist.size = 0;
@@ -110,7 +110,7 @@ void Z_Free(void* ptr)
 	if (!ptr)
 		Sys_Error("Z_Free: NULL pointer"sv);
 
-	memblock_t* block = (memblock_t*)((byte*)ptr - sizeof(memblock_t));
+	memblock_t* block = (memblock_t*)((uint8_t*)ptr - sizeof(memblock_t));
 	if (block->id != ZONEID)
 		Sys_Error("Z_Free: freed a pointer without ZONEID"sv);
 	if (block->tag == 0)
@@ -197,7 +197,7 @@ void* Z_TagMalloc(int size, int tag)
 	if (extra > MINFRAGMENT)
 	{
 		// there will be a free fragment after the allocated block
-		memblock_t* new_ = (memblock_t*)((byte*)base + size);
+		memblock_t* new_ = (memblock_t*)((uint8_t*)base + size);
 		new_->size = extra;
 		new_->tag = 0; // free block
 		new_->prev = base;
@@ -215,9 +215,9 @@ void* Z_TagMalloc(int size, int tag)
 	base->id = ZONEID;
 
 	// marker for memory trash testing
-	*(int*)((byte*)base + base->size - 4) = ZONEID;
+	*(int*)((uint8_t*)base + base->size - 4) = ZONEID;
 
-	return (byte*)base + sizeof(memblock_t);
+	return (uint8_t*)base + sizeof(memblock_t);
 }
 
 
@@ -237,7 +237,7 @@ void Z_Print(memzone_t* zone)
 
 		if (block->next == &zone->blocklist)
 			break; // all blocks have been hit 
-		if ((byte*)block + block->size != (byte*)block->next)
+		if ((uint8_t*)block + block->size != (uint8_t*)block->next)
 			Con_Printf((char*)"ERROR: block size does not touch the next block\n");
 		if (block->next->prev != block)
 			Con_Printf((char*)"ERROR: next block doesn't have proper back link\n");
@@ -259,7 +259,7 @@ void Z_CheckHeap(void)
 	{
 		if (block->next == &mainzone->blocklist)
 			break; // all blocks have been hit 
-		if ((byte*)block + block->size != (byte*)block->next)
+		if ((uint8_t*)block + block->size != (uint8_t*)block->next)
 			Sys_Error("Z_CheckHeap: block size does not touch the next block\n"sv);
 		if (block->next->prev != block)
 			Sys_Error("Z_CheckHeap: next block doesn't have proper back link\n"sv);
@@ -279,7 +279,7 @@ typedef struct
 	char name[8];
 } hunk_t;
 
-byte* hunk_base;
+uint8_t* hunk_base;
 int hunk_size;
 
 int hunk_low_used;
@@ -300,13 +300,13 @@ Run consistancy and sentinal trahing checks
 void Hunk_Check(void)
 {
 	using namespace std::string_view_literals;
-	for (hunk_t* h = (hunk_t*)hunk_base; (byte*)h != hunk_base + hunk_low_used;)
+	for (hunk_t* h = (hunk_t*)hunk_base; (uint8_t*)h != hunk_base + hunk_low_used;)
 	{
 		if (h->sentinal != HUNK_SENTINAL)
 			Sys_Error("Hunk_Check: trahsed sentinal"sv);
-		if (h->size < 16 || h->size + (byte*)h - hunk_base > hunk_size)
+		if (h->size < 16 || h->size + (uint8_t*)h - hunk_base > hunk_size)
 			Sys_Error("Hunk_Check: bad size"sv);
-		h = (hunk_t*)((byte*)h + h->size);
+		h = (hunk_t*)((uint8_t*)h + h->size);
 	}
 }
 
@@ -360,10 +360,10 @@ void Hunk_Print(bool all)
 		//
 		if (h->sentinal != HUNK_SENTINAL)
 			Sys_Error("Hunk_Check: trahsed sentinal"sv);
-		if (h->size < 16 || h->size + (byte*)h - hunk_base > hunk_size)
+		if (h->size < 16 || h->size + (uint8_t*)h - hunk_base > hunk_size)
 			Sys_Error("Hunk_Check: bad size"sv);
 
-		hunk_t* next = (hunk_t*)((byte*)h + h->size);
+		hunk_t* next = (hunk_t*)((uint8_t*)h + h->size);
 		count++;
 		totalblocks++;
 		sum += h->size;
@@ -601,7 +601,7 @@ void Cache_FreeLow(int new__low_hunk)
 		cache_system_t* c = cache_head.next;
 		if (c == &cache_head)
 			return; // nothing in cache at all
-		if ((byte*)c >= hunk_base + new__low_hunk)
+		if ((uint8_t*)c >= hunk_base + new__low_hunk)
 			return; // there is space to grow the hunk
 		Cache_Move(c); // reclaim the space
 	}
@@ -622,7 +622,7 @@ void Cache_FreeHigh(int new__high_hunk)
 		cache_system_t* c = cache_head.prev;
 		if (c == &cache_head)
 			return; // nothing in cache at all
-		if ((byte*)c + c->size <= hunk_base + hunk_size - new__high_hunk)
+		if ((uint8_t*)c + c->size <= hunk_base + hunk_size - new__high_hunk)
 			return; // there is space to grow the hunk
 		if (c == prev)
 			Cache_Free(c->user); // didn't move out of the way
@@ -698,7 +698,7 @@ cache_system_t* Cache_TryAlloc(int size, bool nobottom)
 	{
 		if (!nobottom || cs != cache_head.next)
 		{
-			if ((byte*)cs - (byte*)new_ >= size)
+			if ((uint8_t*)cs - (uint8_t*)new_ >= size)
 			{
 				// found space
 				memset(new_, 0, sizeof(*new_));
@@ -716,13 +716,13 @@ cache_system_t* Cache_TryAlloc(int size, bool nobottom)
 		}
 
 		// continue looking 
-		new_ = (cache_system_t*)((byte*)cs + cs->size);
+		new_ = (cache_system_t*)((uint8_t*)cs + cs->size);
 		cs = cs->next;
 	}
 	while (cs != &cache_head);
 
 	// try to allocate one at the very end
-	if (hunk_base + hunk_size - hunk_high_used - (byte*)new_ >= size)
+	if (hunk_base + hunk_size - hunk_high_used - (uint8_t*)new_ >= size)
 	{
 		memset(new_, 0, sizeof(*new_));
 		new_->size = size;
@@ -899,7 +899,7 @@ void Memory_Init(void* buf, int size)
 	using namespace std::string_view_literals;
 	int zonesize = DYNAMIC_SIZE;
 
-	hunk_base = (byte*)buf;
+	hunk_base = (uint8_t*)buf;
 	hunk_size = size;
 	hunk_low_used = 0;
 	hunk_high_used = 0;

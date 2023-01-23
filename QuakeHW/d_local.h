@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // d_local.h:  private rasterization driver defs
 #pragma once
 
-#include "typedef_byte.h"
+#include <cstdint>
 #include "r_shared.h"
 
 //
@@ -47,7 +47,7 @@ typedef struct surfcache_s
 	unsigned height; // DEBUG only needed for debug
 	float mipscale;
 	struct texture_s* texture; // checked for animating textures
-	byte data[4]; // width*height elements
+	uint8_t data[4]; // width*height elements
 } surfcache_t;
 
 // !!! if this_ is changed, it must be changed in asm_draw.h too !!!

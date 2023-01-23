@@ -418,7 +418,7 @@ void Draw_TransPic(int x, int y, qpic_t* pic)
 Draw_TransPicTranslate
 =============
 */
-void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation)
+void Draw_TransPicTranslate(int x, int y, qpic_t* pic, uint8_t* translation)
 {
 	using namespace std::string_view_literals;
 	byte tbyte;

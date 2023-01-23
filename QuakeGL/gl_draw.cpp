@@ -962,10 +962,10 @@ void GL_MipMap8Bit(byte* in, int width, int height)
 	{
 		for (int j = 0; j < width; j += 2, out += 1, in += 2)
 		{
-			byte* at1 = (byte*)(d_8to24table + in[0]);
-			byte* at2 = (byte*)(d_8to24table + in[1]);
-			byte* at3 = (byte*)(d_8to24table + in[width + 0]);
-			byte* at4 = (byte*)(d_8to24table + in[width + 1]);
+			byte* at1 = (uint8_t*)(d_8to24table + in[0]);
+			byte* at2 = (uint8_t*)(d_8to24table + in[1]);
+			byte* at3 = (uint8_t*)(d_8to24table + in[width + 0]);
+			byte* at4 = (uint8_t*)(d_8to24table + in[width + 1]);
 
 			unsigned short r = (at1[0] + at2[0] + at3[0] + at4[0]);
 			r >>= 5;
@@ -1026,7 +1026,7 @@ void GL_Upload32(unsigned* data, int width, int height, bool mipmap, bool alpha)
 		int miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
-			GL_MipMap((byte*)scaled, scaled_width, scaled_height);
+			GL_MipMap((uint8_t*)scaled, scaled_width, scaled_height);
 			scaled_width >>= 1;
 			scaled_height >>= 1;
 			if (scaled_width < 1)
@@ -1053,7 +1053,7 @@ done:;
 	}
 }
 
-void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha)
+void GL_Upload8_EXT(uint8_t* data, int width, int height, bool mipmap, bool alpha)
 {
 	using namespace std::string_view_literals;
 	int p;
@@ -1146,7 +1146,7 @@ done:;
 GL_Upload8
 ===============
 */
-void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha)
+void GL_Upload8(uint8_t* data, int width, int height, bool mipmap, bool alpha)
 {
 	using namespace std::string_view_literals;
 	static unsigned trans[640 * 480]; // FIXME, temporary
@@ -1195,7 +1195,7 @@ void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha)
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture(char* identifier, int width, int height, byte* data, bool mipmap, bool alpha)
+int GL_LoadTexture(char* identifier, int width, int height, uint8_t* data, bool mipmap, bool alpha)
 {
 	using namespace std::string_view_literals;
 	bool noalpha;

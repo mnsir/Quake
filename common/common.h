@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 
 #include "quakedef.h"
-#include "typedef_byte.h"
+#include <cstdint>
 #include "zone.h"
 
 //============================================================================
@@ -41,7 +41,7 @@ typedef struct sizebuf_s
 {
 	bool allowoverflow; // if false, do a Sys_Error
 	bool overflowed; // set to true if the buffer size failed
-	byte* data;
+	uint8_t* data;
 	int maxsize;
 	int cursize;
 } sizebuf_t;
@@ -69,7 +69,7 @@ void InsertLinkAfter(link_t* l, link_t* after);
 // (type *)STRUCT_FROM_LINK(link_t *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this_ mess!
-#define STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
+#define STRUCT_FROM_LINK(l,t,m) ((t *)((uint8_t *)l - (int)&(((t *)0)->m)))
 
 //============================================================================
 
@@ -173,9 +173,9 @@ int COM_OpenFile(char* filename, int* hndl);
 int COM_FOpenFile(char* filename, FILE** file);
 void COM_CloseFile(int h);
 
-byte* COM_LoadStackFile(char* path, void* buffer, int bufsize);
-byte* COM_LoadTempFile(char* path);
-byte* COM_LoadHunkFile(char* path);
+uint8_t* COM_LoadStackFile(char* path, void* buffer, int bufsize);
+uint8_t* COM_LoadTempFile(char* path);
+uint8_t* COM_LoadHunkFile(char* path);
 void COM_LoadCacheFile(char* path, cache_user_t* cu);
 
 

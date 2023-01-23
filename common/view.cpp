@@ -252,10 +252,10 @@ cshift_t cshift_lava = {{255, 80, 0}, 150};
 
 cvar_t v_gamma = {(char*)"gamma", (char*)"1", true};
 
-byte gammatable[256]; // palette is sent through this_
+uint8_t gammatable[256]; // palette is sent through this_
 
 #ifdef GLQUAKE
-byte ramps[3][256];
+uint8_t ramps[3][256];
 float v_blend[4]; // rgba 0.0 - 1.0
 #endif
 

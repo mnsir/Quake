@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cvar.h"
 #include "mathlib.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 #define CSHIFT_CONTENTS 0
 #define CSHIFT_DAMAGE 1
@@ -31,8 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern cvar_t v_gamma;
 extern cvar_t crosshair;
-extern byte gammatable[256]; // palette is sent through this_
-extern byte ramps[3][256];
+extern uint8_t gammatable[256]; // palette is sent through this_
+extern uint8_t ramps[3][256];
 extern float v_blend[4];
 
 extern cvar_t lcd_x;

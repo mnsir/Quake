@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "cvar.h"
 
 struct qsockaddr
@@ -32,12 +34,12 @@ typedef struct qsocket_s
 	unsigned int sendSequence;
 	unsigned int unreliableSendSequence;
 	int sendMessageLength;
-	byte sendMessage[NET_MAXMESSAGE];
+	uint8_t sendMessage[NET_MAXMESSAGE];
 
 	unsigned int receiveSequence;
 	unsigned int unreliableReceiveSequence;
 	int receiveMessageLength;
-	byte receiveMessage[NET_MAXMESSAGE];
+	uint8_t receiveMessage[NET_MAXMESSAGE];
 
 	struct qsockaddr addr;
 	char address[NET_NAMELEN];

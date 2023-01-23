@@ -301,7 +301,7 @@ bool VID_AllocBuffers(int width, int height)
 
 	d_pzbuffer = static_cast<short*>(Hunk_HighAllocName(tbuffersize, (char*)"video"));
 
-	vid_surfcache = (byte*)d_pzbuffer +
+	vid_surfcache = (uint8_t*)d_pzbuffer +
 		width * height * sizeof(*d_pzbuffer);
 
 	return true;
@@ -2373,7 +2373,7 @@ void VID_Update(vrect_t* rects)
 D_BeginDirectRect
 ================
 */
-void D_BeginDirectRect(int x, int y, byte* pbitmap, int width, int height)
+void D_BeginDirectRect(int x, int y, uint8_t* pbitmap, int width, int height)
 {
 	using namespace std::string_view_literals;
 	int i, j, reps, repshift;
@@ -2441,10 +2441,10 @@ void D_BeginDirectRect(int x, int y, byte* pbitmap, int width, int height)
 			for (j = 0; j < reps; j++)
 			{
 				memcpy(&backingbuf[(i + j) * 24],
-				       (byte*)mgldc->surface + x +
+				       (uint8_t*)mgldc->surface + x +
 				       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
 				       width);
-				memcpy((byte*)mgldc->surface + x +
+				memcpy((uint8_t*)mgldc->surface + x +
 				       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
 				       &pbitmap[(i >> repshift) * width],
 				       width);
@@ -2533,7 +2533,7 @@ void D_EndDirectRect(int x, int y, int width, int height)
 		{
 			for (j = 0; j < reps; j++)
 			{
-				memcpy((byte*)mgldc->surface + x +
+				memcpy((uint8_t*)mgldc->surface + x +
 				       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
 				       &backingbuf[(i + j) * 24],
 				       width);

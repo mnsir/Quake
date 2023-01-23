@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef GLQUAKE
 #include "cl_main.h"
-#include "typedef_byte.h"
+#include <cstdint>
 #include "r_shared.h"
 
 #define ALIAS_BASE_SIZE_RATIO (1.0 / 11.0)
@@ -94,9 +94,9 @@ typedef struct clipplane_s
 	vec3_t normal;
 	float dist;
 	struct clipplane_s* next;
-	byte leftedge;
-	byte rightedge;
-	byte reserved[2];
+	uint8_t leftedge;
+	uint8_t rightedge;
+	uint8_t reserved[2];
 } clipplane_t;
 
 extern clipplane_t view_clipplanes[4];

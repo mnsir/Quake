@@ -425,9 +425,6 @@
     <ClInclude Include="..\common\enum_synctype.h">
       <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\typedef_byte.h">
-      <Filter>other</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\snd_dma.h">
       <Filter>sound</Filter>
     </ClInclude>

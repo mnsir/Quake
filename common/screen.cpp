@@ -175,7 +175,7 @@ void WritePCXfile(char* filename, byte* data, int width, int height,
 		*pack++ = *palette++;
 
 	// write output file 
-	int length = pack - (byte*)pcx;
+	int length = pack - (uint8_t*)pcx;
 	COM_WriteFile(filename, pcx, length);
 }
 

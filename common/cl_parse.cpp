@@ -167,7 +167,7 @@ void CL_KeepaliveMessage(void)
 {
 	static float lastmsg;
 	int ret;
-	byte olddata[8192];
+	uint8_t olddata[8192];
 
 	if (sv.active)
 		return; // no need if server is local
@@ -653,8 +653,8 @@ void CL_NewTranslation(int slot)
 
 	if (slot > cl.maxclients)
 		Sys_Error("CL_NewTranslation: slot > cl.maxclients"sv);
-	byte* dest = cl.scores[slot].translations;
-	byte* source = vid.colormap;
+	uint8_t* dest = cl.scores[slot].translations;
+	uint8_t* source = vid.colormap;
 	memcpy(dest, vid.colormap, sizeof(cl.scores[slot].translations));
 	int top = cl.scores[slot].colors & 0xf0;
 	int bottom = (cl.scores[slot].colors & 15) << 4;

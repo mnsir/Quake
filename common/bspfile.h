@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #pragma once
 
-#include "typedef_byte.h"
+#include <cstdint>
 
 // upper design bounds
 
@@ -199,7 +199,7 @@ typedef struct
 	short texinfo;
 
 	// lighting info
-	byte styles[MAXLIGHTMAPS];
+	uint8_t styles[MAXLIGHTMAPS];
 	int lightofs; // start of [numstyles*surfsize] samples
 } dface_t;
 
@@ -224,6 +224,6 @@ typedef struct
 	unsigned short firstmarksurface;
 	unsigned short nummarksurfaces;
 
-	byte ambient_level[NUM_AMBIENTS];
+	uint8_t ambient_level[NUM_AMBIENTS];
 } dleaf_t;
 

@@ -62,7 +62,7 @@ int D_SurfaceCacheForRes(int width, int height)
 void D_CheckCacheGuard(void)
 {
 	using namespace std::string_view_literals;
-	byte* s = (byte*)sc_base + sc_size;
+	byte* s = (uint8_t*)sc_base + sc_size;
 	for (int i = 0; i < GUARDSIZE; i++)
 		if (s[i] != (byte)i)
 			Sys_Error("D_CheckCacheGuard: failed"sv);
@@ -70,7 +70,7 @@ void D_CheckCacheGuard(void)
 
 void D_ClearCacheGuard(void)
 {
-	byte* s = (byte*)sc_base + sc_size;
+	byte* s = (uint8_t*)sc_base + sc_size;
 	for (int i = 0; i < GUARDSIZE; i++)
 		s[i] = (byte)i;
 }
@@ -143,7 +143,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 	// if there is not size bytes after the rover, reset to the start
 	bool wrapped_this__time = false;
 
-	if (!sc_rover || (byte*)sc_rover - (byte*)sc_base > sc_size - size)
+	if (!sc_rover || (uint8_t*)sc_rover - (uint8_t*)sc_base > sc_size - size)
 	{
 		if (sc_rover)
 		{
@@ -173,7 +173,7 @@ surfcache_t* D_SCAlloc(int width, int size)
 	// create a fragment out of any leftovers
 	if (new_->size - size > 256)
 	{
-		sc_rover = (surfcache_t*)((byte*)new_ + size);
+		sc_rover = (surfcache_t*)((uint8_t*)new_ + size);
 		sc_rover->size = new_->size - size;
 		sc_rover->next = new_->next;
 		sc_rover->width = 0;

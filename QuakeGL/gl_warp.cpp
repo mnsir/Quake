@@ -418,7 +418,7 @@ void R_InitSky(texture_t* mt)
 	int g, b;
 	extern int skytexturenum;
 
-	byte* src = (byte*)mt + mt->offsets[0];
+	byte* src = (uint8_t*)mt + mt->offsets[0];
 
 	// make an average value for the back to avoid
 	// a fringe on the top level
@@ -430,15 +430,15 @@ void R_InitSky(texture_t* mt)
 			p = src[i * 256 + j + 128];
 			unsigned* rgba = &d_8to24table[p];
 			trans[(i * 128) + j] = *rgba;
-			r += ((byte*)rgba)[0];
-			g += ((byte*)rgba)[1];
-			b += ((byte*)rgba)[2];
+			r += ((uint8_t*)rgba)[0];
+			g += ((uint8_t*)rgba)[1];
+			b += ((uint8_t*)rgba)[2];
 		}
 
-	((byte*)&transpix)[0] = r / (128 * 128);
-	((byte*)&transpix)[1] = g / (128 * 128);
-	((byte*)&transpix)[2] = b / (128 * 128);
-	((byte*)&transpix)[3] = 0;
+	((uint8_t*)&transpix)[0] = r / (128 * 128);
+	((uint8_t*)&transpix)[1] = g / (128 * 128);
+	((uint8_t*)&transpix)[2] = b / (128 * 128);
+	((uint8_t*)&transpix)[3] = 0;
 
 
 	if (!solidskytexture)

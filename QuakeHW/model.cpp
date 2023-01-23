@@ -377,7 +377,7 @@ void Mod_LoadTextures(lump_t* l)
 		m->dataofs[i] = LittleLong(m->dataofs[i]);
 		if (m->dataofs[i] == -1)
 			continue;
-		miptex_t* mt = (miptex_t*)((byte*)m + m->dataofs[i]);
+		miptex_t* mt = (miptex_t*)((uint8_t*)m + m->dataofs[i]);
 		mt->width = LittleLong(mt->width);
 		mt->height = LittleLong(mt->height);
 		for (j = 0; j < MIPLEVELS; j++)
@@ -1110,7 +1110,7 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		Sys_Error(std::format("Mod_LoadBrushModel: {} has wrong version number ({} should be {})"sv, mod->name, i, BSPVERSION));
 
 	// swap all the lumps
-	mod_base = (byte*)header;
+	mod_base = (uint8_t*)header;
 
 	for (i = 0; i < sizeof(dheader_t) / 4; i++)
 		((int*)header)[i] = LittleLong(((int*)header)[i]);
@@ -1206,7 +1206,7 @@ void* Mod_LoadAliasFrame(void* pin, int* pframeindex, int numv,
 	trivertx_t* pinframe = (trivertx_t*)(pdaliasframe + 1);
 	trivertx_t* pframe = static_cast<trivertx_t*>(Hunk_AllocName(numv * sizeof*pframe, loadname));
 
-	*pframeindex = (byte*)pframe - (byte*)pheader;
+	*pframeindex = (uint8_t*)pframe - (uint8_t*)pheader;
 
 	for (int j = 0; j < numv; j++)
 	{
@@ -1253,13 +1253,13 @@ void* Mod_LoadAliasGroup(void* pin, int* pframeindex, int numv,
 		pbboxmax->v[i] = pingroup->bboxmax.v[i];
 	}
 
-	*pframeindex = (byte*)paliasgroup - (byte*)pheader;
+	*pframeindex = (uint8_t*)paliasgroup - (uint8_t*)pheader;
 
 	daliasinterval_t* pin_intervals = (daliasinterval_t*)(pingroup + 1);
 
 	float* poutintervals = static_cast<float*>(Hunk_AllocName(numframes * sizeof(float), loadname));
 
-	paliasgroup->intervals = (byte*)poutintervals - (byte*)pheader;
+	paliasgroup->intervals = (uint8_t*)poutintervals - (uint8_t*)pheader;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -1297,8 +1297,8 @@ void* Mod_LoadAliasSkin(void* pin, int* pskinindex, int skinsize,
 {
 	using namespace std::string_view_literals;
 	byte* pskin = static_cast<byte*>(Hunk_AllocName(skinsize * r_pixbytes, loadname));
-	byte* pinskin = (byte*)pin;
-	*pskinindex = pskin - (byte*)pheader;
+	byte* pinskin = (uint8_t*)pin;
+	*pskinindex = pskin - (uint8_t*)pheader;
 
 	if (r_pixbytes == 1)
 	{
@@ -1343,13 +1343,13 @@ void* Mod_LoadAliasSkinGroup(void* pin, int* pskinindex, int skinsize,
 
 	paliasskingroup->numskins = numskins;
 
-	*pskinindex = (byte*)paliasskingroup - (byte*)pheader;
+	*pskinindex = (uint8_t*)paliasskingroup - (uint8_t*)pheader;
 
 	daliasskininterval_t* pinskinintervals = (daliasskininterval_t*)(pinskingroup + 1);
 
 	float* poutskinintervals = static_cast<float*>(Hunk_AllocName(numskins * sizeof(float), loadname));
 
-	paliasskingroup->intervals = (byte*)poutskinintervals - (byte*)pheader;
+	paliasskingroup->intervals = (uint8_t*)poutskinintervals - (uint8_t*)pheader;
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -1406,7 +1406,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 		LittleLong(pinmodel->numtris) * sizeof(mtriangle_t);
 
 	pheader = static_cast<aliashdr_t*>(Hunk_AllocName(size, loadname));
-	pmodel = (mdl_t*)((byte*)&pheader[1] +
+	pmodel = (mdl_t*)((uint8_t*)&pheader[1] +
 		(LittleLong(pinmodel->numframes) - 1) *
 		sizeof(pheader->frames[0]));
 
@@ -1455,7 +1455,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	if (pmodel->skinwidth & 0x03)
 		Sys_Error("Mod_LoadAliasModel: skinwidth not multiple of 4"sv);
 
-	pheader->model = (byte*)pmodel - (byte*)pheader;
+	pheader->model = (uint8_t*)pmodel - (uint8_t*)pheader;
 
 	//
 	// load the skins
@@ -1470,7 +1470,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	maliasskindesc_t* pskindesc = static_cast<maliasskindesc_t*>(Hunk_AllocName(numskins * sizeof(maliasskindesc_t),
 		loadname));
 
-	pheader->skindesc = (byte*)pskindesc - (byte*)pheader;
+	pheader->skindesc = (uint8_t*)pskindesc - (uint8_t*)pheader;
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -1499,7 +1499,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	pstverts = (stvert_t*)&pmodel[1];
 	pinstverts = (stvert_t*)pskintype;
 
-	pheader->stverts = (byte*)pstverts - (byte*)pheader;
+	pheader->stverts = (uint8_t*)pstverts - (uint8_t*)pheader;
 
 	for (i = 0; i < pmodel->numverts; i++)
 	{
@@ -1515,7 +1515,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	mtriangle_t* ptri = (mtriangle_t*)&pstverts[pmodel->numverts];
 	pintriangles = (dtriangle_t*)&pinstverts[pmodel->numverts];
 
-	pheader->triangles = (byte*)ptri - (byte*)pheader;
+	pheader->triangles = (uint8_t*)ptri - (uint8_t*)pheader;
 
 	for (i = 0; i < pmodel->numtris; i++)
 	{
@@ -1624,7 +1624,7 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe)
 	}
 	else if (r_pixbytes == 2)
 	{
-		byte* ppixin = (byte*)(pinframe + 1);
+		byte* ppixin = (uint8_t*)(pinframe + 1);
 		unsigned short* ppixout = (unsigned short*)&pspriteframe->pixels[0];
 
 		for (int i = 0; i < size; i++)
@@ -1635,7 +1635,7 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe)
 		Sys_Error(std::format("Mod_LoadSpriteFrame: driver set invalid r_pixbytes: {}\n"sv, r_pixbytes));
 	}
 
-	return (byte*)pinframe + sizeof(dspriteframe_t) + size;
+	return (uint8_t*)pinframe + sizeof(dspriteframe_t) + size;
 }
 
 

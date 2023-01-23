@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int wad_numlumps;
 lumpinfo_t* wad_lumps;
-byte* wad_base;
+uint8_t* wad_base;
 
 void SwapPic(qpic_t* pic);
 

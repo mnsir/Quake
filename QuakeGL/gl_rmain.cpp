@@ -779,9 +779,9 @@ void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 
 	lastposenum = posenum;
 
-	trivertx_t* verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
+	trivertx_t* verts = (trivertx_t*)((uint8_t*)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
-	int* order = (int*)((byte*)paliashdr + paliashdr->commands);
+	int* order = (int*)((uint8_t*)paliashdr + paliashdr->commands);
 
 	while (true)
 	{
@@ -836,9 +836,9 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 	float lheight = currententity->origin[2] - lightspot[2];
 
 	float height = 0;
-	trivertx_t* verts = (trivertx_t*)((byte*)paliashdr + paliashdr->posedata);
+	trivertx_t* verts = (trivertx_t*)((uint8_t*)paliashdr + paliashdr->posedata);
 	verts += posenum * paliashdr->poseverts;
-	int* order = (int*)((byte*)paliashdr + paliashdr->commands);
+	int* order = (int*)((uint8_t*)paliashdr + paliashdr->commands);
 
 	height = -lheight + 1.0;
 

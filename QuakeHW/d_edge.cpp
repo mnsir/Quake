@@ -233,7 +233,7 @@ void D_DrawSurfaces(void)
 			{
 				pface = (msurface_t*)s->data;
 				miplevel = 0;
-				cacheblock = (byte*)pface->texinfo->texture +
+				cacheblock = (uint8_t*)pface->texinfo->texture +
 					pface->texinfo->texture->offsets[0];
 				cachewidth = 64;
 

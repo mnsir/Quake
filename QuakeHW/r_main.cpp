@@ -57,7 +57,7 @@ int r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
 bool r_surfsonstack;
 int r_clipflags;
 
-byte* r_warpbuffer;
+uint8_t* r_warpbuffer;
 
 byte* r_stack_start;
 
@@ -166,7 +166,7 @@ void R_InitTextures(void)
 
 	for (int m = 0; m < 4; m++)
 	{
-		byte* dest = (byte*)r_notexture_mip + r_notexture_mip->offsets[m];
+		byte* dest = (uint8_t*)r_notexture_mip + r_notexture_mip->offsets[m];
 		for (int y = 0; y < (16 >> m); y++)
 			for (int x = 0; x < (16 >> m); x++)
 			{
@@ -188,7 +188,7 @@ void R_Init(void)
 	int dummy;
 
 	// get stack position so we can guess if we are going to overflow
-	r_stack_start = (byte*)&dummy;
+	r_stack_start = (uint8_t*)&dummy;
 
 	R_InitTurb();
 
@@ -1004,7 +1004,7 @@ void R_RenderView(void)
 	using namespace std::string_view_literals;
 	int dummy;
 
-	int delta = (byte*)&dummy - r_stack_start;
+	int delta = (uint8_t*)&dummy - r_stack_start;
 	if (delta < -10000 || delta > 10000)
 		Sys_Error("R_RenderView: called without enough stack"sv);
 

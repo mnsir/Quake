@@ -66,7 +66,7 @@ void D_FillRect(vrect_t* rect, int color)
 		{
 			for (rx = 0; rx < rwidth; rx++)
 				ldest[rx] = color;
-			ldest = (unsigned*)((byte*)ldest + vid.rowbytes);
+			ldest = (unsigned*)((uint8_t*)ldest + vid.rowbytes);
 		}
 	}
 	else

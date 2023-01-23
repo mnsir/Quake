@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 #include "mathlib.h"
-#include "typedef_byte.h"
+#include <cstdint>
 #include "enum_synctype.h"
 
 
@@ -76,8 +76,8 @@ typedef struct dtriangle_s
 
 typedef struct
 {
-	byte v[3];
-	byte lightnormalindex;
+	uint8_t v[3];
+	uint8_t lightnormalindex;
 } trivertx_t;
 
 typedef struct

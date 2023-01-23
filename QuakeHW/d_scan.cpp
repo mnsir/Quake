@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mathlib.h"
 #include "render.h"
 #include "r_local.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 unsigned char *r_turb_pbase, *r_turb_pdest;
 fixed16_t r_turb_s, r_turb_t, r_turb_sstep, r_turb_tstep;
@@ -48,7 +48,7 @@ D_WarpScreen
 void D_WarpScreen(void)
 {
 	int u, v;
-	byte* rowptr[MAXHEIGHT + (AMP2 * 2)];
+	uint8_t* rowptr[MAXHEIGHT + (AMP2 * 2)];
 	int column[MAXWIDTH + (AMP2 * 2)];
 
 	int w = r_refdef.vrect.width;
@@ -70,12 +70,12 @@ void D_WarpScreen(void)
 	}
 
 	int* turb = intsintable + ((int)(cl.time * SPEED) & (CYCLE - 1));
-	byte* dest = vid.buffer + scr_vrect.y * vid.rowbytes + scr_vrect.x;
+	uint8_t* dest = vid.buffer + scr_vrect.y * vid.rowbytes + scr_vrect.x;
 
 	for (v = 0; v < scr_vrect.height; v++, dest += vid.rowbytes)
 	{
 		int* col = &column[turb[v]];
-		byte** row = &rowptr[v];
+		uint8_t** row = &rowptr[v];
 
 		for (u = 0; u < scr_vrect.width; u += 4)
 		{

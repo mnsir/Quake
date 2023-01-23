@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "d_iface.h"
 #include "d_local.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 
 /*
@@ -32,7 +32,7 @@ D_DrawZPoint
 void D_DrawZPoint(void)
 {
 	short* pz = d_pzbuffer + (d_zwidth * r_zpointdesc.v) + r_zpointdesc.u;
-	byte* pdest = d_viewbuffer + d_scantable[r_zpointdesc.v] + r_zpointdesc.u;
+	uint8_t* pdest = d_viewbuffer + d_scantable[r_zpointdesc.v] + r_zpointdesc.u;
 	int izi = (int)(r_zpointdesc.zi * 0x8000);
 
 	if (*pz <= izi)

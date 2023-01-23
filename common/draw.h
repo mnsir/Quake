@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // to touch the vid buffer
 #pragma once
 
-#include "typedef_byte.h"
+#include <cstdint>
 #include "wad.h"
 
 
@@ -33,7 +33,7 @@ void Draw_Character(int x, int y, int num);
 void Draw_DebugChar(char num);
 void Draw_Pic(int x, int y, qpic_t* pic);
 void Draw_TransPic(int x, int y, qpic_t* pic);
-void Draw_TransPicTranslate(int x, int y, qpic_t* pic, byte* translation);
+void Draw_TransPicTranslate(int x, int y, qpic_t* pic, uint8_t* translation);
 void Draw_ConsoleBackground(int lines);
 void Draw_BeginDisc(void);
 void Draw_EndDisc(void);

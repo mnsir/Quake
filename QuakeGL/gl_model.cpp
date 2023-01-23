@@ -198,7 +198,7 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 	return decompressed;
 }
 
-byte* Mod_LeafPVS(mleaf_t* leaf, model_t* model)
+uint8_t* Mod_LeafPVS(mleaf_t* leaf, model_t* model)
 {
 	if (leaf == model->leafs)
 		return mod_novis;
@@ -401,7 +401,7 @@ void Mod_LoadTextures(lump_t* l)
 		m->dataofs[i] = LittleLong(m->dataofs[i]);
 		if (m->dataofs[i] == -1)
 			continue;
-		miptex_t* mt = (miptex_t*)((byte*)m + m->dataofs[i]);
+		miptex_t* mt = (miptex_t*)((uint8_t*)m + m->dataofs[i]);
 		mt->width = LittleLong(mt->width);
 		mt->height = LittleLong(mt->height);
 		for (j = 0; j < MIPLEVELS; j++)
@@ -427,7 +427,7 @@ void Mod_LoadTextures(lump_t* l)
 		else
 		{
 			texture_mode = GL_LINEAR_MIPMAP_NEAREST; //_LINEAR;
-			tx->gl_texturenum = GL_LoadTexture(mt->name, tx->width, tx->height, (byte*)(tx + 1), true, false);
+			tx->gl_texturenum = GL_LoadTexture(mt->name, tx->width, tx->height, (uint8_t*)(tx + 1), true, false);
 			texture_mode = GL_LINEAR;
 		}
 	}
@@ -1151,7 +1151,7 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		Sys_Error(std::format("Mod_LoadBrushModel: {} has wrong version number ({} should be {})"sv, mod->name, i, BSPVERSION));
 
 	// swap all the lumps
-	mod_base = (byte*)header;
+	mod_base = (uint8_t*)header;
 
 	for (i = 0; i < sizeof(dheader_t) / 4; i++)
 		((int*)header)[i] = LittleLong(((int*)header)[i]);
@@ -1404,7 +1404,7 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 	byte* copy;
 	byte* texels;
 
-	byte* skin = (byte*)(pskintype + 1);
+	byte* skin = (uint8_t*)(pskintype + 1);
 
 	if (numskins < 1 || numskins > MAX_SKINS)
 		Sys_Error(std::format("Mod_LoadAliasModel: Invalid # of skins: {}\n"sv, numskins));
@@ -1420,7 +1420,7 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 			// save 8 bit texels for the player model to remap
 			// if (!strcmp(loadmodel->name,"progs/player.mdl")) {
 			texels = static_cast<byte*>(Hunk_AllocName(s, loadname));
-			pheader->texels[i] = texels - (byte*)pheader;
+			pheader->texels[i] = texels - (uint8_t*)pheader;
 			memcpy(texels, pskintype + 1, s);
 			// }
 			sprintf(name, (char*)"%s_%i", loadmodel->name, i);
@@ -1429,8 +1429,8 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 				pheader->gl_texturenum[i][2] =
 				pheader->gl_texturenum[i][3] =
 				GL_LoadTexture(name, pheader->skinwidth,
-				               pheader->skinheight, (byte*)(pskintype + 1), true, false);
-			pskintype = (daliasskintype_t*)((byte*)(pskintype + 1) + s);
+				               pheader->skinheight, (uint8_t*)(pskintype + 1), true, false);
+			pskintype = (daliasskintype_t*)((uint8_t*)(pskintype + 1) + s);
 		}
 		else
 		{
@@ -1448,14 +1448,14 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 				if (j == 0)
 				{
 					texels = static_cast<byte*>(Hunk_AllocName(s, loadname));
-					pheader->texels[i] = texels - (byte*)pheader;
+					pheader->texels[i] = texels - (uint8_t*)pheader;
 					memcpy(texels, pskintype, s);
 				}
 				sprintf(name, (char*)"%s_%i_%i", loadmodel->name, i, j);
 				pheader->gl_texturenum[i][j & 3] =
 					GL_LoadTexture(name, pheader->skinwidth,
-					               pheader->skinheight, (byte*)(pskintype), true, false);
-				pskintype = (daliasskintype_t*)((byte*)(pskintype) + s);
+					               pheader->skinheight, (uint8_t*)(pskintype), true, false);
+				pskintype = (daliasskintype_t*)((uint8_t*)(pskintype) + s);
 			}
 			int k = j;
 			for (/* */; j < 4; j++)
@@ -1663,9 +1663,9 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe, int framenum)
 	pspriteframe->right = width + origin[0];
 
 	sprintf(name, (char*)"%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture(name, width, height, (byte*)(pinframe + 1), true, true);
+	pspriteframe->gl_texturenum = GL_LoadTexture(name, width, height, (uint8_t*)(pinframe + 1), true, true);
 
-	return (byte*)pinframe + sizeof(dspriteframe_t) + size;
+	return (uint8_t*)pinframe + sizeof(dspriteframe_t) + size;
 }
 
 

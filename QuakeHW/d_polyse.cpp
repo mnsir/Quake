@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "d_iface.h"
 #include "d_local.h"
-#include "typedef_byte.h"
+#include <cstdint>
 
 
 // TODO: put in span spilling to shrink list size
@@ -57,7 +57,7 @@ typedef struct
 
 int r_p0[6], r_p1[6], r_p2[6];
 
-byte* d_pcolormap;
+uint8_t* d_pcolormap;
 
 int d_aflatcolor;
 int d_xdenom;
@@ -88,7 +88,7 @@ int d_aspancount, d_countextrastep;
 spanpackage_t* a_spans;
 spanpackage_t* d_pedgespanpackage;
 static int ystart;
-byte *d_pdest, *d_ptex;
+uint8_t*d_pdest, *d_ptex;
 short* d_pz;
 int d_sfrac, d_tfrac, d_light, d_zi;
 int d_ptexextrastep, d_sfracextrastep;
@@ -1165,9 +1165,9 @@ static adivtab_t adivtab[32 * 32] = {
 
 };
 
-byte* skintable[MAX_LBM_HEIGHT];
+uint8_t* skintable[MAX_LBM_HEIGHT];
 int skinwidth;
-byte* skinstart;
+uint8_t* skinstart;
 
 void D_PolysetDrawSpans8(spanpackage_t* pspanpackage);
 void D_PolysetCalcGradients(int skinwidth);
@@ -1224,7 +1224,7 @@ void D_PolysetDrawFinalVerts(finalvert_t* fv, int numverts)
 			{
 				*zbuf = z;
 				int pix = skintable[fv->v[3] >> 16][fv->v[2] >> 16];
-				pix = ((byte*)acolormap)[pix + (fv->v[4] & 0xFF00)];
+				pix = ((uint8_t*)acolormap)[pix + (fv->v[4] & 0xFF00)];
 				d_viewbuffer[d_scantable[fv->v[1]] + fv->v[0]] = pix;
 			}
 		}
@@ -1257,7 +1257,7 @@ void D_DrawSubdiv(void)
 			continue;
 		}
 
-		d_pcolormap = &((byte*)acolormap)[index0->v[4] & 0xFF00];
+		d_pcolormap = &((uint8_t*)acolormap)[index0->v[4] & 0xFF00];
 
 		if (ptri[i].facesfront)
 		{
@@ -1440,8 +1440,8 @@ void D_PolysetUpdateTables(void)
 		r_affinetridesc.pskin != skinstart)
 	{
 		skinwidth = r_affinetridesc.skinwidth;
-		skinstart = (byte*)r_affinetridesc.pskin;
-		byte* s = skinstart;
+		skinstart = (uint8_t*)r_affinetridesc.pskin;
+		uint8_t* s = skinstart;
 		for (int i = 0; i < MAX_LBM_HEIGHT; i++, s += skinwidth)
 			skintable[i] = s;
 	}
@@ -1628,8 +1628,8 @@ void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 
 		if (lcount)
 		{
-			byte* lpdest = (byte*)pspanpackage->pdest;
-			byte* lptex = pspanpackage->ptex;
+			uint8_t* lpdest = (uint8_t*)pspanpackage->pdest;
+			uint8_t* lptex = pspanpackage->ptex;
 			short* lpz = pspanpackage->pz;
 			int lsfrac = pspanpackage->sfrac;
 			int ltfrac = pspanpackage->tfrac;
@@ -1640,7 +1640,7 @@ void D_PolysetDrawSpans8(spanpackage_t* pspanpackage)
 			{
 				if ((lzi >> 16) >= *lpz)
 				{
-					*lpdest = ((byte*)acolormap)[*lptex + (llight & 0xFF00)];
+					*lpdest = ((uint8_t*)acolormap)[*lptex + (llight & 0xFF00)];
 					// gel mapping *lpdest = gelmap[*lpdest];
 					*lpz = lzi >> 16;
 				}
@@ -1688,7 +1688,7 @@ void D_PolysetFillSpans8(spanpackage_t* pspanpackage)
 
 		if (lcount)
 		{
-			byte* lpdest = (byte*)pspanpackage->pdest;
+			uint8_t* lpdest = (uint8_t*)pspanpackage->pdest;
 
 			do
 			{
@@ -1737,7 +1737,7 @@ void D_RasterizeAliasPolySmooth(void)
 	ystart = plefttop[1];
 	d_aspancount = plefttop[0] - prighttop[0];
 
-	d_ptex = (byte*)r_affinetridesc.pskin + (plefttop[2] >> 16) +
+	d_ptex = (uint8_t*)r_affinetridesc.pskin + (plefttop[2] >> 16) +
 		(plefttop[3] >> 16) * r_affinetridesc.skinwidth;
 	d_sfrac = plefttop[2] & 0xFFFF;
 	d_tfrac = plefttop[3] & 0xFFFF;
@@ -1819,7 +1819,7 @@ void D_RasterizeAliasPolySmooth(void)
 
 		ystart = plefttop[1];
 		d_aspancount = plefttop[0] - prighttop[0];
-		d_ptex = (byte*)r_affinetridesc.pskin + (plefttop[2] >> 16) +
+		d_ptex = (uint8_t*)r_affinetridesc.pskin + (plefttop[2] >> 16) +
 			(plefttop[3] >> 16) * r_affinetridesc.skinwidth;
 		d_sfrac = 0;
 		d_tfrac = 0;

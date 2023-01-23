@@ -155,7 +155,7 @@ void Q_memset(void* dest, int fill, int count)
 	}
 	else
 		for (i = 0; i < count; i++)
-			((byte*)dest)[i] = fill;
+			((uint8_t*)dest)[i] = fill;
 }
 
 void Q_memcpy(void* dest, void* src, int count)
@@ -170,7 +170,7 @@ void Q_memcpy(void* dest, void* src, int count)
 	}
 	else
 		for (i = 0; i < count; i++)
-			((byte*)dest)[i] = ((byte*)src)[i];
+			((uint8_t*)dest)[i] = ((uint8_t*)src)[i];
 }
 
 int Q_memcmp(void* m1, void* m2, int count)
@@ -178,7 +178,7 @@ int Q_memcmp(void* m1, void* m2, int count)
 	while (count)
 	{
 		count--;
-		if (((byte*)m1)[count] != ((byte*)m2)[count])
+		if (((uint8_t*)m1)[count] != ((uint8_t*)m2)[count])
 			return -1;
 	}
 	return 0;
@@ -442,8 +442,8 @@ float (*LittleFloat)(float l);
 
 short ShortSwap(short l)
 {
-	byte b1 = l & 255;
-	byte b2 = (l >> 8) & 255;
+	uint8_t b1 = l & 255;
+	uint8_t b2 = (l >> 8) & 255;
 
 	return (b1 << 8) + b2;
 }
@@ -455,10 +455,10 @@ short ShortNoSwap(short l)
 
 int LongSwap(int l)
 {
-	byte b1 = l & 255;
-	byte b2 = (l >> 8) & 255;
-	byte b3 = (l >> 16) & 255;
-	byte b4 = (l >> 24) & 255;
+	uint8_t b1 = l & 255;
+	uint8_t b2 = (l >> 8) & 255;
+	uint8_t b3 = (l >> 16) & 255;
+	uint8_t b4 = (l >> 24) & 255;
 
 	return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
 }
@@ -473,7 +473,7 @@ float FloatSwap(float f)
 	union
 	{
 		float f;
-		byte b[4];
+		uint8_t b[4];
 	} dat1, dat2;
 
 
@@ -505,26 +505,26 @@ Handles byte ordering and avoids alignment errors
 
 void MSG_WriteChar(sizebuf_t* sb, int c)
 {
-	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
+	uint8_t* buf = static_cast<uint8_t*>(SZ_GetSpace(sb, 1));
 	buf[0] = c;
 }
 
 void MSG_WriteByte(sizebuf_t* sb, int c)
 {
-	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 1));
+	uint8_t* buf = static_cast<uint8_t*>(SZ_GetSpace(sb, 1));
 	buf[0] = c;
 }
 
 void MSG_WriteShort(sizebuf_t* sb, int c)
 {
-	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 2));
+	uint8_t* buf = static_cast<uint8_t*>(SZ_GetSpace(sb, 2));
 	buf[0] = c & 0xff;
 	buf[1] = c >> 8;
 }
 
 void MSG_WriteLong(sizebuf_t* sb, int c)
 {
-	byte* buf = static_cast<byte*>(SZ_GetSpace(sb, 4));
+	uint8_t* buf = static_cast<uint8_t*>(SZ_GetSpace(sb, 4));
 	buf[0] = c & 0xff;
 	buf[1] = (c >> 8) & 0xff;
 	buf[2] = (c >> 16) & 0xff;
@@ -643,7 +643,7 @@ float MSG_ReadFloat(void)
 {
 	union
 	{
-		byte b[4];
+		uint8_t b[4];
 		float f;
 		int l;
 	} dat;
@@ -695,7 +695,7 @@ void SZ_Alloc(sizebuf_t* buf, int startsize)
 {
 	if (startsize < 256)
 		startsize = 256;
-	buf->data = static_cast<byte*>(Hunk_AllocName(startsize, (char*)"sizebuf"));
+	buf->data = static_cast<uint8_t*>(Hunk_AllocName(startsize, (char*)"sizebuf"));
 	buf->maxsize = startsize;
 	buf->cursize = 0;
 }
@@ -749,7 +749,7 @@ void SZ_Print(sizebuf_t* buf, char* data)
 	if (buf->data[buf->cursize - 1])
 		Q_memcpy(SZ_GetSpace(buf, len), data, len); // no trailing 0
 	else
-		Q_memcpy((byte*)SZ_GetSpace(buf, len - 1) - 1, data, len); // write over trailing 0
+		Q_memcpy((uint8_t*)SZ_GetSpace(buf, len - 1) - 1, data, len); // write over trailing 0
 }
 
 
@@ -1073,7 +1073,7 @@ COM_Init
 */
 void COM_Init(char* basedir)
 {
-	byte swaptest[2] = { 1, 0 };
+	uint8_t swaptest[2] = { 1, 0 };
 
 	// set the byte swapping variables in a portable manner 
 	if (*(short*)swaptest == 1)
@@ -1466,16 +1466,16 @@ Allways appends a 0 byte.
 ============
 */
 cache_user_t* loadcache;
-byte* loadbuf;
+uint8_t* loadbuf;
 int loadsize;
 
-byte* COM_LoadFile(char* path, int usehunk)
+uint8_t* COM_LoadFile(char* path, int usehunk)
 {
 	using namespace std::string_view_literals;
 	int h;
 	char base[32];
 
-	byte* buf = NULL; // quiet compiler warning
+	uint8_t* buf = NULL; // quiet compiler warning
 
 	// look for it in the filesystem or pack files
 	int len = COM_OpenFile(path, &h);
@@ -1486,17 +1486,17 @@ byte* COM_LoadFile(char* path, int usehunk)
 	COM_FileBase(path, base);
 
 	if (usehunk == 1)
-		buf = static_cast<byte*>(Hunk_AllocName(len + 1, base));
+		buf = static_cast<uint8_t*>(Hunk_AllocName(len + 1, base));
 	else if (usehunk == 2)
-		buf = static_cast<byte*>(Hunk_TempAlloc(len + 1));
+		buf = static_cast<uint8_t*>(Hunk_TempAlloc(len + 1));
 	else if (usehunk == 0)
-		buf = static_cast<byte*>(Z_Malloc(len + 1));
+		buf = static_cast<uint8_t*>(Z_Malloc(len + 1));
 	else if (usehunk == 3)
-		buf = static_cast<byte*>(Cache_Alloc(loadcache, len + 1, base));
+		buf = static_cast<uint8_t*>(Cache_Alloc(loadcache, len + 1, base));
 	else if (usehunk == 4)
 	{
 		if (len + 1 > loadsize)
-			buf = static_cast<byte*>(Hunk_TempAlloc(len + 1));
+			buf = static_cast<uint8_t*>(Hunk_TempAlloc(len + 1));
 		else
 			buf = loadbuf;
 	}
@@ -1516,12 +1516,12 @@ byte* COM_LoadFile(char* path, int usehunk)
 	return buf;
 }
 
-byte* COM_LoadHunkFile(char* path)
+uint8_t* COM_LoadHunkFile(char* path)
 {
 	return COM_LoadFile(path, 1);
 }
 
-byte* COM_LoadTempFile(char* path)
+uint8_t* COM_LoadTempFile(char* path)
 {
 	return COM_LoadFile(path, 2);
 }
@@ -1533,11 +1533,11 @@ void COM_LoadCacheFile(char* path, cache_user_t* cu)
 }
 
 // uses temp hunk if larger than bufsize
-byte* COM_LoadStackFile(char* path, void* buffer, int bufsize)
+uint8_t* COM_LoadStackFile(char* path, void* buffer, int bufsize)
 {
-	loadbuf = (byte*)buffer;
+	loadbuf = (uint8_t*)buffer;
 	loadsize = bufsize;
-	byte* buf = COM_LoadFile(path, 4);
+	uint8_t* buf = COM_LoadFile(path, 4);
 
 	return buf;
 }
@@ -1590,7 +1590,7 @@ pack_t* COM_LoadPackFile(char* packfile)
 	// crc the directory to check for modifications
 	CRC_Init(&crc);
 	for (i = 0; i < header.dirlen; i++)
-		CRC_ProcessByte(&crc, ((byte*)info)[i]);
+		CRC_ProcessByte(&crc, ((uint8_t*)info)[i]);
 	if (crc != PAK0_CRC)
 		com_modified = true;
 

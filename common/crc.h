@@ -20,9 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /* crc.h */
 #pragma once
 
-#include "typedef_byte.h"
+#include <cstdint>
 
 
 void CRC_Init(unsigned short* crcvalue);
-void CRC_ProcessByte(unsigned short* crcvalue, byte data);
+void CRC_ProcessByte(unsigned short* crcvalue, uint8_t data);
 unsigned short CRC_Value(unsigned short crcvalue);

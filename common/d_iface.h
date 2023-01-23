@@ -156,7 +156,7 @@ extern polydesc_t r_polydesc;  // r_draw.h
 extern vec3_t r_pright, r_pup, r_ppn; // r_part.h
 
 
-void D_BeginDirectRect(int x, int y, byte* pbitmap, int width, int height); // vid.h
+void D_BeginDirectRect(int x, int y, uint8_t* pbitmap, int width, int height); // vid.h
 void D_DisableBackBufferAccess(void); // d_init.h
 void D_EndDirectRect(int x, int y, int width, int height); // vid.h
 void D_PolysetDraw(void); // d_polyse.h
@@ -185,7 +185,7 @@ void D_PolysetUpdateTables(void); // d_polyse.h
 
 // these are currently for internal use only, and should not be used by drivers
 extern int r_skydirect; // r_sky.h
-extern byte* r_skysource; // r_sky.h
+extern uint8_t* r_skysource; // r_sky.h
 
 // transparency types for D_DrawRect ()
 #define DR_SOLID 0
@@ -237,4 +237,4 @@ extern float skytime; // r_sky.h
 extern int c_surf; // r_main.h
 extern vrect_t scr_vrect; // screen.h
 
-extern byte* r_warpbuffer; // r_main.h
+extern uint8_t* r_warpbuffer; // r_main.h

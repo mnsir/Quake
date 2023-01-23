@@ -243,7 +243,7 @@ void DumpChunks(void)
 GetWavinfo
 ============
 */
-wavinfo_t GetWavinfo(char* name, byte* wav, int wavlength)
+wavinfo_t GetWavinfo(char* name, uint8_t* wav, int wavlength)
 {
 	using namespace std::string_view_literals;
 	wavinfo_t info;

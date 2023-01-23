@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // disable data conversion warnings
 #pragma once
 
-#include "typedef_byte.h"
+#include <cstdint>
 
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86
@@ -56,8 +56,8 @@ extern int texture_mode;
 extern float gldepthmin, gldepthmax;
 
 void GL_Upload32(unsigned* data, int width, int height, bool mipmap, bool alpha);
-void GL_Upload8(byte* data, int width, int height, bool mipmap, bool alpha);
-int GL_LoadTexture(char* identifier, int width, int height, byte* data, bool mipmap, bool alpha);
+void GL_Upload8(uint8_t* data, int width, int height, bool mipmap, bool alpha);
+int GL_LoadTexture(char* identifier, int width, int height, uint8_t* data, bool mipmap, bool alpha);
 int GL_FindTexture(char* identifier);
 
 typedef struct
@@ -107,7 +107,7 @@ typedef struct surfcache_s
 	unsigned height; // DEBUG only needed for debug
 	float mipscale;
 	struct texture_s* texture; // checked for animating textures
-	byte data[4]; // width*height elements
+	uint8_t data[4]; // width*height elements
 } surfcache_t;
 
 
@@ -273,6 +273,6 @@ void R_RenderDlights(void);
 void R_DrawParticles(void);
 void R_RenderBrushPoly(msurface_t* fa);
 void R_InitParticles(void);
-void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha);
+void GL_Upload8_EXT(uint8_t* data, int width, int height, bool mipmap, bool alpha);
 void R_ClearParticles(void);
 void GL_BuildLightmaps(void);

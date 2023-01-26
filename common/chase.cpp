@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chase.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "cl_main.h"
 #include "mathlib.h"
@@ -89,7 +90,7 @@ void Chase_Update()
 	float dist = DotProduct(stop, forward);
 	if (dist < 1)
 		dist = 1;
-	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / M_PI * 180;
+	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / std::numbers::pi * 180;
 
 	// move towards destination
 	VectorCopy(chase_dest, r_refdef.vieworg);

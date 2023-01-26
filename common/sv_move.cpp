@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_move.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "pr_edict.h"
 #include "server.h"
@@ -242,7 +243,7 @@ bool SV_StepDirection(edict_t* ent, float yaw, float dist)
 	ent->v.ideal_yaw = yaw;
 	PF_changeyaw();
 
-	yaw = yaw * M_PI * 2 / 360;
+	yaw = yaw * std::numbers::pi * 2 / 360;
 	move[0] = cos(yaw) * dist;
 	move[1] = sin(yaw) * dist;
 	move[2] = 0;

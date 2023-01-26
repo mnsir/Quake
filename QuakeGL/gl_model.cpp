@@ -1804,3 +1804,96 @@ void Mod_Print()
 		Con_Printf((char*)"%8p : %s\n", mod->cache.data, mod->name);
 	}
 }
+
+
+/*
+==================
+BOPS_Error
+
+Split out like this_ for ASM to call.
+==================
+*/
+void BOPS_Error()
+{
+	using namespace std::string_view_literals;
+	Sys_Error("BoxOnPlaneSide:  Bad signbits"sv);
+}
+
+
+/*
+==================
+BoxOnPlaneSide
+
+Returns 1, 2, or 1 + 2
+==================
+*/
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
+{
+	float dist1, dist2;
+
+	// general case
+	switch (p->signbits)
+	{
+	case 0:
+		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+		break;
+	case 1:
+		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+		break;
+	case 2:
+		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+		break;
+	case 3:
+		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+		break;
+	case 4:
+		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+		break;
+	case 5:
+		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
+		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
+		break;
+	case 6:
+		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+		break;
+	case 7:
+		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
+		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
+		break;
+	default:
+		dist1 = dist2 = 0; // shut up compiler
+		BOPS_Error();
+		break;
+	}
+
+	int sides = 0;
+	if (dist1 >= p->dist)
+		sides = 1;
+	if (dist2 < p->dist)
+		sides |= 2;
+
+	return sides;
+}
+
+int BOX_ON_PLANE_SIDE(vec3_t emins, vec3_t emaxs, struct mplane_s* p)
+{
+	return (((p)->type < 3) ?
+		(
+			((p)->dist <= (emins)[(p)->type]) ?
+			1
+			:
+			(((p)->dist >= (emaxs)[(p)->type]) ?
+				2
+				:
+				3
+				)
+			)
+		:
+		BoxOnPlaneSide((emins), (emaxs), (p)));
+}

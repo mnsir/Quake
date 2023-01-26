@@ -266,7 +266,6 @@ void R_RotateForEntity(entity_t* e);
 void R_StoreEfrags(efrag_t** ppefrag);
 void V_CalcBlend();
 void R_AnimateLight();
-void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
 void R_DrawBrushModel(entity_t* e);
 void R_DrawWorld();
 void R_RenderDlights();

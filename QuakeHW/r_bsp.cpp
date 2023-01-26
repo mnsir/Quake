@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include <cmath>
+#include <numbers>
 
 #include "console.h"
 #include "d_iface.h"
@@ -93,7 +94,7 @@ void R_RotateBmodel()
 
 	// yaw
 	float angle = currententity->angles[YAW];
-	angle = angle * M_PI * 2 / 360;
+	angle = angle * std::numbers::pi * 2 / 360;
 	float s = sin(angle);
 	float c = cos(angle);
 
@@ -110,7 +111,7 @@ void R_RotateBmodel()
 
 	// pitch
 	angle = currententity->angles[PITCH];
-	angle = angle * M_PI * 2 / 360;
+	angle = angle * std::numbers::pi * 2 / 360;
 	s = sin(angle);
 	c = cos(angle);
 
@@ -128,7 +129,7 @@ void R_RotateBmodel()
 
 	// roll
 	angle = currententity->angles[ROLL];
-	angle = angle * M_PI * 2 / 360;
+	angle = angle * std::numbers::pi * 2 / 360;
 	s = sin(angle);
 	c = cos(angle);
 

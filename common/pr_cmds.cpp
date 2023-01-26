@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cmath>
 #include <cstring>
 #include <format>
+#include <numbers>
 
 #include "cmd.h"
 #include "common.h"
@@ -162,7 +163,7 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 		// find min / max for rotations
 		float* angles = e->v.angles;
 
-		float a = angles[1] / 180 * M_PI;
+		float a = DEG2RAD(angles[1]);
 
 		xvector[0] = cos(a);
 		xvector[1] = sin(a);
@@ -395,7 +396,7 @@ void PF_vectoyaw()
 		yaw = 0;
 	else
 	{
-		yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+		yaw = (int)(atan2(value1[1], value1[0]) * 180 / std::numbers::pi);
 		if (yaw < 0)
 			yaw += 360;
 	}
@@ -427,12 +428,12 @@ void PF_vectoangles()
 	}
 	else
 	{
-		yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+		yaw = (int)(atan2(value1[1], value1[0]) * 180 / std::numbers::pi);
 		if (yaw < 0)
 			yaw += 360;
 
 		float forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
-		pitch = (int)(atan2(value1[2], forward) * 180 / M_PI);
+		pitch = (int)(atan2(value1[2], forward) * 180 / std::numbers::pi);
 		if (pitch < 0)
 			pitch += 360;
 	}
@@ -1004,7 +1005,7 @@ void PF_walkmove()
 		return;
 	}
 
-	yaw = yaw * M_PI * 2 / 360;
+	yaw = DEG2RAD(yaw);
 
 	move[0] = cos(yaw) * dist;
 	move[1] = sin(yaw) * dist;

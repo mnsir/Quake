@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_sky.c
 
+#include <numeric>
+
 #include "cl_main.h"
 #include "d_iface.h"
 #include "mathlib.h"
@@ -206,7 +208,7 @@ void R_SetSkyFrame()
 	skyspeed = iskyspeed;
 	skyspeed2 = iskyspeed2;
 
-	int g = GreatestCommonDivisor(iskyspeed, iskyspeed2);
+	auto g = std::gcd(iskyspeed, iskyspeed2);
 	int s1 = iskyspeed / g;
 	int s2 = iskyspeed2 / g;
 	float temp = SKYSIZE * s1 * s2;

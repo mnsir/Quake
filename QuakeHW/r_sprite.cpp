@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 #include <format>
+#include <numbers>
 
 #include "console.h"
 #include "d_iface.h"
@@ -380,7 +381,7 @@ void R_DrawSprite()
 		// generate the sprite's axes, parallel to the viewplane, but rotated in
 		// that plane around the center according to the sprite entity's roll
 		// angle. So vpn stays the same, but vright and vup rotate
-		float angle = currententity->angles[ROLL] * (M_PI * 2 / 360);
+		float angle = currententity->angles[ROLL] * (std::numbers::pi * 2 / 360);
 		float sr = sin(angle);
 		float cr = cos(angle);
 

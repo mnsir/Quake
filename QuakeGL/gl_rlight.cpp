@@ -70,6 +70,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef GLQUAKE
 #include "glquake.h"
 #endif
+#include <numbers>
+
 #include "host.h"
 #include "chase.h"
 
@@ -145,7 +147,7 @@ void R_RenderDlight(dlight_t* light)
 	glColor3f(0, 0, 0);
 	for (i = 16; i >= 0; i--)
 	{
-		float a = i / 16.0 * M_PI * 2;
+		float a = i / 16.0 * std::numbers::pi * 2;
 		for (int j = 0; j < 3; j++)
 			v[j] = light->origin[j] + vright[j] * cos(a) * rad
 				+ vup[j] * sin(a) * rad;

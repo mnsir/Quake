@@ -71,6 +71,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "glquake.h"
 #endif
 #include <format>
+#include <numbers>
 
 #include "host.h"
 #include "chase.h"
@@ -254,7 +255,7 @@ float turbsin[] =
 	-3.06147, -2.87916, -2.69512, -2.50945, -2.32228, -2.1337, -1.94384, -1.75281,
 	-1.56072, -1.3677, -1.17384, -0.979285, -0.784137, -0.588517, -0.392541, -0.19633,
 };
-#define TURBSCALE (256.0 / (2 * M_PI))
+constexpr auto TURBSCALE = (256.0 / (2 * std::numbers::pi));
 
 /*
 =============

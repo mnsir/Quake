@@ -2,6 +2,7 @@
 #include "screen.h"
 
 #include <format>
+#include <numbers>
 
 #ifdef GLQUAKE
 void GL_Set2D(); // TODO убрать в хидер
@@ -339,11 +340,11 @@ float CalcFov(float fov_x, float width, float height)
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error(std::format("Bad fov: {}"sv, fov_x));
 
-	float x = width / tan(fov_x / 360 * M_PI);
+	float x = width / tan(fov_x / 360 * std::numbers::pi);
 
 	float a = atan(height / x);
 
-	a = a * 360 / M_PI;
+	a = a * 360 / std::numbers::pi;
 
 	return a;
 }

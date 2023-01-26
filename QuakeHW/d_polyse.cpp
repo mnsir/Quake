@@ -26,6 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "d_local.h"
 #include <cstdint>
 
+#include "sys.h"
+#include <format>
+
 
 // TODO: put in span spilling to shrink list size
 // !!! if this_ is changed, it must be changed in d_polysa.s too !!!
@@ -1512,6 +1515,55 @@ void D_PolysetScanLeftEdge(int height)
 		}
 	}
 	while (--height);
+}
+
+/*
+===================
+FloorDivMod
+
+Returns mathematically correct (floor-based) quotient and remainder for
+numer and denom, both of which should contain no fractional part. The
+quotient must fit in 32 bits.
+====================
+*/
+
+void FloorDivMod(double numer, double denom, int* quotient,
+	int* rem)
+{
+	using namespace std::string_view_literals;
+	int q, r;
+	double x;
+
+	if (denom <= 0.0)
+		Sys_Error(std::format("FloorDivMod: bad denominator {}\n"sv, denom));
+
+	// if ((floor(numer) != numer) || (floor(denom) != denom))
+	// Sys_Error ((char*)"FloorDivMod: non-integer numer or denom %f %f\n",
+	// numer, denom);
+
+	if (numer >= 0.0)
+	{
+		x = floor(numer / denom);
+		q = (int)x;
+		r = (int)floor(numer - (x * denom));
+	}
+	else
+	{
+		//
+		// perform operations with positive values, and fix mod to make floor-based
+		//
+		x = floor(-numer / denom);
+		q = -(int)x;
+		r = (int)floor(-numer - (x * denom));
+		if (r != 0)
+		{
+			q--;
+			r = (int)denom - r;
+		}
+	}
+
+	*quotient = q;
+	*rem = r;
 }
 
 

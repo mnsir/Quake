@@ -70,6 +70,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef GLQUAKE
 #include "glquake.h"
 #endif
+#include <numbers>
+
 #include "host.h"
 #include "chase.h"
 #include "snd_dma.h"
@@ -984,7 +986,7 @@ void R_DrawAliasModel(entity_t* e)
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 	shadelight = shadelight / 200.0;
 
-	float an = e->angles[1] / 180 * M_PI;
+	float an = e->angles[1] / 180 * std::numbers::pi;
 	shadevector[0] = cos(-an);
 	shadevector[1] = sin(-an);
 	shadevector[2] = 1;
@@ -1303,7 +1305,7 @@ void R_SetupFrame()
 void MYgluPerspective(GLdouble fovy, GLdouble aspect,
                       GLdouble zNear, GLdouble zFar)
 {
-	GLdouble ymax = zNear * tan(fovy * M_PI / 360.0);
+	GLdouble ymax = zNear * tan(fovy * std::numbers::pi / 360.0);
 	GLdouble ymin = -ymax;
 
 	GLdouble xmin = ymin * aspect;
@@ -1495,8 +1497,8 @@ void R_Mirror()
 	d = DotProduct(vpn, mirror_plane->normal);
 	VectorMA(vpn, -2 * d, mirror_plane->normal, vpn);
 
-	r_refdef.viewangles[0] = -asin(vpn[2]) / M_PI * 180;
-	r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / M_PI * 180;
+	r_refdef.viewangles[0] = -asin(vpn[2]) / std::numbers::pi * 180;
+	r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / std::numbers::pi * 180;
 	r_refdef.viewangles[2] = -r_refdef.viewangles[2];
 
 	entity_t* ent = &cl_entities[cl.viewentity];

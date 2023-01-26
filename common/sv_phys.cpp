@@ -100,12 +100,13 @@ void SV_CheckVelocity(edict_t* ent)
 	//
 	for (int i = 0; i < 3; i++)
 	{
-		if (IS_NAN(ent->v.velocity[i]))
+		// было IS_NAN, но тут хз я 100% уверен что проверка была на isinf
+		if (std::isinf(ent->v.velocity[i]))
 		{
 			Con_Printf((char*)"Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
 			ent->v.velocity[i] = 0;
 		}
-		if (IS_NAN(ent->v.origin[i]))
+		if (std::isinf(ent->v.origin[i]))
 		{
 			Con_Printf((char*)"Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;

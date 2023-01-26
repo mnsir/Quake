@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cl_tent.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "cl_main.h"
 #include "console.h"
@@ -321,12 +322,12 @@ void CL_UpdateTEnts()
 		}
 		else
 		{
-			yaw = (int)(atan2(dist[1], dist[0]) * 180 / M_PI);
+			yaw = (int)(atan2(dist[1], dist[0]) * 180 / std::numbers::pi);
 			if (yaw < 0)
 				yaw += 360;
 
 			float forward = sqrt(dist[0] * dist[0] + dist[1] * dist[1]);
-			pitch = (int)(atan2(dist[2], forward) * 180 / M_PI);
+			pitch = (int)(atan2(dist[2], forward) * 180 / std::numbers::pi);
 			if (pitch < 0)
 				pitch += 360;
 		}

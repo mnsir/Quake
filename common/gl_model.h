@@ -430,3 +430,7 @@ void Mod_TouchModel(char* name);
 
 mleaf_t* Mod_PointInLeaf(float* p, model_t* model);
 uint8_t* Mod_LeafPVS(mleaf_t* leaf, model_t* model);
+
+
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* plane);
+int BOX_ON_PLANE_SIDE(vec3_t emins, vec3_t emaxs, mplane_t* p);

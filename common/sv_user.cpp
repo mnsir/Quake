@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 
 #include <cmath>
+#include <numbers>
 
 #include "cl_input.h"
 #include "cmd.h"
@@ -77,7 +78,7 @@ void SV_SetIdealPitch()
 	if (!((int)sv_player->v.flags & FL_ONGROUND))
 		return;
 
-	float angleval = sv_player->v.angles[YAW] * M_PI * 2 / 360;
+	float angleval = sv_player->v.angles[YAW] * std::numbers::pi * 2 / 360;
 	float sinval = sin(angleval);
 	float cosval = cos(angleval);
 

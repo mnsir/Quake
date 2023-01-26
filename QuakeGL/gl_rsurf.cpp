@@ -142,8 +142,8 @@ void R_AddDynamicLights(msurface_t* surf)
 				surf->plane->normal[i] * dist;
 		}
 
-		local[0] = DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
-		local[1] = DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
+		local[0] = DotProduct(impact, ToVec3(tex->vecs[0])) + tex->vecs[0][3];
+		local[1] = DotProduct(impact, ToVec3(tex->vecs[1])) + tex->vecs[1][3];
 
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];
@@ -506,7 +506,7 @@ void R_DrawSequentialPoly(msurface_t* s)
 			nv[1] = v[1] + 8 * sin(v[0] * 0.05 + realtime) * sin(v[2] * 0.05 + realtime);
 			nv[2] = v[2];
 
-			glVertex3fv(nv);
+			glVertex3fv(nv.data());
 		}
 		glEnd();
 	}
@@ -550,7 +550,7 @@ void DrawGLWaterPoly(glpoly_t* p)
 		nv[1] = v[1] + 8 * sin(v[0] * 0.05 + realtime) * sin(v[2] * 0.05 + realtime);
 		nv[2] = v[2];
 
-		glVertex3fv(nv);
+		glVertex3fv(nv.data());
 	}
 	glEnd();
 }
@@ -572,7 +572,7 @@ void DrawGLWaterPolyLightmap(glpoly_t* p)
 		nv[1] = v[1] + 8 * sin(v[0] * 0.05 + realtime) * sin(v[2] * 0.05 + realtime);
 		nv[2] = v[2];
 
-		glVertex3fv(nv);
+		glVertex3fv(nv.data());
 	}
 	glEnd();
 }
@@ -1067,7 +1067,7 @@ void R_RecursiveWorldNode(mnode_t* node)
 
 	if (node->visframe != r_visframecount)
 		return;
-	if (R_CullBox(node->minmaxs, node->minmaxs + 3))
+	if (R_CullBox(ToVec3(node->minmaxs), ToVec3(node->minmaxs + 3)))
 		return;
 
 	// if a leaf node, draw stuff
@@ -1321,7 +1321,7 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 	mplane_t* pplane;
 	int new_verts, new_page, lastvert;
 	bool visible;
-	float* vec;
+	vec3_t vec;
 
 	// reconstruct the polygon
 	pedges = currentmodel->edges;
@@ -1352,26 +1352,26 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 			r_pedge = &pedges[-lindex];
 			vec = r_pcurrentvertbase[r_pedge->v[1]].position;
 		}
-		float s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
+		float s = DotProduct(vec, ToVec3(fa->texinfo->vecs[0])) + fa->texinfo->vecs[0][3];
 		s /= fa->texinfo->texture->width;
 
-		float t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
+		float t = DotProduct(vec, ToVec3(fa->texinfo->vecs[1])) + fa->texinfo->vecs[1][3];
 		t /= fa->texinfo->texture->height;
 
-		VectorCopy(vec, poly->verts[i]);
+		VectorCopy(vec, ToVec3(poly->verts[i]));
 		poly->verts[i][3] = s;
 		poly->verts[i][4] = t;
 
 		//
 		// lightmap texture coordinates
 		//
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
+		s = DotProduct(vec, ToVec3(fa->texinfo->vecs[0])) + fa->texinfo->vecs[0][3];
 		s -= fa->texturemins[0];
 		s += fa->light_s * 16;
 		s += 8;
 		s /= BLOCK_WIDTH * 16; //fa->texinfo->texture->width;
 
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
+		t = DotProduct(vec, ToVec3(fa->texinfo->vecs[1])) + fa->texinfo->vecs[1][3];
 		t -= fa->texturemins[1];
 		t += fa->light_t * 16;
 		t += 8;
@@ -1391,9 +1391,9 @@ void BuildSurfaceDisplayList(msurface_t* fa)
 			vec3_t v1, v2;
 			float f;
 
-			float* prev = poly->verts[(i + lnumverts - 1) % lnumverts];
-			float* this_ = poly->verts[i];
-			float* next = poly->verts[(i + 1) % lnumverts];
+			auto&& prev = ToVec3(poly->verts[(i + lnumverts - 1) % lnumverts]);
+			auto&& this_ = ToVec3(poly->verts[i]);
+			auto&& next = ToVec3(poly->verts[(i + 1) % lnumverts]);
 
 			VectorSubtract(this_, prev, v1);
 			VectorNormalize(v1);

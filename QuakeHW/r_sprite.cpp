@@ -69,26 +69,26 @@ int R_ClipSpriteFace(int nump, clipplane_t* pclipplane)
 	float *in, *outstep;
 
 	float clipdist = pclipplane->dist;
-	float* pclipnormal = pclipplane->normal;
+	float* pclipnormal = pclipplane->normal.data();
 
 	// calc dists
 	if (clip_current)
 	{
-		in = clip_verts[1][0];
-		outstep = clip_verts[0][0];
+		in = clip_verts[1][0].data();
+		outstep = clip_verts[0][0].data();
 		clip_current = 0;
 	}
 	else
 	{
-		in = clip_verts[0][0];
-		outstep = clip_verts[1][0];
+		in = clip_verts[0][0].data();
+		outstep = clip_verts[1][0].data();
 		clip_current = 1;
 	}
 
 	float* instep = in;
 	for (i = 0; i < nump; i++, instep += sizeof(vec5_t) / sizeof(float))
 	{
-		dists[i] = DotProduct(instep, pclipnormal) - clipdist;
+		dists[i] = DotProduct(ToVec3(instep), ToVec3(pclipnormal)) - clipdist;
 	}
 
 	// handle wraparound case
@@ -203,7 +203,7 @@ void R_SetupAndDrawSprite()
 
 	for (i = 0; i < nump; i++)
 	{
-		VectorSubtract(pv, r_origin, local);
+		VectorSubtract(ToVec3(pv), r_origin, local);
 		TransformVector(local, transformed);
 
 		if (transformed[2] < NEAR_CLIP)

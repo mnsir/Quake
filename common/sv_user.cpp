@@ -183,7 +183,7 @@ cvar_t sv_accelerate = {(char*)"sv_accelerate", (char*)"10"};
 
 void SV_Accelerate()
 {
-	float currentspeed = DotProduct(velocity, wishdir);
+	float currentspeed = DotProduct(ToVec3(velocity), wishdir);
 	float addspeed = wishspeed - currentspeed;
 	if (addspeed <= 0)
 		return;
@@ -195,12 +195,12 @@ void SV_Accelerate()
 		velocity[i] += accelspeed * wishdir[i];
 }
 
-void SV_AirAccelerate(vec3_t wishveloc)
+void SV_AirAccelerate(vec3_t& wishveloc)
 {
 	float wishspd = VectorNormalize(wishveloc);
 	if (wishspd > 30)
 		wishspd = 30;
-	float currentspeed = DotProduct(velocity, wishveloc);
+	float currentspeed = DotProduct(ToVec3(velocity), wishveloc);
 	float addspeed = wishspd - currentspeed;
 	if (addspeed <= 0)
 		return;
@@ -260,13 +260,13 @@ void SV_WaterMove()
 	//
 	// water friction
 	//
-	float speed = Length(velocity);
+	float speed = Length(ToVec3(velocity));
 	if (speed)
 	{
 		new_speed = speed - host_frametime * speed * sv_friction.value;
 		if (new_speed < 0)
 			new_speed = 0;
-		VectorScale(velocity, new_speed / speed, velocity);
+		VectorScale(ToVec3(velocity), new_speed / speed, ToVec3(velocity));
 	}
 	else
 		new_speed = 0;
@@ -341,7 +341,7 @@ void SV_AirMove()
 	if (sv_player->v.movetype == MOVETYPE_NOCLIP)
 	{
 		// noclip
-		VectorCopy(wishvel, velocity);
+		VectorCopy(wishvel, ToVec3(velocity));
 	}
 	else if (onground)
 	{
@@ -372,8 +372,8 @@ void SV_ClientThink()
 
 	onground = (int)sv_player->v.flags & FL_ONGROUND;
 
-	origin = sv_player->v.origin;
-	velocity = sv_player->v.velocity;
+	origin = sv_player->v.origin.data();
+	velocity = sv_player->v.velocity.data();
 
 	DropPunchAngle();
 
@@ -387,7 +387,7 @@ void SV_ClientThink()
 	// angles
 	// show 1/3 the pitch angle and all the roll angle
 	cmd = host_client->cmd;
-	angles = sv_player->v.angles;
+	angles = sv_player->v.angles.data();
 
 	VectorAdd(sv_player->v.v_angle, sv_player->v.punchangle, v_angle);
 	angles[ROLL] = V_CalcRoll(sv_player->v.angles, sv_player->v.velocity) * 4;

@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void* colormap;
 vec3_t viewlightvec;
-alight_t r_viewlighting = {128, 192, viewlightvec};
+alight_t r_viewlighting = {128, 192, viewlightvec.data()};
 float r_time1;
 int r_numallocatededges;
 bool r_drawpolys;

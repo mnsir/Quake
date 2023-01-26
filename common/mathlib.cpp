@@ -28,11 +28,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 vec3_t vec3_origin = {0, 0, 0};
 
+vec3_t& ToVec3(float* ptr) { return reinterpret_cast<vec3_t&>(*ptr); }
+
 /*-----------------------------------------------------------------*/
 
 double DEG2RAD(double degrees) { return degrees * std::numbers::pi / 180; }
 
-void ProjectPointOnPlane(vec3_t* dst, const vec3_t& p, const vec3_t& normal)
+void ProjectPointOnPlane(vec3_t& dst, const vec3_t& p, const vec3_t& normal)
 {
 	auto inv_denom = 1 / DotProduct(normal, normal);
 	
@@ -42,15 +44,15 @@ void ProjectPointOnPlane(vec3_t* dst, const vec3_t& p, const vec3_t& normal)
 	n[2] = normal[2] * inv_denom;
 
 	auto d = DotProduct(normal, p) * inv_denom;
-	(*dst)[0] = p[0] - d * n[0];
-	(*dst)[1] = p[1] - d * n[1];
-	(*dst)[2] = p[2] - d * n[2];
+	dst[0] = p[0] - d * n[0];
+	dst[1] = p[1] - d * n[1];
+	dst[2] = p[2] - d * n[2];
 }
 
 /*
 ** assumes "src" is normalized
 */
-void PerpendicularVector(vec3_t* dst, const vec3_t& src)
+void PerpendicularVector(vec3_t& dst, const vec3_t& src)
 {
 	auto minelem = 1.0;
 
@@ -84,7 +86,7 @@ void PerpendicularVector(vec3_t* dst, const vec3_t& src)
 #pragma optimize( "", off )
 
 
-void RotatePointAroundVector(vec3_t* dst, const vec3_t& dir, const vec3_t& point, double degrees)
+void RotatePointAroundVector(vec3_t& dst, const vec3_t& dir, const vec3_t& point, double degrees)
 {
 	vec3_t vf;
 	vf[0] = dir[0];
@@ -92,9 +94,9 @@ void RotatePointAroundVector(vec3_t* dst, const vec3_t& dir, const vec3_t& point
 	vf[2] = dir[2];
 
 	vec3_t vr;
-	PerpendicularVector(&vr, dir);
+	PerpendicularVector(vr, dir);
 	vec3_t vup;
-	CrossProduct(vr, vf, &vup);
+	CrossProduct(vr, vf, vup);
 
 	float m[3][3];
 	m[0][0] = vr[0];
@@ -135,7 +137,7 @@ void RotatePointAroundVector(vec3_t* dst, const vec3_t& dir, const vec3_t& point
 
 	for (int i = 0; i < 3; i++)
 	{
-		(*dst)[i] = rot[i][0] * point[0] + rot[i][1] * point[1] + rot[i][2] * point[2];
+		dst[i] = rot[i][0] * point[0] + rot[i][1] * point[1] + rot[i][2] * point[2];
 	}
 }
 
@@ -151,7 +153,7 @@ float anglemod(float a)
 }
 
 
-void AngleVectors(const vec3_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up)
+void AngleVectors(const vec3_t& angles, vec3_t& forward, vec3_t& right, vec3_t& up)
 {
 	auto angle = DEG2RAD(angles[YAW]);
 	auto sy = sin(angle);
@@ -163,15 +165,15 @@ void AngleVectors(const vec3_t& angles, vec3_t* forward, vec3_t* right, vec3_t* 
 	auto sr = sin(angle);
 	auto cr = cos(angle);
 
-	(*forward)[0] = cp * cy;
-	(*forward)[1] = cp * sy;
-	(*forward)[2] = -sp;
-	(*right)[0] = (-1 * sr * sp * cy + -1 * cr * -sy);
-	(*right)[1] = (-1 * sr * sp * sy + -1 * cr * cy);
-	(*right)[2] = -1 * sr * cp;
-	(*up)[0] = (cr * sp * cy + -sr * -sy);
-	(*up)[1] = (cr * sp * sy + -sr * cy);
-	(*up)[2] = cr * cp;
+	forward[0] = cp * cy;
+	forward[1] = cp * sy;
+	forward[2] = -sp;
+	right[0] = (-1 * sr * sp * cy + -1 * cr * -sy);
+	right[1] = (-1 * sr * sp * sy + -1 * cr * cy);
+	right[2] = -1 * sr * cp;
+	up[0] = (cr * sp * cy + -sr * -sy);
+	up[1] = (cr * sp * sy + -sr * cy);
+	up[2] = cr * cp;
 }
 
 // Скалярное произведение векторов
@@ -188,71 +190,71 @@ bool VectorCompare(const vec3_t& lhs, const vec3_t& rhs)
 	return 1;
 }
 
-void VectorMA(const vec3_t& veca, double scale, const vec3_t& vecb, vec3_t* out)
+void VectorMA(const vec3_t& veca, double scale, const vec3_t& vecb, vec3_t& out)
 {
-	(*out)[0] = veca[0] + scale * vecb[0];
-	(*out)[1] = veca[1] + scale * vecb[1];
-	(*out)[2] = veca[2] + scale * vecb[2];
+	out[0] = veca[0] + scale * vecb[0];
+	out[1] = veca[1] + scale * vecb[1];
+	out[2] = veca[2] + scale * vecb[2];
 }
 
 
-void VectorSubtract(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out)
+void VectorSubtract(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out)
 {
-	(*out)[0] = lhs[0] - rhs[0];
-	(*out)[1] = lhs[1] - rhs[1];
-	(*out)[2] = lhs[2] - rhs[2];
+	out[0] = lhs[0] - rhs[0];
+	out[1] = lhs[1] - rhs[1];
+	out[2] = lhs[2] - rhs[2];
 }
 
-void VectorAdd(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out)
+void VectorAdd(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out)
 {
-	(*out)[0] = lhs[0] + rhs[0];
-	(*out)[1] = lhs[1] + rhs[1];
-	(*out)[2] = lhs[2] + rhs[2];
+	out[0] = lhs[0] + rhs[0];
+	out[1] = lhs[1] + rhs[1];
+	out[2] = lhs[2] + rhs[2];
 }
 
-void VectorCopy(const vec3_t& self, vec3_t* out)
+void VectorCopy(const vec3_t& self, vec3_t& out)
 {
-	(*out)[0] = self[0];
-	(*out)[1] = self[1];
-	(*out)[2] = self[2];
+	out[0] = self[0];
+	out[1] = self[1];
+	out[2] = self[2];
 }
 
 // Векторное произведение векторов
-void CrossProduct(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out)
+void CrossProduct(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out)
 {
-	(*out)[0] = lhs[1] * rhs[2] - lhs[2] * rhs[1];
-	(*out)[1] = lhs[2] * rhs[0] - lhs[0] * rhs[2];
-	(*out)[2] = lhs[0] * rhs[1] - lhs[1] * rhs[0];
+	out[0] = lhs[1] * rhs[2] - lhs[2] * rhs[1];
+	out[1] = lhs[2] * rhs[0] - lhs[0] * rhs[2];
+	out[2] = lhs[0] * rhs[1] - lhs[1] * rhs[0];
 }
 
 
-double VectorNormalize(vec3_t* self)
+double VectorNormalize(vec3_t& self)
 {
-	auto length = Length(*self);
+	auto length = Length(self);
 
 	if (length)
 	{
 		auto ilength = 1 / length;
-		(*self)[0] *= ilength;
-		(*self)[1] *= ilength;
-		(*self)[2] *= ilength;
+		self[0] *= ilength;
+		self[1] *= ilength;
+		self[2] *= ilength;
 	}
 
 	return length;
 }
 
-void VectorInverse(vec3_t* self)
+void VectorInverse(vec3_t& self)
 {
-	(*self)[0] = -(*self)[0];
-	(*self)[1] = -(*self)[1];
-	(*self)[2] = -(*self)[2];
+	self[0] = -self[0];
+	self[1] = -self[1];
+	self[2] = -self[2];
 }
 
-void VectorScale(const vec3_t& in, double scale, vec3_t* out)
+void VectorScale(const vec3_t& in, double scale, vec3_t& out)
 {
-	(*out)[0] = in[0] * scale;
-	(*out)[1] = in[1] * scale;
-	(*out)[2] = in[2] * scale;
+	out[0] = in[0] * scale;
+	out[1] = in[1] * scale;
+	out[2] = in[2] * scale;
 }
 
 

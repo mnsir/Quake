@@ -90,8 +90,8 @@ void R_AddDynamicLights()
 				surf->plane->normal[i] * dist;
 		}
 
-		local[0] = DotProduct(impact, tex->vecs[0]) + tex->vecs[0][3];
-		local[1] = DotProduct(impact, tex->vecs[1]) + tex->vecs[1][3];
+		local[0] = DotProduct(impact, ToVec3(tex->vecs[0])) + tex->vecs[0][3];
+		local[1] = DotProduct(impact, ToVec3(tex->vecs[1])) + tex->vecs[1][3];
 
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];

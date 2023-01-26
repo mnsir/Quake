@@ -118,7 +118,7 @@ makevectors(vector)
 */
 void PF_makevectors()
 {
-	AngleVectors(G_VECTOR(OFS_PARM0), pr_global_struct->v_forward, pr_global_struct->v_right, pr_global_struct->v_up);
+	AngleVectors(ToVec3(G_VECTOR(OFS_PARM0)), pr_global_struct->v_forward, pr_global_struct->v_right, pr_global_struct->v_up);
 }
 
 /*
@@ -134,7 +134,7 @@ void PF_setorigin()
 {
 	edict_t* e = G_EDICT(OFS_PARM0);
 	float* org = G_VECTOR(OFS_PARM1);
-	VectorCopy(org, e->v.origin);
+	VectorCopy(ToVec3(org), e->v.origin);
 	SV_LinkEdict(e, false);
 }
 
@@ -155,13 +155,13 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 
 	if (!rotate)
 	{
-		VectorCopy(min, rmin);
-		VectorCopy(max, rmax);
+		VectorCopy(ToVec3(min), rmin);
+		VectorCopy(ToVec3(max), rmax);
 	}
 	else
 	{
 		// find min / max for rotations
-		float* angles = e->v.angles;
+		auto&& angles = e->v.angles;
 
 		float a = DEG2RAD(angles[1]);
 
@@ -170,8 +170,8 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 		yvector[0] = -sin(a);
 		yvector[1] = cos(a);
 
-		VectorCopy(min, bounds[0]);
-		VectorCopy(max, bounds[1]);
+		VectorCopy(ToVec3(min), ToVec3(bounds[0]));
+		VectorCopy(ToVec3(max), ToVec3(bounds[1]));
 
 		rmin[0] = rmin[1] = rmin[2] = 9999;
 		rmax[0] = rmax[1] = rmax[2] = -9999;
@@ -206,7 +206,7 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 	// set derived values
 	VectorCopy(rmin, e->v.mins);
 	VectorCopy(rmax, e->v.maxs);
-	VectorSubtract(max, min, e->v.size);
+	VectorSubtract(ToVec3(max), ToVec3(min), e->v.size);
 
 	SV_LinkEdict(e, false);
 }
@@ -259,9 +259,9 @@ void PF_setmodel()
 	model_t* mod = sv.models[(int)e->v.modelindex]; // Mod_ForName (m, true);
 
 	if (mod)
-		SetMinMaxSize(e, mod->mins, mod->maxs, true);
+		SetMinMaxSize(e, mod->mins.data(), mod->maxs.data(), true);
 	else
-		SetMinMaxSize(e, vec3_origin, vec3_origin, true);
+		SetMinMaxSize(e, vec3_origin.data(), vec3_origin.data(), true);
 }
 
 /*
@@ -359,7 +359,7 @@ void PF_normalize()
 		new_value[2] = value1[2] * new_;
 	}
 
-	VectorCopy(new_value, G_VECTOR(OFS_RETURN));
+	VectorCopy(new_value, ToVec3(G_VECTOR(OFS_RETURN)));
 }
 
 /*
@@ -472,7 +472,7 @@ void PF_particle()
 	float* dir = G_VECTOR(OFS_PARM1);
 	float color = G_FLOAT(OFS_PARM2);
 	float count = G_FLOAT(OFS_PARM3);
-	SV_StartParticle(org, dir, color, count);
+	SV_StartParticle(ToVec3(org), ToVec3(dir), color, count);
 }
 
 
@@ -583,7 +583,7 @@ void PF_traceline()
 	int nomonsters = G_FLOAT(OFS_PARM2);
 	edict_t* ent = G_EDICT(OFS_PARM3);
 
-	trace_t trace = SV_Move(v1, vec3_origin, vec3_origin, v2, nomonsters, ent);
+	trace_t trace = SV_Move(ToVec3(v1), vec3_origin, vec3_origin, ToVec3(v2), nomonsters, ent);
 
 	pr_global_struct->trace_allsolid = trace.allsolid;
 	pr_global_struct->trace_startsolid = trace.startsolid;
@@ -1125,7 +1125,7 @@ void PF_pointcontents()
 {
 	float* v = G_VECTOR(OFS_PARM0);
 
-	G_FLOAT(OFS_RETURN) = SV_PointContents(v);
+	G_FLOAT(OFS_RETURN) = SV_PointContents(ToVec3(v));
 }
 
 /*
@@ -1183,7 +1183,7 @@ void PF_aim()
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_AIM
 		&& (!teamplay.value || ent->v.team <= 0 || ent->v.team != tr.ent->v.team))
 	{
-		VectorCopy(pr_global_struct->v_forward, G_VECTOR(OFS_RETURN));
+		VectorCopy(pr_global_struct->v_forward, ToVec3(G_VECTOR(OFS_RETURN)));
 		return;
 	}
 
@@ -1226,11 +1226,11 @@ void PF_aim()
 		VectorScale(pr_global_struct->v_forward, dist, end);
 		end[2] = dir[2];
 		VectorNormalize(end);
-		VectorCopy(end, G_VECTOR(OFS_RETURN));
+		VectorCopy(end, ToVec3(G_VECTOR(OFS_RETURN)));
 	}
 	else
 	{
-		VectorCopy(bestdir, G_VECTOR(OFS_RETURN));
+		VectorCopy(bestdir, ToVec3(G_VECTOR(OFS_RETURN)));
 	}
 }
 

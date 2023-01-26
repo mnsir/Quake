@@ -239,7 +239,7 @@ R_ParticleExplosion
 
 ===============
 */
-void R_ParticleExplosion(vec3_t org)
+void R_ParticleExplosion(const vec3_t& org)
 {
 	int j;
 
@@ -282,7 +282,7 @@ R_ParticleExplosion2
 
 ===============
 */
-void R_ParticleExplosion2(vec3_t org, int colorStart, int colorLength)
+void R_ParticleExplosion2(const vec3_t& org, int colorStart, int colorLength)
 {
 	int colorMod = 0;
 
@@ -314,7 +314,7 @@ R_BlobExplosion
 
 ===============
 */
-void R_BlobExplosion(vec3_t org)
+void R_BlobExplosion(const vec3_t& org)
 {
 	int j;
 
@@ -358,7 +358,7 @@ R_RunParticleEffect
 
 ===============
 */
-void R_RunParticleEffect(vec3_t org, vec3_t dir, int color, int count)
+void R_RunParticleEffect(const vec3_t& org, const vec3_t& dir, int color, int count)
 {
 	int j;
 
@@ -417,7 +417,7 @@ R_LavaSplash
 
 ===============
 */
-void R_LavaSplash(vec3_t org)
+void R_LavaSplash(const vec3_t& org)
 {
 	vec3_t dir;
 
@@ -456,7 +456,7 @@ R_TeleportSplash
 
 ===============
 */
-void R_TeleportSplash(vec3_t org)
+void R_TeleportSplash(const vec3_t& org)
 {
 	vec3_t dir;
 
@@ -489,7 +489,7 @@ void R_TeleportSplash(vec3_t org)
 			}
 }
 
-void R_RocketTrail(vec3_t start, vec3_t end, int type)
+void R_RocketTrail(vec3_t& start, const vec3_t& end, int type)
 {
 	vec3_t vec;
 	int j;
@@ -672,7 +672,7 @@ void R_DrawParticles()
 			scale = 1 + scale * 0.004;
 		glColor3ubv((uint8_t*)&d_8to24table[(int)p->color]);
 		glTexCoord2f(0, 0);
-		glVertex3fv(p->org);
+		glVertex3fv(p->org.data());
 		glTexCoord2f(1, 0);
 		glVertex3f(p->org[0] + up[0] * scale, p->org[1] + up[1] * scale, p->org[2] + up[2] * scale);
 		glTexCoord2f(0, 1);

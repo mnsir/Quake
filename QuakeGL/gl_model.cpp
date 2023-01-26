@@ -131,7 +131,7 @@ void* Mod_Extradata(model_t* mod)
 Mod_PointInLeaf
 ===============
 */
-mleaf_t* Mod_PointInLeaf(vec3_t p, model_t* model)
+mleaf_t* Mod_PointInLeaf(const vec3_t& p, model_t* model)
 {
 	using namespace std::string_view_literals;
 	if (!model || !model->nodes)
@@ -683,8 +683,8 @@ void Mod_LoadTexinfo(lump_t* l)
 	{
 		for (int j = 0; j < 8; j++)
 			out->vecs[0][j] = LittleFloat(in->vecs[0][j]);
-		float len1 = Length(out->vecs[0]);
-		float len2 = Length(out->vecs[1]);
+		float len1 = Length(ToVec3(out->vecs[0]));
+		float len2 = Length(ToVec3(out->vecs[1]));
 		len1 = (len1 + len2) / 2;
 		if (len1 < 0.32)
 			out->mipadjust = 4;
@@ -1122,7 +1122,7 @@ void Mod_LoadPlanes(lump_t* l)
 RadiusFromBounds
 =================
 */
-float RadiusFromBounds(vec3_t mins, vec3_t maxs)
+float RadiusFromBounds(const vec3_t& mins, const vec3_t& maxs)
 {
 	vec3_t corner;
 
@@ -1195,8 +1195,8 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;
 
-		VectorCopy(bm->maxs, mod->maxs);
-		VectorCopy(bm->mins, mod->mins);
+		VectorCopy(ToVec3(bm->maxs), mod->maxs);
+		VectorCopy(ToVec3(bm->mins), mod->mins);
 
 		mod->radius = RadiusFromBounds(mod->mins, mod->maxs);
 
@@ -1827,7 +1827,7 @@ BoxOnPlaneSide
 Returns 1, 2, or 1 + 2
 ==================
 */
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
+int BoxOnPlaneSide(const vec3_t& emins, const vec3_t& emaxs, mplane_t* p)
 {
 	float dist1, dist2;
 
@@ -1881,7 +1881,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* p)
 	return sides;
 }
 
-int BOX_ON_PLANE_SIDE(vec3_t emins, vec3_t emaxs, struct mplane_s* p)
+int BOX_ON_PLANE_SIDE(const vec3_t& emins, const vec3_t& emaxs, struct mplane_s* p)
 {
 	return (((p)->type < 3) ?
 		(

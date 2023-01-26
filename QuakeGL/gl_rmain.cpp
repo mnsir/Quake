@@ -163,7 +163,7 @@ R_CullBox
 Returns true if the box is completely outside the frustom
 =================
 */
-bool R_CullBox(vec3_t mins, vec3_t maxs)
+bool R_CullBox(const vec3_t& mins, const vec3_t& maxs)
 {
 	for (int i = 0; i < 4; i++)
 		if (BoxOnPlaneSide(mins, maxs, &frustum[i]) == 2)
@@ -247,7 +247,8 @@ R_DrawSpriteModel
 void R_DrawSpriteModel(entity_t* e)
 {
 	vec3_t point;
-	float *up, *right;
+	vec3_t up;
+	vec3_t right;
 	vec3_t v_forward, v_right, v_up;
 
 	// don't even bother culling, because it's just a single
@@ -281,22 +282,22 @@ void R_DrawSpriteModel(entity_t* e)
 	glTexCoord2f(0, 1);
 	VectorMA(e->origin, frame->down, up, point);
 	VectorMA(point, frame->left, right, point);
-	glVertex3fv(point);
+	glVertex3fv(point.data());
 
 	glTexCoord2f(0, 0);
 	VectorMA(e->origin, frame->up, up, point);
 	VectorMA(point, frame->left, right, point);
-	glVertex3fv(point);
+	glVertex3fv(point.data());
 
 	glTexCoord2f(1, 0);
 	VectorMA(e->origin, frame->up, up, point);
 	VectorMA(point, frame->right, right, point);
-	glVertex3fv(point);
+	glVertex3fv(point.data());
 
 	glTexCoord2f(1, 1);
 	VectorMA(e->origin, frame->down, up, point);
 	VectorMA(point, frame->right, right, point);
-	glVertex3fv(point);
+	glVertex3fv(point.data());
 
 	glEnd();
 
@@ -873,7 +874,7 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 			point[1] -= shadevector[1] * (point[2] + lheight);
 			point[2] = height;
 			// height -= 0.001;
-			glVertex3fv(point);
+			glVertex3fv(point.data());
 
 			verts++;
 		}

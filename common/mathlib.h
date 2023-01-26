@@ -29,7 +29,7 @@ constexpr size_t ROLL = 2; // fall over
 
 using vec_t = float;
 using vec3_t = std::array<vec_t, 3>;
-using  vec5_t = std::array<vec_t, 5>;
+using vec5_t = std::array<vec_t, 5>;
 
 using fixed4_t = int;
 using fixed8_t = int;
@@ -37,29 +37,31 @@ using fixed16_t = int;
 
 extern vec3_t vec3_origin;
 
+vec3_t& ToVec3(float* ptr);
+
 double DEG2RAD(double degrees);
 
 bool VectorCompare(const vec3_t& lhs, const vec3_t& rhs);
 
-void VectorCopy(const vec3_t& self, vec3_t* out);
+void VectorCopy(const vec3_t& self, vec3_t& out);
 
 double Length(const vec3_t& self);
-void VectorAdd(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out);
-void VectorSubtract(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out);
-void VectorScale(const vec3_t& in, double scale, vec3_t* out);
+void VectorAdd(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out);
+void VectorSubtract(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out);
+void VectorScale(const vec3_t& in, double scale, vec3_t& out);
 double DotProduct(const vec3_t& lhs, const vec3_t& rhs);
-void CrossProduct(const vec3_t& lhs, const vec3_t& rhs, vec3_t* out);
-void VectorMA(const vec3_t& veca, double scale, const vec3_t& vecb, vec3_t* out);
+void CrossProduct(const vec3_t& lhs, const vec3_t& rhs, vec3_t& out);
+void VectorMA(const vec3_t& veca, double scale, const vec3_t& vecb, vec3_t& out);
 
-double VectorNormalize(vec3_t* self); // returns vector length
-void VectorInverse(vec3_t* self);
+double VectorNormalize(vec3_t& self); // returns vector length
+void VectorInverse(vec3_t& self);
 
 void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4]);
 
-void AngleVectors(const vec3_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up);
+void AngleVectors(const vec3_t& angles, vec3_t& forward, vec3_t& right, vec3_t& up);
 float anglemod(float a);
 
 
 
-void RotatePointAroundVector(vec3_t* dst, const vec3_t& dir, const vec3_t& point, double degrees);
+void RotatePointAroundVector(vec3_t& dst, const vec3_t& dir, const vec3_t& point, double degrees);

@@ -129,8 +129,8 @@ void D_CalcGradients(msurface_t* pface)
 
 	float mipscale = 1.0 / (float)(1 << miplevel);
 
-	TransformVector(pface->texinfo->vecs[0], p_saxis);
-	TransformVector(pface->texinfo->vecs[1], p_taxis);
+	TransformVector(ToVec3(pface->texinfo->vecs[0]), p_saxis);
+	TransformVector(ToVec3(pface->texinfo->vecs[1]), p_taxis);
 
 	float t = xscaleinv * mipscale;
 	d_sdivzstepu = p_saxis[0] * t;

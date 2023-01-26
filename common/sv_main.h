@@ -62,7 +62,7 @@ extern server_static_t svs; // persistant server info
 extern server_t sv; // local server
 
 void SV_Init();
-void SV_StartParticle(vec3_t org, vec3_t dir, int color, int count);
+void SV_StartParticle(const vec3_t& org, const vec3_t& dir, int color, int count);
 void SV_StartSound(edict_t* entity, int channel, char* sample, int volume, float attenuation);
 void SV_SendClientMessages();
 void SV_ClearDatagram();

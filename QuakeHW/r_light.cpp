@@ -130,7 +130,7 @@ LIGHT SAMPLING
 =============================================================================
 */
 
-int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
+int RecursiveLightPoint(mnode_t* node, const vec3_t& start, const vec3_t& end)
 {
 	vec3_t mid;
 
@@ -171,8 +171,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 		mtexinfo_t* tex = surf->texinfo;
 
-		int s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
-		int t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
+		int s = DotProduct(mid, ToVec3(tex->vecs[0])) + tex->vecs[0][3];
+		int t = DotProduct(mid, ToVec3(tex->vecs[1])) + tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] ||
 			t < surf->texturemins[1])
@@ -215,7 +215,7 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 	return RecursiveLightPoint(node->children[!side], mid, end);
 }
 
-int R_LightPoint(vec3_t p)
+int R_LightPoint(const vec3_t& p)
 {
 	vec3_t end;
 

@@ -242,7 +242,7 @@ float r_avertexnormals[NUMVERTEXNORMALS][3] = {
 void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv,
                                           stvert_t* pstverts);
 void R_AliasSetUpTransform(int trivial_accept);
-void R_AliasTransformVector(vec3_t in, vec3_t out);
+void R_AliasTransformVector(const vec3_t& in, vec3_t& out);
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
                                trivertx_t* pverts, stvert_t* pstverts);
 void R_AliasProjectFinalVert(finalvert_t* fv, auxvert_t* av);
@@ -305,7 +305,7 @@ bool R_AliasCheckBBox()
 	int minz = 9999;
 	for (i = 0; i < 8; i++)
 	{
-		R_AliasTransformVector(&basepts[i][0], &viewaux[i].fv[0]);
+		R_AliasTransformVector(ToVec3(&basepts[i][0]), ToVec3(&viewaux[i].fv[0]));
 
 		if (viewaux[i].fv[2] < ALIAS_Z_CLIP_PLANE)
 		{
@@ -412,11 +412,11 @@ bool R_AliasCheckBBox()
 R_AliasTransformVector
 ================
 */
-void R_AliasTransformVector(vec3_t in, vec3_t out)
+void R_AliasTransformVector(const vec3_t& in, vec3_t& out)
 {
-	out[0] = DotProduct(in, aliastransform[0]) + aliastransform[0][3];
-	out[1] = DotProduct(in, aliastransform[1]) + aliastransform[1][3];
-	out[2] = DotProduct(in, aliastransform[2]) + aliastransform[2][3];
+	out[0] = DotProduct(in, ToVec3(aliastransform[0])) + aliastransform[0][3];
+	out[1] = DotProduct(in, ToVec3(aliastransform[1])) + aliastransform[1][3];
+	out[2] = DotProduct(in, ToVec3(aliastransform[2])) + aliastransform[2][3];
 }
 
 
@@ -536,10 +536,10 @@ void R_AliasSetUpTransform(int trivial_accept)
 	R_ConcatTransforms(t2matrix, tmatrix, rotationmatrix);
 
 	// TODO: should be global, set when vright, etc., set
-	VectorCopy(vright, viewmatrix[0]);
-	VectorCopy(vup, viewmatrix[1]);
-	VectorInverse(viewmatrix[1]);
-	VectorCopy(vpn, viewmatrix[2]);
+	VectorCopy(vright, ToVec3(viewmatrix[0]));
+	VectorCopy(vup, ToVec3(viewmatrix[1]));
+	VectorInverse(ToVec3(viewmatrix[1]));
+	VectorCopy(vpn, ToVec3(viewmatrix[2]));
 
 	// viewmatrix[0][3] = 0;
 	// viewmatrix[1][3] = 0;
@@ -574,12 +574,9 @@ R_AliasTransformFinalVert
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
                                trivertx_t* pverts, stvert_t* pstverts)
 {
-	av->fv[0] = DotProduct(pverts->v, aliastransform[0]) +
-		aliastransform[0][3];
-	av->fv[1] = DotProduct(pverts->v, aliastransform[1]) +
-		aliastransform[1][3];
-	av->fv[2] = DotProduct(pverts->v, aliastransform[2]) +
-		aliastransform[2][3];
+	av->fv[0] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[0])) + aliastransform[0][3];
+	av->fv[1] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[1])) + aliastransform[1][3];
+	av->fv[2] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[2])) + aliastransform[2][3];
 
 	fv->v[2] = pstverts->s;
 	fv->v[3] = pstverts->t;
@@ -588,7 +585,7 @@ void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
 
 	// lighting
 	float* plightnormal = r_avertexnormals[pverts->lightnormalindex];
-	float lightcos = DotProduct(plightnormal, r_plightvec);
+	float lightcos = DotProduct(ToVec3(plightnormal), r_plightvec);
 	int temp = r_ambientlight;
 
 	if (lightcos < 0)
@@ -617,18 +614,15 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 	for (int i = 0; i < r_anumverts; i++, fv++, pverts++, pstverts++)
 	{
 		// transform and project
-		float zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) +
-			aliastransform[2][3]);
+		float zi = 1.0 / (DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[2])) + aliastransform[2][3]);
 
 		// x, y, and z are scaled down by 1/2**31 in the transform, so 1/z is
 		// scaled up by 1/2**31, and the scaling cancels out for x and y in the
 		// projection
 		fv->v[5] = zi;
 
-		fv->v[0] = ((DotProduct(pverts->v, aliastransform[0]) +
-			aliastransform[0][3]) * zi) + aliasxcenter;
-		fv->v[1] = ((DotProduct(pverts->v, aliastransform[1]) +
-			aliastransform[1][3]) * zi) + aliasycenter;
+		fv->v[0] = ((DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[0])) + aliastransform[0][3]) * zi) + aliasxcenter;
+		fv->v[1] = ((DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[1])) + aliastransform[1][3]) * zi) + aliasycenter;
 
 		fv->v[2] = pstverts->s;
 		fv->v[3] = pstverts->t;
@@ -636,7 +630,7 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 
 		// lighting
 		float* plightnormal = r_avertexnormals[pverts->lightnormalindex];
-		float lightcos = DotProduct(plightnormal, r_plightvec);
+		float lightcos = DotProduct(ToVec3(plightnormal), r_plightvec);
 		int temp = r_ambientlight;
 
 		if (lightcos < 0)
@@ -775,9 +769,9 @@ void R_AliasSetupLighting(alight_t* plighting)
 	r_shadelight *= VID_GRADES;
 
 	// rotate the lighting vector into the model's frame of reference
-	r_plightvec[0] = DotProduct(plighting->plightvec, alias_forward);
-	r_plightvec[1] = -DotProduct(plighting->plightvec, alias_right);
-	r_plightvec[2] = DotProduct(plighting->plightvec, alias_up);
+	r_plightvec[0] = DotProduct(ToVec3(plighting->plightvec), alias_forward);
+	r_plightvec[1] = -DotProduct(ToVec3(plighting->plightvec), alias_right);
+	r_plightvec[2] = DotProduct(ToVec3(plighting->plightvec), alias_up);
 }
 
 /*

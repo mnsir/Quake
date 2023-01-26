@@ -86,7 +86,7 @@ msurface_t* warpface;
 
 extern cvar_t gl_subdivide_size;
 
-void BoundPoly(int numverts, float* verts, vec3_t mins, vec3_t maxs)
+void BoundPoly(int numverts, float* verts, vec3_t& mins, vec3_t& maxs)
 {
 	mins[0] = mins[1] = mins[2] = 9999;
 	maxs[0] = maxs[1] = maxs[2] = -9999;
@@ -132,7 +132,7 @@ void SubdividePolygon(int numverts, float* verts)
 		// wrap cases
 		dist[j] = dist[0];
 		v -= i;
-		VectorCopy(verts, v);
+		VectorCopy(ToVec3(verts), ToVec3(v));
 
 		int f = b = 0;
 		v = verts;
@@ -140,12 +140,12 @@ void SubdividePolygon(int numverts, float* verts)
 		{
 			if (dist[j] >= 0)
 			{
-				VectorCopy(v, front[f]);
+				VectorCopy(ToVec3(v), front[f]);
 				f++;
 			}
 			if (dist[j] <= 0)
 			{
-				VectorCopy(v, back[b]);
+				VectorCopy(ToVec3(v), back[b]);
 				b++;
 			}
 			if (dist[j] == 0 || dist[j + 1] == 0)
@@ -161,8 +161,8 @@ void SubdividePolygon(int numverts, float* verts)
 			}
 		}
 
-		SubdividePolygon(f, front[0]);
-		SubdividePolygon(b, back[0]);
+		SubdividePolygon(f, front[0].data());
+		SubdividePolygon(b, back[0].data());
 		return;
 	}
 
@@ -172,9 +172,9 @@ void SubdividePolygon(int numverts, float* verts)
 	poly->numverts = numverts;
 	for (i = 0; i < numverts; i++, verts += 3)
 	{
-		VectorCopy(verts, poly->verts[i]);
-		float s = DotProduct(verts, warpface->texinfo->vecs[0]);
-		float t = DotProduct(verts, warpface->texinfo->vecs[1]);
+		VectorCopy(ToVec3(verts), ToVec3(poly->verts[i]));
+		float s = DotProduct(ToVec3(verts), ToVec3(warpface->texinfo->vecs[0]));
+		float t = DotProduct(ToVec3(verts), ToVec3(warpface->texinfo->vecs[1]));
 		poly->verts[i][3] = s;
 		poly->verts[i][4] = t;
 	}
@@ -192,7 +192,7 @@ can be done reasonably.
 void GL_SubdivideSurface(msurface_t* fa)
 {
 	vec3_t verts[64];
-	float* vec;
+	vec3_t vec;
 	texture_t* t;
 
 	warpface = fa;
@@ -213,7 +213,7 @@ void GL_SubdivideSurface(msurface_t* fa)
 		numverts++;
 	}
 
-	SubdividePolygon(numverts, verts[0]);
+	SubdividePolygon(numverts, verts[0].data());
 }
 
 //=========================================================
@@ -308,7 +308,7 @@ void EmitSkyPolys(msurface_t* fa)
 		glBegin(GL_POLYGON);
 		for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
 		{
-			VectorSubtract(v, r_origin, dir);
+			VectorSubtract(ToVec3(v), r_origin, dir);
 			dir[2] *= 3; // flatten the sphere
 
 			float length = dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2];

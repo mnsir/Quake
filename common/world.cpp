@@ -40,16 +40,16 @@ line of sight checks trace->crosscontent, but bullets don't
 typedef struct
 {
 	vec3_t boxmins, boxmaxs; // enclose the test object along entire move
-	float *mins, *maxs; // size of the moving object
+	float* mins, * maxs; // size of the moving object
 	vec3_t mins2, maxs2; // size when clipping against mosnters
-	float *start, *end;
+	float* start, * end;
 	trace_t trace;
 	int type;
 	edict_t* passedict;
 } moveclip_t;
 
 
-int SV_HullPointContents(hull_t* hull, int num, vec3_t p);
+int SV_HullPointContents(hull_t* hull, int num, const vec3_t& p);
 
 /*
 ===============================================================================
@@ -105,7 +105,7 @@ To keep everything totally uniform, bounding boxes are turned into small
 BSP trees instead of being compared directly.
 ===================
 */
-hull_t* SV_HullForBox(vec3_t mins, vec3_t maxs)
+hull_t* SV_HullForBox(const vec3_t& mins, const vec3_t& maxs)
 {
 	box_planes[0].dist = maxs[0];
 	box_planes[1].dist = mins[0];
@@ -128,7 +128,7 @@ Offset is filled in to contain the adjustment that must be added to the
 testing object's origin to get a point to use with the returned hull.
 ================
 */
-hull_t* SV_HullForEntity(edict_t* ent, vec3_t mins, vec3_t maxs, vec3_t offset)
+hull_t* SV_HullForEntity(edict_t* ent, const vec3_t& mins, const vec3_t& maxs, vec3_t& offset)
 {
 	using namespace std::string_view_literals;
 	vec3_t size;
@@ -203,7 +203,7 @@ SV_CreateAreaNode
 
 ===============
 */
-areanode_t* SV_CreateAreaNode(int depth, vec3_t mins, vec3_t maxs)
+areanode_t* SV_CreateAreaNode(int depth, const vec3_t& mins, const vec3_t& maxs)
 {
 	vec3_t size;
 	vec3_t mins1, maxs1, mins2, maxs2;
@@ -279,7 +279,7 @@ SV_TouchLinks
 */
 void SV_TouchLinks(edict_t* ent, areanode_t* node)
 {
-	link_t*next;
+	link_t* next;
 
 	// touch linked edicts
 	for (link_t* l = node->trigger_edicts.next; l != &node->trigger_edicts; l = next)
@@ -455,7 +455,7 @@ SV_HullPointContents
 
 ==================
 */
-int SV_HullPointContents(hull_t* hull, int num, vec3_t p)
+int SV_HullPointContents(hull_t* hull, int num, const vec3_t& p)
 {
 	using namespace std::string_view_literals;
 	float d;
@@ -488,7 +488,7 @@ SV_PointContents
 
 ==================
 */
-int SV_PointContents(vec3_t p)
+int SV_PointContents(const vec3_t& p)
 {
 	int cont = SV_HullPointContents(&sv.worldmodel->hulls[0], 0, p);
 	if (cont <= CONTENTS_CURRENT_0 && cont >= CONTENTS_CURRENT_DOWN)
@@ -496,7 +496,7 @@ int SV_PointContents(vec3_t p)
 	return cont;
 }
 
-int SV_TruePointContents(vec3_t p)
+int SV_TruePointContents(const vec3_t& p)
 {
 	return SV_HullPointContents(&sv.worldmodel->hulls[0], 0, p);
 }
@@ -538,7 +538,7 @@ SV_RecursiveHullCheck
 
 ==================
 */
-bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t* trace)
+bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, const vec3_t& p1, const vec3_t& p2, trace_t* trace)
 {
 	using namespace std::string_view_literals;
 	float t1, t2;
@@ -581,7 +581,7 @@ bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p
 		t1 = DotProduct(plane->normal, p1) - plane->dist;
 		t2 = DotProduct(plane->normal, p2) - plane->dist;
 	}
-	
+
 	if (t1 >= 0 && t2 >= 0)
 		return SV_RecursiveHullCheck(hull, node->children[0], p1f, p2f, p1, p2, trace);
 	if (t1 < 0 && t2 < 0)
@@ -606,7 +606,7 @@ bool SV_RecursiveHullCheck(hull_t* hull, int num, float p1f, float p2f, vec3_t p
 	// move up to the node
 	if (!SV_RecursiveHullCheck(hull, node->children[side], p1f, midf, p1, mid, trace))
 		return false;
-	
+
 	if (SV_HullPointContents(hull, node->children[side ^ 1], mid)
 		!= CONTENTS_SOLID)
 		// go past the node
@@ -661,7 +661,7 @@ Handles selection or creation of a clipping hull, and offseting (and
 eventually rotation) of the end points
 ==================
 */
-trace_t SV_ClipMoveToEntity(edict_t* ent, vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
+trace_t SV_ClipMoveToEntity(edict_t* ent, const vec3_t& start, const vec3_t& mins, const vec3_t& maxs, const vec3_t& end)
 {
 	trace_t trace;
 	vec3_t offset;
@@ -678,10 +678,10 @@ trace_t SV_ClipMoveToEntity(edict_t* ent, vec3_t start, vec3_t mins, vec3_t maxs
 
 	VectorSubtract(start, offset, start_l);
 	VectorSubtract(end, offset, end_l);
-	
+
 	// trace a line through the apropriate clipping hull
 	SV_RecursiveHullCheck(hull, hull->firstclipnode, 0, 1, start_l, end_l, &trace);
-	
+
 	// fix trace up by the offset
 	if (trace.fraction != 1)
 		VectorAdd(trace.endpos, offset, trace.endpos);
@@ -705,7 +705,7 @@ Mins and maxs enclose the entire area swept by the move
 void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 {
 	using namespace std::string_view_literals;
-	link_t*next;
+	link_t* next;
 	trace_t trace;
 
 	// touch linked edicts
@@ -746,9 +746,9 @@ void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 		}
 
 		if ((int)touch->v.flags & FL_MONSTER)
-			trace = SV_ClipMoveToEntity(touch, clip->start, clip->mins2, clip->maxs2, clip->end);
+			trace = SV_ClipMoveToEntity(touch, ToVec3(clip->start), clip->mins2, clip->maxs2, ToVec3(clip->end));
 		else
-			trace = SV_ClipMoveToEntity(touch, clip->start, clip->mins, clip->maxs, clip->end);
+			trace = SV_ClipMoveToEntity(touch, ToVec3(clip->start), ToVec3(clip->mins), ToVec3(clip->maxs), ToVec3(clip->end));
 		if (trace.allsolid || trace.startsolid ||
 			trace.fraction < clip->trace.fraction)
 		{
@@ -781,7 +781,7 @@ void SV_ClipToLinks(areanode_t* node, moveclip_t* clip)
 SV_MoveBounds
 ==================
 */
-void SV_MoveBounds(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t boxmins, vec3_t boxmaxs)
+void SV_MoveBounds(const vec3_t& start, const vec3_t& mins, const vec3_t& maxs, const vec3_t& end, vec3_t& boxmins, vec3_t& boxmaxs)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -803,7 +803,7 @@ void SV_MoveBounds(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, vec3_t bo
 SV_Move
 ==================
 */
-trace_t SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, edict_t* passedict)
+trace_t SV_Move(const vec3_t& start, const vec3_t& mins, const vec3_t& maxs, const vec3_t& end, int type, edict_t* passedict)
 {
 	moveclip_t clip;
 
@@ -812,10 +812,10 @@ trace_t SV_Move(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, ed
 	// clip to world
 	clip.trace = SV_ClipMoveToEntity(sv.edicts, start, mins, maxs, end);
 
-	clip.start = start;
-	clip.end = end;
-	clip.mins = mins;
-	clip.maxs = maxs;
+	clip.start = const_cast<float*>(start.data());
+	clip.end = const_cast<float*>(end.data());
+	clip.mins = const_cast<float*>(mins.data());
+	clip.maxs = const_cast<float*>(maxs.data());
 	clip.type = type;
 	clip.passedict = passedict;
 

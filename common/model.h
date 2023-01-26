@@ -378,9 +378,9 @@ model_t* Mod_ForName(char* name, bool crash);
 void* Mod_Extradata(model_t* mod); // handles caching
 void Mod_TouchModel(char* name);
 
-mleaf_t* Mod_PointInLeaf(float* p, model_t* model);
+mleaf_t* Mod_PointInLeaf(const vec3_t& p, model_t* model);
 byte* Mod_LeafPVS(mleaf_t* leaf, model_t* model);
 
 
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, mplane_t* plane);
-int BOX_ON_PLANE_SIDE(vec3_t emins, vec3_t emaxs, mplane_t* p);
+int BoxOnPlaneSide(const vec3_t& emins, const vec3_t& emaxs, mplane_t* plane);
+int BOX_ON_PLANE_SIDE(const vec3_t& emins, const vec3_t& emaxs, mplane_t* p);

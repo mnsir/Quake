@@ -301,7 +301,7 @@ void R_PrintAliasStats();
 void R_PrintTimes();
 void R_PrintDSpeeds();
 void R_AnimateLight();
-int R_LightPoint(vec3_t p);
+int R_LightPoint(const vec3_t& p);
 void R_SetupFrame();
 void R_cshift_f();
 void R_EmitEdge(mvertex_t* pv0, mvertex_t* pv1);

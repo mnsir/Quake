@@ -114,7 +114,7 @@ possible, no move is done, false is returned, and
 pr_global_struct->trace_normal is set to the normal of the blocking wall
 =============
 */
-bool SV_movestep(edict_t* ent, vec3_t move, bool relink)
+bool SV_movestep(edict_t* ent, const vec3_t& move, bool relink)
 {
 	vec3_t oldorg, new_org, end;
 	trace_t trace;

@@ -67,14 +67,14 @@ static bool makeclippededge;
 R_EntityRotate
 ================
 */
-void R_EntityRotate(vec3_t vec)
+void R_EntityRotate(vec3_t& vec)
 {
 	vec3_t tvec;
 
 	VectorCopy(vec, tvec);
-	vec[0] = DotProduct(entity_rotation[0], tvec);
-	vec[1] = DotProduct(entity_rotation[1], tvec);
-	vec[2] = DotProduct(entity_rotation[2], tvec);
+	vec[0] = DotProduct(ToVec3(entity_rotation[0]), tvec);
+	vec[1] = DotProduct(ToVec3(entity_rotation[1]), tvec);
+	vec[2] = DotProduct(ToVec3(entity_rotation[2]), tvec);
 }
 
 
@@ -177,9 +177,9 @@ void R_RecursiveClipBPoly(bedge_t* pedges, mnode_t* pnode, msurface_t* psurf)
 	mplane_t* splitplane = pnode->plane;
 	tplane.dist = splitplane->dist -
 		DotProduct(r_entorigin, splitplane->normal);
-	tplane.normal[0] = DotProduct(entity_rotation[0], splitplane->normal);
-	tplane.normal[1] = DotProduct(entity_rotation[1], splitplane->normal);
-	tplane.normal[2] = DotProduct(entity_rotation[2], splitplane->normal);
+	tplane.normal[0] = DotProduct(ToVec3(entity_rotation[0]), splitplane->normal);
+	tplane.normal[1] = DotProduct(ToVec3(entity_rotation[1]), splitplane->normal);
+	tplane.normal[2] = DotProduct(ToVec3(entity_rotation[2]), splitplane->normal);
 
 	// clip edges to BSP plane
 	for (; pedges; pedges = pnextedge)

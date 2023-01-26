@@ -143,7 +143,7 @@ void R_RenderDlight(dlight_t* light)
 	glColor3f(0.2, 0.1, 0.0);
 	for (i = 0; i < 3; i++)
 		v[i] = light->origin[i] - vpn[i] * rad;
-	glVertex3fv(v);
+	glVertex3fv(v.data());
 	glColor3f(0, 0, 0);
 	for (i = 16; i >= 0; i--)
 	{
@@ -151,7 +151,7 @@ void R_RenderDlight(dlight_t* light)
 		for (int j = 0; j < 3; j++)
 			v[j] = light->origin[j] + vright[j] * cos(a) * rad
 				+ vup[j] * sin(a) * rad;
-		glVertex3fv(v);
+		glVertex3fv(v.data());
 	}
 	glEnd();
 }
@@ -273,7 +273,7 @@ LIGHT SAMPLING
 mplane_t* lightplane;
 vec3_t lightspot;
 
-int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
+int RecursiveLightPoint(mnode_t* node, const vec3_t& start, const vec3_t& end)
 {
 	vec3_t mid;
 
@@ -316,8 +316,8 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 
 		mtexinfo_t* tex = surf->texinfo;
 
-		int s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
-		int t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
+		int s = DotProduct(mid, ToVec3(tex->vecs[0])) + tex->vecs[0][3];
+		int t = DotProduct(mid, ToVec3(tex->vecs[1])) + tex->vecs[1][3];
 
 		if (s < surf->texturemins[0] ||
 			t < surf->texturemins[1])
@@ -360,7 +360,7 @@ int RecursiveLightPoint(mnode_t* node, vec3_t start, vec3_t end)
 	return RecursiveLightPoint(node->children[!side], mid, end);
 }
 
-int R_LightPoint(vec3_t p)
+int R_LightPoint(const vec3_t& p)
 {
 	vec3_t end;
 

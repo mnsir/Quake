@@ -574,9 +574,10 @@ R_AliasTransformFinalVert
 void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
                                trivertx_t* pverts, stvert_t* pstverts)
 {
-	av->fv[0] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[0])) + aliastransform[0][3];
-	av->fv[1] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[1])) + aliastransform[1][3];
-	av->fv[2] = DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[2])) + aliastransform[2][3];
+	vec3_t tempVec = { pverts->v[0],pverts->v[1],pverts->v[2] };
+	av->fv[0] = DotProduct(tempVec, ToVec3(aliastransform[0])) + aliastransform[0][3];
+	av->fv[1] = DotProduct(tempVec, ToVec3(aliastransform[1])) + aliastransform[1][3];
+	av->fv[2] = DotProduct(tempVec, ToVec3(aliastransform[2])) + aliastransform[2][3];
 
 	fv->v[2] = pstverts->s;
 	fv->v[3] = pstverts->t;
@@ -601,7 +602,6 @@ void R_AliasTransformFinalVert(finalvert_t* fv, auxvert_t* av,
 	fv->v[4] = temp;
 }
 
-
 /*
 ================
 R_AliasTransformAndProjectFinalVerts
@@ -613,16 +613,17 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t* fv, stvert_t* pstverts)
 
 	for (int i = 0; i < r_anumverts; i++, fv++, pverts++, pstverts++)
 	{
+		vec3_t tempVec = { pverts->v[0],pverts->v[1],pverts->v[2] };
 		// transform and project
-		float zi = 1.0 / (DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[2])) + aliastransform[2][3]);
+		float zi = 1.0 / (DotProduct(tempVec, ToVec3(aliastransform[2])) + aliastransform[2][3]);
 
 		// x, y, and z are scaled down by 1/2**31 in the transform, so 1/z is
 		// scaled up by 1/2**31, and the scaling cancels out for x and y in the
 		// projection
 		fv->v[5] = zi;
 
-		fv->v[0] = ((DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[0])) + aliastransform[0][3]) * zi) + aliasxcenter;
-		fv->v[1] = ((DotProduct(ToVec3((float*)(pverts->v)), ToVec3(aliastransform[1])) + aliastransform[1][3]) * zi) + aliasycenter;
+		fv->v[0] = ((DotProduct(tempVec, ToVec3(aliastransform[0])) + aliastransform[0][3]) * zi) + aliasxcenter;
+		fv->v[1] = ((DotProduct(tempVec, ToVec3(aliastransform[1])) + aliastransform[1][3]) * zi) + aliasycenter;
 
 		fv->v[2] = pstverts->s;
 		fv->v[3] = pstverts->t;

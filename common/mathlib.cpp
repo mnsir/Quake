@@ -39,9 +39,7 @@ void ProjectPointOnPlane(vec3_t& dst, const vec3_t& p, const vec3_t& normal)
 	auto inv_denom = 1 / DotProduct(normal, normal);
 	
 	vec3_t n;
-	n[0] = normal[0] * inv_denom;
-	n[1] = normal[1] * inv_denom;
-	n[2] = normal[2] * inv_denom;
+	VectorScale(normal, inv_denom, n);
 
 	auto d = DotProduct(normal, p) * inv_denom;
 	dst[0] = p[0] - d * n[0];
@@ -89,9 +87,7 @@ void PerpendicularVector(vec3_t& dst, const vec3_t& src)
 void RotatePointAroundVector(vec3_t& dst, const vec3_t& dir, const vec3_t& point, double degrees)
 {
 	vec3_t vf;
-	vf[0] = dir[0];
-	vf[1] = dir[1];
-	vf[2] = dir[2];
+	VectorCopy(dir, vf);
 
 	vec3_t vr;
 	PerpendicularVector(vr, dir);

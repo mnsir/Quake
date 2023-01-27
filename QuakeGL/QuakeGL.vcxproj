@@ -213,6 +213,7 @@
     <ClInclude Include="..\common\cl_tent.h" />
     <ClInclude Include="..\common\cmd.h" />
     <ClInclude Include="..\common\common.h" />
+    <ClInclude Include="..\common\common_model.h" />
     <ClInclude Include="..\common\conproc.h" />
     <ClInclude Include="..\common\console.h" />
     <ClInclude Include="..\common\crc.h" />
@@ -228,7 +229,6 @@
     <ClInclude Include="..\common\keys.h" />
     <ClInclude Include="..\common\mathlib.h" />
     <ClInclude Include="..\common\menu.h" />
-    <ClInclude Include="..\common\model.h" />
     <ClInclude Include="..\common\modelgen.h" />
     <ClInclude Include="..\common\net.h" />
     <ClInclude Include="..\common\net_dgrm.h" />

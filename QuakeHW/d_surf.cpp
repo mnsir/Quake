@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "console.h"
 #include "d_iface.h"
 #include "d_local.h"
-#include "model.h"
+#include "hw_model.h"
 #include "r_local.h"
 #include "sys.h"
 

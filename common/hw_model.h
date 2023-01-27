@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #pragma once
 
+#include <string>
+
 #include "bspfile.h"
 #include "common.h"
 #include "modelgen.h"
@@ -289,7 +291,7 @@ typedef struct
 // Whole model
 //
 
-typedef enum { mod_brush, mod_sprite, mod_alias } modtype_t;
+enum class modtype_t { mod_brush, mod_sprite, mod_alias };
 
 #define EF_ROCKET 1 // leave a trail
 #define EF_GRENADE 2 // leave a trail
@@ -302,10 +304,20 @@ typedef enum { mod_brush, mod_sprite, mod_alias } modtype_t;
 
 typedef struct model_s
 {
-	char name[MAX_QPATH];
+private:
+	std::string name;
 	bool needload; // bmodels and sprites don't cache normally
 
 	modtype_t type;
+
+public:
+	const std::string& GetName() const { return name; }
+	void SetName(std::string _name) { name = std::move(_name); }
+	bool IsNeedLoad() const { return needload; }
+	void SetNeedLoad(bool _needload) { needload = _needload; }
+	modtype_t GetModType() const { return type; }
+	void SetModType(modtype_t _type) { type = _type; }
+
 	int numframes;
 	synctype_t synctype;
 

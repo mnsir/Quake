@@ -9,11 +9,7 @@
 #include "mathlib.h"
 #include "net_main.h"
 
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "model.h"
-#endif
+#include "common_model.h"
 
 #include "sound.h"
 #include "render.h"

@@ -350,9 +350,6 @@
     <ClInclude Include="..\common\modelgen.h">
       <Filter>model</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\model.h">
-      <Filter>model</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\spritegn.h">
       <Filter>model</Filter>
     </ClInclude>
@@ -439,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="..\common\host_cmd.h">
       <Filter>host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\common_model.h">
+      <Filter>model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

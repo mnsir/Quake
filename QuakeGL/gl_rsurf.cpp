@@ -53,10 +53,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
 #include "input.h"
@@ -1502,7 +1503,7 @@ void GL_BuildLightmaps()
 		model_t* m = cl.model_precache[j];
 		if (!m)
 			break;
-		if (m->name[0] == '*')
+		if (m->GetName().front() == '*')
 			continue;
 		r_pcurrentvertbase = m->vertexes;
 		currentmodel = m;

@@ -811,11 +811,11 @@ char* COM_FileExtension(char* in)
 COM_FileBase
 ============
 */
-void COM_FileBase(char* in, char* out)
+void COM_FileBase(std::string_view in, char* out)
 {
-	char* s2;
+	const char* s2;
 
-	char* s = in + strlen(in) - 1;
+	auto s = in.data() + in.size() - 1;
 
 	while (s != in && *s != '.')
 		s--;
@@ -971,7 +971,7 @@ void COM_CheckRegistered()
 	int h;
 	unsigned short check[128];
 
-	COM_OpenFile((char*)"gfx/pop.lmp", &h);
+	COM_OpenFile("gfx/pop.lmp"sv, &h);
 	static_registered = 0;
 
 	if (h == -1)
@@ -1305,7 +1305,7 @@ Finds the file in the search path.
 Sets com_filesize and one of handle or file
 ===========
 */
-int COM_FindFile(char* filename, int* handle, FILE** file)
+int COM_FindFile(std::string_view filename, int* handle, FILE** file)
 {
 	using namespace std::string_view_literals;
 	char netpath[MAX_OSPATH];
@@ -1324,7 +1324,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 	if (proghack)
 	{
 		// gross hack to use quake 1 progs with quake 2 maps
-		if (!strcmp(filename, "progs.dat"))
+		if (filename == "progs.dat"sv)
 			search = search->next;
 	}
 
@@ -1336,7 +1336,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 			// look through all the pak file elements
 			pack_t* pak = search->pack;
 			for (i = 0; i < pak->numfiles; i++)
-				if (!strcmp(pak->files[i].name, filename))
+				if (pak->files[i].name == filename)
 				{
 					// found it!
 					Sys_Printf((char*)"PackFile: %s : %s\n", pak->filename, filename);
@@ -1362,7 +1362,7 @@ int COM_FindFile(char* filename, int* handle, FILE** file)
 			if (!static_registered)
 			{
 				// if not a registered version, don't ever go beyond base
-				if (strchr(filename, '/') || strchr(filename, '\\'))
+				if (filename.find('/') != filename.npos || filename.find('\\') != filename.npos)
 					continue;
 			}
 
@@ -1422,7 +1422,7 @@ returns a handle and a length
 it may actually be inside a pak file
 ===========
 */
-int COM_OpenFile(char* filename, int* handle)
+int COM_OpenFile(std::string_view filename, int* handle)
 {
 	return COM_FindFile(filename, handle, NULL);
 }
@@ -1469,7 +1469,7 @@ cache_user_t* loadcache;
 uint8_t* loadbuf;
 int loadsize;
 
-uint8_t* COM_LoadFile(char* path, int usehunk)
+uint8_t* COM_LoadFile(std::string_view path, int usehunk)
 {
 	using namespace std::string_view_literals;
 	int h;
@@ -1533,7 +1533,7 @@ void COM_LoadCacheFile(char* path, cache_user_t* cu)
 }
 
 // uses temp hunk if larger than bufsize
-uint8_t* COM_LoadStackFile(char* path, void* buffer, int bufsize)
+uint8_t* COM_LoadStackFile(std::string_view path, void* buffer, int bufsize)
 {
 	loadbuf = (uint8_t*)buffer;
 	loadsize = bufsize;

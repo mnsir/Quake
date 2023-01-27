@@ -3,11 +3,7 @@
 #include "mathlib.h"
 #include "render.h"
 
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "model.h"
-#endif
+#include "common_model.h"
 
 
 typedef struct

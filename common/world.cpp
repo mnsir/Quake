@@ -144,7 +144,7 @@ hull_t* SV_HullForEntity(edict_t* ent, const vec3_t& mins, const vec3_t& maxs, v
 
 		model_t* model = sv.models[(int)ent->v.modelindex];
 
-		if (!model || model->type != mod_brush)
+		if (!model || model->GetModType() != modtype_t::mod_brush)
 			Sys_Error("MOVETYPE_PUSH with a non bsp model"sv);
 
 		VectorSubtract(maxs, mins, size);

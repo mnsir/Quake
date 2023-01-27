@@ -257,8 +257,7 @@ void CL_ParseServerInfo()
 	strncpy(cl.levelname, str, sizeof(cl.levelname) - 1);
 
 	// seperate the printfs so the server message can have a color
-	Con_Printf(
-		(char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
+	Con_Printf((char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 	Con_Printf((char*)"%c%s\n", 2, str);
 
 	//

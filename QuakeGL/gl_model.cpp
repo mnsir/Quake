@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 #include <cstring>
+#include <string>
+#include <string_view>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
@@ -31,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vid.h"
 #include "sys.h"
 #include "mathlib.h"
-#include "entity_state.h";
+#include "entity_state.h"
 #include "wad.h"
 #include "draw.h"
 #include "cvar.h"
@@ -56,10 +58,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
 #include "input.h"
@@ -92,7 +95,7 @@ byte mod_novis[MAX_MAP_LEAFS / 8];
 model_t mod_known[MAX_MOD_KNOWN];
 int mod_numknown;
 
-cvar_t gl_subdivide_size = {(char*)"gl_subdivide_size", (char*)"128", true};
+cvar_t gl_subdivide_size = { (char*)"gl_subdivide_size", (char*)"128", true };
 
 /*
 ===============
@@ -165,7 +168,7 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 
 	int row = (model->numleafs + 7) >> 3;
 	byte* out = decompressed;
-	
+
 	if (!in)
 	{
 		// no vis info, so make all visible
@@ -192,8 +195,7 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 			*out++ = 0;
 			c--;
 		}
-	}
-	while (out - decompressed < row);
+	} while (out - decompressed < row);
 
 	return decompressed;
 }
@@ -216,8 +218,8 @@ void Mod_ClearAll()
 	model_t* mod;
 
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
-		if (mod->type != mod_alias)
-			mod->needload = true;
+		if (mod->GetModType() != modtype_t::mod_alias)
+			mod->SetNeedLoad(true);
 }
 
 /*
@@ -226,28 +228,28 @@ Mod_FindName
 
 ==================
 */
-model_t* Mod_FindName(char* name)
+model_t* Mod_FindName(std::string_view name)
 {
 	using namespace std::string_view_literals;
-	int i;
-	model_t* mod;
-
-	if (!name[0])
+	if (name.empty())
 		Sys_Error("Mod_ForName: NULL name"sv);
 
 	//
 	// search the currently loaded models
 	//
-	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
-		if (!strcmp(mod->name, name))
+	int i = 0;
+	model_t* mod = mod_known;
+	for (; i < mod_numknown; i++, mod++)
+		if (mod->GetName() == name)
 			break;
+
+	if (i == MAX_MOD_KNOWN)
+		Sys_Error("mod_numknown == MAX_MOD_KNOWN"sv);
 
 	if (i == mod_numknown)
 	{
-		if (mod_numknown == MAX_MOD_KNOWN)
-			Sys_Error("mod_numknown == MAX_MOD_KNOWN"sv);
-		strcpy(mod->name, name);
-		mod->needload = true;
+		mod->SetName(std::string(name));
+		mod->SetNeedLoad(true);
 		mod_numknown++;
 	}
 
@@ -264,9 +266,9 @@ void Mod_TouchModel(char* name)
 {
 	model_t* mod = Mod_FindName(name);
 
-	if (!mod->needload)
+	if (!mod->IsNeedLoad())
 	{
-		if (mod->type == mod_alias)
+		if (mod->GetModType() == modtype_t::mod_alias)
 			Cache_Check(&mod->cache);
 	}
 }
@@ -283,9 +285,9 @@ model_t* Mod_LoadModel(model_t* mod, bool crash)
 	using namespace std::string_view_literals;
 	byte stackbuf[1024]; // avoid dirtying the cache heap
 
-	if (!mod->needload)
+	if (!mod->IsNeedLoad())
 	{
-		if (mod->type == mod_alias)
+		if (mod->GetModType() == modtype_t::mod_alias)
 		{
 			void* d = Cache_Check(&mod->cache);
 			if (d)
@@ -305,18 +307,18 @@ model_t* Mod_LoadModel(model_t* mod, bool crash)
 	//
 	// load the file
 	//
-	unsigned* buf = (unsigned*)COM_LoadStackFile(mod->name, stackbuf, sizeof(stackbuf));
+	unsigned* buf = (unsigned*)COM_LoadStackFile(mod->GetName(), stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)
-			Sys_Error(std::format("Mod_NumForName: {} not found"sv, mod->name));
+			Sys_Error(std::format("Mod_NumForName: {} not found"sv, mod->GetName()));
 		return NULL;
 	}
 
 	//
 	// allocate a new_ model
 	//
-	COM_FileBase(mod->name, loadname);
+	COM_FileBase(mod->GetName(), loadname);
 
 	loadmodel = mod;
 
@@ -325,7 +327,7 @@ model_t* Mod_LoadModel(model_t* mod, bool crash)
 	//
 
 	// call the apropriate loader
-	mod->needload = false;
+	mod->SetNeedLoad(false);
 
 	switch (LittleLong(*buf))
 	{
@@ -380,7 +382,7 @@ void Mod_LoadTextures(lump_t* l)
 {
 	using namespace std::string_view_literals;
 	int i, j;
-	texture_t *tx, *tx2;
+	texture_t* tx, * tx2;
 	texture_t* anims[10];
 	texture_t* altanims[10];
 
@@ -394,7 +396,7 @@ void Mod_LoadTextures(lump_t* l)
 	m->nummiptex = LittleLong(m->nummiptex);
 
 	loadmodel->numtextures = m->nummiptex;
-	loadmodel->textures = static_cast<texture_t**>(Hunk_AllocName(m->nummiptex * sizeof*loadmodel->textures, loadname));
+	loadmodel->textures = static_cast<texture_t**>(Hunk_AllocName(m->nummiptex * sizeof * loadmodel->textures, loadname));
 
 	for (i = 0; i < m->nummiptex; i++)
 	{
@@ -587,9 +589,9 @@ void Mod_LoadVertexes(lump_t* l)
 	using namespace std::string_view_literals;
 	dvertex_t* in = static_cast<dvertex_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mvertex_t* out = static_cast<mvertex_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	mvertex_t* out = static_cast<mvertex_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
@@ -614,9 +616,9 @@ void Mod_LoadSubmodels(lump_t* l)
 
 	dmodel_t* in = static_cast<dmodel_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->submodels = out;
 	loadmodel->numsubmodels = count;
@@ -648,9 +650,9 @@ void Mod_LoadEdges(lump_t* l)
 	using namespace std::string_view_literals;
 	dedge_t* in = static_cast<dedge_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	medge_t* out = static_cast<medge_t*>(Hunk_AllocName((count + 1) * sizeof*out, loadname));
+	medge_t* out = static_cast<medge_t*>(Hunk_AllocName((count + 1) * sizeof * out, loadname));
 
 	loadmodel->edges = out;
 	loadmodel->numedges = count;
@@ -672,9 +674,9 @@ void Mod_LoadTexinfo(lump_t* l)
 	using namespace std::string_view_literals;
 	texinfo_t* in = static_cast<texinfo_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mtexinfo_t* out = static_cast<mtexinfo_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	mtexinfo_t* out = static_cast<mtexinfo_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->texinfo = out;
 	loadmodel->numtexinfo = count;
@@ -783,9 +785,9 @@ void Mod_LoadFaces(lump_t* l)
 
 	dface_t* in = static_cast<dface_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	msurface_t* out = static_cast<msurface_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	msurface_t* out = static_cast<msurface_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
@@ -866,9 +868,9 @@ void Mod_LoadNodes(lump_t* l)
 
 	dnode_t* in = static_cast<dnode_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mnode_t* out = static_cast<mnode_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	mnode_t* out = static_cast<mnode_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->nodes = out;
 	loadmodel->numnodes = count;
@@ -912,9 +914,9 @@ void Mod_LoadLeafs(lump_t* l)
 
 	dleaf_t* in = static_cast<dleaf_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mleaf_t* out = static_cast<mleaf_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	mleaf_t* out = static_cast<mleaf_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
@@ -963,9 +965,9 @@ void Mod_LoadClipnodes(lump_t* l)
 	using namespace std::string_view_literals;
 	dclipnode_t* in = static_cast<dclipnode_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	dclipnode_t* out = static_cast<dclipnode_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	dclipnode_t* out = static_cast<dclipnode_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->clipnodes = out;
 	loadmodel->numclipnodes = count;
@@ -1015,7 +1017,7 @@ void Mod_MakeHull0()
 
 	mnode_t* in = loadmodel->nodes;
 	int count = loadmodel->numnodes;
-	dclipnode_t* out = static_cast<dclipnode_t*>(Hunk_AllocName(count * sizeof*out, loadname));
+	dclipnode_t* out = static_cast<dclipnode_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
@@ -1046,9 +1048,9 @@ void Mod_LoadMarksurfaces(lump_t* l)
 	using namespace std::string_view_literals;
 	short* in = static_cast<short*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	msurface_t** out = static_cast<msurface_t**>(Hunk_AllocName(count * sizeof*out, loadname));
+	msurface_t** out = static_cast<msurface_t**>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->marksurfaces = out;
 	loadmodel->nummarksurfaces = count;
@@ -1072,9 +1074,9 @@ void Mod_LoadSurfedges(lump_t* l)
 	using namespace std::string_view_literals;
 	int* in = static_cast<int*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	int* out = static_cast<int*>(Hunk_AllocName(count * sizeof*out, loadname));
+	int* out = static_cast<int*>(Hunk_AllocName(count * sizeof * out, loadname));
 
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
@@ -1094,9 +1096,9 @@ void Mod_LoadPlanes(lump_t* l)
 	using namespace std::string_view_literals;
 	dplane_t* in = static_cast<dplane_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
-		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->name));
+		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mplane_t* out = static_cast<mplane_t*>(Hunk_AllocName(count * 2 * sizeof*out, loadname));
+	mplane_t* out = static_cast<mplane_t*>(Hunk_AllocName(count * 2 * sizeof * out, loadname));
 
 	loadmodel->planes = out;
 	loadmodel->numplanes = count;
@@ -1142,13 +1144,13 @@ Mod_LoadBrushModel
 void Mod_LoadBrushModel(model_t* mod, void* buffer)
 {
 	using namespace std::string_view_literals;
-	loadmodel->type = mod_brush;
+	loadmodel->SetModType(modtype_t::mod_brush);
 
 	dheader_t* header = (dheader_t*)buffer;
 
 	int i = LittleLong(header->version);
 	if (i != BSPVERSION)
-		Sys_Error(std::format("Mod_LoadBrushModel: {} has wrong version number ({} should be {})"sv, mod->name, i, BSPVERSION));
+		Sys_Error(std::format("Mod_LoadBrushModel: {} has wrong version number ({} should be {})"sv, mod->GetName(), i, BSPVERSION));
 
 	// swap all the lumps
 	mod_base = (uint8_t*)header;
@@ -1207,10 +1209,10 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 			// duplicate the basic information
 			char name[10];
 
-			sprintf(name, (char*)"*%i", i + 1);
+			sprintf(name, "*%i", i + 1);
 			loadmodel = Mod_FindName(name);
 			*loadmodel = *mod;
-			strcpy(loadmodel->name, name);
+			loadmodel->SetName(name);
 			mod = loadmodel;
 		}
 	}
@@ -1244,9 +1246,6 @@ Mod_LoadAliasFrame
 */
 void* Mod_LoadAliasFrame(void* pin, maliasframedesc_t* frame)
 {
-	trivertx_t *pframe;
-	int j;
-
 	daliasframe_t* pdaliasframe = (daliasframe_t*)pin;
 
 	strcpy(frame->name, pdaliasframe->name);
@@ -1401,7 +1400,6 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 	using namespace std::string_view_literals;
 	int j;
 	char name[32];
-	byte* copy;
 	byte* texels;
 
 	byte* skin = (uint8_t*)(pskintype + 1);
@@ -1423,13 +1421,13 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 			pheader->texels[i] = texels - (uint8_t*)pheader;
 			memcpy(texels, pskintype + 1, s);
 			// }
-			sprintf(name, (char*)"%s_%i", loadmodel->name, i);
+			sprintf(name, "%s_%i", loadmodel->GetName().c_str(), i);
 			pheader->gl_texturenum[i][0] =
 				pheader->gl_texturenum[i][1] =
 				pheader->gl_texturenum[i][2] =
 				pheader->gl_texturenum[i][3] =
 				GL_LoadTexture(name, pheader->skinwidth,
-				               pheader->skinheight, (uint8_t*)(pskintype + 1), true, false);
+					pheader->skinheight, (uint8_t*)(pskintype + 1), true, false);
 			pskintype = (daliasskintype_t*)((uint8_t*)(pskintype + 1) + s);
 		}
 		else
@@ -1451,16 +1449,16 @@ void* Mod_LoadAllSkins(int numskins, daliasskintype_t* pskintype)
 					pheader->texels[i] = texels - (uint8_t*)pheader;
 					memcpy(texels, pskintype, s);
 				}
-				sprintf(name, (char*)"%s_%i_%i", loadmodel->name, i, j);
+				sprintf(name, "%s_%i_%i", loadmodel->GetName().c_str(), i, j);
 				pheader->gl_texturenum[i][j & 3] =
 					GL_LoadTexture(name, pheader->skinwidth,
-					               pheader->skinheight, (uint8_t*)(pskintype), true, false);
-				pskintype = (daliasskintype_t*)((uint8_t*)(pskintype) + s);
+						pheader->skinheight, (uint8_t*)(pskintype), true, false);
+				pskintype = (daliasskintype_t*)((uint8_t*)(pskintype)+s);
 			}
 			int k = j;
 			for (/* */; j < 4; j++)
 				pheader->gl_texturenum[i][j & 3] =
-					pheader->gl_texturenum[i][j - k];
+				pheader->gl_texturenum[i][j - k];
 		}
 	}
 
@@ -1481,7 +1479,6 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	mdl_t* pinmodel;
 	stvert_t* pinstverts;
 	dtriangle_t* pintriangles;
-	int numskins;
 
 	int start = Hunk_LowMark();
 
@@ -1489,7 +1486,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 
 	int version = LittleLong(pinmodel->version);
 	if (version != ALIAS_VERSION)
-		Sys_Error(std::format("{} has wrong version number ({} should be {})"sv, mod->name, version, ALIAS_VERSION));
+		Sys_Error(std::format("{} has wrong version number ({} should be {})"sv, mod->GetName(), version, ALIAS_VERSION));
 
 	//
 	// allocate space for a working header, plus all the data except the frames,
@@ -1511,20 +1508,20 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	pheader->skinheight = LittleLong(pinmodel->skinheight);
 
 	if (pheader->skinheight > MAX_LBM_HEIGHT)
-		Sys_Error(std::format("model {} has a skin taller than {}"sv, mod->name, MAX_LBM_HEIGHT));
+		Sys_Error(std::format("model {} has a skin taller than {}"sv, mod->GetName(), MAX_LBM_HEIGHT));
 
 	pheader->numverts = LittleLong(pinmodel->numverts);
 
 	if (pheader->numverts <= 0)
-		Sys_Error(std::format("model {} has no vertices"sv, mod->name));
+		Sys_Error(std::format("model {} has no vertices"sv, mod->GetName()));
 
 	if (pheader->numverts > MAXALIASVERTS)
-		Sys_Error(std::format("model {} has too many vertices"sv, mod->name));
+		Sys_Error(std::format("model {} has too many vertices"sv, mod->GetName()));
 
 	pheader->numtris = LittleLong(pinmodel->numtris);
 
 	if (pheader->numtris <= 0)
-		Sys_Error(std::format("model {} has no triangles"sv, mod->name));
+		Sys_Error(std::format("model {} has no triangles"sv, mod->GetName()));
 
 	pheader->numframes = LittleLong(pinmodel->numframes);
 	int numframes = pheader->numframes;
@@ -1601,7 +1598,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 
 	pheader->numposes = posenum;
 
-	mod->type = mod_alias;
+	mod->SetModType(modtype_t::mod_alias);
 
 	// FIXME: do this_ right
 	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
@@ -1635,9 +1632,7 @@ Mod_LoadSpriteFrame
 */
 void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe, int framenum)
 {
-	int i, origin[2];
-	unsigned short* ppixout;
-	byte* ppixin;
+	int origin[2];
 	char name[64];
 
 	dspriteframe_t* pinframe = (dspriteframe_t*)pin;
@@ -1662,7 +1657,7 @@ void* Mod_LoadSpriteFrame(void* pin, mspriteframe_t** ppframe, int framenum)
 	pspriteframe->left = origin[0];
 	pspriteframe->right = width + origin[0];
 
-	sprintf(name, (char*)"%s_%i", loadmodel->name, framenum);
+	sprintf(name, "%s_%i", loadmodel->GetName().c_str(), framenum);
 	pspriteframe->gl_texturenum = GL_LoadTexture(name, width, height, (uint8_t*)(pinframe + 1), true, true);
 
 	return (uint8_t*)pinframe + sizeof(dspriteframe_t) + size;
@@ -1684,8 +1679,8 @@ void* Mod_LoadSpriteGroup(void* pin, mspriteframe_t** ppframe, int framenum)
 	int numframes = LittleLong(pingroup->numframes);
 
 	mspritegroup_t* pspritegroup = static_cast<mspritegroup_t*>(Hunk_AllocName(sizeof(mspritegroup_t) +
-	                                                                           (numframes - 1) * sizeof pspritegroup->
-	                                                                           frames[0], loadname));
+		(numframes - 1) * sizeof pspritegroup->
+		frames[0], loadname));
 
 	pspritegroup->numframes = numframes;
 
@@ -1732,7 +1727,7 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 
 	int version = LittleLong(pin->version);
 	if (version != SPRITE_VERSION)
-		Sys_Error(std::format("{} has wrong version number ({} should be {})"sv, mod->name, version, SPRITE_VERSION));
+		Sys_Error(std::format("{} has wrong version number ({} should be {})"sv, mod->GetName(), version, SPRITE_VERSION));
 
 	int numframes = LittleLong(pin->numframes);
 
@@ -1773,17 +1768,17 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 		{
 			pframetype = (dspriteframetype_t*)
 				Mod_LoadSpriteFrame(pframetype + 1,
-				                    &psprite->frames[i].frameptr, i);
+					&psprite->frames[i].frameptr, i);
 		}
 		else
 		{
 			pframetype = (dspriteframetype_t*)
 				Mod_LoadSpriteGroup(pframetype + 1,
-				                    &psprite->frames[i].frameptr, i);
+					&psprite->frames[i].frameptr, i);
 		}
 	}
 
-	mod->type = mod_sprite;
+	mod->SetModType(modtype_t::mod_sprite);
 }
 
 //=============================================================================
@@ -1801,7 +1796,7 @@ void Mod_Print()
 	Con_Printf((char*)"Cached models:\n");
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
 	{
-		Con_Printf((char*)"%8p : %s\n", mod->cache.data, mod->name);
+		Con_Printf((char*)"%8p : %s\n", mod->cache.data, mod->GetName());
 	}
 }
 

@@ -54,10 +54,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
 #include "input.h"
@@ -348,7 +349,7 @@ void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 	// look for a cached version
 	//
 	strcpy(cache, "glquake/");
-	COM_StripExtension(m->name + strlen("progs/"), cache + strlen("glquake/"));
+	COM_StripExtension((char*)m->GetName().c_str() + strlen("progs/"), cache + strlen("glquake/"));
 	strcat(cache, ".ms2");
 
 	COM_FOpenFile(cache, &f);
@@ -365,7 +366,7 @@ void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr)
 		//
 		// build it from scratch
 		//
-		Con_Printf((char*)"meshing %s...\n", m->name);
+		Con_Printf((char*)"meshing %s...\n", m->GetName().c_str());
 
 		BuildTris(); // trifans or lists
 

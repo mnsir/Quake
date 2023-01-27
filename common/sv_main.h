@@ -1,11 +1,9 @@
 #pragma once
 
 #include "common.h"
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
-#include "model.h"
-#endif
+
+#include "common_model.h"
+
 #include "progs.h"
 #include "server.h"
 

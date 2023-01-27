@@ -147,7 +147,7 @@
     <ClCompile Include="d_surf.cpp" />
     <ClCompile Include="d_vars.cpp" />
     <ClCompile Include="d_zpoint.cpp" />
-    <ClCompile Include="model.cpp" />
+    <ClCompile Include="hw_model.cpp" />
     <ClCompile Include="r_aclip.cpp" />
     <ClCompile Include="r_alias.cpp" />
     <ClCompile Include="r_bsp.cpp" />
@@ -174,6 +174,7 @@
     <ClInclude Include="..\common\cl_tent.h" />
     <ClInclude Include="..\common\cmd.h" />
     <ClInclude Include="..\common\common.h" />
+    <ClInclude Include="..\common\common_model.h" />
     <ClInclude Include="..\common\conproc.h" />
     <ClInclude Include="..\common\console.h" />
     <ClInclude Include="..\common\crc.h" />
@@ -188,7 +189,7 @@
     <ClInclude Include="..\common\keys.h" />
     <ClInclude Include="..\common\mathlib.h" />
     <ClInclude Include="..\common\menu.h" />
-    <ClInclude Include="..\common\model.h" />
+    <ClInclude Include="..\common\hw_model.h" />
     <ClInclude Include="..\common\modelgen.h" />
     <ClInclude Include="..\common\net.h" />
     <ClInclude Include="..\common\net_dgrm.h" />

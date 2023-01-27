@@ -54,10 +54,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
 #include "input.h"
@@ -249,11 +250,11 @@ void R_StoreEfrags(efrag_t** ppefrag)
 		entity_t* pent = pefrag->entity;
 		model_t* clmodel = pent->model;
 
-		switch (clmodel->type)
+		switch (clmodel->GetModType())
 		{
-		case mod_alias:
-		case mod_brush:
-		case mod_sprite:
+		case modtype_t::mod_alias:
+		case modtype_t::mod_brush:
+		case modtype_t::mod_sprite:
 			pent = pefrag->entity;
 
 			if ((pent->visframe != r_framecount) &&
@@ -269,7 +270,7 @@ void R_StoreEfrags(efrag_t** ppefrag)
 			break;
 
 		default:
-			Sys_Error(std::format("R_StoreEfrags: Bad entity type {}\n"sv, (int)clmodel->type));
+			Sys_Error(std::format("R_StoreEfrags: Bad entity type {}\n"sv, (int)clmodel->GetModType()));
 		}
 	}
 }

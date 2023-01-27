@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 #include <cstdint>
+#include <string_view>
+
 #include "zone.h"
 
 //============================================================================
@@ -155,7 +157,7 @@ void COM_InitArgv(int argc, char** argv);
 
 char* COM_SkipPath(char* pathname);
 void COM_StripExtension(char* in, char* out);
-void COM_FileBase(char* in, char* out);
+void COM_FileBase(std::string_view in, char* out);
 void COM_DefaultExtension(char* path, char* extension);
 
 char* va(char* format, ...);
@@ -169,11 +171,11 @@ extern int com_filesize;
 extern char com_gamedir[MAX_OSPATH];
 
 void COM_WriteFile(char* filename, void* data, int len);
-int COM_OpenFile(char* filename, int* hndl);
+int COM_OpenFile(std::string_view filename, int* hndl);
 int COM_FOpenFile(char* filename, FILE** file);
 void COM_CloseFile(int h);
 
-uint8_t* COM_LoadStackFile(char* path, void* buffer, int bufsize);
+uint8_t* COM_LoadStackFile(std::string_view path, void* buffer, int bufsize);
 uint8_t* COM_LoadTempFile(char* path);
 uint8_t* COM_LoadHunkFile(char* path);
 void COM_LoadCacheFile(char* path, cache_user_t* cu);

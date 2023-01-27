@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vid.h"
 #include "sys.h"
 #include "mathlib.h"
-#include "entity_state.h";
+#include "entity_state.h"
 #include "wad.h"
 #include "draw.h"
 #include "cvar.h"
@@ -53,12 +53,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
+
 #include "input.h"
 #include "world.h"
 #include "keys.h"
@@ -193,7 +195,6 @@ void GL_SubdivideSurface(msurface_t* fa)
 {
 	vec3_t verts[64];
 	vec3_t vec;
-	texture_t* t;
 
 	warpface = fa;
 
@@ -220,7 +221,7 @@ void GL_SubdivideSurface(msurface_t* fa)
 
 
 // speed up sin calculations - Ed
-float turbsin[] =
+double turbsin[] =
 {
 	0, 0.19633, 0.392541, 0.588517, 0.784137, 0.979285, 1.17384, 1.3677,
 	1.56072, 1.75281, 1.94384, 2.1337, 2.32228, 2.50945, 2.69512, 2.87916,
@@ -339,10 +340,6 @@ will have them chained together.
 */
 void EmitBothSkyLayers(msurface_t* fa)
 {
-	int i;
-	int lindex;
-	float* vec;
-
 	GL_DisableMultitexture();
 
 	GL_Bind(solidskytexture);

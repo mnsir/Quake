@@ -509,15 +509,15 @@ void R_DrawEntitiesOnList()
 		if (currententity == &cl_entities[cl.viewentity])
 			continue; // don't draw the player
 
-		switch (currententity->model->type)
+		switch (currententity->model->GetModType())
 		{
-		case mod_sprite:
+		case modtype_t::mod_sprite:
 			VectorCopy(currententity->origin, r_entorigin);
 			VectorSubtract(r_origin, r_entorigin, modelorg);
 			R_DrawSprite();
 			break;
 
-		case mod_alias:
+		case modtype_t::mod_alias:
 			VectorCopy(currententity->origin, r_entorigin);
 			VectorSubtract(r_origin, r_entorigin, modelorg);
 
@@ -637,7 +637,6 @@ R_BmodelCheckBBox
 int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 {
 	int i;
-	vec3_t acceptpt, rejectpt;
 	double d;
 
 	int clipflags = 0;
@@ -659,6 +658,8 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 	}
 	else
 	{
+		vec3_t rejectpt;
+		vec3_t acceptpt;
 		for (i = 0; i < 4; i++)
 		{
 			// generate accept and reject points
@@ -716,9 +717,9 @@ void R_DrawBEntitiesOnList()
 	{
 		currententity = cl_visedicts[i];
 
-		switch (currententity->model->type)
+		switch (currententity->model->GetModType())
 		{
-		case mod_brush:
+		case modtype_t::mod_brush:
 
 			clmodel = currententity->model;
 

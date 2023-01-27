@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "d_iface.h"
 #include "d_local.h"
 #include "mathlib.h"
-#include "model.h"
+#include "hw_model.h"
 
 
 static int miplevel;

@@ -53,12 +53,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sv_user.h"
 #include "sv_phys.h"
 #include "sv_move.h"
+
+#include "common_model.h"
+
 #ifdef GLQUAKE
-#include "gl_model.h"
 #else
-#include "model.h"
 #include "d_iface.h"
 #endif
+
 #include "input.h"
 #include "world.h"
 #include "keys.h"
@@ -94,7 +96,7 @@ bool envmap; // true during envmap command capture
 
 int currenttexture = -1; // to avoid unnecessary texture sets
 
-int cnttextures[2] = {-1, -1}; // cached
+int cnttextures[2] = { -1, -1 }; // cached
 
 int particletexture; // little dot for particles
 int playertextures; // up to 16 color translated skins
@@ -119,7 +121,7 @@ float r_base_world_matrix[16];
 //
 refdef_t r_refdef;
 
-mleaf_t *r_viewleaf, *r_oldviewleaf;
+mleaf_t* r_viewleaf, * r_oldviewleaf;
 
 texture_t* r_notexture_mip;
 
@@ -128,31 +130,31 @@ int d_lightstylevalue[256]; // 8.8 fraction of base light value
 
 void R_MarkLeaves();
 
-cvar_t r_norefresh = {(char*)"r_norefresh", (char*)"0"};
-cvar_t r_drawentities = {(char*)"r_drawentities", (char*)"1"};
-cvar_t r_drawviewmodel = {(char*)"r_drawviewmodel", (char*)"1"};
-cvar_t r_speeds = {(char*)"r_speeds", (char*)"0"};
-cvar_t r_fullbright = {(char*)"r_fullbright", (char*)"0"};
-cvar_t r_lightmap = {(char*)"r_lightmap", (char*)"0"};
-cvar_t r_shadows = {(char*)"r_shadows", (char*)"0"};
-cvar_t r_mirroralpha = {(char*)"r_mirroralpha", (char*)"1"};
-cvar_t r_wateralpha = {(char*)"r_wateralpha", (char*)"1"};
-cvar_t r_dynamic = {(char*)"r_dynamic", (char*)"1"};
-cvar_t r_novis = {(char*)"r_novis", (char*)"0"};
+cvar_t r_norefresh = { (char*)"r_norefresh", (char*)"0" };
+cvar_t r_drawentities = { (char*)"r_drawentities", (char*)"1" };
+cvar_t r_drawviewmodel = { (char*)"r_drawviewmodel", (char*)"1" };
+cvar_t r_speeds = { (char*)"r_speeds", (char*)"0" };
+cvar_t r_fullbright = { (char*)"r_fullbright", (char*)"0" };
+cvar_t r_lightmap = { (char*)"r_lightmap", (char*)"0" };
+cvar_t r_shadows = { (char*)"r_shadows", (char*)"0" };
+cvar_t r_mirroralpha = { (char*)"r_mirroralpha", (char*)"1" };
+cvar_t r_wateralpha = { (char*)"r_wateralpha", (char*)"1" };
+cvar_t r_dynamic = { (char*)"r_dynamic", (char*)"1" };
+cvar_t r_novis = { (char*)"r_novis", (char*)"0" };
 
-cvar_t gl_finish = {(char*)"gl_finish", (char*)"0"};
-cvar_t gl_clear = {(char*)"gl_clear", (char*)"0"};
-cvar_t gl_cull = {(char*)"gl_cull", (char*)"1"};
-cvar_t gl_texsort = {(char*)"gl_texsort", (char*)"1"};
-cvar_t gl_smoothmodels = {(char*)"gl_smoothmodels", (char*)"1"};
-cvar_t gl_affinemodels = {(char*)"gl_affinemodels", (char*)"0"};
-cvar_t gl_polyblend = {(char*)"gl_polyblend", (char*)"1"};
-cvar_t gl_flashblend = {(char*)"gl_flashblend", (char*)"1"};
-cvar_t gl_playermip = {(char*)"gl_playermip", (char*)"0"};
-cvar_t gl_nocolors = {(char*)"gl_nocolors", (char*)"0"};
-cvar_t gl_keeptjunctions = {(char*)"gl_keeptjunctions", (char*)"0"};
-cvar_t gl_reporttjunctions = {(char*)"gl_reporttjunctions", (char*)"0"};
-cvar_t gl_doubleeyes = {(char*)"gl_doubleeys", (char*)"1"};
+cvar_t gl_finish = { (char*)"gl_finish", (char*)"0" };
+cvar_t gl_clear = { (char*)"gl_clear", (char*)"0" };
+cvar_t gl_cull = { (char*)"gl_cull", (char*)"1" };
+cvar_t gl_texsort = { (char*)"gl_texsort", (char*)"1" };
+cvar_t gl_smoothmodels = { (char*)"gl_smoothmodels", (char*)"1" };
+cvar_t gl_affinemodels = { (char*)"gl_affinemodels", (char*)"0" };
+cvar_t gl_polyblend = { (char*)"gl_polyblend", (char*)"1" };
+cvar_t gl_flashblend = { (char*)"gl_flashblend", (char*)"1" };
+cvar_t gl_playermip = { (char*)"gl_playermip", (char*)"0" };
+cvar_t gl_nocolors = { (char*)"gl_nocolors", (char*)"0" };
+cvar_t gl_keeptjunctions = { (char*)"gl_keeptjunctions", (char*)"0" };
+cvar_t gl_reporttjunctions = { (char*)"gl_reporttjunctions", (char*)"0" };
+cvar_t gl_doubleeyes = { (char*)"gl_doubleeys", (char*)"1" };
 
 extern cvar_t gl_ztrick;
 
@@ -775,7 +777,7 @@ void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 	float s, t;
 	int i, j;
 	int index;
-	trivertx_t *v;
+	trivertx_t* v;
 	int list;
 	vec3_t point;
 	float* normal;
@@ -811,8 +813,7 @@ void GL_DrawAliasFrame(aliashdr_t* paliashdr, int posenum)
 			glColor3f(l, l, l);
 			glVertex3f(verts->v[0], verts->v[1], verts->v[2]);
 			verts++;
-		}
-		while (--count);
+		} while (--count);
 
 		glEnd();
 	}
@@ -831,7 +832,7 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 	float s, t, l;
 	int i, j;
 	int index;
-	trivertx_t *v;
+	trivertx_t* v;
 	int list;
 	vec3_t point;
 	float* normal;
@@ -877,8 +878,7 @@ void GL_DrawAliasShadow(aliashdr_t* paliashdr, int posenum)
 			glVertex3fv(point.data());
 
 			verts++;
-		}
-		while (--count);
+		} while (--count);
 
 		glEnd();
 	}
@@ -920,10 +920,11 @@ R_DrawAliasModel
 */
 void R_DrawAliasModel(entity_t* e)
 {
+	using namespace std::string_view_literals;
 	int j;
 	vec3_t dist;
 	vec3_t mins, maxs;
-	trivertx_t *verts, *v;
+	trivertx_t* verts, * v;
 	int index;
 	float s, t;
 
@@ -954,8 +955,8 @@ void R_DrawAliasModel(entity_t* e)
 		if (cl_dlights[lnum].die >= cl.time)
 		{
 			VectorSubtract(currententity->origin,
-			               cl_dlights[lnum].origin,
-			               dist);
+				cl_dlights[lnum].origin,
+				dist);
 			float add = cl_dlights[lnum].radius - Length(dist);
 
 			if (add > 0)
@@ -980,8 +981,7 @@ void R_DrawAliasModel(entity_t* e)
 			ambientlight = shadelight = 8;
 
 	// HACK HACK HACK -- no fullbright colors, so make torches full light
-	if (!strcmp(clmodel->name, "progs/flame2.mdl")
-		|| !strcmp(clmodel->name, "progs/flame.mdl"))
+	if (clmodel->GetName() == "progs/flame2.mdl"sv || clmodel->GetName() == "progs/flame.mdl"sv)
 		ambientlight = shadelight = 256;
 
 	shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
@@ -1009,7 +1009,7 @@ void R_DrawAliasModel(entity_t* e)
 	glPushMatrix();
 	R_RotateForEntity(e);
 
-	if (!strcmp(clmodel->name, "progs/eyes.mdl") && gl_doubleeyes.value)
+	if (clmodel->GetName() == "progs/eyes.mdl"sv && gl_doubleeyes.value)
 	{
 		glTranslatef(paliashdr->scale_origin[0], paliashdr->scale_origin[1], paliashdr->scale_origin[2] - (22 + 8));
 		// double size of eyes, since they are really hard to see in gl
@@ -1084,13 +1084,13 @@ void R_DrawEntitiesOnList()
 	{
 		currententity = cl_visedicts[i];
 
-		switch (currententity->model->type)
+		switch (currententity->model->GetModType())
 		{
-		case mod_alias:
+		case modtype_t::mod_alias:
 			R_DrawAliasModel(currententity);
 			break;
 
-		case mod_brush:
+		case modtype_t::mod_brush:
 			R_DrawBrushModel(currententity);
 			break;
 
@@ -1103,9 +1103,9 @@ void R_DrawEntitiesOnList()
 	{
 		currententity = cl_visedicts[i];
 
-		switch (currententity->model->type)
+		switch (currententity->model->GetModType())
 		{
-		case mod_sprite:
+		case modtype_t::mod_sprite:
 			R_DrawSpriteModel(currententity);
 			break;
 		}
@@ -1119,7 +1119,8 @@ R_DrawViewModel
 */
 void R_DrawViewModel()
 {
-	float ambient[4], diffuse[4];
+	float ambient[4];
+	float diffuse[4];
 	vec3_t dist;
 
 	if (!r_drawviewmodel.value)
@@ -1304,7 +1305,7 @@ void R_SetupFrame()
 
 
 void MYgluPerspective(GLdouble fovy, GLdouble aspect,
-                      GLdouble zNear, GLdouble zFar)
+	GLdouble zNear, GLdouble zFar)
 {
 	GLdouble ymax = zNear * tan(fovy * std::numbers::pi / 360.0);
 	GLdouble ymin = -ymax;
@@ -1554,7 +1555,7 @@ void R_RenderView()
 {
 	using namespace std::string_view_literals;
 	double time1;
-	GLfloat colors[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20};
+	GLfloat colors[4] = { (GLfloat)0.0, (GLfloat)0.0, (GLfloat)1, (GLfloat)0.20 };
 
 	if (r_norefresh.value)
 		return;

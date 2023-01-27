@@ -240,11 +240,11 @@ void R_StoreEfrags(efrag_t** ppefrag)
 		entity_t* pent = pefrag->entity;
 		model_t* clmodel = pent->model;
 
-		switch (clmodel->type)
+		switch (clmodel->GetModType())
 		{
-		case mod_alias:
-		case mod_brush:
-		case mod_sprite:
+		case modtype_t::mod_alias:
+		case modtype_t::mod_brush:
+		case modtype_t::mod_sprite:
 			pent = pefrag->entity;
 
 			if ((pent->visframe != r_framecount) &&
@@ -260,7 +260,7 @@ void R_StoreEfrags(efrag_t** ppefrag)
 			break;
 
 		default:
-			Sys_Error(std::format("R_StoreEfrags: Bad entity type {}\n"sv, (int)clmodel->type));
+			Sys_Error(std::format("R_StoreEfrags: Bad entity type {}\n"sv, (int)clmodel->GetModType()));
 		}
 	}
 }

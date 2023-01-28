@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "bspfile.h"
 #include "common.h"
@@ -374,9 +375,8 @@ private:
 	//
 	int firstmodelsurface;
 	int nummodelsurfaces;
-
-	int numsubmodels;
-	dmodel_t* submodels;
+	
+	std::vector<dmodel_t> submodels;
 
 public:
 	const std::string& GetName() const { return name; }
@@ -411,10 +411,8 @@ public:
 	int GetNumModelSurfaces() const { return nummodelsurfaces; }
 	void SetNumModelSurfaces(int _nummodelsurfaces) { nummodelsurfaces = _nummodelsurfaces; }
 
-	int GetNumSubModels() const { return numsubmodels; }
-	void SetNumSubModels(int _numsubmodels) { numsubmodels = _numsubmodels; }
-	dmodel_t* GetSubModels() const { return submodels; }
-	void SetSubModels(dmodel_t* _submodels) { submodels = _submodels; }
+	const std::vector<dmodel_t>& GetSubModels() const { return submodels; }
+	void SetSubModels(std::vector<dmodel_t>&& _submodels) { submodels = std::move(_submodels); }
 
 
 	int numplanes;

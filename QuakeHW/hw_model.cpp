@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 #include <format>
+#include <vector>
 
 #include "console.h"
 #include "d_iface.h"
@@ -585,26 +586,30 @@ void Mod_LoadSubmodels(lump_t* l)
 		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 
 	int count = l->filelen / sizeof(*in);
-	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof(*out), loadname));
+	//dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof(*out), loadname));
 
-	for (int i = 0; i < count; i++, in++, out++)
+	std::vector<dmodel_t> out2;
+	out2.reserve(count);
+
+	for (int i = 0; i < count; i++, in++)//, out++)
 	{
+		dmodel_t out;
 		for (int j = 0; j < 3; j++)
 		{
 			// spread the mins / maxs by a pixel
-			out->mins[j] = LittleFloat(in->mins[j]) - 1;
-			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
-			out->origin[j] = LittleFloat(in->origin[j]);
+			out.mins[j] = LittleFloat(in->mins[j]) - 1;
+			out.maxs[j] = LittleFloat(in->maxs[j]) + 1;
+			out.origin[j] = LittleFloat(in->origin[j]);
 		}
 		for (int j = 0; j < MAX_MAP_HULLS; j++)
-			out->headnode[j] = LittleLong(in->headnode[j]);
-		out->visleafs = LittleLong(in->visleafs);
-		out->firstface = LittleLong(in->firstface);
-		out->numfaces = LittleLong(in->numfaces);
+			out.headnode[j] = LittleLong(in->headnode[j]);
+		out.visleafs = LittleLong(in->visleafs);
+		out.firstface = LittleLong(in->firstface);
+		out.numfaces = LittleLong(in->numfaces);
+		out2.emplace_back(std::move(out));
 	}
 
-	loadmodel->SetSubModels(out);
-	loadmodel->SetNumSubModels(count);
+	loadmodel->SetSubModels(std::move(out2));
 }
 
 /*
@@ -1112,7 +1117,7 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 	// swap all the lumps
 	mod_base = (uint8_t*)header;
 
-	for (i = 0; i < sizeof(dheader_t) / 4; i++)
+	for (size_t i = 0; i < sizeof(dheader_t) / 4; i++)
 		((int*)header)[i] = LittleLong(((int*)header)[i]);
 
 	// load into heap
@@ -1141,35 +1146,33 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 	//
 	// set up the submodels (FIXME: this_ is confusing)
 	//
-	for (i = 0; i < mod->GetNumSubModels(); i++)
+	for (size_t i = 0; i < mod->GetSubModels().size(); i++)
 	{
-		dmodel_t* bm = &mod->GetSubModels()[i];
+		auto&& bm = mod->GetSubModels()[i];
 
-		mod->hulls[0].firstclipnode = bm->headnode[0];
+		mod->hulls[0].firstclipnode = bm.headnode[0];
 		for (int j = 1; j < MAX_MAP_HULLS; j++)
 		{
-			mod->hulls[j].firstclipnode = bm->headnode[j];
+			mod->hulls[j].firstclipnode = bm.headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes - 1;
 		}
 
-		mod->SetFirstModelSurface(bm->firstface);
-		mod->SetNumModelSurfaces(bm->numfaces);
+		mod->SetFirstModelSurface(bm.firstface);
+		mod->SetNumModelSurfaces(bm.numfaces);
 
-		mod->SetMaxs(ToVec3(bm->maxs));
-		mod->SetMins(ToVec3(bm->mins));
+		mod->SetMaxs(bm.maxs);
+		mod->SetMins(bm.mins);
 		mod->SetRadius(RadiusFromBounds(mod->GetMins(), mod->GetMaxs()));
 
-		mod->numleafs = bm->visleafs;
+		mod->numleafs = bm.visleafs;
 
-		if (i < mod->GetNumSubModels() - 1)
+		if (i < mod->GetSubModels().size() - 1)
 		{
 			// duplicate the basic information
-			char name[10];
-
-			sprintf(name, (char*)"*%i", i + 1);
+			auto&& name = std::format("*{}"sv, i + 1);
 			loadmodel = Mod_FindName(name);
 			*loadmodel = *mod;
-			loadmodel->SetName(name);
+			loadmodel->SetName(std::move(name));
 			mod = loadmodel;
 		}
 	}

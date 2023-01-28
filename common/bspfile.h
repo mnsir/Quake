@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdint>
 
+#include "mathlib.h"
+
 // upper design bounds
 
 #define MAX_MAP_HULLS 4
@@ -83,7 +85,8 @@ typedef struct
 
 typedef struct
 {
-	float mins[3], maxs[3];
+	vec3_t mins;
+	vec3_t maxs;
 	float origin[3];
 	int headnode[MAX_MAP_HULLS];
 	int visleafs; // not including the solid leaf 0

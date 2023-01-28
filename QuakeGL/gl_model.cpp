@@ -23,41 +23,42 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // on the same machine.
 
 #include <cmath>
-#include <cstring>
-#include <string>
-#include <string_view>
 #include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <string>
+#include <string_view>
+#include <vector>
 #include "bspfile.h"
-#include "vid.h"
-#include "sys.h"
-#include "mathlib.h"
-#include "entity_state.h"
-#include "wad.h"
-#include "draw.h"
-#include "cvar.h"
-#include "screen.h"
-#include "net_main.h"
-#include "net_win.h"
-#include "net.h"
-#include "protocol.h"
-#include "cmd.h"
-#include "sbar.h"
-#include "sound.h"
-#include "render.h"
 #include "client.h"
-#include "progs.h"
 #include "cl_demo.h"
 #include "cl_input.h"
 #include "cl_main.h"
 #include "cl_parse.h"
 #include "cl_tent.h"
+#include "cmd.h"
+#include "cvar.h"
+#include "draw.h"
+#include "entity_state.h"
+#include "mathlib.h"
+#include "net.h"
+#include "net_main.h"
+#include "net_win.h"
+#include "progs.h"
+#include "protocol.h"
+#include "render.h"
+#include "sbar.h"
+#include "screen.h"
 #include "server.h"
+#include "sound.h"
 #include "sv_main.h"
-#include "sv_user.h"
-#include "sv_phys.h"
 #include "sv_move.h"
+#include "sv_phys.h"
+#include "sv_user.h"
+#include "sys.h"
+#include "vid.h"
+#include "wad.h"
 
 #include "common_model.h"
 
@@ -65,21 +66,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #else
 #include "d_iface.h"
 #endif
-#include "input.h"
-#include "world.h"
-#include "keys.h"
-#include "console.h"
-#include "view.h"
-#include "menu.h"
-#include "crc.h"
 #include "cdaudio.h"
+#include "console.h"
+#include "crc.h"
+#include "input.h"
+#include "keys.h"
+#include "menu.h"
+#include "view.h"
+#include "world.h"
 #ifdef GLQUAKE
 #include "glquake.h"
 #endif
 #include <format>
 
-#include "host.h"
 #include "chase.h"
+#include "host.h"
 
 model_t* loadmodel;
 char loadname[32]; // for hunk tags
@@ -612,33 +613,36 @@ Mod_LoadSubmodels
 void Mod_LoadSubmodels(lump_t* l)
 {
 	using namespace std::string_view_literals;
-	int j;
 
 	dmodel_t* in = static_cast<dmodel_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
 		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 
 	int count = l->filelen / sizeof(*in);
-	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof * out, loadname));
+	//dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
-	for (int i = 0; i < count; i++, in++, out++)
+	std::vector<dmodel_t> out2;
+	out2.reserve(count);
+
+	for (int i = 0; i < count; i++, in++)//, out++)
 	{
-		for (j = 0; j < 3; j++)
+		dmodel_t out;
+		for (int j = 0; j < 3; j++)
 		{
 			// spread the mins / maxs by a pixel
-			out->mins[j] = LittleFloat(in->mins[j]) - 1;
-			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
-			out->origin[j] = LittleFloat(in->origin[j]);
+			out.mins[j] = LittleFloat(in->mins[j]) - 1;
+			out.maxs[j] = LittleFloat(in->maxs[j]) + 1;
+			out.origin[j] = LittleFloat(in->origin[j]);
 		}
-		for (j = 0; j < MAX_MAP_HULLS; j++)
-			out->headnode[j] = LittleLong(in->headnode[j]);
-		out->visleafs = LittleLong(in->visleafs);
-		out->firstface = LittleLong(in->firstface);
-		out->numfaces = LittleLong(in->numfaces);
+		for (int j = 0; j < MAX_MAP_HULLS; j++)
+			out.headnode[j] = LittleLong(in->headnode[j]);
+		out.visleafs = LittleLong(in->visleafs);
+		out.firstface = LittleLong(in->firstface);
+		out.numfaces = LittleLong(in->numfaces);
+		out2.emplace_back(std::move(out));
 	}
 
-	loadmodel->SetSubModels(out);
-	loadmodel->SetNumSubModels(count);
+	loadmodel->SetSubModels(std::move(out2));
 }
 
 /*
@@ -1184,35 +1188,33 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 	//
 	// set up the submodels (FIXME: this_ is confusing)
 	//
-	for (i = 0; i < mod->GetNumSubModels(); i++)
+	for (size_t i = 0; i < mod->GetSubModels().size(); i++)
 	{
-		dmodel_t* bm = &mod->GetSubModels()[i];
+		auto && bm = mod->GetSubModels()[i];
 
-		mod->hulls[0].firstclipnode = bm->headnode[0];
+		mod->hulls[0].firstclipnode = bm.headnode[0];
 		for (int j = 1; j < MAX_MAP_HULLS; j++)
 		{
-			mod->hulls[j].firstclipnode = bm->headnode[j];
+			mod->hulls[j].firstclipnode = bm.headnode[j];
 			mod->hulls[j].lastclipnode = mod->numclipnodes - 1;
 		}
 
-		mod->SetFirstModelSurface(bm->firstface);
-		mod->SetNumModelSurfaces(bm->numfaces);
-		
-		mod->SetMaxs(ToVec3(bm->maxs));
-		mod->SetMins(ToVec3(bm->mins));
+		mod->SetFirstModelSurface(bm.firstface);
+		mod->SetNumModelSurfaces(bm.numfaces);
+
+		mod->SetMaxs(bm.maxs);
+		mod->SetMins(bm.mins);
 		mod->SetRadius(RadiusFromBounds(mod->GetMins(), mod->GetMaxs()));
 
-		mod->numleafs = bm->visleafs;
+		mod->numleafs = bm.visleafs;
 
-		if (i < mod->GetNumSubModels() - 1)
+		if (i < mod->GetSubModels().size() - 1)
 		{
 			// duplicate the basic information
-			char name[10];
-
-			sprintf(name, "*%i", i + 1);
+			auto&& name = std::format("*{}"sv, i + 1);
 			loadmodel = Mod_FindName(name);
 			*loadmodel = *mod;
-			loadmodel->SetName(name);
+			loadmodel->SetName(std::move(name));
 			mod = loadmodel;
 		}
 	}
@@ -1743,7 +1745,7 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 	psprite->beamlength = LittleFloat(pin->beamlength);
 	mod->SetSyncType((synctype_t)LittleLong((int)pin->synctype));
 	psprite->numframes = numframes;
-	
+
 	mod->SetMins({ -psprite->maxwidth / 2.f , -psprite->maxwidth / 2.f ,-psprite->maxheight / 2.f });
 	mod->SetMaxs({ psprite->maxwidth / 2.f, psprite->maxwidth / 2.f, psprite->maxheight / 2.f });
 

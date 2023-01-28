@@ -1011,7 +1011,6 @@ extern float scr_centertime_off;
 void SV_SpawnServer(char* server)
 {
 	edict_t* ent;
-	int i;
 
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
@@ -1073,7 +1072,7 @@ void SV_SpawnServer(char* server)
 
 	// leave slots at start for clients only
 	sv.num_edicts = svs.maxclients + 1;
-	for (i = 0; i < svs.maxclients; i++)
+	for (int i = 0; i < svs.maxclients; i++)
 	{
 		ent = EDICT_NUM(i + 1);
 		svs.clients[i].edict = ent;
@@ -1104,7 +1103,7 @@ void SV_SpawnServer(char* server)
 
 	sv.model_precache[0] = pr_strings;
 	sv.model_precache[1] = sv.modelname;
-	for (i = 1; i < sv.worldmodel->GetNumSubModels(); i++)
+	for (size_t i = 1; i < sv.worldmodel->GetSubModels().size(); i++)
 	{
 		sv.model_precache[1 + i] = localmodels[i];
 		sv.models[i + 1] = Mod_ForName(localmodels[i], false);
@@ -1147,7 +1146,8 @@ void SV_SpawnServer(char* server)
 	SV_CreateBaseline();
 
 	// send serverinfo to all connected clients
-	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
+	host_client = svs.clients;
+	for (int i = 0; i < svs.maxclients; i++, host_client++)
 		if (host_client->active)
 			SV_SendServerinfo(host_client);
 

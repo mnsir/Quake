@@ -921,17 +921,13 @@ R_DrawAliasModel
 void R_DrawAliasModel(entity_t* e)
 {
 	using namespace std::string_view_literals;
-	int j;
-	vec3_t dist;
-	vec3_t mins, maxs;
-	trivertx_t* verts, * v;
-	int index;
-	float s, t;
 
 	model_t* clmodel = currententity->model;
 
-	VectorAdd(currententity->origin, clmodel->mins, mins);
-	VectorAdd(currententity->origin, clmodel->maxs, maxs);
+	vec3_t mins;
+	vec3_t maxs;
+	VectorAdd(currententity->origin, clmodel->GetMins(), mins);
+	VectorAdd(currententity->origin, clmodel->GetMaxs(), maxs);
 
 	if (R_CullBox(mins, maxs))
 		return;
@@ -954,6 +950,7 @@ void R_DrawAliasModel(entity_t* e)
 	{
 		if (cl_dlights[lnum].die >= cl.time)
 		{
+			vec3_t dist;
 			VectorSubtract(currententity->origin,
 				cl_dlights[lnum].origin,
 				dist);

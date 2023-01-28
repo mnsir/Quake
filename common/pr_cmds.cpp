@@ -139,7 +139,7 @@ void PF_setorigin()
 }
 
 
-void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
+void SetMinMaxSize(edict_t* e, const vec3_t& min, const vec3_t& max, bool rotate)
 {
 	vec3_t rmin, rmax;
 	float bounds[2][3];
@@ -155,8 +155,8 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 
 	if (!rotate)
 	{
-		VectorCopy(ToVec3(min), rmin);
-		VectorCopy(ToVec3(max), rmax);
+		VectorCopy(min, rmin);
+		VectorCopy(max, rmax);
 	}
 	else
 	{
@@ -170,8 +170,8 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 		yvector[0] = -sin(a);
 		yvector[1] = cos(a);
 
-		VectorCopy(ToVec3(min), ToVec3(bounds[0]));
-		VectorCopy(ToVec3(max), ToVec3(bounds[1]));
+		VectorCopy(min, ToVec3(bounds[0]));
+		VectorCopy(max, ToVec3(bounds[1]));
 
 		rmin[0] = rmin[1] = rmin[2] = 9999;
 		rmax[0] = rmax[1] = rmax[2] = -9999;
@@ -206,7 +206,7 @@ void SetMinMaxSize(edict_t* e, float* min, float* max, bool rotate)
 	// set derived values
 	VectorCopy(rmin, e->v.mins);
 	VectorCopy(rmax, e->v.maxs);
-	VectorSubtract(ToVec3(max), ToVec3(min), e->v.size);
+	VectorSubtract(max, min, e->v.size);
 
 	SV_LinkEdict(e, false);
 }
@@ -225,7 +225,7 @@ void PF_setsize()
 	edict_t* e = G_EDICT(OFS_PARM0);
 	float* min = G_VECTOR(OFS_PARM1);
 	float* max = G_VECTOR(OFS_PARM2);
-	SetMinMaxSize(e, min, max, false);
+	SetMinMaxSize(e, ToVec3(min), ToVec3(max), false);
 }
 
 
@@ -259,9 +259,9 @@ void PF_setmodel()
 	model_t* mod = sv.models[(int)e->v.modelindex]; // Mod_ForName (m, true);
 
 	if (mod)
-		SetMinMaxSize(e, mod->mins.data(), mod->maxs.data(), true);
+		SetMinMaxSize(e, mod->GetMins(), mod->GetMaxs(), true);
 	else
-		SetMinMaxSize(e, vec3_origin.data(), vec3_origin.data(), true);
+		SetMinMaxSize(e, vec3_origin, vec3_origin, true);
 }
 
 /*

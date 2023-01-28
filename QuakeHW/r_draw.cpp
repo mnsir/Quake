@@ -861,8 +861,8 @@ R_ZDrawSubmodelPolys
 */
 void R_ZDrawSubmodelPolys(model_t* pmodel)
 {
-	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	int numsurfaces = pmodel->nummodelsurfaces;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->GetFirstModelSurface()];
+	int numsurfaces = pmodel->GetNumModelSurfaces();
 
 	for (int i = 0; i < numsurfaces; i++, psurf++)
 	{

@@ -339,8 +339,8 @@ void R_DrawSolidClippedSubmodelPolygons(model_t* pmodel)
 
 	// FIXME: use bounding-box-based frustum clipping info?
 
-	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	int numsurfaces = pmodel->nummodelsurfaces;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->GetFirstModelSurface()];
+	int numsurfaces = pmodel->GetNumModelSurfaces();
 	pedges = pmodel->edges;
 
 	for (int i = 0; i < numsurfaces; i++, psurf++)
@@ -412,8 +412,8 @@ void R_DrawSubmodelPolygons(model_t* pmodel, int clipflags)
 {
 	// FIXME: use bounding-box-based frustum clipping info?
 
-	msurface_t* psurf = &pmodel->surfaces[pmodel->firstmodelsurface];
-	int numsurfaces = pmodel->nummodelsurfaces;
+	msurface_t* psurf = &pmodel->surfaces[pmodel->GetFirstModelSurface()];
+	int numsurfaces = pmodel->GetNumModelSurfaces();
 
 	for (int i = 0; i < numsurfaces; i++, psurf++)
 	{

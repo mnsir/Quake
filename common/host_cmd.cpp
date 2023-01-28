@@ -1422,8 +1422,8 @@ void Host_Viewframe_f()
 	model_t* m = cl.model_precache[(int)e->v.modelindex];
 
 	int f = atoi(Cmd_Argv(1));
-	if (f >= m->numframes)
-		f = m->numframes - 1;
+	if (f >= m->GetNumFrames())
+		f = m->GetNumFrames() - 1;
 
 	e->v.frame = f;
 }
@@ -1452,8 +1452,8 @@ void Host_Viewnext_f()
 	model_t* m = cl.model_precache[(int)e->v.modelindex];
 
 	e->v.frame = e->v.frame + 1;
-	if (e->v.frame >= m->numframes)
-		e->v.frame = m->numframes - 1;
+	if (e->v.frame >= m->GetNumFrames())
+		e->v.frame = m->GetNumFrames() - 1;
 
 	PrintFrameName(m, e->v.frame);
 }

@@ -212,8 +212,8 @@ void R_AddEfrags(entity_t* ent)
 
 	for (int i = 0; i < 3; i++)
 	{
-		r_emins[i] = ent->origin[i] + entmodel->mins[i];
-		r_emaxs[i] = ent->origin[i] + entmodel->maxs[i];
+		r_emins[i] = ent->origin[i] + entmodel->GetMins()[i];
+		r_emaxs[i] = ent->origin[i] + entmodel->GetMaxs()[i];
 	}
 
 	R_SplitEntityOnNode(cl.worldmodel->nodes);

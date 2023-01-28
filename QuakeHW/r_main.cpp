@@ -649,10 +649,10 @@ int R_BmodelCheckBBox(model_t* clmodel, float* minmaxs)
 			d = DotProduct(currententity->origin, view_clipplanes[i].normal);
 			d -= view_clipplanes[i].dist;
 
-			if (d <= -clmodel->radius)
+			if (d <= -clmodel->GetRadius())
 				return BMODEL_FULLY_CLIPPED;
 
-			if (d <= clmodel->radius)
+			if (d <= clmodel->GetRadius())
 				clipflags |= (1 << i);
 		}
 	}
@@ -727,10 +727,8 @@ void R_DrawBEntitiesOnList()
 		// trivial accept status
 			for (j = 0; j < 3; j++)
 			{
-				minmaxs[j] = currententity->origin[j] +
-					clmodel->mins[j];
-				minmaxs[3 + j] = currententity->origin[j] +
-					clmodel->maxs[j];
+				minmaxs[j] = currententity->origin[j] + clmodel->GetMins()[j];
+				minmaxs[3 + j] = currententity->origin[j] + clmodel->GetMaxs()[j];
 			}
 
 			clipflags = R_BmodelCheckBBox(clmodel, minmaxs);
@@ -749,7 +747,7 @@ void R_DrawBEntitiesOnList()
 
 				// calculate dynamic lighting for bmodel if it's not an
 				// instanced model
-				if (clmodel->firstmodelsurface != 0)
+				if (clmodel->GetFirstModelSurface() != 0)
 				{
 					for (int k = 0; k < MAX_DLIGHTS; k++)
 					{

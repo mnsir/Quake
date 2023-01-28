@@ -579,32 +579,32 @@ Mod_LoadSubmodels
 void Mod_LoadSubmodels(lump_t* l)
 {
 	using namespace std::string_view_literals;
-	int j;
 
 	dmodel_t* in = static_cast<dmodel_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
 		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
-	int count = l->filelen / sizeof(*in);
-	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
-	loadmodel->submodels = out;
-	loadmodel->numsubmodels = count;
+	int count = l->filelen / sizeof(*in);
+	dmodel_t* out = static_cast<dmodel_t*>(Hunk_AllocName(count * sizeof(*out), loadname));
 
 	for (int i = 0; i < count; i++, in++, out++)
 	{
-		for (j = 0; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			// spread the mins / maxs by a pixel
 			out->mins[j] = LittleFloat(in->mins[j]) - 1;
 			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
 			out->origin[j] = LittleFloat(in->origin[j]);
 		}
-		for (j = 0; j < MAX_MAP_HULLS; j++)
+		for (int j = 0; j < MAX_MAP_HULLS; j++)
 			out->headnode[j] = LittleLong(in->headnode[j]);
 		out->visleafs = LittleLong(in->visleafs);
 		out->firstface = LittleLong(in->firstface);
 		out->numfaces = LittleLong(in->numfaces);
 	}
+
+	loadmodel->SetSubModels(out);
+	loadmodel->SetNumSubModels(count);
 }
 
 /*
@@ -1135,15 +1135,15 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 
 	Mod_MakeHull0();
 
-	mod->numframes = 2; // regular and alternate animation
-	mod->flags = 0;
+	mod->SetNumFrames(2); // regular and alternate animation
+	mod->SetFlags(0);
 
 	//
 	// set up the submodels (FIXME: this_ is confusing)
 	//
-	for (i = 0; i < mod->numsubmodels; i++)
+	for (i = 0; i < mod->GetNumSubModels(); i++)
 	{
-		dmodel_t* bm = &mod->submodels[i];
+		dmodel_t* bm = &mod->GetSubModels()[i];
 
 		mod->hulls[0].firstclipnode = bm->headnode[0];
 		for (int j = 1; j < MAX_MAP_HULLS; j++)
@@ -1152,16 +1152,16 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 			mod->hulls[j].lastclipnode = mod->numclipnodes - 1;
 		}
 
-		mod->firstmodelsurface = bm->firstface;
-		mod->nummodelsurfaces = bm->numfaces;
+		mod->SetFirstModelSurface(bm->firstface);
+		mod->SetNumModelSurfaces(bm->numfaces);
 
-		VectorCopy(ToVec3(bm->maxs), mod->maxs);
-		VectorCopy(ToVec3(bm->mins), mod->mins);
-		mod->radius = RadiusFromBounds(mod->mins, mod->maxs);
+		mod->SetMaxs(ToVec3(bm->maxs));
+		mod->SetMins(ToVec3(bm->mins));
+		mod->SetRadius(RadiusFromBounds(mod->GetMins(), mod->GetMaxs()));
 
 		mod->numleafs = bm->visleafs;
 
-		if (i < mod->numsubmodels - 1)
+		if (i < mod->GetNumSubModels() - 1)
 		{
 			// duplicate the basic information
 			char name[10];
@@ -1411,7 +1411,7 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 		sizeof(pheader->frames[0]));
 
 	// mod->cache.data = pheader;
-	mod->flags = LittleLong(pinmodel->flags);
+	mod->SetFlags(LittleLong(pinmodel->flags));
 
 	//
 	// endian-adjust and copy the data, starting with the alias model header
@@ -1439,8 +1439,8 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 
 	pmodel->numframes = LittleLong(pinmodel->numframes);
 	pmodel->size = LittleFloat(pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
-	mod->synctype = (synctype_t)LittleLong(pinmodel->synctype);
-	mod->numframes = pmodel->numframes;
+	mod->SetSyncType((synctype_t)LittleLong((int)pinmodel->synctype));
+	mod->SetNumFrames(pmodel->numframes);
 
 	for (i = 0; i < 3; i++)
 	{
@@ -1566,8 +1566,8 @@ void Mod_LoadAliasModel(model_t* mod, void* buffer)
 	mod->SetModType(modtype_t::mod_alias);
 
 	// FIXME: do this_ right
-	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
-	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
+	mod->SetMins({ -16, -16, -16 });
+	mod->SetMaxs({ 16, 16, 16 });
 
 	//
 	// move the complete, relocatable alias model to the cache
@@ -1716,13 +1716,11 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 	psprite->maxwidth = LittleLong(pin->width);
 	psprite->maxheight = LittleLong(pin->height);
 	psprite->beamlength = LittleFloat(pin->beamlength);
-	mod->synctype = (synctype_t)LittleLong(pin->synctype);
+	mod->SetSyncType((synctype_t)LittleLong((int)pin->synctype));
 	psprite->numframes = numframes;
 
-	mod->mins[0] = mod->mins[1] = -psprite->maxwidth / 2;
-	mod->maxs[0] = mod->maxs[1] = psprite->maxwidth / 2;
-	mod->mins[2] = -psprite->maxheight / 2;
-	mod->maxs[2] = psprite->maxheight / 2;
+	mod->SetMins({ -psprite->maxwidth / 2.f , -psprite->maxwidth / 2.f ,-psprite->maxheight / 2.f });
+	mod->SetMaxs({ psprite->maxwidth / 2.f, psprite->maxwidth / 2.f, psprite->maxheight / 2.f });
 
 	//
 	// load the frames
@@ -1730,8 +1728,8 @@ void Mod_LoadSpriteModel(model_t* mod, void* buffer)
 	if (numframes < 1)
 		Sys_Error(std::format("Mod_LoadSpriteModel: Invalid # of frames: {}\n"sv, numframes));
 
-	mod->numframes = numframes;
-	mod->flags = 0;
+	mod->SetNumFrames(numframes);
+	mod->SetFlags(0);
 
 	dspriteframetype_t* pframetype = (dspriteframetype_t*)(pin + 1);
 

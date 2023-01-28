@@ -309,6 +309,26 @@ private:
 	bool needload; // bmodels and sprites don't cache normally
 
 	modtype_t type;
+	int numframes;
+	synctype_t synctype;
+	int flags;
+
+	//
+	// volume occupied by the model
+	//
+
+	vec3_t mins;
+	vec3_t maxs;
+	float radius;
+
+	//
+	// brush model
+	//
+	int firstmodelsurface;
+	int nummodelsurfaces;
+
+	int numsubmodels;
+	dmodel_t* submodels;
 
 public:
 	const std::string& GetName() const { return name; }
@@ -317,25 +337,37 @@ public:
 	void SetNeedLoad(bool _needload) { needload = _needload; }
 	modtype_t GetModType() const { return type; }
 	void SetModType(modtype_t _type) { type = _type; }
+	int GetNumFrames() const { return numframes; }
+	void SetNumFrames(int _numframes) { numframes = _numframes; }
+	synctype_t GetSyncType() const { return synctype; }
+	void SetSyncType(synctype_t _synctype) { synctype = _synctype; }
+	int GetFlags() const { return flags; }
+	void SetFlags(int _flags) { flags = _flags; }
 
-	int numframes;
-	synctype_t synctype;
+	const vec3_t& GetMins() const { return mins; }
+	void SetMins(const vec3_t& _mins) { VectorCopy(_mins, mins); }
+	const vec3_t& GetMaxs() const { return maxs; }
+	void SetMaxs(const vec3_t& _maxs) { VectorCopy(_maxs, maxs); }
+	float GetRadius() const { return radius; }
+	void SetRadius(float _radius) { radius = _radius; }
 
-	int flags;
+	bool GetClipBox() const { return {}; }
+	void SetClipBox(bool) {  }
+	const vec3_t& GetClipMins() const { return {}; }
+	void SetClipMins(const vec3_t&) {  }
+	const vec3_t& GetClipMaxs() const { return {}; }
+	void SetClipMaxs(const vec3_t&) {  }
 
-	//
-	// volume occupied by the model
-	// 
-	vec3_t mins, maxs;
-	float radius;
+	int GetFirstModelSurface() const { return firstmodelsurface; }
+	void SetFirstModelSurface(int _firstmodelsurface) { firstmodelsurface = _firstmodelsurface; }
+	int GetNumModelSurfaces() const { return nummodelsurfaces; }
+	void SetNumModelSurfaces(int _nummodelsurfaces) { nummodelsurfaces = _nummodelsurfaces; }
 
-	//
-	// brush model
-	//
-	int firstmodelsurface, nummodelsurfaces;
+	int GetNumSubModels() const { return numsubmodels; }
+	void SetNumSubModels(int _numsubmodels) { numsubmodels = _numsubmodels; }
+	dmodel_t* GetSubModels() const { return submodels; }
+	void SetSubModels(dmodel_t* _submodels) { submodels = _submodels; }
 
-	int numsubmodels;
-	dmodel_t* submodels;
 
 	int numplanes;
 	mplane_t* planes;

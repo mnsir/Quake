@@ -965,15 +965,15 @@ void R_DrawBrushModel(entity_t* e)
 		rotated = true;
 		for (i = 0; i < 3; i++)
 		{
-			mins[i] = e->origin[i] - clmodel->radius;
-			maxs[i] = e->origin[i] + clmodel->radius;
+			mins[i] = e->origin[i] - clmodel->GetRadius();
+			maxs[i] = e->origin[i] + clmodel->GetRadius();
 		}
 	}
 	else
 	{
 		rotated = false;
-		VectorAdd(e->origin, clmodel->mins, mins);
-		VectorAdd(e->origin, clmodel->maxs, maxs);
+		VectorAdd(e->origin, clmodel->GetMins(), mins);
+		VectorAdd(e->origin, clmodel->GetMaxs(), maxs);
 	}
 
 	if (R_CullBox(mins, maxs))
@@ -995,11 +995,11 @@ void R_DrawBrushModel(entity_t* e)
 		modelorg[2] = DotProduct(temp, up);
 	}
 
-	msurface_t* psurf = &clmodel->surfaces[clmodel->firstmodelsurface];
+	msurface_t* psurf = &clmodel->surfaces[clmodel->GetFirstModelSurface()];
 
 	// calculate dynamic lighting for bmodel if it's not an
 	// instanced model
-	if (clmodel->firstmodelsurface != 0 && !gl_flashblend.value)
+	if (clmodel->GetFirstModelSurface() != 0 && !gl_flashblend.value)
 	{
 		for (int k = 0; k < MAX_DLIGHTS; k++)
 		{
@@ -1020,7 +1020,7 @@ void R_DrawBrushModel(entity_t* e)
 	//
 	// draw texture
 	//
-	for (i = 0; i < clmodel->nummodelsurfaces; i++, psurf++)
+	for (i = 0; i < clmodel->GetNumModelSurfaces(); i++, psurf++)
 	{
 		// find which side of the node we are on
 		mplane_t* pplane = psurf->plane;

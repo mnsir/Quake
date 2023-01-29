@@ -247,8 +247,8 @@ void R_NewMap()
 {
 	// clear out efrags in case the level hasn't been reloaded
 	// FIXME: is this_ one short?
-	for (int i = 0; i < cl.worldmodel->numleafs; i++)
-		cl.worldmodel->leafs[i].efrags = NULL;
+	for (int i = 0; i < cl.worldmodel->GetNumLeafs(); i++)
+		cl.worldmodel->GetLeafs()[i].efrags = NULL;
 
 	r_viewleaf = NULL;
 	R_ClearParticles();
@@ -469,11 +469,11 @@ void R_MarkLeaves()
 
 	byte* vis = Mod_LeafPVS(r_viewleaf, cl.worldmodel);
 
-	for (int i = 0; i < cl.worldmodel->numleafs; i++)
+	for (int i = 0; i < cl.worldmodel->GetNumLeafs(); i++)
 	{
 		if (vis[i >> 3] & (1 << (i & 7)))
 		{
-			mnode_t* node = (mnode_t*)&cl.worldmodel->leafs[i + 1];
+			mnode_t* node = (mnode_t*)&cl.worldmodel->GetLeafs()[i + 1];
 			do
 			{
 				if (node->visframe == r_visframecount)

@@ -662,7 +662,7 @@ int PF_new_checkclient(int check)
 	VectorAdd(ent->v.origin, ent->v.view_ofs, org);
 	mleaf_t* leaf = Mod_PointInLeaf(org, sv.worldmodel);
 	byte* pvs = Mod_LeafPVS(leaf, sv.worldmodel);
-	memcpy(checkpvs, pvs, (sv.worldmodel->numleafs + 7) >> 3);
+	memcpy(checkpvs, pvs, (sv.worldmodel->GetNumLeafs() + 7) >> 3);
 
 	return i;
 }
@@ -708,7 +708,7 @@ void PF_checkclient()
 	edict_t* self = PROG_TO_EDICT(pr_global_struct->self);
 	VectorAdd(self->v.origin, self->v.view_ofs, view);
 	mleaf_t* leaf = Mod_PointInLeaf(view, sv.worldmodel);
-	int l = (leaf - sv.worldmodel->leafs) - 1;
+	int l = (leaf - sv.worldmodel->GetLeafs()) - 1;
 	if ((l < 0) || !(checkpvs[l >> 3] & (1 << (l & 7))))
 	{
 		c_notvis++;

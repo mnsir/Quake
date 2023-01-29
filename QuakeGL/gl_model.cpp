@@ -167,7 +167,7 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 {
 	static byte decompressed[MAX_MAP_LEAFS / 8];
 
-	int row = (model->numleafs + 7) >> 3;
+	int row = (model->GetNumLeafs() + 7) >> 3;
 	byte* out = decompressed;
 
 	if (!in)
@@ -203,7 +203,7 @@ byte* Mod_DecompressVis(byte* in, model_t* model)
 
 uint8_t* Mod_LeafPVS(mleaf_t* leaf, model_t* model)
 {
-	if (leaf == model->leafs)
+	if (leaf == model->GetLeafs())
 		return mod_novis;
 	return Mod_DecompressVis(leaf->compressed_vis, model);
 }
@@ -808,7 +808,7 @@ void Mod_LoadFaces(lump_t* l)
 		if (side)
 			out->flags |= SURF_PLANEBACK;
 
-		out->plane = loadmodel->planes + planenum;
+		out->plane = loadmodel->GetPlanes() + planenum;
 
 		out->texinfo = loadmodel->texinfo + LittleShort(in->texinfo);
 
@@ -889,7 +889,7 @@ void Mod_LoadNodes(lump_t* l)
 		}
 
 		int p = LittleLong(in->planenum);
-		out->plane = loadmodel->planes + p;
+		out->plane = loadmodel->GetPlanes() + p;
 
 		out->firstsurface = LittleShort(in->firstface);
 		out->numsurfaces = LittleShort(in->numfaces);
@@ -900,7 +900,7 @@ void Mod_LoadNodes(lump_t* l)
 			if (p >= 0)
 				out->children[j] = loadmodel->nodes + p;
 			else
-				out->children[j] = (mnode_t*)(loadmodel->leafs + (-1 - p));
+				out->children[j] = (mnode_t*)(loadmodel->GetLeafs() + (-1 - p));
 		}
 	}
 
@@ -921,43 +921,47 @@ void Mod_LoadLeafs(lump_t* l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
 	int count = l->filelen / sizeof(*in);
-	mleaf_t* out = static_cast<mleaf_t*>(Hunk_AllocName(count * sizeof * out, loadname));
+	//mleaf_t* out = static_cast<mleaf_t*>(Hunk_AllocName(count * sizeof * out, loadname));
 
-	loadmodel->leafs = out;
-	loadmodel->numleafs = count;
+	std::vector<mleaf_t> out2;
+	out2.reserve(count);
 
-	for (int i = 0; i < count; i++, in++, out++)
+	for (int i = 0; i < count; i++, in++)//, out++)
 	{
+		mleaf_t out;
 		for (j = 0; j < 3; j++)
 		{
-			out->minmaxs[j] = LittleShort(in->mins[j]);
-			out->minmaxs[3 + j] = LittleShort(in->maxs[j]);
+			out.minmaxs[j] = LittleShort(in->mins[j]);
+			out.minmaxs[3 + j] = LittleShort(in->maxs[j]);
 		}
 
 		int p = LittleLong(in->contents);
-		out->contents = p;
+		out.contents = p;
 
-		out->firstmarksurface = loadmodel->marksurfaces +
+		out.firstmarksurface = loadmodel->marksurfaces +
 			LittleShort(in->firstmarksurface);
-		out->nummarksurfaces = LittleShort(in->nummarksurfaces);
+		out.nummarksurfaces = LittleShort(in->nummarksurfaces);
 
 		p = LittleLong(in->visofs);
 		if (p == -1)
-			out->compressed_vis = NULL;
+			out.compressed_vis = NULL;
 		else
-			out->compressed_vis = loadmodel->visdata + p;
-		out->efrags = NULL;
+			out.compressed_vis = loadmodel->visdata + p;
+		out.efrags = NULL;
 
 		for (j = 0; j < 4; j++)
-			out->ambient_sound_level[j] = in->ambient_level[j];
+			out.ambient_sound_level[j] = in->ambient_level[j];
 
 		// gl underwater warp
-		if (out->contents != CONTENTS_EMPTY)
+		if (out.contents != CONTENTS_EMPTY)
 		{
-			for (j = 0; j < out->nummarksurfaces; j++)
-				out->firstmarksurface[j]->flags |= SURF_UNDERWATER;
+			for (j = 0; j < out.nummarksurfaces; j++)
+				out.firstmarksurface[j]->flags |= SURF_UNDERWATER;
 		}
+		out2.emplace_back(std::move(out));
 	}
+	loadmodel->SetLeafs(std::move(out2));
+	loadmodel->SetNumLeafs(count);
 }
 
 /*
@@ -981,7 +985,7 @@ void Mod_LoadClipnodes(lump_t* l)
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count - 1;
-	hull->planes = loadmodel->planes;
+	hull->planes = loadmodel->GetPlanes();
 	hull->clip_mins[0] = -16;
 	hull->clip_mins[1] = -16;
 	hull->clip_mins[2] = -24;
@@ -993,7 +997,7 @@ void Mod_LoadClipnodes(lump_t* l)
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count - 1;
-	hull->planes = loadmodel->planes;
+	hull->planes = loadmodel->GetPlanes();
 	hull->clip_mins[0] = -32;
 	hull->clip_mins[1] = -32;
 	hull->clip_mins[2] = -24;
@@ -1027,11 +1031,11 @@ void Mod_MakeHull0()
 	hull->clipnodes = out;
 	hull->firstclipnode = 0;
 	hull->lastclipnode = count - 1;
-	hull->planes = loadmodel->planes;
+	hull->planes = loadmodel->GetPlanes();
 
 	for (int i = 0; i < count; i++, out++, in++)
 	{
-		out->planenum = in->plane - loadmodel->planes;
+		out->planenum = in->plane - loadmodel->GetPlanes();
 		for (int j = 0; j < 2; j++)
 		{
 			mnode_t* child = in->children[j];
@@ -1102,26 +1106,31 @@ void Mod_LoadPlanes(lump_t* l)
 	dplane_t* in = static_cast<dplane_t*>((void*)(mod_base + l->fileofs));
 	if (l->filelen % sizeof(*in))
 		Sys_Error(std::format("MOD_LoadBmodel: funny lump size in {}"sv, loadmodel->GetName()));
+
 	int count = l->filelen / sizeof(*in);
-	mplane_t* out = static_cast<mplane_t*>(Hunk_AllocName(count * 2 * sizeof * out, loadname));
+	//mplane_t* out = static_cast<mplane_t*>(Hunk_AllocName(count * 2 * sizeof * out, loadname));
 
-	loadmodel->planes = out;
-	loadmodel->numplanes = count;
+	std::vector<mplane_t> out2;
+	out2.reserve(count);
 
-	for (int i = 0; i < count; i++, in++, out++)
+	for (int i = 0; i < count; i++, in++)//, out++)
 	{
+		mplane_t out;
 		int bits = 0;
 		for (int j = 0; j < 3; j++)
 		{
-			out->normal[j] = LittleFloat(in->normal[j]);
-			if (out->normal[j] < 0)
+			out.normal[j] = LittleFloat(in->normal[j]);
+			if (out.normal[j] < 0)
 				bits |= 1 << j;
 		}
 
-		out->dist = LittleFloat(in->dist);
-		out->type = LittleLong(in->type);
-		out->signbits = bits;
+		out.dist = LittleFloat(in->dist);
+		out.type = LittleLong(in->type);
+		out.signbits = bits;
+		out2.emplace_back(std::move(out));
 	}
+	loadmodel->SetPlanes(std::move(out2));
+	loadmodel->SetNumPlanes(count);
 }
 
 /*
@@ -1206,7 +1215,7 @@ void Mod_LoadBrushModel(model_t* mod, void* buffer)
 		mod->SetMins(bm.mins);
 		mod->SetRadius(RadiusFromBounds(mod->GetMins(), mod->GetMaxs()));
 
-		mod->numleafs = bm.visleafs;
+		mod->SetNumLeafs(bm.visleafs);
 
 		if (i < mod->GetSubModels().size() - 1)
 		{

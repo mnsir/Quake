@@ -327,8 +327,14 @@ private:
 	//
 	int firstmodelsurface;
 	int nummodelsurfaces;
-	
+
 	std::vector<dmodel_t> submodels;
+
+	int numplanes;
+	std::vector<mplane_t> planes;
+
+	int numleafs; // number of visible leafs, not counting 0
+	std::vector<mleaf_t> leafs;
 
 public:
 	const std::string& GetName() const { return name; }
@@ -351,27 +357,25 @@ public:
 	float GetRadius() const { return radius; }
 	void SetRadius(float _radius) { radius = _radius; }
 
-	bool GetClipBox() const { return {}; }
-	void SetClipBox(bool) {  }
-	const vec3_t& GetClipMins() const { return {}; }
-	void SetClipMins(const vec3_t&) {  }
-	const vec3_t& GetClipMaxs() const { return {}; }
-	void SetClipMaxs(const vec3_t&) {  }
-
 	int GetFirstModelSurface() const { return firstmodelsurface; }
 	void SetFirstModelSurface(int _firstmodelsurface) { firstmodelsurface = _firstmodelsurface; }
 	int GetNumModelSurfaces() const { return nummodelsurfaces; }
 	void SetNumModelSurfaces(int _nummodelsurfaces) { nummodelsurfaces = _nummodelsurfaces; }
-	
+
 	const std::vector<dmodel_t>& GetSubModels() const { return submodels; }
 	void SetSubModels(std::vector<dmodel_t>&& _submodels) { submodels = std::move(_submodels); }
 
+	int GetNumPlanes() const { return numplanes; }
+	void SetNumPlanes(int _numplanes) { numplanes = _numplanes; }
+	const mplane_t* GetPlanes() const { return planes.data(); }
+	mplane_t* GetPlanes() { return planes.data(); }
+	void SetPlanes(std::vector<mplane_t>&& _planes) { planes = std::move(_planes); }
 
-	int numplanes;
-	mplane_t* planes;
-
-	int numleafs; // number of visible leafs, not counting 0
-	mleaf_t* leafs;
+	int GetNumLeafs() const { return numleafs; }
+	void SetNumLeafs(int _numleafs) { numleafs = _numleafs; }
+	const mleaf_t* GetLeafs() const { return leafs.data(); }
+	mleaf_t* GetLeafs() { return leafs.data(); }
+	void SetLeafs(std::vector<mleaf_t>&& _leafs) { leafs = std::move(_leafs); }
 
 	int numvertexes;
 	mvertex_t* vertexes;

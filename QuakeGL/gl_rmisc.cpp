@@ -414,8 +414,8 @@ void R_NewMap()
 
 	// clear out efrags in case the level hasn't been reloaded
 	// FIXME: is this_ one short?
-	for (i = 0; i < cl.worldmodel->numleafs; i++)
-		cl.worldmodel->leafs[i].efrags = NULL;
+	for (i = 0; i < cl.worldmodel->GetNumLeafs(); i++)
+		cl.worldmodel->GetLeafs()[i].efrags = NULL;
 
 	r_viewleaf = NULL;
 	R_ClearParticles();

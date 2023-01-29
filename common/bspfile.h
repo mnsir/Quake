@@ -83,7 +83,7 @@ typedef struct
 
 #define HEADER_LUMPS 15
 
-typedef struct
+struct dmodel_t
 {
 	vec3_t mins;
 	vec3_t maxs;
@@ -91,7 +91,7 @@ typedef struct
 	int headnode[MAX_MAP_HULLS];
 	int visleafs; // not including the solid leaf 0
 	int firstface, numfaces;
-} dmodel_t;
+};
 
 typedef struct
 {

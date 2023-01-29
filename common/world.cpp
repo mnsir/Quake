@@ -339,7 +339,7 @@ void SV_FindTouchedLeafs(edict_t* ent, mnode_t* node)
 			return;
 
 		mleaf_t* leaf = (mleaf_t*)node;
-		int leafnum = leaf - sv.worldmodel->leafs - 1;
+		int leafnum = leaf - sv.worldmodel->GetLeafs() - 1;
 
 		ent->leafnums[ent->num_leafs] = leafnum;
 		ent->num_leafs++;

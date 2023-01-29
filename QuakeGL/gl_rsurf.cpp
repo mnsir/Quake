@@ -1228,16 +1228,16 @@ void R_MarkLeaves()
 	if (r_novis.value)
 	{
 		vis = solid;
-		memset(solid, 0xff, (cl.worldmodel->numleafs + 7) >> 3);
+		memset(solid, 0xff, (cl.worldmodel->GetNumLeafs() + 7) >> 3);
 	}
 	else
 		vis = Mod_LeafPVS(r_viewleaf, cl.worldmodel);
 
-	for (int i = 0; i < cl.worldmodel->numleafs; i++)
+	for (int i = 0; i < cl.worldmodel->GetNumLeafs(); i++)
 	{
 		if (vis[i >> 3] & (1 << (i & 7)))
 		{
-			mnode_t* node = (mnode_t*)&cl.worldmodel->leafs[i + 1];
+			mnode_t* node = (mnode_t*)&cl.worldmodel->GetLeafs()[i + 1];
 			do
 			{
 				if (node->visframe == r_visframecount)

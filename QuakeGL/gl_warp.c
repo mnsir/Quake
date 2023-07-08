@@ -655,7 +655,7 @@ R_LoadSkys
 ==================
 */
 char * suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
-void R_LoadSkys(void)
+void R_LoadSkys()
 {
     int i;
     FILE * f;
@@ -940,7 +940,7 @@ void R_DrawSkyChain(msurface_t * s)
 R_ClearSkyBox
 ==============
 */
-void R_ClearSkyBox(void)
+void R_ClearSkyBox()
 {
     int i;
 
@@ -995,7 +995,7 @@ R_DrawSkyBox
 ==============
 */
 int skytexorder[6] = {0, 2, 1, 3, 4, 5};
-void R_DrawSkyBox(void)
+void R_DrawSkyBox()
 {
     int i, j, k;
     vec3_t v;

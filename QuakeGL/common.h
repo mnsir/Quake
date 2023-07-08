@@ -108,16 +108,16 @@ void MSG_WriteAngle(sizebuf_t * sb, float f);
 extern int msg_readcount;
 extern qboolean msg_badread; // set if a read goes beyond end of message
 
-void MSG_BeginReading(void);
-int MSG_ReadChar(void);
-int MSG_ReadByte(void);
-int MSG_ReadShort(void);
-int MSG_ReadLong(void);
-float MSG_ReadFloat(void);
-char * MSG_ReadString(void);
+void MSG_BeginReading();
+int MSG_ReadChar();
+int MSG_ReadByte();
+int MSG_ReadShort();
+int MSG_ReadLong();
+float MSG_ReadFloat();
+char * MSG_ReadString();
 
-float MSG_ReadCoord(void);
-float MSG_ReadAngle(void);
+float MSG_ReadCoord();
+float MSG_ReadAngle();
 
 //============================================================================
 

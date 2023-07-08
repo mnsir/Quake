@@ -45,7 +45,7 @@ void (*d_drawspans) (espan_t * pspan);
 D_Init
 ===============
 */
-void D_Init(void)
+void D_Init()
 {
 
     r_skydirect = 1;
@@ -86,7 +86,7 @@ void D_CopyRects(vrect_t * prects, int transparent)
 D_EnableBackBufferAccess
 ===============
 */
-void D_EnableBackBufferAccess(void)
+void D_EnableBackBufferAccess()
 {
     VID_LockBuffer();
 }
@@ -97,7 +97,7 @@ void D_EnableBackBufferAccess(void)
 D_TurnZOn
 ===============
 */
-void D_TurnZOn(void)
+void D_TurnZOn()
 {
     // not needed for software version
 }
@@ -108,7 +108,7 @@ void D_TurnZOn(void)
 D_DisableBackBufferAccess
 ===============
 */
-void D_DisableBackBufferAccess(void)
+void D_DisableBackBufferAccess()
 {
     VID_UnlockBuffer();
 }
@@ -119,7 +119,7 @@ void D_DisableBackBufferAccess(void)
 D_SetupFrame
 ===============
 */
-void D_SetupFrame(void)
+void D_SetupFrame()
 {
     int i;
 

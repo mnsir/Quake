@@ -51,8 +51,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #define __i386__ 1
 #endif
 
-void VID_LockBuffer(void);
-void VID_UnlockBuffer(void);
+void VID_LockBuffer();
+void VID_UnlockBuffer();
 
 #else
 
@@ -303,15 +303,15 @@ extern int host_framecount; // incremented every frame, never reset
 extern double realtime; // not bounded in any way, changed at
 // start of every frame, never reset
 
-void Host_ClearMemory(void);
-void Host_ServerFrame(void);
-void Host_InitCommands(void);
+void Host_ClearMemory();
+void Host_ServerFrame();
+void Host_InitCommands();
 void Host_Init(quakeparms_t * parms);
-void Host_Shutdown(void);
+void Host_Shutdown();
 void Host_Error(char * error, ...);
 void Host_EndGame(char * message, ...);
 void Host_Frame(float time);
-void Host_Quit_f(void);
+void Host_Quit_f();
 void Host_ClientCommands(char * fmt, ...);
 void Host_ShutdownServer(qboolean crash);
 
@@ -330,6 +330,6 @@ extern int minimum_memory;
 //
 extern cvar_t chase_active;
 
-void Chase_Init(void);
-void Chase_Reset(void);
-void Chase_Update(void);
+void Chase_Init();
+void Chase_Reset();
+void Chase_Update();

@@ -66,8 +66,8 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 
 HINSTANCE hInstDS;
 
-qboolean SNDDMA_InitDirect(void);
-qboolean SNDDMA_InitWav(void);
+qboolean SNDDMA_InitDirect();
+qboolean SNDDMA_InitWav();
 
 
 /*
@@ -75,7 +75,7 @@ qboolean SNDDMA_InitWav(void);
 S_BlockSound
 ==================
 */
-void S_BlockSound(void)
+void S_BlockSound()
 {
 
     // DirectSound takes care of blocking itself
@@ -96,7 +96,7 @@ void S_BlockSound(void)
 S_UnblockSound
 ==================
 */
-void S_UnblockSound(void)
+void S_UnblockSound()
 {
 
     // DirectSound takes care of blocking itself
@@ -112,7 +112,7 @@ void S_UnblockSound(void)
 FreeSound
 ==================
 */
-void FreeSound(void)
+void FreeSound()
 {
     int i;
 
@@ -180,7 +180,7 @@ SNDDMA_InitDirect
 Direct-Sound support
 ==================
 */
-sndinitstat SNDDMA_InitDirect(void)
+sndinitstat SNDDMA_InitDirect()
 {
     DSBUFFERDESC dsbuf;
     DSBCAPS dsbcaps;
@@ -419,7 +419,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qboolean SNDDMA_InitWav(void)
+qboolean SNDDMA_InitWav()
 {
     WAVEFORMATEX format;
     int i;
@@ -554,7 +554,7 @@ Returns false if nothing is found.
 ==================
 */
 
-int SNDDMA_Init(void)
+int SNDDMA_Init()
 {
     sndinitstat stat;
 
@@ -632,7 +632,7 @@ inside the recirculating dma buffer, so the mixing code will know
 how many sample are required to fill it up.
 ===============
 */
-int SNDDMA_GetDMAPos(void)
+int SNDDMA_GetDMAPos()
 {
     MMTIME mmtime;
     int s;
@@ -664,7 +664,7 @@ SNDDMA_Submit
 Send sound to device if buffer isn't really the dma buffer
 ===============
 */
-void SNDDMA_Submit(void)
+void SNDDMA_Submit()
 {
     LPWAVEHDR h;
     int wResult;
@@ -722,7 +722,7 @@ SNDDMA_Shutdown
 Reset the sound device for exiting
 ===============
 */
-void SNDDMA_Shutdown(void)
+void SNDDMA_Shutdown()
 {
     FreeSound();
 }

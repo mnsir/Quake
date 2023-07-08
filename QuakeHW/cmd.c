@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
-void Cmd_ForwardToServer(void);
+void Cmd_ForwardToServer();
 
 #define MAX_ALIAS_NAME 32
 
@@ -50,7 +50,7 @@ next frame. This allows commands like:
 bind g "impulse 5 ; +attack ; wait ; -attack ; impulse 2"
 ============
 */
-void Cmd_Wait_f(void)
+void Cmd_Wait_f()
 {
     cmd_wait = true;
 }
@@ -70,7 +70,7 @@ sizebuf_t cmd_text;
 Cbuf_Init
 ============
 */
-void Cbuf_Init(void)
+void Cbuf_Init()
 {
     SZ_Alloc(&cmd_text, 8192); // space for commands and script files
 }
@@ -140,7 +140,7 @@ void Cbuf_InsertText(char * text)
 Cbuf_Execute
 ============
 */
-void Cbuf_Execute(void)
+void Cbuf_Execute()
 {
     int i;
     char * text;
@@ -210,7 +210,7 @@ quake +prog jctest.qp +cmd amlev1
 quake -nosound +cmd amlev1
 ===============
 */
-void Cmd_StuffCmds_f(void)
+void Cmd_StuffCmds_f()
 {
     int i, j;
     int s;
@@ -280,7 +280,7 @@ void Cmd_StuffCmds_f(void)
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f(void)
+void Cmd_Exec_f()
 {
     char * f;
     int mark;
@@ -312,7 +312,7 @@ Cmd_Echo_f
 Just prints the rest of the line to the console
 ===============
 */
-void Cmd_Echo_f(void)
+void Cmd_Echo_f()
 {
     int i;
 
@@ -338,7 +338,7 @@ char * CopyString(char * in)
     return out;
 }
 
-void Cmd_Alias_f(void)
+void Cmd_Alias_f()
 {
     cmdalias_t * a;
     char cmd[1024];
@@ -425,7 +425,7 @@ static cmd_function_t * cmd_functions; // possible commands to execute
 Cmd_Init
 ============
 */
-void Cmd_Init(void)
+void Cmd_Init()
 {
     //
     // register our commands
@@ -443,7 +443,7 @@ void Cmd_Init(void)
 Cmd_Argc
 ============
 */
-int Cmd_Argc(void)
+int Cmd_Argc()
 {
     return cmd_argc;
 }
@@ -465,7 +465,7 @@ char * Cmd_Argv(int arg)
 Cmd_Args
 ============
 */
-char * Cmd_Args(void)
+char * Cmd_Args()
 {
     return cmd_args;
 }
@@ -657,7 +657,7 @@ Cmd_ForwardToServer
 Sends the entire command line over to the server
 ===================
 */
-void Cmd_ForwardToServer(void)
+void Cmd_ForwardToServer()
 {
     if (cls.state != ca_connected)
     {

@@ -141,7 +141,7 @@ static vmode_t badmode;
 
 static byte backingbuf[48 * 24];
 
-void VID_MenuDraw(void);
+void VID_MenuDraw();
 void VID_MenuKey(int key);
 
 LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -153,7 +153,7 @@ void AppActivate(BOOL fActive, BOOL minimize);
 VID_RememberWindowPos
 ================
 */
-void VID_RememberWindowPos(void)
+void VID_RememberWindowPos()
 {
     RECT rect;
 
@@ -176,7 +176,7 @@ void VID_RememberWindowPos(void)
 VID_CheckWindowXY
 ================
 */
-void VID_CheckWindowXY(void)
+void VID_CheckWindowXY()
 {
 
     if (((int)vid_window_x.value > (GetSystemMetrics(SM_CXSCREEN) - 160)) ||
@@ -195,7 +195,7 @@ void VID_CheckWindowXY(void)
 VID_UpdateWindowStatus
 ================
 */
-void VID_UpdateWindowStatus(void)
+void VID_UpdateWindowStatus()
 {
 
     window_rect.left = window_x;
@@ -214,7 +214,7 @@ void VID_UpdateWindowStatus(void)
 ClearAllStates
 ================
 */
-void ClearAllStates(void)
+void ClearAllStates()
 {
     int i;
 
@@ -298,7 +298,7 @@ qboolean VID_AllocBuffers(int width, int height)
 }
 
 
-void initFatalError(void)
+void initFatalError()
 {
     MGL_exit();
     MGL_fatalError(MGL_errorMsg(MGL_result()));
@@ -350,7 +350,7 @@ int VID_Suspend(MGLDC * dc, m_int flags)
 }
 
 
-void registerAllDispDrivers(void)
+void registerAllDispDrivers()
 {
     /* Event though these driver require WinDirect, we register
     * them so that they will still be available even if DirectDraw
@@ -377,7 +377,7 @@ void registerAllDispDrivers(void)
 }
 
 
-void registerAllMemDrivers(void)
+void registerAllMemDrivers()
 {
     /* Register memory context drivers */
     MGL_registerDriver(MGL_PACKED8NAME, PACKED8_driver);
@@ -1000,7 +1000,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 VID_NumModes
 =================
 */
-int VID_NumModes(void)
+int VID_NumModes()
 {
     return nummodes;
 }
@@ -1167,7 +1167,7 @@ char * VID_GetExtModeDescription(int mode)
 }
 
 
-void DestroyDIBWindow(void)
+void DestroyDIBWindow()
 {
 
     if (modestate == MS_WINDOWED)
@@ -1182,7 +1182,7 @@ void DestroyDIBWindow(void)
 }
 
 
-void DestroyFullscreenWindow(void)
+void DestroyFullscreenWindow()
 {
 
     if (modestate == MS_FULLSCREEN)
@@ -1198,7 +1198,7 @@ void DestroyFullscreenWindow(void)
 
 
 
-void DestroyFullDIBWindow(void)
+void DestroyFullDIBWindow()
 {
     if (modestate == MS_FULLDIB)
     {
@@ -1553,7 +1553,7 @@ void VID_RestoreOldMode(int original_mode)
 }
 
 
-void VID_SetDefaultMode(void)
+void VID_SetDefaultMode()
 {
 
     if (vid_initialized)
@@ -1716,7 +1716,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
     return true;
 }
 
-void VID_LockBuffer(void)
+void VID_LockBuffer()
 {
 
     if (dibdc)
@@ -1757,7 +1757,7 @@ void VID_LockBuffer(void)
 }
 
 
-void VID_UnlockBuffer(void)
+void VID_UnlockBuffer()
 {
     if (dibdc)
         return;
@@ -1778,7 +1778,7 @@ void VID_UnlockBuffer(void)
 }
 
 
-int VID_ForceUnlockedAndReturnState(void)
+int VID_ForceUnlockedAndReturnState()
 {
     int lk;
 
@@ -1895,7 +1895,7 @@ void VID_ShiftPalette(unsigned char * palette)
 VID_DescribeCurrentMode_f
 =================
 */
-void VID_DescribeCurrentMode_f(void)
+void VID_DescribeCurrentMode_f()
 {
     Con_Printf("%s\n", VID_GetExtModeDescription(vid_modenum));
 }
@@ -1906,7 +1906,7 @@ void VID_DescribeCurrentMode_f(void)
 VID_NumModes_f
 =================
 */
-void VID_NumModes_f(void)
+void VID_NumModes_f()
 {
 
     if (nummodes == 1)
@@ -1921,7 +1921,7 @@ void VID_NumModes_f(void)
 VID_DescribeMode_f
 =================
 */
-void VID_DescribeMode_f(void)
+void VID_DescribeMode_f()
 {
     int modenum;
 
@@ -1936,7 +1936,7 @@ void VID_DescribeMode_f(void)
 VID_DescribeModes_f
 =================
 */
-void VID_DescribeModes_f(void)
+void VID_DescribeModes_f()
 {
     int i, lnummodes;
     char * pinfo;
@@ -1975,7 +1975,7 @@ void VID_DescribeModes_f(void)
 VID_TestMode_f
 =================
 */
-void VID_TestMode_f(void)
+void VID_TestMode_f()
 {
     int modenum;
     double testduration;
@@ -2001,7 +2001,7 @@ void VID_TestMode_f(void)
 VID_Windowed_f
 =================
 */
-void VID_Windowed_f(void)
+void VID_Windowed_f()
 {
 
     VID_SetMode((int)vid_windowed_mode.value, vid_curpal);
@@ -2013,7 +2013,7 @@ void VID_Windowed_f(void)
 VID_Fullscreen_f
 =================
 */
-void VID_Fullscreen_f(void)
+void VID_Fullscreen_f()
 {
 
     VID_SetMode((int)vid_fullscreen_mode.value, vid_curpal);
@@ -2025,7 +2025,7 @@ void VID_Fullscreen_f(void)
 VID_Minimize_f
 =================
 */
-void VID_Minimize_f(void)
+void VID_Minimize_f()
 {
 
     // we only support minimizing windows; if you're fullscreen,
@@ -2041,7 +2041,7 @@ void VID_Minimize_f(void)
 VID_ForceMode_f
 =================
 */
-void VID_ForceMode_f(void)
+void VID_ForceMode_f()
 {
     int modenum;
     double testduration;
@@ -2180,7 +2180,7 @@ void VID_Init(unsigned char * palette)
 }
 
 
-void VID_Shutdown(void)
+void VID_Shutdown()
 {
     HDC hdc;
     int dummy;
@@ -3045,7 +3045,7 @@ LONG WINAPI MainWndProc(
 }
 
 
-extern void M_Menu_Options_f(void);
+extern void M_Menu_Options_f();
 extern void M_Print(int cx, int cy, char * str);
 extern void M_PrintWhite(int cx, int cy, char * str);
 extern void M_DrawCharacter(int cx, int line, int num);
@@ -3074,7 +3074,7 @@ static modedesc_t modedescs[MAX_MODEDESCS];
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw(void)
+void VID_MenuDraw()
 {
     qpic_t * p;
     char * ptr;

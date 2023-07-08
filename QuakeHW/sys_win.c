@@ -52,10 +52,10 @@ static HANDLE hFile;
 static HANDLE heventParent;
 static HANDLE heventChild;
 
-void MaskExceptions(void);
-void Sys_InitFloatTime(void);
-void Sys_PushFPCW_SetHigh(void);
-void Sys_PopFPCW(void);
+void MaskExceptions();
+void Sys_InitFloatTime();
+void Sys_PushFPCW_SetHigh();
+void Sys_PopFPCW();
 
 volatile int sys_checksum;
 
@@ -97,7 +97,7 @@ FILE IO
 #define MAX_HANDLES 10
 FILE * sys_handles[MAX_HANDLES];
 
-int findhandle(void)
+int findhandle()
 {
     int i;
 
@@ -270,22 +270,22 @@ void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length)
 }
 
 
-void Sys_LowFPPrecision(void) {}
-void Sys_HighFPPrecision(void) {}
+void Sys_LowFPPrecision() {}
+void Sys_HighFPPrecision() {}
 
-void Sys_SetFPCW(void)
+void Sys_SetFPCW()
 {
 }
 
-void Sys_PushFPCW_SetHigh(void)
+void Sys_PushFPCW_SetHigh()
 {
 }
 
-void Sys_PopFPCW(void)
+void Sys_PopFPCW()
 {
 }
 
-void MaskExceptions(void)
+void MaskExceptions()
 {
 }
 
@@ -295,7 +295,7 @@ void MaskExceptions(void)
 Sys_Init
 ================
 */
-void Sys_Init(void)
+void Sys_Init()
 {
     LARGE_INTEGER PerformanceFreq;
     unsigned int lowpart, highpart;
@@ -424,7 +424,7 @@ void Sys_Printf(char * fmt, ...)
     }
 }
 
-void Sys_Quit(void)
+void Sys_Quit()
 {
 
     VID_ForceUnlockedAndReturnState();
@@ -449,7 +449,7 @@ void Sys_Quit(void)
 Sys_FloatTime
 ================
 */
-double Sys_FloatTime(void)
+double Sys_FloatTime()
 {
     static int sametimecount;
     static unsigned int oldtime;
@@ -516,7 +516,7 @@ double Sys_FloatTime(void)
 Sys_InitFloatTime
 ================
 */
-void Sys_InitFloatTime(void)
+void Sys_InitFloatTime()
 {
     int j;
 
@@ -537,7 +537,7 @@ void Sys_InitFloatTime(void)
 }
 
 
-char * Sys_ConsoleInput(void)
+char * Sys_ConsoleInput()
 {
     static char text[256];
     static int len;
@@ -617,13 +617,13 @@ char * Sys_ConsoleInput(void)
     return NULL;
 }
 
-void Sys_Sleep(void)
+void Sys_Sleep()
 {
     Sleep(1);
 }
 
 
-void Sys_SendKeyEvents(void)
+void Sys_SendKeyEvents()
 {
     MSG msg;
 

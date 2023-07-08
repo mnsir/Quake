@@ -56,7 +56,7 @@ int current_iv;
 
 int edge_head_u_shift20, edge_tail_u_shift20;
 
-static void (*pdrawfunc)(void);
+static void (*pdrawfunc)();
 
 edge_t edge_head;
 edge_t edge_tail;
@@ -65,8 +65,8 @@ edge_t edge_sentinel;
 
 float fv;
 
-void R_GenerateSpans(void);
-void R_GenerateSpansBackward(void);
+void R_GenerateSpans();
+void R_GenerateSpansBackward();
 
 void R_LeadingEdge(edge_t * edge);
 void R_LeadingEdgeBackwards(edge_t * edge);
@@ -81,7 +81,7 @@ void R_TrailingEdge(surf_t * surf, edge_t * edge);
 R_DrawCulledPolys
 ==============
 */
-void R_DrawCulledPolys(void)
+void R_DrawCulledPolys()
 {
     surf_t * s;
     msurface_t * pface;
@@ -124,7 +124,7 @@ void R_DrawCulledPolys(void)
 R_BeginEdgeFrame
 ==============
 */
-void R_BeginEdgeFrame(void)
+void R_BeginEdgeFrame()
 {
     int v;
 
@@ -585,7 +585,7 @@ gotposition:
 R_GenerateSpans
 ==============
 */
-void R_GenerateSpans(void)
+void R_GenerateSpans()
 {
     edge_t * edge;
     surf_t * surf;
@@ -624,7 +624,7 @@ void R_GenerateSpans(void)
 R_GenerateSpansBackward
 ==============
 */
-void R_GenerateSpansBackward(void)
+void R_GenerateSpansBackward()
 {
     edge_t * edge;
 
@@ -660,7 +660,7 @@ Output:
 Each surface has a linked list of its visible spans
 ==============
 */
-void R_ScanEdges(void)
+void R_ScanEdges()
 {
     int iv, bottom;
     byte basespans[MAXSPANS * sizeof(espan_t) + CACHE_SIZE];

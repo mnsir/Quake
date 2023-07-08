@@ -154,7 +154,7 @@ void Host_Error(char * error, ...)
 Host_FindMaxClients
 ================
 */
-void Host_FindMaxClients(void)
+void Host_FindMaxClients()
 {
     int i;
 
@@ -206,7 +206,7 @@ void Host_FindMaxClients(void)
 Host_InitLocal
 ======================
 */
-void Host_InitLocal(void)
+void Host_InitLocal()
 {
     Host_InitCommands();
 
@@ -243,7 +243,7 @@ Host_WriteConfiguration
 Writes key bindings and archived cvars to config.cfg
 ===============
 */
-void Host_WriteConfiguration(void)
+void Host_WriteConfiguration()
 {
     FILE * f;
 
@@ -473,7 +473,7 @@ This clears all the memory used by both the client and server, but does
 not reinitialize anything.
 ================
 */
-void Host_ClearMemory(void)
+void Host_ClearMemory()
 {
     Con_DPrintf("Clearing memory\n");
     D_FlushCaches();
@@ -528,7 +528,7 @@ Host_GetConsoleCommands
 Add them exactly as if they had been typed at the console
 ===================
 */
-void Host_GetConsoleCommands(void)
+void Host_GetConsoleCommands()
 {
     char * cmd;
 
@@ -550,7 +550,7 @@ Host_ServerFrame
 */
 #ifdef FPS_20
 
-void _Host_ServerFrame(void)
+void _Host_ServerFrame()
 {
     // run the world state 
     pr_global_struct->frametime = host_frametime;
@@ -564,7 +564,7 @@ void _Host_ServerFrame(void)
         SV_Physics();
 }
 
-void Host_ServerFrame(void)
+void Host_ServerFrame()
 {
     float save_host_frametime;
     float temp_host_frametime;
@@ -596,7 +596,7 @@ void Host_ServerFrame(void)
 
 #else
 
-void Host_ServerFrame(void)
+void Host_ServerFrame()
 {
     // run the world state 
     pr_global_struct->frametime = host_frametime;
@@ -928,7 +928,7 @@ FIXME: this is a callback from Sys_Quit and Sys_Error. It would be better
 to run quit through here before the final handoff to the sys code.
 ===============
 */
-void Host_Shutdown(void)
+void Host_Shutdown()
 {
     static qboolean isdown = false;
 

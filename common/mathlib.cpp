@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "model.h"
 
-void Sys_Error(char* error, ...);
+void Sys_Error(const char* error, ...);
 
 vec3_t vec3_origin = {0, 0, 0};
 int nanmask = 255 << 23;

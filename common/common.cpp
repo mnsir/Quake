@@ -191,7 +191,7 @@ void Q_strcpy(char* dest, char* src)
 	*dest++ = 0;
 }
 
-void Q_strncpy(char* dest, char* src, int count)
+void Q_strncpy(char* dest, const char* src, int count)
 {
 	while (*src && count--)
 	{
@@ -227,7 +227,7 @@ void Q_strcat(char* dest, char* src)
 	Q_strcpy(dest, src);
 }
 
-int Q_strcmp(char* s1, char* s2)
+int Q_strcmp(const char* s1, const char* s2)
 {
 	while (1)
 	{
@@ -242,7 +242,7 @@ int Q_strcmp(char* s1, char* s2)
 	return -1;
 }
 
-int Q_strncmp(char* s1, char* s2, int count)
+int Q_strncmp(const char* s1, const char* s2, int count)
 {
 	while (1)
 	{

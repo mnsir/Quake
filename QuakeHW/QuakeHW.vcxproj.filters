@@ -18,223 +18,223 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="d_fill.c">
+    <ClCompile Include="d_fill.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_edge.c">
+    <ClCompile Include="d_edge.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_init.c">
+    <ClCompile Include="d_init.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_modech.c">
+    <ClCompile Include="d_modech.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_part.c">
+    <ClCompile Include="d_part.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_polyse.c">
+    <ClCompile Include="d_polyse.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_scan.c">
+    <ClCompile Include="d_scan.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_sky.c">
+    <ClCompile Include="d_sky.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_sprite.c">
+    <ClCompile Include="d_sprite.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_surf.c">
+    <ClCompile Include="d_surf.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_vars.c">
+    <ClCompile Include="d_vars.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="d_zpoint.c">
+    <ClCompile Include="d_zpoint.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="draw.c">
+    <ClCompile Include="draw.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="model.c">
+    <ClCompile Include="model.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_aclip.c">
+    <ClCompile Include="r_aclip.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_alias.c">
+    <ClCompile Include="r_alias.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_bsp.c">
+    <ClCompile Include="r_bsp.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_draw.c">
+    <ClCompile Include="r_draw.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_edge.c">
+    <ClCompile Include="r_edge.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_efrag.c">
+    <ClCompile Include="r_efrag.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_light.c">
+    <ClCompile Include="r_light.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_main.c">
+    <ClCompile Include="r_main.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_misc.c">
+    <ClCompile Include="r_misc.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_sky.c">
+    <ClCompile Include="r_sky.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_sprite.c">
+    <ClCompile Include="r_sprite.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="r_surf.c">
+    <ClCompile Include="r_surf.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="vid.c">
+    <ClCompile Include="vid.cpp">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cd_win.c">
+    <ClCompile Include="..\common\cd_win.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\chase.c">
+    <ClCompile Include="..\common\chase.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cl_demo.c">
+    <ClCompile Include="..\common\cl_demo.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cl_input.c">
+    <ClCompile Include="..\common\cl_input.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cl_main.c">
+    <ClCompile Include="..\common\cl_main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cl_parse.c">
+    <ClCompile Include="..\common\cl_parse.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cl_tent.c">
+    <ClCompile Include="..\common\cl_tent.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cmd.c">
+    <ClCompile Include="..\common\cmd.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\common.c">
+    <ClCompile Include="..\common\common.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\conproc.c">
+    <ClCompile Include="..\common\conproc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\console.c">
+    <ClCompile Include="..\common\console.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\crc.c">
+    <ClCompile Include="..\common\crc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\cvar.c">
+    <ClCompile Include="..\common\cvar.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\host.c">
+    <ClCompile Include="..\common\host.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\host_cmd.c">
+    <ClCompile Include="..\common\host_cmd.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\input.c">
+    <ClCompile Include="..\common\input.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\keys.c">
+    <ClCompile Include="..\common\keys.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\mathlib.c">
+    <ClCompile Include="..\common\mathlib.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\menu.c">
+    <ClCompile Include="..\common\menu.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_dgrm.c">
+    <ClCompile Include="..\common\net_dgrm.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_loop.c">
+    <ClCompile Include="..\common\net_loop.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_main.c">
+    <ClCompile Include="..\common\net_main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_vcr.c">
+    <ClCompile Include="..\common\net_vcr.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_win.c">
+    <ClCompile Include="..\common\net_win.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_wins.c">
+    <ClCompile Include="..\common\net_wins.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\net_wipx.c">
+    <ClCompile Include="..\common\net_wipx.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\nonintel.c">
+    <ClCompile Include="..\common\nonintel.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\pr_cmds.c">
+    <ClCompile Include="..\common\pr_cmds.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\pr_edict.c">
+    <ClCompile Include="..\common\pr_edict.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\pr_exec.c">
+    <ClCompile Include="..\common\pr_exec.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\r_part.c">
+    <ClCompile Include="..\common\r_part.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sbar.c">
+    <ClCompile Include="..\common\sbar.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\snd_dma.c">
+    <ClCompile Include="..\common\snd_dma.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\snd_mem.c">
+    <ClCompile Include="..\common\snd_mem.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\snd_mix.c">
+    <ClCompile Include="..\common\snd_mix.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\snd_win.c">
+    <ClCompile Include="..\common\snd_win.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sv_main.c">
+    <ClCompile Include="..\common\sv_main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sv_move.c">
+    <ClCompile Include="..\common\sv_move.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sv_phys.c">
+    <ClCompile Include="..\common\sv_phys.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sv_user.c">
+    <ClCompile Include="..\common\sv_user.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\view.c">
+    <ClCompile Include="..\common\view.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\wad.c">
+    <ClCompile Include="..\common\wad.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\world.c">
+    <ClCompile Include="..\common\world.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\zone.c">
+    <ClCompile Include="..\common\zone.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sys.c">
+    <ClCompile Include="..\common\sys.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\screen.c">
+    <ClCompile Include="..\common\screen.cpp">
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
   </ItemGroup>

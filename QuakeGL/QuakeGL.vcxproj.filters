@@ -338,6 +338,12 @@
     <ClInclude Include="glquake.h">
       <Filter>diff</Filter>
     </ClInclude>
+    <ClInclude Include="gl.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\dll_func_typedefs.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="progdefs.q1" />

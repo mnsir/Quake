@@ -676,7 +676,7 @@ static char * empty_string = "";
 HWND hwnd_dialog;
 
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI Win_Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine_, int nCmdShow)
 {
     MSG msg;
     quakeparms_t parms;
@@ -707,6 +707,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     parms.argc = 1;
     argv[0] = empty_string;
+
+    char arr[128];
+    char * lpCmdLine = strcpy(arr, lpCmdLine_);
 
     while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
     {
@@ -876,5 +879,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     /* return success of application */
     return TRUE;
+}
+
+
+int __declspec(dllexport) CALLBACK FromLib(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine, int nCmdShow)
+{
+    return Win_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 }
 

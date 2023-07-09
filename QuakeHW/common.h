@@ -24,17 +24,15 @@ typedef unsigned char byte;
 #define BYTE_DEFINED 1
 #endif
 
-#undef true
-#undef false
+#include <stdbool.h>
 
-typedef enum { false, true } qboolean;
 
 //============================================================================
 
 typedef struct sizebuf_s
 {
-    qboolean allowoverflow; // if false, do a Sys_Error
-    qboolean overflowed; // set to true if the buffer size failed
+    bool allowoverflow; // if false, do a Sys_Error
+    bool overflowed; // set to true if the buffer size failed
     byte * data;
     int maxsize;
     int cursize;
@@ -85,7 +83,7 @@ void InsertLinkAfter(link_t * l, link_t * after);
 
 //============================================================================
 
-extern qboolean bigendien;
+extern bool bigendien;
 
 extern short (*BigShort) (short l);
 extern short (*LittleShort) (short l);
@@ -106,7 +104,7 @@ void MSG_WriteCoord(sizebuf_t * sb, float f);
 void MSG_WriteAngle(sizebuf_t * sb, float f);
 
 extern int msg_readcount;
-extern qboolean msg_badread; // set if a read goes beyond end of message
+extern bool msg_badread; // set if a read goes beyond end of message
 
 void MSG_BeginReading();
 int MSG_ReadChar();
@@ -139,7 +137,7 @@ float Q_atof(char * str);
 //============================================================================
 
 extern char com_token[1024];
-extern qboolean com_eof;
+extern bool com_eof;
 
 char * COM_Parse(char * data);
 
@@ -180,4 +178,4 @@ void COM_LoadCacheFile(char * path, struct cache_user_s * cu);
 
 extern struct cvar_s registered;
 
-extern qboolean standard_quake, rogue, hipnotic;
+extern bool standard_quake, rogue, hipnotic;

@@ -332,7 +332,7 @@ void CL_ParseUpdate(int bits)
     int i;
     model_t * model;
     int modnum;
-    qboolean forcelink;
+    bool forcelink;
     entity_t * ent;
     int num;
     int skin;

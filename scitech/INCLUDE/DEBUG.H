@@ -240,14 +240,14 @@ typedef unsigned char   uchar;
 typedef unsigned short  ushort;
 typedef unsigned int    uint;
 typedef unsigned long   ulong;
-typedef int             ibool;		/* Integer boolean type			*/
-#ifndef	__cplusplus
-#define	bool			ibool		/* Standard C					*/
-#else
-#ifndef	__HAS_BOOL__
-#define	bool			ibool		/* Older C++ compilers			*/
-#endif
-#endif	/* __cplusplus */
+//typedef int             ibool;		/* Integer boolean type			*/
+//#ifndef	__cplusplus
+//#define	bool			ibool		/* Standard C					*/
+//#else
+//#ifndef	__HAS_BOOL__
+//#define	bool			ibool		/* Older C++ compilers			*/
+//#endif
+//#endif	/* __cplusplus */
 #endif  /* __GENDEFS */
 
 /* Includes Windows headers, as they define TRUE and FALSE */
@@ -264,27 +264,27 @@ typedef int             ibool;		/* Integer boolean type			*/
 
 /* Boolean truth values */
 
-#undef	false
-#undef	true
-#undef	NO
-#undef	YES
-#undef	FALSE
-#undef	TRUE
-
-#ifdef	__cplusplus					/* Cast to bool's for C++ code		*/
-#define false       ((bool)0)
-#define true        ((bool)1)
-#define NO          ((bool)0)
-#define YES         ((bool)1)
-#define FALSE       ((bool)0)
-#define TRUE        ((bool)1)
-#else								/* Define to 0 and 1 for C code		*/
-#define false       0
-#define true        1
-#define NO          0
-#define YES         1
-#define FALSE       0
-#define TRUE        1
-#endif
+//#undef	false
+//#undef	true
+//#undef	NO
+//#undef	YES
+//#undef	FALSE
+//#undef	TRUE
+//
+//#ifdef	__cplusplus					/* Cast to bool's for C++ code		*/
+//#define false       ((bool)0)
+//#define true        ((bool)1)
+//#define NO          ((bool)0)
+//#define YES         ((bool)1)
+//#define FALSE       ((bool)0)
+//#define TRUE        ((bool)1)
+//#else								/* Define to 0 and 1 for C code		*/
+//#define false       0
+//#define true        1
+//#define NO          0
+//#define YES         1
+//#define FALSE       0
+//#define TRUE        1
+//#endif
 
 #endif  /* __DEBUG_H */

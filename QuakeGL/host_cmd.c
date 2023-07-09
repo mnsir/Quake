@@ -146,7 +146,7 @@ void Host_Notarget_f()
         SV_ClientPrintf("notarget ON\n");
 }
 
-qboolean noclip_anglehack;
+bool noclip_anglehack;
 
 void Host_Noclip_f()
 {
@@ -1005,14 +1005,14 @@ void Host_Please_f()
 #endif
 
 
-void Host_Say(qboolean teamonly)
+void Host_Say(bool teamonly)
 {
     client_t * client;
     client_t * save;
     int j;
     char * p;
     unsigned char text[64];
-    qboolean fromServer = false;
+    bool fromServer = false;
 
     if (cmd_source == src_command)
     {
@@ -1427,7 +1427,7 @@ void Host_Kick_f()
     char * message = NULL;
     client_t * save;
     int i;
-    qboolean byNumber = false;
+    bool byNumber = false;
 
     if (cmd_source == src_command)
     {

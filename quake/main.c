@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <appapi.h>
 
 #define LIBNAME_HW "QuakeHW"
 #define LIBNAME_GL "QuakeGL"
@@ -31,7 +32,11 @@ const char * const aArgs[] = {
 
 HMODULE hModule = NULL;
 FromLibFunc FromLib = NULL;
+InitializeFunc Initialize = NULL;
 
+AppAPI g_appApi = {
+    .Q_log2 = NULL,
+};
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -42,14 +47,26 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     hModule = LoadLibrary(aLibFileName[mode]);
 
     if (hModule)
+    {
         FromLib = GetProcAddress(hModule, "_FromLib@16");
+        Initialize = GetProcAddress(hModule, "_Initialize@4");
+    }
 
-    if (FromLib)
-        res = FromLib(hInstance, hPrevInstance, aArgs[mode], nShowCmd);
+    if (Initialize)
+    {
+        Initialize(&g_appApi);
+
+        if (FromLib)
+            res = FromLib(hInstance, hPrevInstance, aArgs[mode], nShowCmd);
+        else
+            MessageBox(NULL, "FromLib not loaded", "FromLib not loaded!", 0);
+    }
     else
-        MessageBox(NULL, "FromLib not loaded", "FromLib not loaded!", 0);
+        MessageBox(NULL, "Initialize not loaded", "Initialize not loaded!", 0);
+
 
     FromLib = NULL;
+    Initialize = NULL;
     if (hModule)
     {
         FreeLibrary(hModule);

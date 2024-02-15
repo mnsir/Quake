@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "conproc.h"
 
 #include <errno.h>
+#include <appapi.h>
 
 
 #define MINIMUM_WIN_MEMORY 0x0880000
@@ -34,6 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  // dedicated before exiting
 #define PAUSE_SLEEP 50 // sleep time on pause or minimization
 #define NOT_FOCUS_SLEEP 20 // sleep time when not focus
+
+AppAPI * g_pAppApi = NULL;
 
 int starttime;
 bool ActiveApp, Minimized;
@@ -885,4 +888,10 @@ int WINAPI Win_Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLi
 int __declspec(dllexport) CALLBACK FromLib(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine, int nCmdShow)
 {
     return Win_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+}
+
+
+void __declspec(dllexport) CALLBACK Initialize(AppAPI * pAppApi)
+{
+    g_pAppApi = pAppApi;
 }

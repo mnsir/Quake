@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // common.c -- misc functions used in client and server
 
 #include "quakedef.h"
+#include <appapi.h>
 
 #define NUM_SAFE_ARGVS 7
 
@@ -1122,7 +1123,7 @@ void COM_InitArgv(int argc, char ** argv)
 COM_Init
 ================
 */
-void COM_Init(char * basedir)
+void COM_Init()
 {
     byte swaptest[2] = {1, 0};
 
@@ -1743,7 +1744,7 @@ void COM_InitFilesystem()
     if (i && i < com_argc - 1)
         strcpy(basedir, com_argv[i + 1]);
     else
-        strcpy(basedir, host_parms.basedir);
+        strcpy(basedir, g_pAppApi->GetAppBaseDir());
 
     j = strlen(basedir);
 
@@ -1766,8 +1767,8 @@ void COM_InitFilesystem()
         else
             strcpy(com_cachedir, com_argv[i + 1]);
     }
-    else if (host_parms.cachedir)
-        strcpy(com_cachedir, host_parms.cachedir);
+    else if (g_pAppApi->GetAppCacheDir())
+        strcpy(com_cachedir, g_pAppApi->GetAppCacheDir());
     else
         com_cachedir[0] = 0;
 

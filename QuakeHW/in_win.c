@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <dinput.h>
 #include "quakedef.h"
 #include "winquake.h"
+#include <appapi.h>
 
 #define DINPUT_BUFFERSIZE 16
 #define iDirectInputCreate(a,b,c,d) pDirectInputCreate(a,b,c,d)
@@ -365,7 +366,7 @@ bool IN_InitDInput()
     }
 
     // register with DirectInput and get an IDirectInput to play with.
-    hr = iDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
+    hr = iDirectInputCreate(g_pAppApi->GetAppInstance(), DIRECTINPUT_VERSION, &g_pdi, NULL);
 
     if (FAILED(hr))
     {

@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #endif
 #endif
 
+#include <appapi.h>
+
 #define MAX_MODE_LIST 30
 #define VID_ROW_SIZE 3
 
@@ -1292,7 +1294,7 @@ bool VID_SetWindowedMode(int modenum)
             WindowRect.bottom - WindowRect.top,
             NULL,
             NULL,
-            global_hInstance,
+            g_pAppApi->GetAppInstance(),
             NULL);
 
         if (!mainwindow)
@@ -2098,12 +2100,12 @@ void VID_Init(unsigned char * palette)
     if (COM_CheckParm("-dibonly"))
         dibonly = true;
 
-    VID_InitMGLDIB(global_hInstance);
+    VID_InitMGLDIB(g_pAppApi->GetAppInstance());
 
     basenummodes = nummodes;
 
     if (!dibonly)
-        VID_InitMGLFull(global_hInstance);
+        VID_InitMGLFull(g_pAppApi->GetAppInstance());
 
     // if there are no non-windowed modes, or only windowed and mode 0x13, then use
     // fullscreen DIBs as well
@@ -2112,7 +2114,7 @@ void VID_Init(unsigned char * palette)
         !COM_CheckParm("-nofulldib"))
 
     {
-        VID_InitFullDIB(global_hInstance);
+        VID_InitFullDIB(g_pAppApi->GetAppInstance());
     }
 
     vid.maxwarpwidth = WARP_WIDTH;

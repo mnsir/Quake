@@ -672,41 +672,25 @@ void SleepUntilInput(int time)
 WinMain
 ==================
 */
-HINSTANCE global_hInstance;
 int global_nCmdShow;
 char * argv[MAX_NUM_ARGVS];
 static char * empty_string = "";
 HWND hwnd_dialog;
 
 
-int WINAPI Win_Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine_, int nCmdShow)
+int WINAPI Win_Main(LPCSTR lpCmdLine_, int nCmdShow)
 {
     MSG msg;
     quakeparms_t parms;
     double time, oldtime, newtime;
-    MEMORYSTATUS lpBuffer;
-    static char cwd[1024];
     int t;
     RECT rect;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
-
-    global_hInstance = hInstance;
     global_nCmdShow = nCmdShow;
 
+    MEMORYSTATUS lpBuffer;
     lpBuffer.dwLength = sizeof(MEMORYSTATUS);
     GlobalMemoryStatus(&lpBuffer);
-
-    if (!GetCurrentDirectory(sizeof(cwd), cwd))
-        Sys_Error("Couldn't determine current directory");
-
-    if (cwd[Q_strlen(cwd) - 1] == '/')
-        cwd[Q_strlen(cwd) - 1] = 0;
-
-    parms.basedir = cwd;
-    parms.cachedir = NULL;
 
     parms.argc = 1;
     argv[0] = empty_string;
@@ -747,7 +731,7 @@ int WINAPI Win_Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLi
 
     if (!isDedicated)
     {
-        hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
+        hwnd_dialog = CreateDialog(g_pAppApi->GetAppInstance(), MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
 
         if (hwnd_dialog)
         {
@@ -885,9 +869,9 @@ int WINAPI Win_Main(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLi
 }
 
 
-int __declspec(dllexport) CALLBACK FromLib(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine, int nCmdShow)
+int __declspec(dllexport) CALLBACK FromLib(LPCSTR lpCmdLine, int nCmdShow)
 {
-    return Win_Main(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    return Win_Main(lpCmdLine, nCmdShow);
 }
 
 

@@ -1,11 +1,14 @@
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+
 
 typedef struct
 {
-    int (*Q_log2)(int val);
-
-
+    HINSTANCE(*GetAppInstance)();
+    const char * (*GetAppBaseDir)();
+    const char * (*GetAppCacheDir)();
 } AppAPI;
 
 

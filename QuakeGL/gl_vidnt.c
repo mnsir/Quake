@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "winquake.h"
 #include "resource.h"
 #include <commctrl.h>
+#include <appapi.h>
+
 
 #define MAX_MODE_LIST 30
 #define VID_ROW_SIZE 3
@@ -242,7 +244,7 @@ bool VID_SetWindowedMode(int modenum)
         height,
         NULL,
         NULL,
-        global_hInstance,
+        g_pAppApi->GetAppInstance(),
         NULL);
 
     if (!dibwindow)
@@ -333,7 +335,7 @@ bool VID_SetFullDIBMode(int modenum)
         height,
         NULL,
         NULL,
-        global_hInstance,
+        g_pAppApi->GetAppInstance(),
         NULL);
 
     if (!dibwindow)
@@ -1620,14 +1622,14 @@ void VID_Init(unsigned char * palette)
     Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
     Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
 
-    hIcon = LoadIcon(global_hInstance, MAKEINTRESOURCE(IDI_ICON2));
+    hIcon = LoadIcon(g_pAppApi->GetAppInstance(), MAKEINTRESOURCE(IDI_ICON2));
 
     InitCommonControls();
 
-    VID_InitDIB(global_hInstance);
+    VID_InitDIB(g_pAppApi->GetAppInstance());
     basenummodes = nummodes = 1;
 
-    VID_InitFullDIB(global_hInstance);
+    VID_InitFullDIB(g_pAppApi->GetAppInstance());
 
     if (COM_CheckParm("-window"))
     {

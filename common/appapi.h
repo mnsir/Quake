@@ -9,6 +9,7 @@ typedef struct
     HINSTANCE(*GetAppInstance)();
     const char * (*GetAppBaseDir)();
     const char * (*GetAppCacheDir)();
+    const char * (*GetCommandLine_)();
 } AppAPI;
 
 

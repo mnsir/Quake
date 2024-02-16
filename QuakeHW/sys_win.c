@@ -681,7 +681,7 @@ HWND hwnd_dialog;
 
 
 
-int WINAPI Win_Main(LPCSTR lpCmdLine_, int nCmdShow)
+int WINAPI Win_Main(int nCmdShow)
 {
     MSG msg;
     quakeparms_t parms;
@@ -699,7 +699,7 @@ int WINAPI Win_Main(LPCSTR lpCmdLine_, int nCmdShow)
     argv[0] = empty_string;
 
     char arr[128];
-    char * lpCmdLine = strcpy(arr, lpCmdLine_);
+    char * lpCmdLine = strcpy(arr, g_pAppApi->GetCommandLine_());
 
     while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
     {
@@ -872,9 +872,9 @@ int WINAPI Win_Main(LPCSTR lpCmdLine_, int nCmdShow)
 }
 
 
-int __declspec(dllexport) CALLBACK FromLib(LPCSTR lpCmdLine, int nCmdShow)
+int __declspec(dllexport) CALLBACK FromLib(int nCmdShow)
 {
-    return Win_Main(lpCmdLine, nCmdShow);
+    return Win_Main(nCmdShow);
 }
 
 

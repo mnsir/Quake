@@ -67,10 +67,16 @@ const char * GetAppCacheDir()
 }
 
 
+const char * g_commandLine = NULL;
+SetCommandLine_(const char * str) { g_commandLine = str; }
+const char * GetCommandLine_() { return g_commandLine; }
+
+
 AppAPI g_appApi = {
     .GetAppInstance = GetAppInstance,
     .GetAppBaseDir = GetAppBaseDir,
     .GetAppCacheDir = GetAppCacheDir,
+    .GetCommandLine_ = GetCommandLine_,
 };
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -83,13 +89,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = hw;
+    const VideoMode mode = gl;
+    SetCommandLine_(aArgs[mode] /*lpCmdLine*/);
 
     hModule = LoadLibrary(aLibFileName[mode]);
 
     if (hModule)
     {
-        FromLib = GetProcAddress(hModule, "_FromLib@8");
+        FromLib = GetProcAddress(hModule, "_FromLib@4");
         Initialize = GetProcAddress(hModule, "_Initialize@4");
     }
 
@@ -98,7 +105,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         Initialize(&g_appApi);
 
         if (FromLib)
-            res = FromLib(aArgs[mode], nShowCmd);
+            res = FromLib(nShowCmd);
         else
             MessageBox(NULL, "FromLib not loaded", "FromLib not loaded!", 0);
     }

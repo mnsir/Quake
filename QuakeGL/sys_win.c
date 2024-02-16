@@ -673,8 +673,6 @@ WinMain
 ==================
 */
 int global_nCmdShow;
-char * argv[MAX_NUM_ARGVS];
-static char * empty_string = "";
 HWND hwnd_dialog;
 
 
@@ -692,35 +690,8 @@ int WINAPI Win_Main(int nCmdShow)
     lpBuffer.dwLength = sizeof(MEMORYSTATUS);
     GlobalMemoryStatus(&lpBuffer);
 
-    parms.argc = 1;
-    argv[0] = empty_string;
-
-    char arr[128];
-    char * lpCmdLine = strcpy(arr, g_pAppApi->GetCommandLine_());
-
-    while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
-    {
-        while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-            lpCmdLine++;
-
-        if (*lpCmdLine)
-        {
-            argv[parms.argc] = lpCmdLine;
-            parms.argc++;
-
-            while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-                lpCmdLine++;
-
-            if (*lpCmdLine)
-            {
-                *lpCmdLine = 0;
-                lpCmdLine++;
-            }
-
-        }
-    }
-
-    parms.argv = argv;
+    parms.argc = g_pAppApi->GetArgc();
+    parms.argv = g_pAppApi->GetArgv();
 
     COM_InitArgv(parms.argc, parms.argv);
 

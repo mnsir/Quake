@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #define NUM_SAFE_ARGVS 7
 
+#define MAX_NUM_ARGVS 50
 static char * largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
 static char * argvdummy = " ";
 

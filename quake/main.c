@@ -1,4 +1,5 @@
 #include <dll_func_typedefs.h>
+#include "args.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -67,16 +68,12 @@ const char * GetAppCacheDir()
 }
 
 
-const char * g_commandLine = NULL;
-SetCommandLine_(const char * str) { g_commandLine = str; }
-const char * GetCommandLine_() { return g_commandLine; }
-
-
 AppAPI g_appApi = {
     .GetAppInstance = GetAppInstance,
     .GetAppBaseDir = GetAppBaseDir,
     .GetAppCacheDir = GetAppCacheDir,
-    .GetCommandLine_ = GetCommandLine_,
+    .GetArgc = GetArgc,
+    .GetArgv = GetArgv,
 };
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -89,8 +86,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = gl;
-    SetCommandLine_(aArgs[mode] /*lpCmdLine*/);
+	const VideoMode mode = gl;
+    InitCommandLine(aArgs[mode] /*lpCmdLine*/);
 
     hModule = LoadLibrary(aLibFileName[mode]);
 

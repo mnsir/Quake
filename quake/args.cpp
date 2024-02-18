@@ -1,48 +1,53 @@
 #include "args.h"
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <ranges>
+#include <sstream>
+#include <string>
+#include <vector>
 
-#include <cstddef>
-#include <cstring>
 
-int argc = 0;
+std::vector<std::string> args_;
 
-#define MAX_NUM_ARGVS 50
-char* argv[MAX_NUM_ARGVS];
-char empty_string[] = "";
+void InitCommandLine(const char* line)
+{
+	// TODO не забыть сохранить аргументы в cvar
 
-void InitCommandLine(const char* str)
-{ 
-    argc = 1;
-    argv[0] = empty_string;
+	std::istringstream ss(line);
+	std::vector<std::string> args;
+	std::ranges::copy(std::views::istream<std::string>(ss), std::back_inserter(args));
+	args_ = std::move(args);
 
-    static char arr[128];
-    char* lpCmdLine = strcpy(arr, str);
-
-    while (*lpCmdLine && (argc < MAX_NUM_ARGVS))
-    {
-        while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-            lpCmdLine++;
-
-        if (*lpCmdLine)
-        {
-            argv[argc] = lpCmdLine;
-            argc++;
-
-            while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-                lpCmdLine++;
-
-            if (*lpCmdLine)
-            {
-                *lpCmdLine = 0;
-                lpCmdLine++;
-            }
-
-        }
-    }
-
+	if (Args_GetIndex("-safe"))
+	{
+		for (auto&& str : { "-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly" })
+			args_.emplace_back(str);
+	}
 }
 
 
-char** GetArgv() { return argv; }
-int GetArgc() { return argc; }
+void Args_Reset(const char** ptr, int size)
+{
+	args_.clear();
+	for (auto&& i : std::views::iota(0, size))
+	{
+		args_.emplace_back(ptr[i]);
+	}
+}
+
+
+int Args_GetIndex(const char* str)
+{
+	auto it = std::ranges::find(args_, std::string_view(str));
+	return it != args_.end() ? std::distance(args_.begin(), it) + 1 : 0;
+}
+
+const char* Args_GetByIndex(int index)
+{
+	static const char empty[] = "";
+	return index ? args_[index - 1].c_str() : empty;
+}
+
+int Args_GetCount()
+{
+	return args_.size() + 1;
+}

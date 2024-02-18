@@ -9,8 +9,12 @@ typedef struct
     HINSTANCE(*GetAppInstance)();
     const char * (*GetAppBaseDir)();
     const char * (*GetAppCacheDir)();
-    int (*GetArgc)();
-    char ** (*GetArgv)();
+
+    int (*Args_GetIndex)(const char *);
+    const char* (*Args_GetByIndex)(int);
+    int (*Args_GetCount)();
+    void (*Args_Reset)(const char**, int);
+
 } AppAPI;
 
 

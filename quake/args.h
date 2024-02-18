@@ -7,8 +7,10 @@ extern "C" {
 #endif
 
 	void InitCommandLine(const char* str);
-	int GetArgc();
-	char** GetArgv();
+	void Args_Reset(const char** ptr, int size);
+	int Args_GetIndex(const char* str);
+	const char* Args_GetByIndex(int index);
+	int Args_GetCount();
 
 #ifdef __cplusplus
 }

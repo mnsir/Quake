@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "net_vcr.h"
 
+#include <appapi.h>
+
 qsocket_t * net_activeSockets = NULL;
 qsocket_t * net_freeSockets = NULL;
 int net_numsockets = 0;
@@ -807,31 +809,31 @@ void NET_Init()
     int controlSocket;
     qsocket_t * s;
 
-    if (COM_CheckParm("-playback"))
+    if (g_pAppApi->Args_GetIndex("-playback"))
     {
         net_numdrivers = 1;
         net_drivers[0].Init = VCR_Init;
     }
 
-    if (COM_CheckParm("-record"))
+    if (g_pAppApi->Args_GetIndex("-record"))
         recording = true;
 
-    i = COM_CheckParm("-port");
+    i = g_pAppApi->Args_GetIndex("-port");
     if (!i)
-        i = COM_CheckParm("-udpport");
+        i = g_pAppApi->Args_GetIndex("-udpport");
     if (!i)
-        i = COM_CheckParm("-ipxport");
+        i = g_pAppApi->Args_GetIndex("-ipxport");
 
     if (i)
     {
-        if (i < com_argc - 1)
-            DEFAULTnet_hostport = Q_atoi(com_argv[i + 1]);
+        if (i < g_pAppApi->Args_GetCount() - 1)
+            DEFAULTnet_hostport = Q_atoi(g_pAppApi->Args_GetByIndex(i + 1));
         else
             Sys_Error("NET_Init: you must specify a number after -port");
     }
     net_hostport = DEFAULTnet_hostport;
 
-    if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
+    if (g_pAppApi->Args_GetIndex("-listen") || cls.state == ca_dedicated)
         listening = true;
     net_numsockets = svs.maxclientslimit;
     if (cls.state != ca_dedicated)

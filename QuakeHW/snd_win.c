@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "winquake.h"
 
+#include <appapi.h>
+
 #define iDirectSoundCreate(a,b,c) pDirectSoundCreate(a,b,c)
 
 HRESULT(WINAPI * pDirectSoundCreate)(GUID FAR * lpGUID, LPDIRECTSOUND FAR * lplpDS, IUnknown FAR * pUnkOuter);
@@ -281,7 +283,7 @@ sndinitstat SNDDMA_InitDirect()
     dsbcaps.dwSize = sizeof(dsbcaps);
     primary_format_set = false;
 
-    if (!COM_CheckParm("-snoforceformat"))
+    if (!g_pAppApi->Args_GetIndex("-snoforceformat"))
     {
         if (DS_OK == pDS->lpVtbl->CreateSoundBuffer(pDS, &dsbuf, &pDSPBuf, NULL))
         {
@@ -302,7 +304,7 @@ sndinitstat SNDDMA_InitDirect()
         }
     }
 
-    if (!primary_format_set || !COM_CheckParm("-primarysound"))
+    if (!primary_format_set || !g_pAppApi->Args_GetIndex("-primarysound"))
     {
         // create the secondary buffer we'll actually work with
         memset(&dsbuf, 0, sizeof(dsbuf));
@@ -558,7 +560,7 @@ bool SNDDMA_Init()
 {
     sndinitstat stat;
 
-    if (COM_CheckParm("-wavonly"))
+    if (g_pAppApi->Args_GetIndex("-wavonly"))
         wavonly = true;
 
     dsound_init = wav_init = 0;

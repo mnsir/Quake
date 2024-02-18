@@ -425,12 +425,12 @@ void IN_StartupMouse()
 {
     HDC hdc;
 
-    if (COM_CheckParm("-nomouse"))
+    if (g_pAppApi->Args_GetIndex("-nomouse"))
         return;
 
     mouseinitialized = true;
 
-    if (COM_CheckParm("-dinput"))
+    if (g_pAppApi->Args_GetIndex("-dinput"))
     {
         dinput = IN_InitDInput();
 
@@ -450,16 +450,16 @@ void IN_StartupMouse()
 
         if (mouseparmsvalid)
         {
-            if (COM_CheckParm("-noforcemspd"))
+            if (g_pAppApi->Args_GetIndex("-noforcemspd"))
                 newmouseparms[2] = originalmouseparms[2];
 
-            if (COM_CheckParm("-noforcemaccel"))
+            if (g_pAppApi->Args_GetIndex("-noforcemaccel"))
             {
                 newmouseparms[0] = originalmouseparms[0];
                 newmouseparms[1] = originalmouseparms[1];
             }
 
-            if (COM_CheckParm("-noforcemparms"))
+            if (g_pAppApi->Args_GetIndex("-noforcemparms"))
             {
                 newmouseparms[0] = originalmouseparms[0];
                 newmouseparms[1] = originalmouseparms[1];
@@ -805,7 +805,7 @@ void IN_StartupJoystick()
     joy_avail = false;
 
     // abort startup if user requests no joystick
-    if (COM_CheckParm("-nojoy"))
+    if (g_pAppApi->Args_GetIndex("-nojoy"))
         return;
 
     // verify joystick driver is present

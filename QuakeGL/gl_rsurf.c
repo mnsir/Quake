@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <appapi.h>
+
 int skytexturenum;
 
 #ifndef GL_RGBA4
@@ -1642,15 +1644,15 @@ void GL_BuildLightmaps()
     if (isPermedia)
         gl_lightmap_format = GL_RGBA;
 
-    if (COM_CheckParm("-lm_1"))
+    if (g_pAppApi->Args_GetIndex("-lm_1"))
         gl_lightmap_format = GL_LUMINANCE;
-    if (COM_CheckParm("-lm_a"))
+    if (g_pAppApi->Args_GetIndex("-lm_a"))
         gl_lightmap_format = GL_ALPHA;
-    if (COM_CheckParm("-lm_i"))
+    if (g_pAppApi->Args_GetIndex("-lm_i"))
         gl_lightmap_format = GL_INTENSITY;
-    if (COM_CheckParm("-lm_2"))
+    if (g_pAppApi->Args_GetIndex("-lm_2"))
         gl_lightmap_format = GL_RGBA4;
-    if (COM_CheckParm("-lm_4"))
+    if (g_pAppApi->Args_GetIndex("-lm_4"))
         gl_lightmap_format = GL_RGBA;
 
     switch (gl_lightmap_format)

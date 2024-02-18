@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "winquake.h"
 
+#include <appapi.h>
+
 extern cvar_t hostname;
 
 #define MAXHOSTNAMELEN 256
@@ -161,7 +163,7 @@ int WINS_Init()
         return -1;
     }
 
-    if (COM_CheckParm("-noudp"))
+    if (g_pAppApi->Args_GetIndex("-noudp"))
         return -1;
 
     if (winsock_initialized == 0)
@@ -206,15 +208,15 @@ int WINS_Init()
         Cvar_Set("hostname", buff);
     }
 
-    i = COM_CheckParm("-ip");
+    i = g_pAppApi->Args_GetIndex("-ip");
     if (i)
     {
-        if (i < com_argc - 1)
+        if (i < g_pAppApi->Args_GetCount() - 1)
         {
-            myAddr = inet_addr(com_argv[i + 1]);
+            myAddr = inet_addr(g_pAppApi->Args_GetByIndex(i + 1));
             if (myAddr == INADDR_NONE)
-                Sys_Error("%s is not a valid IP address", com_argv[i + 1]);
-            strcpy(my_tcpip_address, com_argv[i + 1]);
+                Sys_Error("%s is not a valid IP address", g_pAppApi->Args_GetByIndex(i + 1));
+            strcpy(my_tcpip_address, g_pAppApi->Args_GetByIndex(i + 1));
         }
         else
         {

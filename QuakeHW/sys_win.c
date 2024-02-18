@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "conproc.h"
 
 #include <errno.h>
+
 #include <appapi.h>
 
 
@@ -527,11 +528,11 @@ void Sys_InitFloatTime()
 
     Sys_FloatTime();
 
-    j = COM_CheckParm("-starttime");
+    j = g_pAppApi->Args_GetIndex("-starttime");
 
     if (j)
     {
-        curtime = (double)(Q_atof(com_argv[j + 1]));
+        curtime = (double)(Q_atof(g_pAppApi->Args_GetByIndex(j + 1)));
     }
     else
     {
@@ -693,15 +694,19 @@ int WINAPI Win_Main(int nCmdShow)
     lpBuffer.dwLength = sizeof(MEMORYSTATUS);
     GlobalMemoryStatus(&lpBuffer);
 
-    parms.argc = g_pAppApi->GetArgc();
-    parms.argv = g_pAppApi->GetArgv();
+    if (g_pAppApi->Args_GetIndex("-rogue"))
+    {
+        rogue = true;
+        standard_quake = false;
+    }
 
-    COM_InitArgv(parms.argc, parms.argv);
+    if (g_pAppApi->Args_GetIndex("-hipnotic"))
+    {
+        hipnotic = true;
+        standard_quake = false;
+    }
 
-    parms.argc = com_argc;
-    parms.argv = com_argv;
-
-    isDedicated = (COM_CheckParm("-dedicated") != 0);
+    isDedicated = (g_pAppApi->Args_GetIndex("-dedicated") != 0);
 
     if (!isDedicated)
     {
@@ -740,12 +745,12 @@ int WINAPI Win_Main(int nCmdShow)
     if (parms.memsize > MAXIMUM_WIN_MEMORY)
         parms.memsize = MAXIMUM_WIN_MEMORY;
 
-    if (COM_CheckParm("-heapsize"))
+    if (g_pAppApi->Args_GetIndex("-heapsize"))
     {
-        t = COM_CheckParm("-heapsize") + 1;
+        t = g_pAppApi->Args_GetIndex("-heapsize") + 1;
 
-        if (t < com_argc)
-            parms.memsize = Q_atoi(com_argv[t]) * 1024;
+        if (t < g_pAppApi->Args_GetCount())
+            parms.memsize = Q_atoi(g_pAppApi->Args_GetByIndex(t)) * 1024;
     }
 
     parms.membase = malloc(parms.memsize);
@@ -771,22 +776,22 @@ int WINAPI Win_Main(int nCmdShow)
         houtput = GetStdHandle(STD_OUTPUT_HANDLE);
 
         // give QHOST a chance to hook into the console
-        if ((t = COM_CheckParm("-HFILE")) > 0)
+        if ((t = g_pAppApi->Args_GetIndex("-HFILE")) > 0)
         {
-            if (t < com_argc)
-                hFile = (HANDLE)Q_atoi(com_argv[t + 1]);
+            if (t < g_pAppApi->Args_GetCount())
+                hFile = (HANDLE)Q_atoi(g_pAppApi->Args_GetByIndex(t + 1));
         }
 
-        if ((t = COM_CheckParm("-HPARENT")) > 0)
+        if ((t = g_pAppApi->Args_GetIndex("-HPARENT")) > 0)
         {
-            if (t < com_argc)
-                heventParent = (HANDLE)Q_atoi(com_argv[t + 1]);
+            if (t < g_pAppApi->Args_GetCount())
+                heventParent = (HANDLE)Q_atoi(g_pAppApi->Args_GetByIndex(t + 1));
         }
 
-        if ((t = COM_CheckParm("-HCHILD")) > 0)
+        if ((t = g_pAppApi->Args_GetIndex("-HCHILD")) > 0)
         {
-            if (t < com_argc)
-                heventChild = (HANDLE)Q_atoi(com_argv[t + 1]);
+            if (t < g_pAppApi->Args_GetCount())
+                heventChild = (HANDLE)Q_atoi(g_pAppApi->Args_GetByIndex(t + 1));
         }
 
         InitConProc(hFile, heventParent, heventChild);

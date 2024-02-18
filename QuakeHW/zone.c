@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <appapi.h>
+
 #define DYNAMIC_SIZE 0xc000
 
 #define ZONEID 0x1d4a11
@@ -921,11 +923,11 @@ void Memory_Init(void * buf, int size)
     hunk_high_used = 0;
 
     Cache_Init();
-    p = COM_CheckParm("-zone");
+    p = g_pAppApi->Args_GetIndex("-zone");
     if (p)
     {
-        if (p < com_argc - 1)
-            zonesize = Q_atoi(com_argv[p + 1]) * 1024;
+        if (p < g_pAppApi->Args_GetCount() - 1)
+            zonesize = Q_atoi(g_pAppApi->Args_GetByIndex(p + 1)) * 1024;
         else
             Sys_Error("Memory_Init: you must specify a size in KB after -zone");
     }

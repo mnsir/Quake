@@ -374,7 +374,7 @@ void registerAllDispDrivers()
         //we don't want VESA 1.X drivers MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
         MGL_registerDriver(MGL_LINEAR8NAME, LINEAR8_driver);
 
-        if (!COM_CheckParm("-novbeaf"))
+        if (!g_pAppApi->Args_GetIndex("-novbeaf"))
             MGL_registerDriver(MGL_ACCEL8NAME, ACCEL8_driver);
     }
 
@@ -400,15 +400,15 @@ void VID_InitMGLFull(HINSTANCE hInstance)
 
     // FIXME: NT is checked for because MGL currently has a bug that causes it
     // to try to use WinDirect modes even on NT
-    if (COM_CheckParm("-nowindirect") ||
-        COM_CheckParm("-nowd") ||
-        COM_CheckParm("-novesa") ||
+    if (g_pAppApi->Args_GetIndex("-nowindirect") ||
+        g_pAppApi->Args_GetIndex("-nowd") ||
+        g_pAppApi->Args_GetIndex("-novesa") ||
         WinNT)
     {
         useWinDirect = false;
     }
 
-    if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
+    if (g_pAppApi->Args_GetIndex("-nodirectdraw") || g_pAppApi->Args_GetIndex("-noddraw") || g_pAppApi->Args_GetIndex("-nodd"))
         useDirectDraw = false;
 
     // Initialise the MGL
@@ -438,7 +438,7 @@ void VID_InitMGLFull(HINSTANCE hInstance)
                 if (m[i] == grVGA_320x200x256)
                     is_mode0x13 = true;
 
-                if (!COM_CheckParm("-noforcevga"))
+                if (!g_pAppApi->Args_GetIndex("-noforcevga"))
                 {
                     if (m[i] == grVGA_320x200x256)
                     {
@@ -573,7 +573,7 @@ MGLDC * createDisplayDC(int forcemem)
     if (npages > 3)
         npages = 3;
 
-    if (!COM_CheckParm("-notriplebuf"))
+    if (!g_pAppApi->Args_GetIndex("-notriplebuf"))
     {
         if (npages > 2)
         {
@@ -693,7 +693,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
     // automatically stretch the default mode up if > 640x480 desktop resolution
     hdc = GetDC(NULL);
 
-    if ((GetDeviceCaps(hdc, HORZRES) > 640) && !COM_CheckParm("-noautostretch"))
+    if ((GetDeviceCaps(hdc, HORZRES) > 640) && !g_pAppApi->Args_GetIndex("-noautostretch"))
     {
         vid_default = MODE_WINDOWED + 1;
     }
@@ -761,7 +761,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 
                 // if the width is more than twice the height, reduce it by half because this
                 // is probably a dual-screen monitor
-                if (!COM_CheckParm("-noadjustaspect"))
+                if (!g_pAppApi->Args_GetIndex("-noadjustaspect"))
                 {
                     if (modelist[nummodes].width > (modelist[nummodes].height << 1))
                     {
@@ -812,7 +812,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 
             if ((((devmode.dmPelsWidth <= MAXWIDTH) &&
                   (devmode.dmPelsHeight <= MAXHEIGHT)) ||
-                 (!COM_CheckParm("-noadjustaspect") &&
+                 (!g_pAppApi->Args_GetIndex("-noadjustaspect") &&
                   (devmode.dmPelsWidth <= (MAXWIDTH * 2)) &&
                   (devmode.dmPelsWidth > (devmode.dmPelsHeight * 2)))) &&
                 (nummodes < MAX_MODE_LIST) &&
@@ -840,7 +840,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 
                     // if the width is more than twice the height, reduce it by half because this
                     // is probably a dual-screen monitor
-                    if (!COM_CheckParm("-noadjustaspect"))
+                    if (!g_pAppApi->Args_GetIndex("-noadjustaspect"))
                     {
                         if (modelist[nummodes].width > (modelist[nummodes].height * 2))
                         {
@@ -1232,7 +1232,7 @@ bool VID_SetWindowedMode(int modenum)
 
     if (!windowed_mode_set)
     {
-        if (COM_CheckParm("-resetwinpos"))
+        if (g_pAppApi->Args_GetIndex("-resetwinpos"))
         {
             Cvar_SetValue("vid_window_x", 0.0);
             Cvar_SetValue("vid_window_y", 0.0);
@@ -2097,7 +2097,7 @@ void VID_Init(unsigned char * palette)
     Cmd_AddCommand("vid_fullscreen", VID_Fullscreen_f);
     Cmd_AddCommand("vid_minimize", VID_Minimize_f);
 
-    if (COM_CheckParm("-dibonly"))
+    if (g_pAppApi->Args_GetIndex("-dibonly"))
         dibonly = true;
 
     VID_InitMGLDIB(g_pAppApi->GetAppInstance());
@@ -2111,7 +2111,7 @@ void VID_Init(unsigned char * palette)
     // fullscreen DIBs as well
     if (((nummodes == basenummodes) ||
          ((nummodes == (basenummodes + 1)) && is_mode0x13)) &&
-        !COM_CheckParm("-nofulldib"))
+        !g_pAppApi->Args_GetIndex("-nofulldib"))
 
     {
         VID_InitFullDIB(g_pAppApi->GetAppInstance());
@@ -2151,7 +2151,7 @@ void VID_Init(unsigned char * palette)
             *ptmp = bestmatch;
     }
 
-    if (COM_CheckParm("-startwindowed"))
+    if (g_pAppApi->Args_GetIndex("-startwindowed"))
     {
         startwindowed = 1;
         vid_default = windowed_default;
@@ -2337,7 +2337,7 @@ void VID_Update(vrect_t * rects)
             if ((trect.left != (int)vid_window_x.value) ||
                 (trect.top != (int)vid_window_y.value))
             {
-                if (COM_CheckParm("-resetwinpos"))
+                if (g_pAppApi->Args_GetIndex("-resetwinpos"))
                 {
                     Cvar_SetValue("vid_window_x", 0.0);
                     Cvar_SetValue("vid_window_y", 0.0);
@@ -2355,7 +2355,7 @@ void VID_Update(vrect_t * rects)
         {
             firstupdate = 0;
 
-            if (COM_CheckParm("-resetwinpos"))
+            if (g_pAppApi->Args_GetIndex("-resetwinpos"))
             {
                 Cvar_SetValue("vid_window_x", 0.0);
                 Cvar_SetValue("vid_window_y", 0.0);
@@ -3117,7 +3117,7 @@ void VID_MenuDraw()
         // we only have room for 15 fullscreen modes, so don't allow
         // 360-wide modes, because if there are 5 320-wide modes and
         // 5 360-wide modes, we'll run out of space
-        if (ptr && ((pv->width != 360) || COM_CheckParm("-allow360")))
+        if (ptr && ((pv->width != 360) || g_pAppApi->Args_GetIndex("-allow360")))
         {
             dup = 0;
 
@@ -3133,7 +3133,7 @@ void VID_MenuDraw()
 
             if (dup || (vid_wmodes < MAX_MODEDESCS))
             {
-                if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
+                if (!dup || !modedescs[dupmode].ismode13 || g_pAppApi->Args_GetIndex("-noforcevga"))
                 {
                     if (dup)
                     {

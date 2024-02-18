@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <appapi.h>
+
 void Cmd_ForwardToServer();
 
 #define MAX_ALIAS_NAME 32
@@ -224,23 +226,23 @@ void Cmd_StuffCmds_f()
 
     // build the combined string to parse from
     s = 0;
-    for (i = 1; i < com_argc; i++)
+    for (i = 1; i < g_pAppApi->Args_GetCount(); i++)
     {
-        if (!com_argv[i])
+        if (!g_pAppApi->Args_GetByIndex(i))
             continue; // NEXTSTEP nulls out -NXHost
-        s += Q_strlen(com_argv[i]) + 1;
+        s += Q_strlen(g_pAppApi->Args_GetByIndex(i)) + 1;
     }
     if (!s)
         return;
 
     text = Z_Malloc(s + 1);
     text[0] = 0;
-    for (i = 1; i < com_argc; i++)
+    for (i = 1; i < g_pAppApi->Args_GetCount(); i++)
     {
-        if (!com_argv[i])
+        if (!g_pAppApi->Args_GetByIndex(i))
             continue; // NEXTSTEP nulls out -NXHost
-        Q_strcat(text, com_argv[i]);
-        if (i != com_argc - 1)
+        Q_strcat(text, g_pAppApi->Args_GetByIndex(i));
+        if (i != g_pAppApi->Args_GetCount() - 1)
             Q_strcat(text, " ");
     }
 

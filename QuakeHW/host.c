@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <appapi.h>
+
 /*
 
 A server can allways be started, even if the system started out as a client
@@ -160,13 +162,13 @@ void Host_FindMaxClients()
 
     svs.maxclients = 1;
 
-    i = COM_CheckParm("-dedicated");
+    i = g_pAppApi->Args_GetIndex("-dedicated");
     if (i)
     {
         cls.state = ca_dedicated;
-        if (i != (com_argc - 1))
+        if (i != (g_pAppApi->Args_GetCount() - 1))
         {
-            svs.maxclients = Q_atoi(com_argv[i + 1]);
+            svs.maxclients = Q_atoi(g_pAppApi->Args_GetByIndex(i + 1));
         }
         else
             svs.maxclients = 8;
@@ -174,13 +176,13 @@ void Host_FindMaxClients()
     else
         cls.state = ca_disconnected;
 
-    i = COM_CheckParm("-listen");
+    i = g_pAppApi->Args_GetIndex("-listen");
     if (i)
     {
         if (cls.state == ca_dedicated)
             Sys_Error("Only one of -dedicated or -listen can be specified");
-        if (i != (com_argc - 1))
-            svs.maxclients = Q_atoi(com_argv[i + 1]);
+        if (i != (g_pAppApi->Args_GetCount() - 1))
+            svs.maxclients = Q_atoi(g_pAppApi->Args_GetByIndex(i + 1));
         else
             svs.maxclients = 8;
     }
@@ -770,12 +772,12 @@ extern int vcrFile;
 
 void Host_InitVCR(quakeparms_t * parms)
 {
-    int i, len, n;
+    int i, n;
     char * p;
 
-    if (COM_CheckParm("-playback"))
+    if (g_pAppApi->Args_GetIndex("-playback"))
     {
-        if (com_argc != 2)
+        if (g_pAppApi->Args_GetCount() != 2)
             Sys_Error("No other parameters allowed with -playback\n");
 
         Sys_FileOpenRead("quake.vcr", &vcrFile);
@@ -786,41 +788,44 @@ void Host_InitVCR(quakeparms_t * parms)
         if (i != VCR_SIGNATURE)
             Sys_Error("Invalid signature in vcr file\n");
 
-        Sys_FileRead(vcrFile, &com_argc, sizeof(int));
-        com_argv = malloc(com_argc * sizeof(char *));
-        com_argv[0] = parms->argv[0];
-        for (i = 0; i < com_argc; i++)
+        int my_argc;
+        Sys_FileRead(vcrFile, &my_argc, sizeof(my_argc));
+        char** my_argv = malloc(my_argc * sizeof(char*));
+        for (i = 0; i < my_argc; i++)
         {
-            Sys_FileRead(vcrFile, &len, sizeof(int));
+            int len;
+            Sys_FileRead(vcrFile, &len, sizeof(len));
             p = malloc(len);
             Sys_FileRead(vcrFile, p, len);
-            com_argv[i + 1] = p;
+            my_argv[i] = p;
         }
-        com_argc++; /* add one for arg[0] */
-        parms->argc = com_argc;
-        parms->argv = com_argv;
+
+        g_pAppApi->Args_Reset(my_argv, my_argc);
+        // TODO free mem
     }
 
-    if ((n = COM_CheckParm("-record")) != 0)
+    if ((n = g_pAppApi->Args_GetIndex("-record")) != 0)
     {
         vcrFile = Sys_FileOpenWrite("quake.vcr");
 
         i = VCR_SIGNATURE;
         Sys_FileWrite(vcrFile, &i, sizeof(int));
-        i = com_argc - 1;
+        i = g_pAppApi->Args_GetCount() - 1;
         Sys_FileWrite(vcrFile, &i, sizeof(int));
-        for (i = 1; i < com_argc; i++)
+        for (i = 1; i < g_pAppApi->Args_GetCount(); i++)
         {
             if (i == n)
             {
-                len = 10;
-                Sys_FileWrite(vcrFile, &len, sizeof(int));
+                int len = 10;
+                Sys_FileWrite(vcrFile, &len, sizeof(len));
                 Sys_FileWrite(vcrFile, "-playback", len);
-                continue;
             }
-            len = Q_strlen(com_argv[i]) + 1;
-            Sys_FileWrite(vcrFile, &len, sizeof(int));
-            Sys_FileWrite(vcrFile, com_argv[i], len);
+            else
+            {
+                int len = Q_strlen(g_pAppApi->Args_GetByIndex(i)) + 1;
+                Sys_FileWrite(vcrFile, &len, sizeof(len));
+                Sys_FileWrite(vcrFile, g_pAppApi->Args_GetByIndex(i), len);
+            }
         }
     }
 
@@ -839,16 +844,13 @@ void Host_Init(quakeparms_t * parms)
     else
         minimum_memory = MINIMUM_MEMORY_LEVELPAK;
 
-    if (COM_CheckParm("-minmemory"))
+    if (g_pAppApi->Args_GetIndex("-minmemory"))
         parms->memsize = minimum_memory;
 
     host_parms = *parms;
 
     if (parms->memsize < minimum_memory)
         Sys_Error("Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
-
-    com_argc = parms->argc;
-    com_argv = parms->argv;
 
     Memory_Init(parms->membase, parms->memsize);
     Cbuf_Init();

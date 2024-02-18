@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "winquake.h"
 #endif
 
+#include <appapi.h>
+
 void S_Play();
 void S_PlayVol();
 void S_SoundList();
@@ -169,10 +171,10 @@ void S_Init()
 
     Con_Printf("\nSound Initialization\n");
 
-    if (COM_CheckParm("-nosound"))
+    if (g_pAppApi->Args_GetIndex("-nosound"))
         return;
 
-    if (COM_CheckParm("-simsound"))
+    if (g_pAppApi->Args_GetIndex("-simsound"))
         fakedma = true;
 
     Cmd_AddCommand("play", S_Play);

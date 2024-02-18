@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <windows.h>
 #include "quakedef.h"
 
+#include <appapi.h>
+
 extern HWND mainwindow;
 extern cvar_t bgmvolume;
 
@@ -428,7 +430,7 @@ int CDAudio_Init()
     if (cls.state == ca_dedicated)
         return -1;
 
-    if (COM_CheckParm("-nocdaudio"))
+    if (g_pAppApi->Args_GetIndex("-nocdaudio"))
         return -1;
 
     mciOpenParms.lpstrDeviceType = "cdaudio";

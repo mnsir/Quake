@@ -22,15 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include <appapi.h>
 
-#define NUM_SAFE_ARGVS 7
-
-#define MAX_NUM_ARGVS 50
-static char * largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
-static char * argvdummy = " ";
-
-static char * safeargvs[NUM_SAFE_ARGVS] =
-{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
-
 cvar_t registered = {"registered", "0"};
 cvar_t cmdline = {"cmdline", "0", false, true};
 
@@ -49,11 +40,6 @@ void COM_InitFilesystem();
 #define PAK0_CRC 32981
 
 char com_token[1024];
-int com_argc;
-char ** com_argv;
-
-#define CMDLINE_LENGTH 256
-char com_cmdline[CMDLINE_LENGTH];
 
 bool standard_quake = true, rogue, hipnotic;
 
@@ -983,29 +969,6 @@ skipwhite:
 
 /*
 ================
-COM_CheckParm
-
-Returns the position (1 to argc-1) in the program's argument list
-where the given parameter apears, or 0 if not present
-================
-*/
-int COM_CheckParm(char * parm)
-{
-    int i;
-
-    for (i = 1; i < com_argc; i++)
-    {
-        if (!com_argv[i])
-            continue; // NEXTSTEP sometimes clears appkit vars.
-        if (!Q_strcmp(parm, com_argv[i]))
-            return i;
-    }
-
-    return 0;
-}
-
-/*
-================
 COM_CheckRegistered
 
 Looks for the pop.txt file and verifies it.
@@ -1041,7 +1004,7 @@ void COM_CheckRegistered()
         if (pop[i] != (unsigned short)BigShort(check[i]))
             Sys_Error("Corrupted data file.");
 
-    Cvar_Set("cmdline", com_cmdline);
+    //Cvar_Set("cmdline", com_cmdline); TODO
     Cvar_Set("registered", "1");
     static_registered = 1;
     Con_Printf("Playing registered version.\n");
@@ -1049,74 +1012,6 @@ void COM_CheckRegistered()
 
 
 void COM_Path_f();
-
-
-/*
-================
-COM_InitArgv
-================
-*/
-void COM_InitArgv(int argc, char ** argv)
-{
-    bool safe;
-    int i, j, n;
-
-    // reconstitute the command line for the cmdline externally visible cvar
-    n = 0;
-
-    for (j = 0; (j < MAX_NUM_ARGVS) && (j < argc); j++)
-    {
-        i = 0;
-
-        while ((n < (CMDLINE_LENGTH - 1)) && argv[j][i])
-        {
-            com_cmdline[n++] = argv[j][i++];
-        }
-
-        if (n < (CMDLINE_LENGTH - 1))
-            com_cmdline[n++] = ' ';
-        else
-            break;
-    }
-
-    com_cmdline[n] = 0;
-
-    safe = false;
-
-    for (com_argc = 0; (com_argc < MAX_NUM_ARGVS) && (com_argc < argc);
-         com_argc++)
-    {
-        largv[com_argc] = argv[com_argc];
-        if (!Q_strcmp("-safe", argv[com_argc]))
-            safe = true;
-    }
-
-    if (safe)
-    {
-        // force all the safe-mode switches. Note that we reserved extra space in
-        // case we need to add these, so we don't need an overflow check
-        for (i = 0; i < NUM_SAFE_ARGVS; i++)
-        {
-            largv[com_argc] = safeargvs[i];
-            com_argc++;
-        }
-    }
-
-    largv[com_argc] = argvdummy;
-    com_argv = largv;
-
-    if (COM_CheckParm("-rogue"))
-    {
-        rogue = true;
-        standard_quake = false;
-    }
-
-    if (COM_CheckParm("-hipnotic"))
-    {
-        hipnotic = true;
-        standard_quake = false;
-    }
-}
 
 
 /*
@@ -1741,9 +1636,9 @@ void COM_InitFilesystem()
     // -basedir <path>
     // Overrides the system supplied base directory (under GAMENAME)
     //
-    i = COM_CheckParm("-basedir");
-    if (i && i < com_argc - 1)
-        strcpy(basedir, com_argv[i + 1]);
+    i = g_pAppApi->Args_GetIndex("-basedir");
+    if (i && i < g_pAppApi->Args_GetCount() - 1)
+        strcpy(basedir, g_pAppApi->Args_GetByIndex(i + 1));
     else
         strcpy(basedir, g_pAppApi->GetAppBaseDir());
 
@@ -1760,13 +1655,13 @@ void COM_InitFilesystem()
     // Overrides the system supplied cache directory (NULL or /qcache)
     // -cachedir - will disable caching.
     //
-    i = COM_CheckParm("-cachedir");
-    if (i && i < com_argc - 1)
+    i = g_pAppApi->Args_GetIndex("-cachedir");
+    if (i && i < g_pAppApi->Args_GetCount() - 1)
     {
-        if (com_argv[i + 1][0] == '-')
+        if (g_pAppApi->Args_GetByIndex(i + 1)[0] == '-')
             com_cachedir[0] = 0;
         else
-            strcpy(com_cachedir, com_argv[i + 1]);
+            strcpy(com_cachedir, g_pAppApi->Args_GetByIndex(i + 1));
     }
     else if (g_pAppApi->GetAppCacheDir())
         strcpy(com_cachedir, g_pAppApi->GetAppCacheDir());
@@ -1778,51 +1673,51 @@ void COM_InitFilesystem()
     //
     COM_AddGameDirectory(va("%s/"GAMENAME, basedir));
 
-    if (COM_CheckParm("-rogue"))
+    if (g_pAppApi->Args_GetIndex("-rogue"))
         COM_AddGameDirectory(va("%s/rogue", basedir));
-    if (COM_CheckParm("-hipnotic"))
+    if (g_pAppApi->Args_GetIndex("-hipnotic"))
         COM_AddGameDirectory(va("%s/hipnotic", basedir));
 
     //
     // -game <gamedir>
     // Adds basedir/gamedir as an override game
     //
-    i = COM_CheckParm("-game");
-    if (i && i < com_argc - 1)
+    i = g_pAppApi->Args_GetIndex("-game");
+    if (i && i < g_pAppApi->Args_GetCount() - 1)
     {
         com_modified = true;
-        COM_AddGameDirectory(va("%s/%s", basedir, com_argv[i + 1]));
+        COM_AddGameDirectory(va("%s/%s", basedir, g_pAppApi->Args_GetByIndex(i + 1)));
     }
 
     //
     // -path <dir or packfile> [<dir or packfile>] ...
     // Fully specifies the exact serach path, overriding the generated one
     //
-    i = COM_CheckParm("-path");
+    i = g_pAppApi->Args_GetIndex("-path");
     if (i)
     {
         com_modified = true;
         com_searchpaths = NULL;
-        while (++i < com_argc)
+        while (++i < g_pAppApi->Args_GetCount())
         {
-            if (!com_argv[i] || com_argv[i][0] == '+' || com_argv[i][0] == '-')
+            if (!g_pAppApi->Args_GetByIndex(i) || g_pAppApi->Args_GetByIndex(i)[0] == '+' || g_pAppApi->Args_GetByIndex(i)[0] == '-')
                 break;
 
             search = Hunk_Alloc(sizeof(searchpath_t));
-            if (!strcmp(COM_FileExtension(com_argv[i]), "pak"))
+            if (!strcmp(COM_FileExtension(g_pAppApi->Args_GetByIndex(i)), "pak"))
             {
-                search->pack = COM_LoadPackFile(com_argv[i]);
+                search->pack = COM_LoadPackFile(g_pAppApi->Args_GetByIndex(i));
                 if (!search->pack)
-                    Sys_Error("Couldn't load packfile: %s", com_argv[i]);
+                    Sys_Error("Couldn't load packfile: %s", g_pAppApi->Args_GetByIndex(i));
             }
             else
-                strcpy(search->filename, com_argv[i]);
+                strcpy(search->filename, g_pAppApi->Args_GetByIndex(i));
             search->next = com_searchpaths;
             com_searchpaths = search;
         }
     }
 
-    if (COM_CheckParm("-proghack"))
+    if (g_pAppApi->Args_GetIndex("-proghack"))
         proghack = true;
 }
 

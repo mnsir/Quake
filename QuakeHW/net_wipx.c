@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <wsipx.h>
 #include "net_wipx.h"
 
+#include <appapi.h>
+
 extern cvar_t hostname;
 
 #define MAXHOSTNAMELEN 256
@@ -50,7 +52,7 @@ int WIPX_Init()
     int r;
     WORD wVersionRequested;
 
-    if (COM_CheckParm("-noipx"))
+    if (g_pAppApi->Args_GetIndex("-noipx"))
         return -1;
 
     // make sure LoadLibrary has happened successfully

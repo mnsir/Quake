@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <appapi.h>
+
 #define MAX_PARTICLES 2048 // default max # of particles at one
 // time
 #define ABSOLUTE_MIN_PARTICLES 512 // no fewer than this no matter what's
@@ -47,11 +49,11 @@ void R_InitParticles()
 {
     int i;
 
-    i = COM_CheckParm("-particles");
+    i = g_pAppApi->Args_GetIndex("-particles");
 
     if (i)
     {
-        r_numparticles = (int)(Q_atoi(com_argv[i + 1]));
+        r_numparticles = (int)(Q_atoi(g_pAppApi->Args_GetByIndex(i + 1)));
         if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
             r_numparticles = ABSOLUTE_MIN_PARTICLES;
     }

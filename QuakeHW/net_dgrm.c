@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "net_dgrm.h"
 
+#include <appapi.h>
+
 // these two macros are to make the code more readable
 #define sfunc net_landrivers[sock->landriver]
 #define dfunc net_landrivers[net_landriverlevel]
@@ -745,7 +747,7 @@ int Datagram_Init()
     myDriverLevel = net_driverlevel;
     Cmd_AddCommand("net_stats", NET_Stats_f);
 
-    if (COM_CheckParm("-nolan"))
+    if (g_pAppApi->Args_GetIndex("-nolan"))
         return -1;
 
     for (i = 0; i < net_numlandrivers; i++)

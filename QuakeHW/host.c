@@ -770,7 +770,7 @@ extern int vcrFile;
 #define VCR_SIGNATURE 0x56435231
 // "VCR1"
 
-void Host_InitVCR(quakeparms_t * parms)
+void Host_InitVCR()
 {
     int i, n;
     char * p;
@@ -857,7 +857,7 @@ void Host_Init(quakeparms_t * parms)
     Cmd_Init();
     V_Init();
     Chase_Init();
-    Host_InitVCR(parms);
+    Host_InitVCR();
     COM_Init();
     Host_InitLocal();
     W_LoadWadFile("gfx.wad");

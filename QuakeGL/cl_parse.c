@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // cl_parse.c -- parse a message received from the server
 
 #include "quakedef.h"
+#include <appapi.h>
 
 char * svc_strings[] =
 {
@@ -605,7 +606,7 @@ void CL_ParseClientdata(int bits)
 
     i = MSG_ReadByte();
 
-    if (standard_quake)
+    if (g_pAppApi->Mode_IsStandard())
     {
         if (cl.stats[STAT_ACTIVEWEAPON] != i)
         {

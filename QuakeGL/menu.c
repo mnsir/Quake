@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "winquake.h"
 #endif
 
+#include <appapi.h>
+
 void (*vid_menudrawfn)();
 void (*vid_menukeyfn)(int key);
 
@@ -2567,7 +2569,7 @@ void M_GameOptions_Draw()
         M_Print(160, 64, "Deathmatch");
 
     M_Print(0, 72, " Teamplay");
-    if (rogue)
+    if (g_pAppApi->Mode_IsRogue())
     {
         char * msg;
 
@@ -2620,23 +2622,23 @@ void M_GameOptions_Draw()
 
     M_Print(0, 112, " Episode");
     //MED 01/06/97 added hipnotic episodes
-    if (hipnotic)
+    if (g_pAppApi->Mode_IsHipnotic())
         M_Print(160, 112, hipnoticepisodes[startepisode].description);
     //PGM 01/07/97 added rogue episodes
-    else if (rogue)
+    else if (g_pAppApi->Mode_IsRogue())
         M_Print(160, 112, rogueepisodes[startepisode].description);
     else
         M_Print(160, 112, episodes[startepisode].description);
 
     M_Print(0, 120, " Level");
     //MED 01/06/97 added hipnotic episodes
-    if (hipnotic)
+    if (g_pAppApi->Mode_IsHipnotic())
     {
         M_Print(160, 120, hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].description);
         M_Print(160, 128, hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name);
     }
     //PGM 01/07/97 added rogue episodes
-    else if (rogue)
+    else if (g_pAppApi->Mode_IsRogue())
     {
         M_Print(160, 120, roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].description);
         M_Print(160, 128, roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].name);
@@ -2693,7 +2695,7 @@ void M_NetStart_Change(int dir)
         break;
 
     case 3:
-        if (rogue)
+        if (g_pAppApi->Mode_IsRogue())
             count = 6;
         else
             count = 2;
@@ -2732,11 +2734,11 @@ void M_NetStart_Change(int dir)
     case 7:
         startepisode += dir;
         //MED 01/06/97 added hipnotic count
-        if (hipnotic)
+        if (g_pAppApi->Mode_IsHipnotic())
             count = 6;
         //PGM 01/07/97 added rogue count
         //PGM 03/02/97 added 1 for dmatch episode
-        else if (rogue)
+        else if (g_pAppApi->Mode_IsRogue())
             count = 4;
         else if (registered.value)
             count = 7;
@@ -2755,10 +2757,10 @@ void M_NetStart_Change(int dir)
     case 8:
         startlevel += dir;
         //MED 01/06/97 added hipnotic episodes
-        if (hipnotic)
+        if (g_pAppApi->Mode_IsHipnotic())
             count = hipnoticepisodes[startepisode].levels;
         //PGM 01/06/97 added hipnotic episodes
-        else if (rogue)
+        else if (g_pAppApi->Mode_IsRogue())
             count = rogueepisodes[startepisode].levels;
         else
             count = episodes[startepisode].levels;
@@ -2818,9 +2820,9 @@ void M_GameOptions_Key(int key)
             Cbuf_AddText(va("maxplayers %u\n", maxplayers));
             SCR_BeginLoadingPlaque();
 
-            if (hipnotic)
+            if (g_pAppApi->Mode_IsHipnotic())
                 Cbuf_AddText(va("map %s\n", hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name));
-            else if (rogue)
+            else if (g_pAppApi->Mode_IsRogue())
                 Cbuf_AddText(va("map %s\n", roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].name));
             else
                 Cbuf_AddText(va("map %s\n", levels[episodes[startepisode].firstLevel + startlevel].name));

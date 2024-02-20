@@ -839,7 +839,7 @@ Host_Init
 void Host_Init(quakeparms_t * parms)
 {
 
-    if (standard_quake)
+    if (g_pAppApi->Mode_IsStandard())
         minimum_memory = MINIMUM_MEMORY;
     else
         minimum_memory = MINIMUM_MEMORY_LEVELPAK;

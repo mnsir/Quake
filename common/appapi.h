@@ -15,6 +15,10 @@ typedef struct
     int (*Args_GetCount)();
     void (*Args_Reset)(const char**, int);
 
+    int (*Mode_IsStandard)();
+    int (*Mode_IsRogue)();
+    int (*Mode_IsHipnotic)();
+
 } AppAPI;
 
 

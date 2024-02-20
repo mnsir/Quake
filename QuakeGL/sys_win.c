@@ -654,18 +654,6 @@ int WINAPI Win_Main()
     int t;
     RECT rect;
 
-    if (g_pAppApi->Args_GetIndex("-rogue"))
-    {
-        rogue = true;
-        standard_quake = false;
-    }
-
-    if (g_pAppApi->Args_GetIndex("-hipnotic"))
-    {
-        hipnotic = true;
-        standard_quake = false;
-    }
-
     isDedicated = (g_pAppApi->Args_GetIndex("-dedicated") != 0);
 
     if (!isDedicated)

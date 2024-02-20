@@ -153,11 +153,13 @@
   <ItemGroup>
     <ClCompile Include="args.cpp" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="mode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\appapi.h" />
     <ClInclude Include="..\common\dll_func_typedefs.h" />
     <ClInclude Include="args.h" />
+    <ClInclude Include="mode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

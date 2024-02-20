@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // sbar.c -- status bar code
 
 #include "quakedef.h"
+#include <appapi.h>
 
 
 int sb_updates; // if >= vid.numpages, no update needed
@@ -196,7 +197,7 @@ void Sbar_Init()
     sb_scorebar = Draw_PicFromWad("scorebar");
 
     //MED 01/04/97 added new hipnotic weapons
-    if (hipnotic)
+    if (g_pAppApi->Mode_IsHipnotic())
     {
         hsb_weapons[0][0] = Draw_PicFromWad("inv_laser");
         hsb_weapons[0][1] = Draw_PicFromWad("inv_mjolnir");
@@ -223,7 +224,7 @@ void Sbar_Init()
         hsb_items[1] = Draw_PicFromWad("sb_eshld");
     }
 
-    if (rogue)
+    if (g_pAppApi->Mode_IsRogue())
     {
         rsb_invbar[0] = Draw_PicFromWad("r_invbar1");
         rsb_invbar[1] = Draw_PicFromWad("r_invbar2");
@@ -550,7 +551,7 @@ void Sbar_DrawInventory()
     float time;
     int flashon;
 
-    if (rogue)
+    if (g_pAppApi->Mode_IsRogue())
     {
         if (cl.stats[STAT_ACTIVEWEAPON] >= RIT_LAVA_NAILGUN)
             Sbar_DrawPic(0, -24, rsb_invbar[0]);
@@ -588,7 +589,7 @@ void Sbar_DrawInventory()
 
     // MED 01/04/97
     // hipnotic weapons
-    if (hipnotic)
+    if (g_pAppApi->Mode_IsHipnotic())
     {
         int grenadeflashing = 0;
         for (i = 0; i < 4; i++)
@@ -643,7 +644,7 @@ void Sbar_DrawInventory()
         }
     }
 
-    if (rogue)
+    if (g_pAppApi->Mode_IsRogue())
     {
         // check for powered up weapon.
         if (cl.stats[STAT_ACTIVEWEAPON] >= RIT_LAVA_NAILGUN)
@@ -683,7 +684,7 @@ void Sbar_DrawInventory()
             else
             {
                 //MED 01/04/97 changed keys
-                if (!hipnotic || (i > 1))
+                if (!g_pAppApi->Mode_IsHipnotic() || (i > 1))
                 {
                     Sbar_DrawPic(192 + i * 16, -16, sb_items[i]);
                 }
@@ -693,7 +694,7 @@ void Sbar_DrawInventory()
         }
     //MED 01/04/97 added hipnotic items
     // hipnotic items
-    if (hipnotic)
+    if (g_pAppApi->Mode_IsHipnotic())
     {
         for (i = 0; i < 2; i++)
             if (cl.items & (1 << (24 + i)))
@@ -712,7 +713,7 @@ void Sbar_DrawInventory()
             }
     }
 
-    if (rogue)
+    if (g_pAppApi->Mode_IsRogue())
     {
         // new rogue items
         for (i = 0; i < 2; i++)
@@ -831,7 +832,7 @@ void Sbar_DrawFace()
 
     // PGM 01/19/97 - team color drawing
     // PGM 03/02/97 - fixed so color swatch only appears in CTF modes
-    if (rogue &&
+    if (g_pAppApi->Mode_IsRogue() &&
         (cl.maxclients != 1) &&
         (teamplay.value > 3) &&
         (teamplay.value < 7))
@@ -957,7 +958,7 @@ void Sbar_Draw()
 
         // keys (hipnotic only)
         //MED 01/04/97 moved keys here so they would not be overwritten
-        if (hipnotic)
+        if (g_pAppApi->Mode_IsHipnotic())
         {
             if (cl.items & IT_KEY1)
                 Sbar_DrawPic(209, 3, sb_items[0]);
@@ -972,7 +973,7 @@ void Sbar_Draw()
         }
         else
         {
-            if (rogue)
+            if (g_pAppApi->Mode_IsRogue())
             {
                 Sbar_DrawNum(24, 0, cl.stats[STAT_ARMOR], 3,
                              cl.stats[STAT_ARMOR] <= 25);
@@ -1004,7 +1005,7 @@ void Sbar_Draw()
                      , cl.stats[STAT_HEALTH] <= 25);
 
         // ammo icon
-        if (rogue)
+        if (g_pAppApi->Mode_IsRogue())
         {
             if (cl.items & RIT_SHELLS)
                 Sbar_DrawPic(224, 0, sb_ammo[0]);

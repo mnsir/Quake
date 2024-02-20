@@ -41,8 +41,6 @@ void COM_InitFilesystem();
 
 char com_token[1024];
 
-bool standard_quake = true, rogue, hipnotic;
-
 // this graphic needs to be in the pak file to use registered features
 unsigned short pop[] =
 {

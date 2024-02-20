@@ -1,6 +1,15 @@
 #pragma once
 
 
+#ifdef __cplusplus
+
+#include <optional>
+#include <string_view>
+
+std::optional<int> Args_GetInt(std::string_view arg);
+
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {

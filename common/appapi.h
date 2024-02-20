@@ -19,6 +19,9 @@ typedef struct
     int (*Mode_IsRogue)();
     int (*Mode_IsHipnotic)();
 
+    char* (*Memory_GetData)();
+    size_t (*Memory_GetSize)();
+
 } AppAPI;
 
 

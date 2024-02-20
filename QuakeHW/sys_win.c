@@ -29,9 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <appapi.h>
 
 
-#define MINIMUM_WIN_MEMORY 0x0880000
-#define MAXIMUM_WIN_MEMORY 0x1000000
-
 #define CONSOLE_ERROR_TIMEOUT 60.0 // # of seconds to wait on Sys_Error running
  // dedicated before exiting
 #define PAUSE_SLEEP 50 // sleep time on pause or minimization
@@ -680,37 +677,6 @@ int WINAPI Win_Main()
         }
     }
 
-    quakeparms_t parms;
-    MEMORYSTATUS lpBuffer;
-    lpBuffer.dwLength = sizeof(MEMORYSTATUS);
-    GlobalMemoryStatus(&lpBuffer);
-    // take the greater of all the available memory or half the total memory,
-    // but at least 8 Mb and no more than 16 Mb, unless they explicitly
-    // request otherwise
-    parms.memsize = lpBuffer.dwAvailPhys;
-
-    if (parms.memsize < MINIMUM_WIN_MEMORY)
-        parms.memsize = MINIMUM_WIN_MEMORY;
-
-    if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
-        parms.memsize = lpBuffer.dwTotalPhys >> 1;
-
-    if (parms.memsize > MAXIMUM_WIN_MEMORY)
-        parms.memsize = MAXIMUM_WIN_MEMORY;
-
-    if (g_pAppApi->Args_GetIndex("-heapsize"))
-    {
-        t = g_pAppApi->Args_GetIndex("-heapsize") + 1;
-
-        if (t < g_pAppApi->Args_GetCount())
-            parms.memsize = Q_atoi(g_pAppApi->Args_GetByIndex(t)) * 1024;
-    }
-
-    parms.membase = malloc(parms.memsize);
-
-    if (!parms.membase)
-        Sys_Error("Not enough memory free; check disk space\n");
-
     tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
     if (!tevent)
@@ -754,7 +720,7 @@ int WINAPI Win_Main()
     S_BlockSound();
 
     Sys_Printf("Host_Init\n");
-    Host_Init(&parms);
+    Host_Init();
 
     oldtime = Sys_FloatTime();
 

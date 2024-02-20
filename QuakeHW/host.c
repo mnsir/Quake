@@ -35,8 +35,6 @@ Memory is cleared / released when a server or client begins, not when they end.
 
 */
 
-quakeparms_t host_parms;
-
 bool host_initialized; // true if into command execution
 
 double host_frametime;
@@ -836,23 +834,9 @@ void Host_InitVCR()
 Host_Init
 ====================
 */
-void Host_Init(quakeparms_t * parms)
+void Host_Init()
 {
-
-    if (g_pAppApi->Mode_IsStandard())
-        minimum_memory = MINIMUM_MEMORY;
-    else
-        minimum_memory = MINIMUM_MEMORY_LEVELPAK;
-
-    if (g_pAppApi->Args_GetIndex("-minmemory"))
-        parms->memsize = minimum_memory;
-
-    host_parms = *parms;
-
-    if (parms->memsize < minimum_memory)
-        Sys_Error("Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
-
-    Memory_Init(parms->membase, parms->memsize);
+    Memory_Init();
     Cbuf_Init();
     Cmd_Init();
     V_Init();
@@ -870,7 +854,6 @@ void Host_Init(quakeparms_t * parms)
     SV_Init();
 
     Con_Printf("Exe: "__TIME__" "__DATE__"\n");
-    Con_Printf("%4.1f megabyte heap\n", parms->memsize / (1024 * 1024.0));
 
     R_InitTextures(); // needed even for dedicated servers
 

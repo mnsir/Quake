@@ -5,5 +5,5 @@
 #include <appapi.h>
 
 
-typedef int (CALLBACK * FromLibFunc)(int nCmdShow);
+typedef int (CALLBACK * FromLibFunc)();
 typedef void (CALLBACK * InitializeFunc)(AppAPI * pAppApi);

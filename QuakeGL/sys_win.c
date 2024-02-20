@@ -644,19 +644,15 @@ void SleepUntilInput(int time)
 WinMain
 ==================
 */
-int global_nCmdShow;
 HWND hwnd_dialog;
 
 
-int WINAPI Win_Main(int nCmdShow)
+int WINAPI Win_Main()
 {
     MSG msg;
     double time, oldtime, newtime;
     int t;
     RECT rect;
-
-    global_nCmdShow = nCmdShow;
-
 
     if (g_pAppApi->Args_GetIndex("-rogue"))
     {
@@ -814,9 +810,9 @@ int WINAPI Win_Main(int nCmdShow)
 }
 
 
-int __declspec(dllexport) CALLBACK FromLib(int nCmdShow)
+int __declspec(dllexport) CALLBACK FromLib()
 {
-    return Win_Main(nCmdShow);
+    return Win_Main();
 }
 
 

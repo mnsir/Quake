@@ -97,7 +97,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	if (hModule)
 	{
-		FromLib = GetProcAddress(hModule, "_FromLib@4");
+		FromLib = GetProcAddress(hModule, "_FromLib@0");
 		Initialize = GetProcAddress(hModule, "_Initialize@4");
 	}
 
@@ -106,7 +106,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		Initialize(&g_appApi);
 
 		if (FromLib)
-			res = FromLib(nShowCmd);
+			res = FromLib();
 		else
 			MessageBox(NULL, "FromLib not loaded", "FromLib not loaded!", 0);
 	}

@@ -21,6 +21,7 @@ typedef struct
 
     char* (*Memory_GetData)();
     size_t (*Memory_GetSize)();
+    size_t (*Memory_GetMinimum)();
 
 } AppAPI;
 

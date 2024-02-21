@@ -78,9 +78,6 @@ void VID_UnlockBuffer();
 
 #define UNUSED(x) (x = x) // for pesky compiler / lint warnings
 
-#define MINIMUM_MEMORY 0x550000
-#define MINIMUM_MEMORY_LEVELPAK (MINIMUM_MEMORY + 0x100000)
-
 // up / down
 #define PITCH 0
 
@@ -295,8 +292,6 @@ extern int current_skill; // skill level for currently loaded level (in case
 // running, this reflects the level actually in use)
 
 extern bool isDedicated;
-
-extern int minimum_memory;
 
 //
 // chase

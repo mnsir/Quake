@@ -45,8 +45,6 @@ int host_framecount;
 
 int host_hunklevel;
 
-int minimum_memory;
-
 client_t * host_client; // current client
 
 jmp_buf host_abortserver;

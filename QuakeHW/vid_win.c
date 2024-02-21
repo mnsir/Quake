@@ -252,7 +252,7 @@ bool VID_CheckAdequateMem(int width, int height)
 
     // see if there's enough memory, allowing for the normal mode 0x13 pixel,
     // z, and surface buffers
-    if ((g_pAppApi->Memory_GetSize() - tbuffersize + SURFCACHE_SIZE_AT_320X200 + 0x10000 * 3) < minimum_memory)
+    if ((g_pAppApi->Memory_GetSize() - tbuffersize + SURFCACHE_SIZE_AT_320X200 + 0x10000 * 3) < g_pAppApi->Memory_GetMinimum())
     {
         return false; // not enough memory for mode
     }
@@ -278,7 +278,7 @@ bool VID_AllocBuffers(int width, int height)
 
     // see if there's enough memory, allowing for the normal mode 0x13 pixel,
     // z, and surface buffers
-    if ((g_pAppApi->Memory_GetSize() - tbuffersize + SURFCACHE_SIZE_AT_320X200 + 0x10000 * 3) < minimum_memory)
+    if ((g_pAppApi->Memory_GetSize() - tbuffersize + SURFCACHE_SIZE_AT_320X200 + 0x10000 * 3) < g_pAppApi->Memory_GetMinimum())
     {
         Con_SafePrintf("Not enough memory for video mode\n");
         return false; // not enough memory for mode

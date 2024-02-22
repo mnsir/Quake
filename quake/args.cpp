@@ -1,61 +1,19 @@
 #include "args.h"
 
+#include "app.h"
+
 #include <ranges>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <optional>
+#include <cstdarg>
 
-
-std::vector<std::string> args_;
-
-void InitCommandLine(const char* line)
+namespace
 {
-	// TODO не забыть сохранить аргументы в cvar
-
-	std::istringstream ss(line);
-	std::vector<std::string> args;
-	std::ranges::copy(std::views::istream<std::string>(ss), std::back_inserter(args));
-	args_ = std::move(args);
-
-	if (Args_GetIndex("-safe"))
-	{
-		for (auto&& str : { "-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly" })
-			args_.emplace_back(str);
-	}
-}
-
-
-void Args_Reset(const char** ptr, int size)
-{
-	args_.clear();
-	for (auto&& i : std::views::iota(0, size))
-	{
-		args_.emplace_back(ptr[i]);
-	}
-}
-
-
-int Args_GetIndex(const char* str)
-{
-	auto it = std::ranges::find(args_, std::string_view(str));
-	return it != args_.end() ? std::distance(args_.begin(), it) + 1 : 0;
-}
-
-const char* Args_GetByIndex(int index)
-{
-	static const char empty[] = "";
-	return index ? args_[index - 1].c_str() : empty;
-}
-
-int Args_GetCount()
-{
-	return args_.size() + 1;
-}
-
 
 // TODO сдделать с этим что-нибудь
-int Q_atoi(const char* str)
+int Q_atoi(const char * str)
 {
     int val;
     int sign;
@@ -113,11 +71,109 @@ int Q_atoi(const char* str)
     return 0;
 }
 
+}
+
+std::vector<std::string> args_;
+
+void InitCommandLine(const char * line)
+{
+    // TODO не забыть сохранить аргументы в cvar
+
+    std::istringstream ss(line);
+    std::vector<std::string> args;
+    std::ranges::copy(std::views::istream<std::string>(ss), std::back_inserter(args));
+    args_ = std::move(args);
+
+    if (Args_GetIndex("-safe"))
+    {
+        for (auto && str : {"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"})
+            args_.emplace_back(str);
+    }
+}
+
+
+void Args_Reset(const char ** ptr, int size)
+{
+    args_.clear();
+    for (auto && i : std::views::iota(0, size))
+    {
+        args_.emplace_back(ptr[i]);
+    }
+}
+
+
+int Args_GetIndex(const char * str)
+{
+    auto it = std::ranges::find(args_, std::string_view(str));
+    return it != args_.end() ? std::distance(args_.begin(), it) + 1 : 0;
+}
+
+const char * Args_GetByIndex(int index)
+{
+    static const char empty[] = "";
+    return index ? args_[index - 1].c_str() : empty;
+}
+
+int Args_GetCount()
+{
+    return args_.size() + 1;
+}
+
+
+
 
 std::optional<int> Args_GetInt(std::string_view arg)
 {
-	if (auto it = std::ranges::find(args_, arg); it != args_.end())
-		if (it = std::next(it); it != args_.end())
-			return Q_atoi(it->c_str());
-	return {};
+    if (auto it = std::ranges::find(args_, arg); it != args_.end())
+        if (it = std::next(it); it != args_.end())
+            return Q_atoi(it->c_str());
+    return {};
+}
+
+
+int Args_NoAudio()
+{
+    return Args_GetIndex("-nocdaudio");
+}
+
+const char * Args_BaseDir()
+{
+    const char * res = nullptr;
+    int i = Args_GetIndex("-basedir");
+    if (i && i < Args_GetCount() - 1)
+        res = Args_GetByIndex(i + 1);
+    else
+        res = App_GetBaseDir(); // TODO
+    return res;
+}
+
+
+const char * Args_CacheDir()
+{
+    static const char empty[] = "";
+    int i = Args_GetIndex("-cachedir");
+    if (i && i < Args_GetCount() - 1)
+    {
+        auto next = Args_GetByIndex(i + 1);
+        if (next[0] == '-')
+            return empty;
+        else
+            return next;
+    }
+    else if (auto def = App_GetCacheDir())
+        return def;
+    else
+        return empty;
+}
+
+
+int Args_Rogue()
+{
+    return Args_GetIndex("-rogue");
+}
+
+
+int Args_Hipnotic()
+{
+    return Args_GetIndex("-hipnotic");
 }

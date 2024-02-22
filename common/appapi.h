@@ -7,13 +7,17 @@
 typedef struct
 {
     HINSTANCE(*GetAppInstance)();
-    const char * (*GetAppBaseDir)();
-    const char * (*GetAppCacheDir)();
 
     int (*Args_GetIndex)(const char *);
     const char* (*Args_GetByIndex)(int);
     int (*Args_GetCount)();
     void (*Args_Reset)(const char**, int);
+
+    int (*Args_NoAudio)();
+    int (*Args_Rogue)();
+    int (*Args_Hipnotic)();
+    const char * (*Args_BaseDir)();
+    const char * (*Args_CacheDir)();
 
     int (*Mode_IsStandard)();
     int (*Mode_IsRogue)();

@@ -21,6 +21,21 @@ extern "C" {
 	const char* Args_GetByIndex(int index);
 	int Args_GetCount();
 
+	// bool
+
+	int Args_NoAudio();
+	int Args_Rogue();
+	int Args_Hipnotic();
+
+	// int
+	
+
+	// string
+
+	const char * Args_BaseDir();
+	const char * Args_CacheDir();
+
+
 #ifdef __cplusplus
 }
 #endif

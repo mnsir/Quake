@@ -430,7 +430,7 @@ int CDAudio_Init()
     if (cls.state == ca_dedicated)
         return -1;
 
-    if (g_pAppApi->Args_GetIndex("-nocdaudio"))
+    if (g_pAppApi->Args_NoAudio())
         return -1;
 
     mciOpenParms.lpstrDeviceType = "cdaudio";

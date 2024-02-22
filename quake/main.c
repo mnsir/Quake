@@ -1,4 +1,5 @@
 #include <dll_func_typedefs.h>
+#include "app.h"
 #include "args.h"
 #include "mode.h"
 #include "memory.h"
@@ -32,7 +33,7 @@ const char * const aArgs[] = {
     "-startwindowed",
     //"-playback",
     //"-startwindowed -record",
-    "-width 800 -height 600 -bpp 32 -window -no8bit"
+    "-cachedir -width 800 -height 600 -bpp 32 -window -no8bit"
 };
 
 
@@ -50,36 +51,19 @@ HINSTANCE GetAppInstance()
 }
 
 
-const char * GetAppBaseDir()
-{
-    static char cwd[1024] = {0};
-    if (!cwd[0] && !GetCurrentDirectory(sizeof(cwd), cwd))
-    {
-        //Sys_Error("Couldn't determine current directory");
-    }
-
-    //if (cwd[Q_strlen(cwd) - 1] == '/')
-    //    cwd[Q_strlen(cwd) - 1] = 0;
-
-    return cwd;
-}
-
-
-const char * GetAppCacheDir()
-{
-    // for development over ISDN lines
-    return NULL;
-}
-
-
 AppAPI g_appApi = {
     .GetAppInstance = GetAppInstance,
-    .GetAppBaseDir = GetAppBaseDir,
-    .GetAppCacheDir = GetAppCacheDir,
+
     .Args_GetIndex = Args_GetIndex,
     .Args_GetByIndex = Args_GetByIndex,
     .Args_GetCount = Args_GetCount,
     .Args_Reset = Args_Reset,
+
+    .Args_NoAudio = Args_NoAudio,
+    .Args_Rogue = Args_Rogue,
+    .Args_Hipnotic = Args_Hipnotic,
+    .Args_BaseDir = Args_BaseDir,
+    .Args_CacheDir = Args_CacheDir,
 
     .Mode_IsStandard = Mode_IsStandard,
     .Mode_IsRogue = Mode_IsRogue,

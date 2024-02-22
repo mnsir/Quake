@@ -1634,11 +1634,7 @@ void COM_InitFilesystem()
     // -basedir <path>
     // Overrides the system supplied base directory (under GAMENAME)
     //
-    i = g_pAppApi->Args_GetIndex("-basedir");
-    if (i && i < g_pAppApi->Args_GetCount() - 1)
-        strcpy(basedir, g_pAppApi->Args_GetByIndex(i + 1));
-    else
-        strcpy(basedir, g_pAppApi->GetAppBaseDir());
+    strcpy(basedir, g_pAppApi->Args_BaseDir());
 
     j = strlen(basedir);
 
@@ -1653,27 +1649,16 @@ void COM_InitFilesystem()
     // Overrides the system supplied cache directory (NULL or /qcache)
     // -cachedir - will disable caching.
     //
-    i = g_pAppApi->Args_GetIndex("-cachedir");
-    if (i && i < g_pAppApi->Args_GetCount() - 1)
-    {
-        if (g_pAppApi->Args_GetByIndex(i + 1)[0] == '-')
-            com_cachedir[0] = 0;
-        else
-            strcpy(com_cachedir, g_pAppApi->Args_GetByIndex(i + 1));
-    }
-    else if (g_pAppApi->GetAppCacheDir())
-        strcpy(com_cachedir, g_pAppApi->GetAppCacheDir());
-    else
-        com_cachedir[0] = 0;
+    strcpy(com_cachedir, g_pAppApi->Args_CacheDir());
 
     //
     // start up with GAMENAME by default (id1)
     //
     COM_AddGameDirectory(va("%s/"GAMENAME, basedir));
 
-    if (g_pAppApi->Args_GetIndex("-rogue"))
+    if (g_pAppApi->Args_Rogue())
         COM_AddGameDirectory(va("%s/rogue", basedir));
-    if (g_pAppApi->Args_GetIndex("-hipnotic"))
+    if (g_pAppApi->Args_Hipnotic())
         COM_AddGameDirectory(va("%s/hipnotic", basedir));
 
     //

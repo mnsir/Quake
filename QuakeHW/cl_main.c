@@ -209,9 +209,14 @@ void CL_SignonReply()
     }
 }
 
-int CL_IsStateDisconnected()
+__declspec(dllexport) int __stdcall CL_IsStateDisconnected()
 {
     return cls.state == ca_disconnected;
+}
+
+__declspec(dllexport) int __stdcall CL_IsDemoPlayBack()
+{
+    return cls.demoplayback;
 }
 
 /*

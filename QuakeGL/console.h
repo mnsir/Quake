@@ -34,7 +34,7 @@ void Con_CheckResize();
 void Con_Init();
 void Con_DrawConsole(int lines, bool drawinput);
 void Con_Print(char * txt);
-void __declspec(dllexport) __stdcall Con_Printf(char * fmt, ...);
+__declspec(dllexport) void __stdcall Con_Printf(char * fmt, ...);
 void Con_DPrintf(char * fmt, ...);
 void Con_SafePrintf(char * fmt, ...);
 void Con_Clear_f();
@@ -44,3 +44,7 @@ void Con_ToggleConsole_f();
 
 void Con_NotifyBox(char * text); // during startup for sound / cd warnings
 
+__declspec(dllexport) int __stdcall Con_GetTotalLines();
+__declspec(dllexport) int __stdcall Con_GetBackScroll();
+__declspec(dllexport) void __stdcall Con_SetBackScroll(int backscroll);
+__declspec(dllexport) int __stdcall Con_IsForcedUp();

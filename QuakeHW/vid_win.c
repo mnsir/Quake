@@ -229,10 +229,10 @@ void ClearAllStates()
     // send an up event for each key, to make sure the server clears them all
     for (i = 0; i < 256; i++)
     {
-        Key_Event(i, false);
+        g_pAppApi->Key_Event(i, false);
     }
 
-    Key_ClearStates();
+    g_pAppApi->Key_ClearStates();
     IN_ClearStates();
 }
 
@@ -2936,13 +2936,13 @@ LONG WINAPI MainWndProc(
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
         if (!in_mode_set)
-            Key_Event(MapKey(lParam), true);
+            g_pAppApi->Key_Event(MapKey(lParam), true);
         break;
 
     case WM_KEYUP:
     case WM_SYSKEYUP:
         if (!in_mode_set)
-            Key_Event(MapKey(lParam), false);
+            g_pAppApi->Key_Event(MapKey(lParam), false);
         break;
 
         // this is complicated because Win32 seems to pack multiple mouse events into
@@ -2977,13 +2977,13 @@ LONG WINAPI MainWndProc(
     case WM_MOUSEWHEEL:
         if ((short)HIWORD(wParam) > 0)
         {
-            Key_Event(K_MWHEELUP, true);
-            Key_Event(K_MWHEELUP, false);
+            g_pAppApi->Key_Event(K_MWHEELUP, true);
+            g_pAppApi->Key_Event(K_MWHEELUP, false);
         }
         else
         {
-            Key_Event(K_MWHEELDOWN, true);
-            Key_Event(K_MWHEELDOWN, false);
+            g_pAppApi->Key_Event(K_MWHEELDOWN, true);
+            g_pAppApi->Key_Event(K_MWHEELDOWN, false);
         }
         break;
         // KJB: Added these new palette functions
@@ -3351,4 +3351,9 @@ void VID_MenuKey(int key)
     default:
         break;
     }
+}
+
+__declspec(dllexport) int __stdcall VID_GetHeight()
+{
+    return vid.height;
 }

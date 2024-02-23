@@ -765,13 +765,13 @@ int WINAPI Win_Main()
 }
 
 
-int __declspec(dllexport) CALLBACK FromLib()
+__declspec(dllexport) int CALLBACK FromLib()
 {
     return Win_Main();
 }
 
 
-void __declspec(dllexport) CALLBACK Initialize(AppAPI * pAppApi)
+__declspec(dllexport) void CALLBACK Initialize(AppAPI * pAppApi)
 {
     g_pAppApi = pAppApi;
 }

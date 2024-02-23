@@ -1011,7 +1011,7 @@ void V_RenderView()
     }
     else
     {
-        if (!cl.paused /* && (sv.maxclients > 1 || key_dest == key_game) */)
+        if (!cl.paused /* && (sv.maxclients > 1 || g_pAppApi->Key_GetDest() == key_game) */)
             V_CalcRefdef();
     }
 

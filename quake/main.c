@@ -3,6 +3,7 @@
 #include "args.h"
 #include "mode.h"
 #include "memory.h"
+#include "keys.h"
 #include "lib_funcs.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -71,6 +72,23 @@ AppAPI g_appApi = {
     .Memory_GetData = Memory_GetData,
     .Memory_GetSize = Memory_GetSize,
     .Memory_GetMinimum = Memory_GetMinimum,
+
+    .Key_GetDest = Key_GetDest,
+    .Key_SetDest = Key_SetDest,
+    .Key_GetBinding = Key_GetBinding,
+    .Key_GetLastPress = Key_GetLastPress,
+    .Key_GetCount = Key_GetCount,
+    .Key_SetCount = Key_SetCount,
+    .Key_GetEditLine = Key_GetEditLine,
+    .Key_GetLinePos = Key_GetLinePos,
+    .Key_SetLinePos = Key_SetLinePos,
+    .Key_Event = Key_Event,
+    .Key_ClearStates = Key_ClearStates,
+    .Key_KeynumToString = Key_KeynumToString,
+    .Key_SetBinding = Key_SetBinding,
+    .Key_WriteBindings = Key_WriteBindings,
+    .Key_SetTeamMessage = Key_SetTeamMessage,
+
 };
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
@@ -105,6 +123,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         Cmd_CompleteCommand = GetProcAddress(hModule, "Con_Printf@4");
         Cvar_CompleteVariable = GetProcAddress(hModule, "Con_Printf@4");
         CL_IsStateDisconnected = GetProcAddress(hModule, "Con_Printf@4");
+        Con_GetTotalLines = GetProcAddress(hModule, "Con_Printf@4");
+        VID_GetHeight = GetProcAddress(hModule, "Con_Printf@4");
+        Con_GetBackScroll = GetProcAddress(hModule, "Con_Printf@4");
+        Con_SetBackScroll = GetProcAddress(hModule, "Con_Printf@4");
+        CL_IsDemoPlayBack = GetProcAddress(hModule, "Con_Printf@4");
+        Con_IsForcedUp = GetProcAddress(hModule, "Con_Printf@4");
     }
 
     if (Initialize)
@@ -119,9 +143,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     else
         MessageBox(NULL, "Initialize not loaded", "Initialize not loaded!", 0);
 
-
     FromLib = NULL;
-    Initialize = NULL; 
+    Initialize = NULL;
     Cbuf_AddText = NULL;
     Con_Printf = NULL;
     Cmd_AddCommand = NULL;
@@ -133,6 +156,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     Cmd_CompleteCommand = NULL;
     Cvar_CompleteVariable = NULL;
     CL_IsStateDisconnected = NULL;
+    Con_GetTotalLines = NULL;
+    VID_GetHeight = NULL;
+    Con_GetBackScroll = NULL;
+    Con_SetBackScroll = NULL;
+    CL_IsDemoPlayBack = NULL;
+    Con_IsForcedUp = NULL;
 
     if (hModule)
     {

@@ -6,4 +6,4 @@
 #include <Windows.h>
 
 
-int __declspec(dllexport) CALLBACK FromLib(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine, int nCmdShow);
+__declspec(dllexport) int CALLBACK FromLib(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPCSTR lpCmdLine, int nCmdShow);

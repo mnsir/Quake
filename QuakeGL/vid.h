@@ -83,3 +83,4 @@ int VID_SetMode(int modenum, unsigned char * palette);
 void VID_HandlePause(bool pause);
 // called only on Win32, when pause happens, so the mouse can be released
 
+__declspec(dllexport) int __stdcall VID_GetHeight();

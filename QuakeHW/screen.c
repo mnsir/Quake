@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 #include "r_local.h"
+#include <appapi.h>
 
 // only the refresh window will be updated unless these variables are flagged 
 int scr_copytop;
@@ -179,7 +180,7 @@ void SCR_CheckDrawCenterString()
 
     if (scr_centertime_off <= 0 && !cl.intermission)
         return;
-    if (key_dest != key_game)
+    if (g_pAppApi->Key_GetDest() != key_game)
         return;
 
     SCR_DrawCenterString();
@@ -458,7 +459,7 @@ void SCR_SetUpToDrawConsole()
         scr_conlines = vid.height; // full screen
         scr_con_current = scr_conlines;
     }
-    else if (key_dest == key_console)
+    else if (g_pAppApi->Key_GetDest() == key_console)
         scr_conlines = vid.height / 2; // half screen
     else
         scr_conlines = 0; // none visible
@@ -507,7 +508,7 @@ void SCR_DrawConsole()
     }
     else
     {
-        if (key_dest == key_game || key_dest == key_message)
+        if (g_pAppApi->Key_GetDest() == key_game || g_pAppApi->Key_GetDest() == key_message)
             Con_DrawNotify(); // only draw notify in game
     }
 }
@@ -760,14 +761,14 @@ int SCR_ModalMessage(char * text)
 
     do
     {
-        key_count = -1; // wait for a key down and up
+        g_pAppApi->Key_SetCount(-1); // wait for a key down and up
         Sys_SendKeyEvents();
-    } while (key_lastpress != 'y' && key_lastpress != 'n' && key_lastpress != K_ESCAPE);
+    } while (g_pAppApi->Key_GetLastPress() != 'y' && g_pAppApi->Key_GetLastPress() != 'n' && g_pAppApi->Key_GetLastPress() != K_ESCAPE);
 
     scr_fullupdate = 0;
     SCR_UpdateScreen();
 
-    return key_lastpress == 'y';
+    return g_pAppApi->Key_GetLastPress() == 'y';
 }
 
 
@@ -805,7 +806,7 @@ WARNING: be very careful calling this from elsewhere, because the refresh
 needs almost the entire 256k of stack space!
 ==================
 */
-void SCR_UpdateScreen()
+__declspec(dllexport) void __stdcall SCR_UpdateScreen()
 {
     static float oldscr_viewsize;
     static float oldlcd_x;
@@ -908,16 +909,16 @@ void SCR_UpdateScreen()
         SCR_DrawLoading();
         Sbar_Draw();
     }
-    else if (cl.intermission == 1 && key_dest == key_game)
+    else if (cl.intermission == 1 && g_pAppApi->Key_GetDest() == key_game)
     {
         Sbar_IntermissionOverlay();
     }
-    else if (cl.intermission == 2 && key_dest == key_game)
+    else if (cl.intermission == 2 && g_pAppApi->Key_GetDest() == key_game)
     {
         Sbar_FinaleOverlay();
         SCR_CheckDrawCenterString();
     }
-    else if (cl.intermission == 3 && key_dest == key_game)
+    else if (cl.intermission == 3 && g_pAppApi->Key_GetDest() == key_game)
     {
         SCR_CheckDrawCenterString();
     }

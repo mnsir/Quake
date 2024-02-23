@@ -337,7 +337,6 @@ void CL_BaseMove(usercmd_t * cmd);
 
 
 float CL_KeyState(kbutton_t * key);
-char * Key_KeynumToString(int keynum);
 
 //
 // cl_demo.c
@@ -374,4 +373,6 @@ void V_SetContentsColor(int contents);
 //
 void CL_InitTEnts();
 void CL_SignonReply();
-int __declspec(dllexport) __stdcall CL_IsStateDisconnected();
+__declspec(dllexport) int __stdcall CL_IsStateDisconnected();
+
+__declspec(dllexport) int __stdcall CL_IsDemoPlayBack();

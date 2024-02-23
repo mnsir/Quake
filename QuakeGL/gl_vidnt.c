@@ -402,7 +402,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
     // Set either the fullscreen or windowed mode
     if (modelist[modenum].type == MS_WINDOWED)
     {
-        if (_windowed_mouse.value && key_dest == key_game)
+        if (_windowed_mouse.value && g_pAppApi->Key_GetDest() == key_game)
         {
             stat = VID_SetWindowedMode(modenum);
             IN_ActivateMouse();
@@ -696,12 +696,12 @@ void GL_EndRendering()
         else
         {
             windowed_mouse = true;
-            if (key_dest == key_game && !mouseactive && ActiveApp)
+            if (g_pAppApi->Key_GetDest() == key_game && !mouseactive && ActiveApp)
             {
                 IN_ActivateMouse();
                 IN_HideMouse();
             }
-            else if (mouseactive && key_dest != key_game)
+            else if (mouseactive && g_pAppApi->Key_GetDest() != key_game)
             {
                 IN_DeactivateMouse();
                 IN_ShowMouse();
@@ -949,10 +949,10 @@ void ClearAllStates()
     // send an up event for each key, to make sure the server clears them all
     for (i = 0; i < 256; i++)
     {
-        Key_Event(i, false);
+        g_pAppApi->Key_Event(i, false);
     }
 
-    Key_ClearStates();
+    g_pAppApi->Key_ClearStates();
     IN_ClearStates();
 }
 
@@ -1001,7 +1001,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
                 ShowWindow(mainwindow, SW_SHOWNORMAL);
             }
         }
-        else if ((modestate == MS_WINDOWED) && _windowed_mouse.value && key_dest == key_game)
+        else if ((modestate == MS_WINDOWED) && _windowed_mouse.value && g_pAppApi->Key_GetDest() == key_game)
         {
             IN_ActivateMouse();
             IN_HideMouse();
@@ -1061,12 +1061,12 @@ LONG WINAPI MainWndProc(
 
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
-        Key_Event(MapKey(lParam), true);
+        g_pAppApi->Key_Event(MapKey(lParam), true);
         break;
 
     case WM_KEYUP:
     case WM_SYSKEYUP:
-        Key_Event(MapKey(lParam), false);
+        g_pAppApi->Key_Event(MapKey(lParam), false);
         break;
 
     case WM_SYSCHAR:
@@ -1103,13 +1103,13 @@ LONG WINAPI MainWndProc(
     case WM_MOUSEWHEEL:
         if ((short)HIWORD(wParam) > 0)
         {
-            Key_Event(K_MWHEELUP, true);
-            Key_Event(K_MWHEELUP, false);
+            g_pAppApi->Key_Event(K_MWHEELUP, true);
+            g_pAppApi->Key_Event(K_MWHEELUP, false);
         }
         else
         {
-            Key_Event(K_MWHEELDOWN, true);
-            Key_Event(K_MWHEELDOWN, false);
+            g_pAppApi->Key_Event(K_MWHEELDOWN, true);
+            g_pAppApi->Key_Event(K_MWHEELDOWN, false);
         }
         break;
 
@@ -1970,4 +1970,10 @@ void VID_MenuKey(int key)
     default:
         break;
     }
+}
+
+
+__declspec(dllexport) int __stdcall VID_GetHeight()
+{
+    return vid.height;
 }

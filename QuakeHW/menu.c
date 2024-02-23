@@ -248,18 +248,18 @@ void M_ToggleMenu_f()
 {
     m_entersound = true;
 
-    if (key_dest == key_menu)
+    if (g_pAppApi->Key_GetDest() == key_menu)
     {
         if (m_state != m_main)
         {
             M_Menu_Main_f();
             return;
         }
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         m_state = m_none;
         return;
     }
-    if (key_dest == key_console)
+    if (g_pAppApi->Key_GetDest() == key_console)
     {
         Con_ToggleConsole_f();
     }
@@ -279,12 +279,12 @@ int m_main_cursor;
 
 void M_Menu_Main_f()
 {
-    if (key_dest != key_menu)
+    if (g_pAppApi->Key_GetDest() != key_menu)
     {
         m_save_demonum = cls.demonum;
         cls.demonum = -1;
     }
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_main;
     m_entersound = true;
 }
@@ -311,7 +311,7 @@ void M_Main_Key(int key)
     switch (key)
     {
     case K_ESCAPE:
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         m_state = m_none;
         cls.demonum = m_save_demonum;
         if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)
@@ -367,7 +367,7 @@ int m_singleplayer_cursor;
 
 void M_Menu_SinglePlayer_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_singleplayer;
     m_entersound = true;
 }
@@ -418,7 +418,7 @@ void M_SinglePlayer_Key(int key)
             if (sv.active)
                 if (!SCR_ModalMessage("Are you sure you want to\nstart a new game?\n"))
                     break;
-            key_dest = key_game;
+            g_pAppApi->Key_SetDest(key_game);
             if (sv.active)
                 Cbuf_AddText("disconnect\n");
             Cbuf_AddText("maxplayers 1\n");
@@ -477,7 +477,7 @@ void M_Menu_Load_f()
 {
     m_entersound = true;
     m_state = m_load;
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     M_ScanSaves();
 }
 
@@ -492,7 +492,7 @@ void M_Menu_Save_f()
         return;
     m_entersound = true;
     m_state = m_save;
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     M_ScanSaves();
 }
 
@@ -542,7 +542,7 @@ void M_Load_Key(int k)
         if (!loadable[load_cursor])
             return;
         m_state = m_none;
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
 
         // Host_Loadgame_f can't bring up the loading plaque because too much
         // stack space has been used, so do it now
@@ -581,7 +581,7 @@ void M_Save_Key(int k)
 
     case K_ENTER:
         m_state = m_none;
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         Cbuf_AddText(va("save s%i\n", load_cursor));
         return;
 
@@ -612,7 +612,7 @@ int m_multiplayer_cursor;
 
 void M_Menu_MultiPlayer_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_multiplayer;
     m_entersound = true;
 }
@@ -696,7 +696,7 @@ int setup_bottom;
 
 void M_Menu_Setup_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_setup;
     m_entersound = true;
     Q_strcpy(setup_myname, cl_name.string);
@@ -886,7 +886,7 @@ char * net_helpMessage[] =
 
 void M_Menu_Net_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_net;
     m_entersound = true;
     m_net_items = 4;
@@ -1050,7 +1050,7 @@ int options_cursor;
 
 void M_Menu_Options_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_options;
     m_entersound = true;
 
@@ -1343,7 +1343,7 @@ int bind_grab;
 
 void M_Menu_Keys_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_keys;
     m_entersound = true;
 }
@@ -1362,7 +1362,7 @@ void M_FindKeysForCommand(char * command, int * twokeys)
 
     for (j = 0; j < 256; j++)
     {
-        b = keybindings[j];
+        b = g_pAppApi->Key_GetBinding(j);
         if (!b)
             continue;
         if (!strncmp(b, command, l))
@@ -1385,11 +1385,11 @@ void M_UnbindCommand(char * command)
 
     for (j = 0; j < 256; j++)
     {
-        b = keybindings[j];
+        b = g_pAppApi->Key_GetBinding(j);
         if (!b)
             continue;
         if (!strncmp(b, command, l))
-            Key_SetBinding(j, "");
+            g_pAppApi->Key_SetBinding(j, "");
     }
 }
 
@@ -1427,13 +1427,13 @@ void M_Keys_Draw()
         }
         else
         {
-            name = Key_KeynumToString(keys[0]);
+            name = g_pAppApi->Key_KeynumToString(keys[0]);
             M_Print(140, y, name);
             x = strlen(name) * 8;
             if (keys[1] != -1)
             {
                 M_Print(140 + x + 8, y, "or");
-                M_Print(140 + x + 32, y, Key_KeynumToString(keys[1]));
+                M_Print(140 + x + 32, y, g_pAppApi->Key_KeynumToString(keys[1]));
             }
         }
     }
@@ -1459,7 +1459,7 @@ void M_Keys_Key(int k)
         }
         else if (k != '`')
         {
-            sprintf(cmd, "bind \"%s\" \"%s\"\n", Key_KeynumToString(k), bindnames[keys_cursor][0]);
+            sprintf(cmd, "bind \"%s\" \"%s\"\n", g_pAppApi->Key_KeynumToString(k), bindnames[keys_cursor][0]);
             Cbuf_InsertText(cmd);
         }
 
@@ -1510,7 +1510,7 @@ void M_Keys_Key(int k)
 
 void M_Menu_Video_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_video;
     m_entersound = true;
 }
@@ -1536,7 +1536,7 @@ int help_page;
 
 void M_Menu_Help_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_help;
     m_entersound = true;
     help_page = 0;
@@ -1632,8 +1632,8 @@ void M_Menu_Quit_f()
 {
     if (m_state == m_quit)
         return;
-    wasInMenus = (key_dest == key_menu);
-    key_dest = key_menu;
+    wasInMenus = (g_pAppApi->Key_GetDest() == key_menu);
+    g_pAppApi->Key_SetDest(key_menu);
     m_quit_prevstate = m_state;
     m_state = m_quit;
     m_entersound = true;
@@ -1655,14 +1655,14 @@ void M_Quit_Key(int key)
         }
         else
         {
-            key_dest = key_game;
+            g_pAppApi->Key_SetDest(key_game);
             m_state = m_none;
         }
         break;
 
     case 'Y':
     case 'y':
-        key_dest = key_console;
+        g_pAppApi->Key_SetDest(key_console);
         Host_Quit_f();
         break;
 
@@ -1739,7 +1739,7 @@ void M_Menu_SerialConfig_f()
     int baudrate;
     bool useModem;
 
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_serialconfig;
     m_entersound = true;
     if (JoiningGame && SerialConfig)
@@ -1960,7 +1960,7 @@ forward:
 
         m_return_state = m_state;
         m_return_onerror = true;
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         m_state = m_none;
 
         if (SerialConfig)
@@ -2018,7 +2018,7 @@ char modemConfig_hangup[16];
 
 void M_Menu_ModemConfig_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_modemconfig;
     m_entersound = true;
     (*GetModemConfig) (0, &modemConfig_dialing, modemConfig_clear, modemConfig_init, modemConfig_hangup);
@@ -2189,7 +2189,7 @@ char lanConfig_joinname[22];
 
 void M_Menu_LanConfig_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_lanconfig;
     m_entersound = true;
     if (lanConfig_cursor == -1)
@@ -2315,7 +2315,7 @@ void M_LanConfig_Key(int key)
         {
             m_return_state = m_state;
             m_return_onerror = true;
-            key_dest = key_game;
+            g_pAppApi->Key_SetDest(key_game);
             m_state = m_none;
             Cbuf_AddText(va("connect \"%s\"\n", lanConfig_joinname));
             break;
@@ -2533,7 +2533,7 @@ double m_serverInfoMessageTime;
 
 void M_Menu_GameOptions_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_gameoptions;
     m_entersound = true;
     if (maxplayers == 0)
@@ -2843,7 +2843,7 @@ double searchCompleteTime;
 
 void M_Menu_Search_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_search;
     m_entersound = false;
     slistSilent = true;
@@ -2903,7 +2903,7 @@ bool slist_sorted;
 
 void M_Menu_ServerList_f()
 {
-    key_dest = key_menu;
+    g_pAppApi->Key_SetDest(key_menu);
     m_state = m_slist;
     m_entersound = true;
     slist_cursor = 0;
@@ -2987,7 +2987,7 @@ void M_ServerList_Key(int k)
         m_return_state = m_state;
         m_return_onerror = true;
         slist_sorted = false;
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         m_state = m_none;
         Cbuf_AddText(va("connect \"%s\"\n", hostcache[slist_cursor].cname));
         break;
@@ -3022,7 +3022,7 @@ void M_Init()
 
 void M_Draw()
 {
-    if (m_state == m_none || key_dest != key_menu)
+    if (m_state == m_none || g_pAppApi->Key_GetDest() != key_menu)
         return;
 
     if (!m_recursiveDraw)
@@ -3136,7 +3136,7 @@ void M_Draw()
 }
 
 
-void M_Keydown(int key)
+__declspec(dllexport) void __stdcall M_Keydown(int key)
 {
     switch (m_state)
     {

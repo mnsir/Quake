@@ -256,7 +256,7 @@ void Host_WriteConfiguration()
             return;
         }
 
-        Key_WriteBindings(f);
+        g_pAppApi->Key_WriteBindings(f);
         Cvar_WriteVariables(f);
 
         fclose(f);
@@ -558,7 +558,7 @@ void _Host_ServerFrame()
 
     // move things around and think
     // always pause in single player if in console or menus
-    if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game))
+    if (!sv.paused && (svs.maxclients > 1 || g_pAppApi->Key_GetDest() == key_game))
         SV_Physics();
 }
 
@@ -610,7 +610,7 @@ void Host_ServerFrame()
 
     // move things around and think
     // always pause in single player if in console or menus
-    if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game))
+    if (!sv.paused && (svs.maxclients > 1 || g_pAppApi->Key_GetDest() == key_game))
         SV_Physics();
 
     // send all messages to the clients
@@ -843,7 +843,7 @@ void Host_Init()
     COM_Init();
     Host_InitLocal();
     W_LoadWadFile("gfx.wad");
-    Key_Init();
+    g_pAppApi->Key_Init();
     Con_Init();
     M_Init();
     PR_Init();

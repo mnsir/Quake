@@ -559,13 +559,13 @@ void IN_MouseEvent(int mstate)
             if ((mstate & (1 << i)) &&
                 !(mouse_oldbuttonstate & (1 << i)))
             {
-                Key_Event(K_MOUSE1 + i, true);
+                g_pAppApi->Key_Event(K_MOUSE1 + i, true);
             }
 
             if (!(mstate & (1 << i)) &&
                 (mouse_oldbuttonstate & (1 << i)))
             {
-                Key_Event(K_MOUSE1 + i, false);
+                g_pAppApi->Key_Event(K_MOUSE1 + i, false);
             }
         }
 
@@ -657,13 +657,13 @@ void IN_MouseMove(usercmd_t * cmd)
             if ((mstate_di & (1 << i)) &&
                 !(mouse_oldbuttonstate & (1 << i)))
             {
-                Key_Event(K_MOUSE1 + i, true);
+                g_pAppApi->Key_Event(K_MOUSE1 + i, true);
             }
 
             if (!(mstate_di & (1 << i)) &&
                 (mouse_oldbuttonstate & (1 << i)))
             {
-                Key_Event(K_MOUSE1 + i, false);
+                g_pAppApi->Key_Event(K_MOUSE1 + i, false);
             }
         }
 
@@ -980,13 +980,13 @@ void IN_Commands()
         if ((buttonstate & (1 << i)) && !(joy_oldbuttonstate & (1 << i)))
         {
             key_index = (i < 4) ? K_JOY1 : K_AUX1;
-            Key_Event(key_index + i, true);
+            g_pAppApi->Key_Event(key_index + i, true);
         }
 
         if (!(buttonstate & (1 << i)) && (joy_oldbuttonstate & (1 << i)))
         {
             key_index = (i < 4) ? K_JOY1 : K_AUX1;
-            Key_Event(key_index + i, false);
+            g_pAppApi->Key_Event(key_index + i, false);
         }
     }
     joy_oldbuttonstate = buttonstate;
@@ -1013,12 +1013,12 @@ void IN_Commands()
         {
             if ((povstate & (1 << i)) && !(joy_oldpovstate & (1 << i)))
             {
-                Key_Event(K_AUX29 + i, true);
+                g_pAppApi->Key_Event(K_AUX29 + i, true);
             }
 
             if (!(povstate & (1 << i)) && (joy_oldpovstate & (1 << i)))
             {
-                Key_Event(K_AUX29 + i, false);
+                g_pAppApi->Key_Event(K_AUX29 + i, false);
             }
         }
         joy_oldpovstate = povstate;

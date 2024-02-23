@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 // sv_user.c -- server code for moving users
 
 #include "quakedef.h"
+#include <appapi.h>
 
 edict_t * sv_player;
 
@@ -622,7 +623,7 @@ void SV_RunClients()
         }
 
         // always pause in single player if in console or menus
-        if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game))
+        if (!sv.paused && (svs.maxclients > 1 || g_pAppApi->Key_GetDest() == key_game))
             SV_ClientThink();
     }
 }

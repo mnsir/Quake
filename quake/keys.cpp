@@ -1,7 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "keys.h"
 
 #include "lib_funcs.h"
 #include <stdexcept>
+#include <cstring>
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -39,11 +41,11 @@ int key_lastpress;
 int edit_line = 0;
 int history_line = 0;
 
-keydest_t key_dest;
+/*keydest_t*/int key_dest;
 
 int key_count; // incremented every key event
 
-char* keybindings[256];
+char * keybindings[256];
 bool consolekeys[256]; // if true, can't be rebound while in console
 bool menubound[256]; // if true, can't be rebound while in menu
 int keyshift[256]; // key to map to if shift held down in console
@@ -52,7 +54,7 @@ bool keydown[256];
 
 typedef struct
 {
-    const char* name;
+    const char * name;
     int keynum;
 } keyname_t;
 
@@ -162,7 +164,7 @@ Interactive line editing and console scrollback
 */
 void Key_Console(int key)
 {
-    const char* cmd;
+    const char * cmd;
 
     if (key == K_ENTER)
     {
@@ -208,7 +210,7 @@ void Key_Console(int key)
         {
             history_line = (history_line - 1) & 31;
         } while (history_line != edit_line
-            && !key_lines[history_line][1]);
+                 && !key_lines[history_line][1]);
         if (history_line == edit_line)
             history_line = (edit_line + 1) & 31;
         strcpy(key_lines[edit_line], key_lines[history_line]);
@@ -223,7 +225,7 @@ void Key_Console(int key)
         {
             history_line = (history_line + 1) & 31;
         } while (history_line != edit_line
-            && !key_lines[history_line][1]);
+                 && !key_lines[history_line][1]);
         if (history_line == edit_line)
         {
             key_lines[edit_line][0] = ']';
@@ -239,29 +241,29 @@ void Key_Console(int key)
 
     if (key == K_PGUP || key == K_MWHEELUP)
     {
-        con_backscroll += 2;
-        if (con_backscroll > con_totallines - (vid.height >> 3) - 1)
-            con_backscroll = con_totallines - (vid.height >> 3) - 1;
+        Con_SetBackScroll(Con_GetBackScroll() + 2);
+        if (Con_GetBackScroll() > Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1)
+            Con_SetBackScroll(Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1);
         return;
     }
 
     if (key == K_PGDN || key == K_MWHEELDOWN)
     {
-        con_backscroll -= 2;
-        if (con_backscroll < 0)
-            con_backscroll = 0;
+        Con_SetBackScroll(Con_GetBackScroll() - 2);
+        if (Con_GetBackScroll() < 0)
+            Con_SetBackScroll(0);
         return;
     }
 
     if (key == K_HOME)
     {
-        con_backscroll = con_totallines - (vid.height >> 3) - 1;
+        Con_SetBackScroll(Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1);
         return;
     }
 
     if (key == K_END)
     {
-        con_backscroll = 0;
+        Con_SetBackScroll(0);
         return;
     }
 
@@ -295,7 +297,7 @@ void Key_Message(int key)
         Cbuf_AddText(chat_buffer);
         Cbuf_AddText("\"\n");
 
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         chat_bufferlen = 0;
         chat_buffer[0] = 0;
         return;
@@ -303,7 +305,7 @@ void Key_Message(int key)
 
     if (key == K_ESCAPE)
     {
-        key_dest = key_game;
+        g_pAppApi->Key_SetDest(key_game);
         chat_bufferlen = 0;
         chat_buffer[0] = 0;
         return;
@@ -341,9 +343,9 @@ the given string. Single ascii characters return themselves, while
 the K_* names are matched up.
 ===================
 */
-int Key_StringToKeynum(const char* str)
+int Key_StringToKeynum(const char * str)
 {
-    keyname_t* kn;
+    keyname_t * kn;
 
     if (!str || !str[0])
         return -1;
@@ -352,7 +354,7 @@ int Key_StringToKeynum(const char* str)
 
     for (kn = keynames; kn->name; kn++)
     {
-        if (!strcasecmp(str, kn->name))
+        if (!_stricmp(str, kn->name))
             return kn->keynum;
     }
     return -1;
@@ -367,9 +369,9 @@ given keynum.
 FIXME: handle quote special (general escape sequence?)
 ===================
 */
-const char* Key_KeynumToString(int keynum)
+const char * Key_KeynumToString(int keynum)
 {
-    keyname_t* kn;
+    keyname_t * kn;
     static char tinystr[2];
 
     if (keynum == -1)
@@ -394,9 +396,9 @@ const char* Key_KeynumToString(int keynum)
 Key_SetBinding
 ===================
 */
-void Key_SetBinding(int keynum, const char* binding)
+void Key_SetBinding(int keynum, const char * binding)
 {
-    char* new_;
+    char * new_= nullptr;
     int l;
 
     if (keynum == -1)
@@ -405,13 +407,13 @@ void Key_SetBinding(int keynum, const char* binding)
     // free old bindings
     if (keybindings[keynum])
     {
-        Z_Free(keybindings[keynum]);
+        //Z_Free(keybindings[keynum]);
         keybindings[keynum] = NULL;
     }
 
     // allocate memory for new binding
     l = strlen(binding);
-    new_ = Z_Malloc(l + 1);
+    //new_ = Z_Malloc(l + 1);
     strcpy(new_, binding);
     new_[l] = 0;
     keybindings[keynum] = new_;
@@ -504,7 +506,7 @@ Key_WriteBindings
 Writes lines containing "bind key value"
 ============
 */
-void Key_WriteBindings(FILE* f)
+void Key_WriteBindings(FILE * f)
 {
     int i;
 
@@ -599,9 +601,10 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
-void Key_Event(int key, bool down)
+void Key_Event(int key, int down_)
 {
-    char* kb;
+    bool down = static_cast<bool>(down_);
+    char * kb;
     char cmd[1024];
 
     keydown[key] = down;
@@ -687,7 +690,7 @@ void Key_Event(int key, bool down)
     //
     // during demo playback, most keys bring up the main menu
     //
-    if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game)
+    if (CL_IsDemoPlayBack() && down && consolekeys[key] && g_pAppApi->Key_GetDest() == key_game)
     {
         M_ToggleMenu_f();
         return;
@@ -696,9 +699,9 @@ void Key_Event(int key, bool down)
     //
     // if not a consolekey, send to the interpreter no matter what mode is
     //
-    if ((key_dest == key_menu && menubound[key])
-        || (key_dest == key_console && !consolekeys[key])
-        || (key_dest == key_game && (!con_forcedup || !consolekeys[key])))
+    if ((g_pAppApi->Key_GetDest() == key_menu && menubound[key])
+        || (g_pAppApi->Key_GetDest() == key_console && !consolekeys[key])
+        || (g_pAppApi->Key_GetDest() == key_game && (!Con_IsForcedUp() || !consolekeys[key])))
     {
         kb = keybindings[key];
         if (kb)
@@ -760,3 +763,15 @@ void Key_ClearStates()
     }
 }
 
+
+int Key_GetDest() { return key_dest; }
+void Key_SetDest(int val) { key_dest = val; }
+const char * Key_GetBinding(int i) { return keybindings[i]; }
+int Key_GetLastPress() { return key_lastpress; }
+int Key_GetCount() { return key_count; }
+void Key_SetCount(int val) { key_count = val; }
+int Key_GetEditLine() { return edit_line; }
+int Key_GetLinePos() { return key_linepos; }
+void Key_SetLinePos(int val) { key_linepos = val; }
+
+void Key_SetTeamMessage(int val) { team_message = val; }

@@ -37,7 +37,7 @@ extern void M_Menu_Quit_f();
 
 void Host_Quit_f()
 {
-    if (key_dest != key_console && cls.state != ca_dedicated)
+    if (g_pAppApi->Key_GetDest() != key_console && cls.state != ca_dedicated)
     {
         M_Menu_Quit_f();
         return;
@@ -267,7 +267,7 @@ void Host_Map_f()
     CL_Disconnect();
     Host_ShutdownServer(false);
 
-    key_dest = key_game; // remove console or menu
+    g_pAppApi->Key_SetDest(key_game); // remove console or menu
     SCR_BeginLoadingPlaque();
 
     cls.mapstring[0] = 0;

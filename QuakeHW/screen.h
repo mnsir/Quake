@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 void SCR_Init();
 
-void __declspec(dllexport) __stdcall SCR_UpdateScreen();
+__declspec(dllexport) void __stdcall SCR_UpdateScreen();
 
 
 void SCR_SizeUp();

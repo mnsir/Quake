@@ -50,8 +50,6 @@ bool con_debuglog;
 
 #define MAXCMDLINE 256
 extern char key_lines[32][MAXCMDLINE];
-extern int edit_line;
-extern int key_linepos;
 
 
 bool con_initialized;
@@ -67,13 +65,13 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f()
 {
-    if (key_dest == key_console)
+    if (g_pAppApi->Key_GetDest() == key_console)
     {
         if (cls.state == ca_connected)
         {
-            key_dest = key_game;
-            key_lines[edit_line][1] = 0; // clear any typing
-            key_linepos = 1;
+            g_pAppApi->Key_SetDest(key_game);
+            key_lines[g_pAppApi->Key_GetEditLine()][1] = 0; // clear any typing
+            g_pAppApi->Key_SetLinePos(1);
         }
         else
         {
@@ -81,7 +79,7 @@ void Con_ToggleConsole_f()
         }
     }
     else
-        key_dest = key_console;
+        g_pAppApi->Key_SetDest(key_console);
 
     SCR_EndLoadingPlaque();
     memset(con_times, 0, sizeof(con_times));
@@ -118,12 +116,11 @@ void Con_ClearNotify()
 Con_MessageMode_f
 ================
 */
-extern bool team_message;
 
 void Con_MessageMode_f()
 {
-    key_dest = key_message;
-    team_message = false;
+    g_pAppApi->Key_SetDest(key_message);
+    Key_SetTeamMessage(false);
 }
 
 
@@ -134,8 +131,8 @@ Con_MessageMode2_f
 */
 void Con_MessageMode2_f()
 {
-    key_dest = key_message;
-    team_message = true;
+    g_pAppApi->Key_SetDest(key_message);
+    Key_SetTeamMessage(true);
 }
 
 
@@ -479,21 +476,21 @@ void Con_DrawInput()
     int i;
     char * text;
 
-    if (key_dest != key_console && !con_forcedup)
+    if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)
         return; // don't draw anything
 
-    text = key_lines[edit_line];
+    text = key_lines[g_pAppApi->Key_GetEditLine()];
 
     // add the cursor frame
-    text[key_linepos] = 10 + ((int)(realtime * con_cursorspeed) & 1);
+    text[g_pAppApi->Key_GetLinePos()] = 10 + ((int)(realtime * con_cursorspeed) & 1);
 
     // fill out remainder with spaces
-    for (i = key_linepos + 1; i < con_linewidth; i++)
+    for (i = g_pAppApi->Key_GetLinePos() + 1; i < con_linewidth; i++)
         text[i] = ' ';
 
     // prestep if horizontally scrolling
-    if (key_linepos >= con_linewidth)
-        text += 1 + key_linepos - con_linewidth;
+    if (g_pAppApi->Key_GetLinePos() >= con_linewidth)
+        text += 1 + g_pAppApi->Key_GetLinePos() - con_linewidth;
 
     // draw it
     y = con_vislines - 16;
@@ -502,7 +499,7 @@ void Con_DrawInput()
         Draw_Character((i + 1) << 3, con_vislines - 16, text[i]);
 
     // remove cursor
-    key_lines[edit_line][key_linepos] = 0;
+    key_lines[g_pAppApi->Key_GetEditLine()][g_pAppApi->Key_GetLinePos()] = 0;
 }
 
 
@@ -544,7 +541,7 @@ void Con_DrawNotify()
     }
 
 
-    if (key_dest == key_message)
+    if (g_pAppApi->Key_GetDest() == key_message)
     {
         clearnotify = 0;
         scr_copytop = 1;
@@ -626,8 +623,8 @@ void Con_NotifyBox(char * text)
     Con_Printf("Press a key.\n");
     Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
-    key_count = -2; // wait for a key down and up
-    key_dest = key_console;
+    g_pAppApi->Key_SetCount(-2); // wait for a key down and up
+    g_pAppApi->Key_SetDest(key_console);
 
     do
     {
@@ -636,10 +633,30 @@ void Con_NotifyBox(char * text)
         Sys_SendKeyEvents();
         t2 = Sys_FloatTime();
         realtime += t2 - t1; // make the cursor blink
-    } while (key_count < 0);
+    } while (g_pAppApi->Key_GetCount() < 0);
 
     Con_Printf("\n");
-    key_dest = key_game;
+    g_pAppApi->Key_SetDest(key_game);
     realtime = 0; // put the cursor back to invisible
 }
 
+
+__declspec(dllexport) int __stdcall Con_GetTotalLines()
+{
+    return con_totallines;
+}
+
+__declspec(dllexport) int __stdcall Con_GetBackScroll()
+{
+    return con_backscroll;
+}
+
+__declspec(dllexport) void __stdcall Con_SetBackScroll(int backscroll)
+{
+    con_backscroll = backscroll;
+}
+
+__declspec(dllexport) int __stdcall Con_IsForcedUp()
+{
+    return con_forcedup;
+}

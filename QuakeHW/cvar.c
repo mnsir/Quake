@@ -77,7 +77,7 @@ char * Cvar_VariableString(char * var_name)
 Cvar_CompleteVariable
 ============
 */
-char * Cvar_CompleteVariable(char * partial)
+__declspec(dllexport) char * __stdcall Cvar_CompleteVariable(char * partial)
 {
     cvar_t * cvar;
     int len;

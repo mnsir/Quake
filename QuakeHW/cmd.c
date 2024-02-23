@@ -85,7 +85,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText(char * text)
+__declspec(dllexport) void __stdcall Cbuf_AddText(char * text)
 {
     int l;
 
@@ -445,7 +445,7 @@ void Cmd_Init()
 Cmd_Argc
 ============
 */
-int Cmd_Argc()
+__declspec(dllexport) int __stdcall Cmd_Argc()
 {
     return cmd_argc;
 }
@@ -455,7 +455,7 @@ int Cmd_Argc()
 Cmd_Argv
 ============
 */
-char * Cmd_Argv(int arg)
+__declspec(dllexport) char * __stdcall Cmd_Argv(int arg)
 {
     if ((unsigned)arg >= cmd_argc)
         return cmd_null_string;
@@ -531,7 +531,7 @@ void Cmd_TokenizeString(char * text)
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand(char * cmd_name, xcommand_t function)
+__declspec(dllexport) void __stdcall Cmd_AddCommand(char * cmd_name, xcommand_t function)
 {
     cmd_function_t * cmd;
 
@@ -587,7 +587,7 @@ bool Cmd_Exists(char * cmd_name)
 Cmd_CompleteCommand
 ============
 */
-char * Cmd_CompleteCommand(char * partial)
+__declspec(dllexport) char * __stdcall Cmd_CompleteCommand(char * partial)
 {
     cmd_function_t * cmd;
     int len;

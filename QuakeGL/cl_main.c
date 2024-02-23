@@ -209,6 +209,11 @@ void CL_SignonReply()
     }
 }
 
+int CL_IsStateDisconnected()
+{
+    return cls.state == ca_disconnected;
+}
+
 /*
 =====================
 CL_NextDemo

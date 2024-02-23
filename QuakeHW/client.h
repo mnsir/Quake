@@ -374,3 +374,4 @@ void V_SetContentsColor(int contents);
 //
 void CL_InitTEnts();
 void CL_SignonReply();
+int __declspec(dllexport) __stdcall CL_IsStateDisconnected();

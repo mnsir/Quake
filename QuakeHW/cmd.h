@@ -38,7 +38,7 @@ The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 void Cbuf_Init();
 // allocates an initial text buffer that will grow as needed
 
-void Cbuf_AddText(char * text);
+void __declspec(dllexport) __stdcall Cbuf_AddText(char * text);
 // as new commands are generated from the console or keybindings,
 // the text is added to the end of the command buffer.
 
@@ -79,7 +79,7 @@ extern cmd_source_t cmd_source;
 
 void Cmd_Init();
 
-void Cmd_AddCommand(char * cmd_name, xcommand_t function);
+void __declspec(dllexport) __stdcall Cmd_AddCommand(char * cmd_name, xcommand_t function);
 // called by the init functions of other parts of the program to
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
@@ -87,7 +87,7 @@ void Cmd_AddCommand(char * cmd_name, xcommand_t function);
 bool Cmd_Exists(char * cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
-char * Cmd_CompleteCommand(char * partial);
+char * __declspec(dllexport) __stdcall Cmd_CompleteCommand(char * partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 

@@ -3,6 +3,7 @@
 #include "args.h"
 #include "mode.h"
 #include "memory.h"
+#include "lib_funcs.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -38,8 +39,6 @@ const char * const aArgs[] = {
 
 
 HMODULE hModule = NULL;
-FromLibFunc FromLib = NULL;
-InitializeFunc Initialize = NULL;
 
 HINSTANCE g_hInstance;
 
@@ -95,6 +94,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     {
         FromLib = GetProcAddress(hModule, "_FromLib@0");
         Initialize = GetProcAddress(hModule, "_Initialize@4");
+        Cbuf_AddText = GetProcAddress(hModule, "Cbuf_AddText@4");
+        Con_Printf = GetProcAddress(hModule, "Con_Printf@4");
+        Cmd_AddCommand = GetProcAddress(hModule, "Con_Printf@4");
+        M_Keydown = GetProcAddress(hModule, "Con_Printf@4");
+        M_ToggleMenu_f = GetProcAddress(hModule, "Con_Printf@4");
+        Cmd_Argc = GetProcAddress(hModule, "Con_Printf@4");
+        Cmd_Argv = GetProcAddress(hModule, "Con_Printf@4");
+        SCR_UpdateScreen = GetProcAddress(hModule, "Con_Printf@4");
+        Cmd_CompleteCommand = GetProcAddress(hModule, "Con_Printf@4");
+        Cvar_CompleteVariable = GetProcAddress(hModule, "Con_Printf@4");
+        CL_IsStateDisconnected = GetProcAddress(hModule, "Con_Printf@4");
     }
 
     if (Initialize)
@@ -111,7 +121,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
     FromLib = NULL;
-    Initialize = NULL;
+    Initialize = NULL; 
+    Cbuf_AddText = NULL;
+    Con_Printf = NULL;
+    Cmd_AddCommand = NULL;
+    M_Keydown = NULL;
+    M_ToggleMenu_f = NULL;
+    Cmd_Argc = NULL;
+    Cmd_Argv = NULL;
+    SCR_UpdateScreen = NULL;
+    Cmd_CompleteCommand = NULL;
+    Cvar_CompleteVariable = NULL;
+    CL_IsStateDisconnected = NULL;
+
     if (hModule)
     {
         FreeLibrary(hModule);

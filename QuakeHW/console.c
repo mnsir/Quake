@@ -48,10 +48,6 @@ int con_vislines;
 
 bool con_debuglog;
 
-#define MAXCMDLINE 256
-extern char key_lines[32][MAXCMDLINE];
-
-
 bool con_initialized;
 
 int con_notifylines; // scan lines to clear for notify lines
@@ -70,7 +66,7 @@ void Con_ToggleConsole_f()
         if (cls.state == ca_connected)
         {
             g_pAppApi->Key_SetDest(key_game);
-            key_lines[g_pAppApi->Key_GetEditLine()][1] = 0; // clear any typing
+            g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine())[1] = 0; // clear any typing
             g_pAppApi->Key_SetLinePos(1);
         }
         else
@@ -120,7 +116,7 @@ Con_MessageMode_f
 void Con_MessageMode_f()
 {
     g_pAppApi->Key_SetDest(key_message);
-    Key_SetTeamMessage(false);
+    g_pAppApi->Key_SetTeamMessage(false);
 }
 
 
@@ -132,7 +128,7 @@ Con_MessageMode2_f
 void Con_MessageMode2_f()
 {
     g_pAppApi->Key_SetDest(key_message);
-    Key_SetTeamMessage(true);
+    g_pAppApi->Key_SetTeamMessage(true);
 }
 
 
@@ -479,7 +475,7 @@ void Con_DrawInput()
     if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)
         return; // don't draw anything
 
-    text = key_lines[g_pAppApi->Key_GetEditLine()];
+    text = g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine());
 
     // add the cursor frame
     text[g_pAppApi->Key_GetLinePos()] = 10 + ((int)(realtime * con_cursorspeed) & 1);
@@ -499,7 +495,7 @@ void Con_DrawInput()
         Draw_Character((i + 1) << 3, con_vislines - 16, text[i]);
 
     // remove cursor
-    key_lines[g_pAppApi->Key_GetEditLine()][g_pAppApi->Key_GetLinePos()] = 0;
+    g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine())[g_pAppApi->Key_GetLinePos()] = 0;
 }
 
 
@@ -516,7 +512,6 @@ void Con_DrawNotify()
     char * text;
     int i;
     float time;
-    extern char chat_buffer[];
 
     v = 0;
     for (i = con_current - NUM_CON_TIMES + 1; i <= con_current; i++)
@@ -549,9 +544,9 @@ void Con_DrawNotify()
         x = 0;
 
         Draw_String(8, v, "say:");
-        while (chat_buffer[x])
+        while (g_pAppApi->Key_GetChatBuffer()[x])
         {
-            Draw_Character((x + 5) << 3, v, chat_buffer[x]);
+            Draw_Character((x + 5) << 3, v, g_pAppApi->Key_GetChatBuffer()[x]);
             x++;
         }
         Draw_Character((x + 5) << 3, v, 10 + ((int)(realtime * con_cursorspeed) & 1));

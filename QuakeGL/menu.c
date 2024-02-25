@@ -244,7 +244,7 @@ int m_save_demonum;
 M_ToggleMenu_f
 ================
 */
-__declspec(dllexport) void __stdcall M_ToggleMenu_f()
+void M_ToggleMenu_f()
 {
     m_entersound = true;
 

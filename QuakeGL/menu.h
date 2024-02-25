@@ -33,6 +33,6 @@ extern int m_activenet;
 void M_Init();
 __declspec(dllexport) void __stdcall M_Keydown(int key);
 void M_Draw();
-__declspec(dllexport) void __stdcall M_ToggleMenu_f();
+void M_ToggleMenu_f();
 
 

@@ -145,6 +145,8 @@ typedef struct
     void (*Key_SetBinding)(int keynum, const char * binding);
     void (*Key_WriteBindings)(void * f);
     void (*Key_SetTeamMessage)(int val);
+    char* (*Key_GetLine)(int i);
+    const char* (*Key_GetChatBuffer)();
 
 } AppAPI;
 

@@ -154,18 +154,16 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="args.cpp" />
     <ClCompile Include="keys.cpp" />
-    <ClCompile Include="lib_funcs.cpp" />
     <ClCompile Include="main.c" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="mode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\appapi.h" />
-    <ClInclude Include="..\common\dll_func_typedefs.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="args.h" />
     <ClInclude Include="keys.h" />
-    <ClInclude Include="lib_funcs.h" />
+    <ClInclude Include="dll.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="mode.h" />
   </ItemGroup>

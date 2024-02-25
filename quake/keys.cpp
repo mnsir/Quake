@@ -1,9 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "keys.h"
 
-#include "lib_funcs.h"
+#include "dll.h"
+
 #include <stdexcept>
 #include <cstring>
+#include <format>
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -30,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 key up events are sent even if in console mode
 
 */
+
+//typedef enum { key_game, key_console, key_message, key_menu } keydest_t;
 
 
 #define MAXCMDLINE 256
@@ -168,24 +172,25 @@ void Key_Console(int key)
 
     if (key == K_ENTER)
     {
-        Cbuf_AddText(key_lines[edit_line] + 1); // skip the >
-        Cbuf_AddText("\n");
-        Con_Printf("%s\n", key_lines[edit_line]);
+        dll.Cbuf_AddText(key_lines[edit_line] + 1); // skip the >
+        dll.Cbuf_AddText("\n");
+        auto fmt = std::format("{}\n", key_lines[edit_line]);
+        dll.Lib_Con_Printf(fmt.c_str());
         edit_line = (edit_line + 1) & 31;
         history_line = edit_line;
         key_lines[edit_line][0] = ']';
         key_linepos = 1;
-        if (CL_IsStateDisconnected())
-            SCR_UpdateScreen(); // force an update, because the command
+        if (dll.CL_IsStateDisconnected())
+            dll.SCR_UpdateScreen(); // force an update, because the command
         // may take some time
         return;
     }
 
     if (key == K_TAB)
     { // command completion
-        cmd = Cmd_CompleteCommand(key_lines[edit_line] + 1);
+        cmd = dll.Cmd_CompleteCommand(key_lines[edit_line] + 1);
         if (!cmd)
-            cmd = Cvar_CompleteVariable(key_lines[edit_line] + 1);
+            cmd = dll.Cvar_CompleteVariable(key_lines[edit_line] + 1);
         if (cmd)
         {
             strcpy(key_lines[edit_line] + 1, cmd);
@@ -241,29 +246,29 @@ void Key_Console(int key)
 
     if (key == K_PGUP || key == K_MWHEELUP)
     {
-        Con_SetBackScroll(Con_GetBackScroll() + 2);
-        if (Con_GetBackScroll() > Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1)
-            Con_SetBackScroll(Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1);
+        dll.Con_SetBackScroll(dll.Con_GetBackScroll() + 2);
+        if (dll.Con_GetBackScroll() > dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1)
+            dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
         return;
     }
 
     if (key == K_PGDN || key == K_MWHEELDOWN)
     {
-        Con_SetBackScroll(Con_GetBackScroll() - 2);
-        if (Con_GetBackScroll() < 0)
-            Con_SetBackScroll(0);
+        dll.Con_SetBackScroll(dll.Con_GetBackScroll() - 2);
+        if (dll.Con_GetBackScroll() < 0)
+            dll.Con_SetBackScroll(0);
         return;
     }
 
     if (key == K_HOME)
     {
-        Con_SetBackScroll(Con_GetTotalLines() - (VID_GetHeight() >> 3) - 1);
+        dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
         return;
     }
 
     if (key == K_END)
     {
-        Con_SetBackScroll(0);
+        dll.Con_SetBackScroll(0);
         return;
     }
 
@@ -291,13 +296,13 @@ void Key_Message(int key)
     if (key == K_ENTER)
     {
         if (team_message)
-            Cbuf_AddText("say_team \"");
+            dll.Cbuf_AddText("say_team \"");
         else
-            Cbuf_AddText("say \"");
-        Cbuf_AddText(chat_buffer);
-        Cbuf_AddText("\"\n");
+            dll.Cbuf_AddText("say \"");
+        dll.Cbuf_AddText(chat_buffer);
+        dll.Cbuf_AddText("\"\n");
 
-        g_pAppApi->Key_SetDest(key_game);
+        Key_SetDest(key_game);
         chat_bufferlen = 0;
         chat_buffer[0] = 0;
         return;
@@ -305,7 +310,7 @@ void Key_Message(int key)
 
     if (key == K_ESCAPE)
     {
-        g_pAppApi->Key_SetDest(key_game);
+        Key_SetDest(key_game);
         chat_bufferlen = 0;
         chat_buffer[0] = 0;
         return;
@@ -428,16 +433,17 @@ void Key_Unbind_f()
 {
     int b;
 
-    if (Cmd_Argc() != 2)
+    if (dll.Cmd_Argc() != 2)
     {
-        Con_Printf("unbind <key> : remove commands from a key\n");
+        dll.Lib_Con_Printf("unbind <key> : remove commands from a key\n");
         return;
     }
 
-    b = Key_StringToKeynum(Cmd_Argv(1));
+    b = Key_StringToKeynum(dll.Cmd_Argv(1));
     if (b == -1)
     {
-        Con_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+        auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
+        dll.Lib_Con_Printf(fmt.c_str());
         return;
     }
 
@@ -464,26 +470,33 @@ void Key_Bind_f()
     int i, c, b;
     char cmd[1024];
 
-    c = Cmd_Argc();
+    c = dll.Cmd_Argc();
 
     if (c != 2 && c != 3)
     {
-        Con_Printf("bind <key> [command] : attach a command to a key\n");
+        dll.Lib_Con_Printf("bind <key> [command] : attach a command to a key\n");
         return;
     }
-    b = Key_StringToKeynum(Cmd_Argv(1));
+    b = Key_StringToKeynum(dll.Cmd_Argv(1));
     if (b == -1)
     {
-        Con_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+        auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
+        dll.Lib_Con_Printf(fmt.c_str());
         return;
     }
 
     if (c == 2)
     {
         if (keybindings[b])
-            Con_Printf("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b]);
+        {
+            auto fmt = std::format("\"{}\" = \"{}\"\n", dll.Cmd_Argv(1), keybindings[b]);
+            dll.Lib_Con_Printf(fmt.c_str());
+        }
         else
-            Con_Printf("\"%s\" is not bound\n", Cmd_Argv(1));
+        {
+            auto fmt = std::format("\"{}\" is not bound\n", dll.Cmd_Argv(1));
+            dll.Lib_Con_Printf(fmt.c_str());
+        }
         return;
     }
 
@@ -493,7 +506,7 @@ void Key_Bind_f()
     {
         if (i > 2)
             strcat(cmd, " ");
-        strcat(cmd, Cmd_Argv(i));
+        strcat(cmd, dll.Cmd_Argv(i));
     }
 
     Key_SetBinding(b, cmd);
@@ -506,8 +519,9 @@ Key_WriteBindings
 Writes lines containing "bind key value"
 ============
 */
-void Key_WriteBindings(FILE * f)
+void Key_WriteBindings(void * f_)
 {
+    FILE* f = reinterpret_cast<FILE*>(f_);
     int i;
 
     for (i = 0; i < 256; i++)
@@ -586,9 +600,9 @@ void Key_Init()
     //
     // register our functions
     //
-    Cmd_AddCommand("bind", Key_Bind_f);
-    Cmd_AddCommand("unbind", Key_Unbind_f);
-    Cmd_AddCommand("unbindall", Key_Unbindall_f);
+    dll.Cmd_AddCommand("bind", Key_Bind_f);
+    dll.Cmd_AddCommand("unbind", Key_Unbind_f);
+    dll.Cmd_AddCommand("unbindall", Key_Unbindall_f);
 
 
 }
@@ -629,7 +643,10 @@ void Key_Event(int key, int down_)
         }
 
         if (key >= 200 && !keybindings[key])
-            Con_Printf("%s is unbound, hit F4 to set.\n", Key_KeynumToString(key));
+        {
+            auto fmt = std::format("{} is unbound, hit F4 to set.\n", Key_KeynumToString(key));
+            dll.Lib_Con_Printf(fmt.c_str());
+        }
     }
 
     if (key == K_SHIFT)
@@ -648,11 +665,11 @@ void Key_Event(int key, int down_)
             Key_Message(key);
             break;
         case key_menu:
-            M_Keydown(key);
+            dll.M_Keydown(key);
             break;
         case key_game:
         case key_console:
-            M_ToggleMenu_f();
+            dll.Lib_M_ToggleMenu_f();
             break;
         default:
             throw std::runtime_error("Bad key_dest");
@@ -673,7 +690,7 @@ void Key_Event(int key, int down_)
         if (kb && kb[0] == '+')
         {
             sprintf(cmd, "-%s %i\n", kb + 1, key);
-            Cbuf_AddText(cmd);
+            dll.Cbuf_AddText(cmd);
         }
         if (keyshift[key] != key)
         {
@@ -681,7 +698,7 @@ void Key_Event(int key, int down_)
             if (kb && kb[0] == '+')
             {
                 sprintf(cmd, "-%s %i\n", kb + 1, key);
-                Cbuf_AddText(cmd);
+                dll.Cbuf_AddText(cmd);
             }
         }
         return;
@@ -690,18 +707,18 @@ void Key_Event(int key, int down_)
     //
     // during demo playback, most keys bring up the main menu
     //
-    if (CL_IsDemoPlayBack() && down && consolekeys[key] && g_pAppApi->Key_GetDest() == key_game)
+    if (dll.CL_IsDemoPlayBack() && down && consolekeys[key] && Key_GetDest() == key_game)
     {
-        M_ToggleMenu_f();
+        dll.Lib_M_ToggleMenu_f();
         return;
     }
 
     //
     // if not a consolekey, send to the interpreter no matter what mode is
     //
-    if ((g_pAppApi->Key_GetDest() == key_menu && menubound[key])
-        || (g_pAppApi->Key_GetDest() == key_console && !consolekeys[key])
-        || (g_pAppApi->Key_GetDest() == key_game && (!Con_IsForcedUp() || !consolekeys[key])))
+    if ((Key_GetDest() == key_menu && menubound[key])
+        || (Key_GetDest() == key_console && !consolekeys[key])
+        || (Key_GetDest() == key_game && (!dll.Con_IsForcedUp() || !consolekeys[key])))
     {
         kb = keybindings[key];
         if (kb)
@@ -709,12 +726,12 @@ void Key_Event(int key, int down_)
             if (kb[0] == '+')
             { // button commands add keynum as a parm
                 sprintf(cmd, "%s %i\n", kb, key);
-                Cbuf_AddText(cmd);
+                dll.Cbuf_AddText(cmd);
             }
             else
             {
-                Cbuf_AddText(kb);
-                Cbuf_AddText("\n");
+                dll.Cbuf_AddText(kb);
+                dll.Cbuf_AddText("\n");
             }
         }
         return;
@@ -734,7 +751,7 @@ void Key_Event(int key, int down_)
         Key_Message(key);
         break;
     case key_menu:
-        M_Keydown(key);
+        dll.M_Keydown(key);
         break;
 
     case key_game:
@@ -775,3 +792,6 @@ int Key_GetLinePos() { return key_linepos; }
 void Key_SetLinePos(int val) { key_linepos = val; }
 
 void Key_SetTeamMessage(int val) { team_message = val; }
+
+char* Key_GetLine(int i) { return key_lines[i]; }
+const char* Key_GetChatBuffer() { return chat_buffer; }

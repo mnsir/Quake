@@ -764,7 +764,7 @@ int WINAPI Win_Main()
 }
 
 
-__declspec(dllexport) int CALLBACK FromLib()
+__declspec(dllexport) int CALLBACK Run()
 {
     return Win_Main();
 }
@@ -773,4 +773,16 @@ __declspec(dllexport) int CALLBACK FromLib()
 __declspec(dllexport) void CALLBACK Initialize(AppAPI * pAppApi)
 {
     g_pAppApi = pAppApi;
+}
+
+
+__declspec(dllexport) void CALLBACK Lib_M_ToggleMenu_f()
+{
+    M_ToggleMenu_f();
+}
+
+
+__declspec(dllexport) void CALLBACK Lib_Con_Printf(const char* str)
+{
+    Con_Printf(str);
 }

@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <cstring>
 #include <format>
+#include <string>
+#include <array>
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -49,7 +51,7 @@ int history_line = 0;
 
 int key_count; // incremented every key event
 
-char * keybindings[256];
+std::array<std::string, 256> keybindings;
 bool consolekeys[256]; // if true, can't be rebound while in console
 bool menubound[256]; // if true, can't be rebound while in menu
 int keyshift[256]; // key to map to if shift held down in console
@@ -403,25 +405,10 @@ Key_SetBinding
 */
 void Key_SetBinding(int keynum, const char * binding)
 {
-    char * new_= nullptr;
-    int l;
-
     if (keynum == -1)
         return;
 
-    // free old bindings
-    if (keybindings[keynum])
-    {
-        free(keybindings[keynum]);
-        keybindings[keynum] = NULL;
-    }
-
-    // allocate memory for new binding
-    l = strlen(binding);
-    new_ = (char*)malloc(l + 1);
-    strcpy(new_, binding);
-    new_[l] = 0;
-    keybindings[keynum] = new_;
+    keybindings[keynum] = binding;
 }
 
 /*
@@ -452,11 +439,8 @@ void Key_Unbind_f()
 
 void Key_Unbindall_f()
 {
-    int i;
-
-    for (i = 0; i < 256; i++)
-        if (keybindings[i])
-            Key_SetBinding(i, "");
+    for (auto && keybinding : keybindings)
+        keybinding.clear();
 }
 
 
@@ -487,16 +471,8 @@ void Key_Bind_f()
 
     if (c == 2)
     {
-        if (keybindings[b])
-        {
-            auto fmt = std::format("\"{}\" = \"{}\"\n", dll.Cmd_Argv(1), keybindings[b]);
-            dll.Lib_Con_Printf(fmt.c_str());
-        }
-        else
-        {
-            auto fmt = std::format("\"{}\" is not bound\n", dll.Cmd_Argv(1));
-            dll.Lib_Con_Printf(fmt.c_str());
-        }
+        auto fmt = std::format("\"{}\" = \"{}\"\n", dll.Cmd_Argv(1), keybindings[b]);
+        dll.Lib_Con_Printf(fmt.c_str());
         return;
     }
 
@@ -521,13 +497,10 @@ Writes lines containing "bind key value"
 */
 void Key_WriteBindings(void * f_)
 {
-    FILE* f = reinterpret_cast<FILE*>(f_);
-    int i;
-
-    for (i = 0; i < 256; i++)
-        if (keybindings[i])
-            if (*keybindings[i])
-                fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+    FILE * f = reinterpret_cast<FILE *>(f_);
+    for (size_t i = 0; i < keybindings.size(); ++i)
+        if (!keybindings[i].empty())
+            fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 }
 
 
@@ -618,7 +591,6 @@ Should NOT be called during an interrupt!
 void Key_Event(int key, int down_)
 {
     bool down = static_cast<bool>(down_);
-    char * kb;
     char cmd[1024];
 
     keydown[key] = down;
@@ -642,7 +614,7 @@ void Key_Event(int key, int down_)
             return; // ignore most autorepeats
         }
 
-        if (key >= 200 && !keybindings[key])
+        if (key >= 200)
         {
             auto fmt = std::format("{} is unbound, hit F4 to set.\n", Key_KeynumToString(key));
             dll.Lib_Con_Printf(fmt.c_str());
@@ -686,18 +658,18 @@ void Key_Event(int key, int down_)
     //
     if (!down)
     {
-        kb = keybindings[key];
-        if (kb && kb[0] == '+')
+        auto && kb = keybindings[key];
+        if (kb[0] == '+')
         {
-            sprintf(cmd, "-%s %i\n", kb + 1, key);
+            sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
             dll.Cbuf_AddText(cmd);
         }
         if (keyshift[key] != key)
         {
-            kb = keybindings[keyshift[key]];
-            if (kb && kb[0] == '+')
+            auto && kb = keybindings[keyshift[key]];
+            if (kb[0] == '+')
             {
-                sprintf(cmd, "-%s %i\n", kb + 1, key);
+                sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
                 dll.Cbuf_AddText(cmd);
             }
         }
@@ -720,19 +692,16 @@ void Key_Event(int key, int down_)
         || (Key_GetDest() == key_console && !consolekeys[key])
         || (Key_GetDest() == key_game && (!dll.Con_IsForcedUp() || !consolekeys[key])))
     {
-        kb = keybindings[key];
-        if (kb)
+        auto && kb = keybindings[key];
+        if (kb[0] == '+')
+        { // button commands add keynum as a parm
+            sprintf(cmd, "%s %i\n", kb.c_str(), key);
+            dll.Cbuf_AddText(cmd);
+        }
+        else
         {
-            if (kb[0] == '+')
-            { // button commands add keynum as a parm
-                sprintf(cmd, "%s %i\n", kb, key);
-                dll.Cbuf_AddText(cmd);
-            }
-            else
-            {
-                dll.Cbuf_AddText(kb);
-                dll.Cbuf_AddText("\n");
-            }
+            dll.Cbuf_AddText(kb.c_str());
+            dll.Cbuf_AddText("\n");
         }
         return;
     }
@@ -783,7 +752,7 @@ void Key_ClearStates()
 
 int Key_GetDest() { return key_dest; }
 void Key_SetDest(int val) { key_dest = val; }
-const char * Key_GetBinding(int i) { return keybindings[i]; }
+const char * Key_GetBinding(int i) { return keybindings[i].c_str(); }
 int Key_GetLastPress() { return key_lastpress; }
 int Key_GetCount() { return key_count; }
 void Key_SetCount(int val) { key_count = val; }
@@ -793,5 +762,5 @@ void Key_SetLinePos(int val) { key_linepos = val; }
 
 void Key_SetTeamMessage(int val) { team_message = val; }
 
-char* Key_GetLine(int i) { return key_lines[i]; }
-const char* Key_GetChatBuffer() { return chat_buffer; }
+char * Key_GetLine(int i) { return key_lines[i]; }
+const char * Key_GetChatBuffer() { return chat_buffer; }

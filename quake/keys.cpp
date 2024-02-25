@@ -412,13 +412,13 @@ void Key_SetBinding(int keynum, const char * binding)
     // free old bindings
     if (keybindings[keynum])
     {
-        //Z_Free(keybindings[keynum]);
+        free(keybindings[keynum]);
         keybindings[keynum] = NULL;
     }
 
     // allocate memory for new binding
     l = strlen(binding);
-    //new_ = Z_Malloc(l + 1);
+    new_ = (char*)malloc(l + 1);
     strcpy(new_, binding);
     new_[l] = 0;
     keybindings[keynum] = new_;

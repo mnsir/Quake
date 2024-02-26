@@ -37,6 +37,27 @@ key up events are sent even if in console mode
 
 //typedef enum { key_game, key_console, key_message, key_menu } keydest_t;
 
+struct Qwe
+{
+    Qwe()
+    {
+        for (auto && line : lines)
+            line = "]";
+    }
+
+    void SetEditLine(std::string_view cmd)
+    {
+        lines[edit_line] = std::format("]{} ", cmd);
+        linepos = lines[edit_line].size();
+    }
+
+    std::array<std::string, 32> lines;
+    size_t linepos = 1;
+    size_t edit_line = 0;
+    size_t history_line = 0;
+};
+
+Qwe qwe;
 
 #define MAXCMDLINE 256
 char key_lines[32][MAXCMDLINE];
@@ -200,6 +221,9 @@ void Key_Console(int key)
             key_lines[edit_line][key_linepos] = ' ';
             key_linepos++;
             key_lines[edit_line][key_linepos] = 0;
+
+            qwe.SetEditLine(cmd);
+
             return;
         }
     }
@@ -756,11 +780,11 @@ const char * Key_GetBinding(int i) { return keybindings[i].c_str(); }
 int Key_GetLastPress() { return key_lastpress; }
 int Key_GetCount() { return key_count; }
 void Key_SetCount(int val) { key_count = val; }
+const char * Key_GetChatBuffer() { return chat_buffer; }
+void Key_SetTeamMessage(int val) { team_message = val; }
+
+
+char * Key_GetLine(int i) { return key_lines[i]; }
 int Key_GetEditLine() { return edit_line; }
 int Key_GetLinePos() { return key_linepos; }
 void Key_SetLinePos(int val) { key_linepos = val; }
-
-void Key_SetTeamMessage(int val) { team_message = val; }
-
-char * Key_GetLine(int i) { return key_lines[i]; }
-const char * Key_GetChatBuffer() { return chat_buffer; }

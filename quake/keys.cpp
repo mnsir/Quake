@@ -48,22 +48,19 @@ struct Qwe
     void SetEditLine(std::string_view cmd)
     {
         lines[edit_line] = std::format("{}{} ", prompt, cmd);
-        linepos = lines[edit_line].size();
     }
 
     void AppendChar(char ch)
     {
-        if (linepos < MAXCMDLINE - 1)
+        if (lines[edit_line].size() < MAXCMDLINE - 1)
         {
             lines[edit_line] += ch;
-            linepos = lines[edit_line].size();
         }
     }
 
     void ClearAnyTyping()
     {
         lines[edit_line] = prompt;
-        linepos = lines[edit_line].size();
     }
 
     void Prev()
@@ -77,7 +74,6 @@ struct Qwe
             history_line = (edit_line + 1) & 31;
 
         lines[edit_line] = lines[history_line];
-        linepos = lines[edit_line].size();
     }
 
     void Next()
@@ -92,22 +88,19 @@ struct Qwe
             if (history_line == edit_line)
             {
                 lines[edit_line] = prompt;
-                linepos = lines[edit_line].size();
             }
             else
             {
                 lines[edit_line] = lines[history_line];
-                linepos = lines[edit_line].size();
             }
         }
     }
 
     void Pop()
     {
-        if (linepos > 1)
+        if (lines[edit_line].size() > 1)
         {
             lines[edit_line].pop_back();
-            linepos = lines[edit_line].size();
         }
     }
 
@@ -125,13 +118,12 @@ struct Qwe
 
     size_t GetLinePos() const
     {
-        return linepos;
+        return lines[edit_line].size();
     }
 
     static constexpr std::string_view prompt{"]"};
     static constexpr size_t MAXCMDLINE = 256;
     std::array<std::string, 32> lines;
-    size_t linepos = 1;
     size_t edit_line = 0;
     size_t history_line = 0;
 };

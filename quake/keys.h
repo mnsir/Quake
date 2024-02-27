@@ -136,13 +136,12 @@ extern "C" {
 	int Key_GetLastPress();
 	int Key_GetCount();
 	void Key_SetCount(int val);
-	int Key_GetEditLine();
-	int Key_GetLinePos();
-	void Key_SetLinePos(int val);
+	const char * Key_GetEditLine();
+	int Key_Get_LinePos();
 	const char* Key_KeynumToString(int keynum);
 	void Key_SetTeamMessage(int val);
-	char* Key_GetLine(int i);
 	const char* Key_GetChatBuffer();
+	void Key_ClearAnyTyping();
 
 #ifdef __cplusplus
 }

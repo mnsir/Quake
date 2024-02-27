@@ -66,8 +66,7 @@ void Con_ToggleConsole_f()
         if (cls.state == ca_connected)
         {
             g_pAppApi->Key_SetDest(key_game);
-            g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine())[1] = 0; // clear any typing
-            g_pAppApi->Key_SetLinePos(1);
+            g_pAppApi->Key_ClearAnyTyping();
         }
         else
         {
@@ -470,32 +469,30 @@ void Con_DrawInput()
 {
     int y;
     int i;
-    char * text;
+    char buf[256];
+    char * text = buf;
 
     if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)
         return; // don't draw anything
 
-    text = g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine());
+    strcpy(text, g_pAppApi->Key_GetEditLine());
 
     // add the cursor frame
-    text[g_pAppApi->Key_GetLinePos()] = 10 + ((int)(realtime * con_cursorspeed) & 1);
+    text[g_pAppApi->Key_Get_LinePos()] = 10 + ((int)(realtime * con_cursorspeed) & 1);
 
     // fill out remainder with spaces
-    for (i = g_pAppApi->Key_GetLinePos() + 1; i < con_linewidth; i++)
+    for (i = g_pAppApi->Key_Get_LinePos() + 1; i < con_linewidth; i++)
         text[i] = ' ';
 
     // prestep if horizontally scrolling
-    if (g_pAppApi->Key_GetLinePos() >= con_linewidth)
-        text += 1 + g_pAppApi->Key_GetLinePos() - con_linewidth;
+    if (g_pAppApi->Key_Get_LinePos() >= con_linewidth)
+        text += 1 + g_pAppApi->Key_Get_LinePos() - con_linewidth;
 
     // draw it
     y = con_vislines - 16;
 
     for (i = 0; i < con_linewidth; i++)
         Draw_Character((i + 1) << 3, con_vislines - 16, text[i]);
-
-    // remove cursor
-    g_pAppApi->Key_GetLine(g_pAppApi->Key_GetEditLine())[g_pAppApi->Key_GetLinePos()] = 0;
 }
 
 

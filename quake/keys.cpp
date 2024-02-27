@@ -42,15 +42,87 @@ struct Qwe
     Qwe()
     {
         for (auto && line : lines)
-            line = "]";
+            line = prompt;
     }
 
     void SetEditLine(std::string_view cmd)
     {
-        lines[edit_line] = std::format("]{} ", cmd);
+        lines[edit_line] = std::format("{}{} ", prompt, cmd);
         linepos = lines[edit_line].size();
     }
 
+    void AppendChar(char ch)
+    {
+        lines[edit_line] += ch;
+        linepos = lines[edit_line].size();
+    }
+
+    void ClearAnyTyping()
+    {
+        lines[edit_line] = prompt;
+        linepos = lines[edit_line].size();
+    }
+
+    void Prev()
+    {
+        do
+        {
+            history_line = (history_line - 1) & 31;
+        } while (history_line != edit_line
+                 && lines[history_line].size() == 1);
+        if (history_line == edit_line)
+            history_line = (edit_line + 1) & 31;
+
+        lines[edit_line] = lines[history_line];
+        linepos = lines[edit_line].size();
+    }
+
+    void Next()
+    {
+        if (history_line != edit_line)
+        {
+            do
+            {
+                history_line = (history_line + 1) & 31;
+            } while (history_line != edit_line
+                     && lines[history_line].size() == 1);
+            if (history_line == edit_line)
+            {
+                lines[edit_line] = prompt;
+                linepos = lines[edit_line].size();
+            }
+            else
+            {
+                lines[edit_line] = lines[history_line];
+                linepos = lines[edit_line].size();
+            }
+        }
+    }
+
+    void Pop()
+    {
+        lines[edit_line].pop_back();
+        linepos = lines[edit_line].size();
+    }
+
+    std::string_view GetEditLine() const
+    {
+        return lines[edit_line];
+    }
+
+    void Flush()
+    {
+        edit_line = (edit_line + 1) & 31;
+        history_line = edit_line;
+        ClearAnyTyping();
+    }
+
+    size_t GetLinePos() const
+    {
+        return linepos;
+    }
+
+    static constexpr std::string_view prompt{"]"};
     std::array<std::string, 32> lines;
     size_t linepos = 1;
     size_t edit_line = 0;
@@ -191,18 +263,20 @@ Interactive line editing and console scrollback
 */
 void Key_Console(int key)
 {
-    const char * cmd;
-
     if (key == K_ENTER)
     {
-        dll.Cbuf_AddText(key_lines[edit_line] + 1); // skip the >
+        dll.Cbuf_AddText(qwe.GetEditLine().substr(1).data()); // skip the >
         dll.Cbuf_AddText("\n");
-        auto fmt = std::format("{}\n", key_lines[edit_line]);
+        auto fmt = std::format("{}\n", qwe.GetEditLine().data());
         dll.Lib_Con_Printf(fmt.c_str());
+
         edit_line = (edit_line + 1) & 31;
         history_line = edit_line;
         key_lines[edit_line][0] = ']';
         key_linepos = 1;
+
+        qwe.Flush();
+
         if (dll.CL_IsStateDisconnected())
             dll.SCR_UpdateScreen(); // force an update, because the command
         // may take some time
@@ -211,9 +285,9 @@ void Key_Console(int key)
 
     if (key == K_TAB)
     { // command completion
-        cmd = dll.Cmd_CompleteCommand(key_lines[edit_line] + 1);
+        const char * cmd = dll.Cmd_CompleteCommand(qwe.GetEditLine().substr(1).data());
         if (!cmd)
-            cmd = dll.Cvar_CompleteVariable(key_lines[edit_line] + 1);
+            cmd = dll.Cvar_CompleteVariable(qwe.GetEditLine().substr(1).data());
         if (cmd)
         {
             strcpy(key_lines[edit_line] + 1, cmd);
@@ -232,6 +306,9 @@ void Key_Console(int key)
     {
         if (key_linepos > 1)
             key_linepos--;
+
+        qwe.Pop();
+
         return;
     }
 
@@ -246,27 +323,35 @@ void Key_Console(int key)
             history_line = (edit_line + 1) & 31;
         strcpy(key_lines[edit_line], key_lines[history_line]);
         key_linepos = strlen(key_lines[edit_line]);
+
+        qwe.Prev();
+
         return;
     }
 
     if (key == K_DOWNARROW)
     {
-        if (history_line == edit_line) return;
-        do
+        if (history_line != edit_line)
         {
-            history_line = (history_line + 1) & 31;
-        } while (history_line != edit_line
-                 && !key_lines[history_line][1]);
-        if (history_line == edit_line)
-        {
-            key_lines[edit_line][0] = ']';
-            key_linepos = 1;
+            do
+            {
+                history_line = (history_line + 1) & 31;
+            } while (history_line != edit_line
+                     && !key_lines[history_line][1]);
+            if (history_line == edit_line)
+            {
+                key_lines[edit_line][0] = ']';
+                key_linepos = 1;
+            }
+            else
+            {
+                strcpy(key_lines[edit_line], key_lines[history_line]);
+                key_linepos = strlen(key_lines[edit_line]);
+            }
         }
-        else
-        {
-            strcpy(key_lines[edit_line], key_lines[history_line]);
-            key_linepos = strlen(key_lines[edit_line]);
-        }
+
+        qwe.Next();
+
         return;
     }
 
@@ -307,7 +392,7 @@ void Key_Console(int key)
         key_linepos++;
         key_lines[edit_line][key_linepos] = 0;
     }
-
+    qwe.AppendChar(key);
 }
 
 //============================================================================
@@ -783,8 +868,12 @@ void Key_SetCount(int val) { key_count = val; }
 const char * Key_GetChatBuffer() { return chat_buffer; }
 void Key_SetTeamMessage(int val) { team_message = val; }
 
+const char * Key_GetEditLine() { return qwe.GetEditLine().data(); }
+int Key_Get_LinePos() { return qwe.GetLinePos(); }
+void Key_ClearAnyTyping()
+{
+    key_lines[edit_line][1] = 0; // clear any typing
+    key_linepos = 1;
 
-char * Key_GetLine(int i) { return key_lines[i]; }
-int Key_GetEditLine() { return edit_line; }
-int Key_GetLinePos() { return key_linepos; }
-void Key_SetLinePos(int val) { key_linepos = val; }
+    qwe.ClearAnyTyping();
+}

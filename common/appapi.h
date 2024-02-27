@@ -135,9 +135,8 @@ typedef struct
     int (*Key_GetLastPress)();
     int (*Key_GetCount)();
     void (*Key_SetCount)(int val);
-    int (*Key_GetEditLine)();
-    int (*Key_GetLinePos)();
-    void (*Key_SetLinePos)(int val);
+    const char * (*Key_GetEditLine)();
+    int (*Key_Get_LinePos)();
     void (*Key_Event)(int key, int down);
     void (*Key_ClearStates)();
     void (*Key_Init)();
@@ -145,8 +144,8 @@ typedef struct
     void (*Key_SetBinding)(int keynum, const char * binding);
     void (*Key_WriteBindings)(void * f);
     void (*Key_SetTeamMessage)(int val);
-    char* (*Key_GetLine)(int i);
     const char* (*Key_GetChatBuffer)();
+    void (*Key_ClearAnyTyping)();
 
 } AppAPI;
 

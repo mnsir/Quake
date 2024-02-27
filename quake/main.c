@@ -79,17 +79,16 @@ AppAPI g_appApi = {
     .Key_GetCount = Key_GetCount,
     .Key_SetCount = Key_SetCount,
     .Key_GetEditLine = Key_GetEditLine,
-    .Key_GetLinePos = Key_GetLinePos,
-    .Key_SetLinePos = Key_SetLinePos,
+    .Key_Get_LinePos = Key_Get_LinePos,
     .Key_Event = Key_Event,
     .Key_ClearStates = Key_ClearStates,
     .Key_KeynumToString = Key_KeynumToString,
     .Key_SetBinding = Key_SetBinding,
     .Key_WriteBindings = Key_WriteBindings,
     .Key_SetTeamMessage = Key_SetTeamMessage,
-    .Key_GetLine = Key_GetLine,
     .Key_GetChatBuffer = Key_GetChatBuffer,
     .Key_Init = Key_Init,
+    .Key_ClearAnyTyping = Key_ClearAnyTyping,
 };
 
 Dll dll;

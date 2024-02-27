@@ -101,8 +101,11 @@ struct Qwe
 
     void Pop()
     {
-        lines[edit_line].pop_back();
-        linepos = lines[edit_line].size();
+        if (linepos > 1)
+        {
+            lines[edit_line].pop_back();
+            linepos = lines[edit_line].size();
+        }
     }
 
     std::string_view GetEditLine() const

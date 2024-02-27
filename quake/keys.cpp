@@ -53,8 +53,11 @@ struct Qwe
 
     void AppendChar(char ch)
     {
-        lines[edit_line] += ch;
-        linepos = lines[edit_line].size();
+        if (linepos < MAXCMDLINE - 1)
+        {
+            lines[edit_line] += ch;
+            linepos = lines[edit_line].size();
+        }
     }
 
     void ClearAnyTyping()
@@ -126,6 +129,7 @@ struct Qwe
     }
 
     static constexpr std::string_view prompt{"]"};
+    static constexpr size_t MAXCMDLINE = 256;
     std::array<std::string, 32> lines;
     size_t linepos = 1;
     size_t edit_line = 0;
@@ -134,14 +138,8 @@ struct Qwe
 
 Qwe qwe;
 
-#define MAXCMDLINE 256
-char key_lines[32][MAXCMDLINE];
-int key_linepos;
 int shift_down = false;
 int key_lastpress;
-
-int edit_line = 0;
-int history_line = 0;
 
 /*keydest_t*/int key_dest;
 
@@ -273,11 +271,6 @@ void Key_Console(int key)
         auto fmt = std::format("{}\n", qwe.GetEditLine().data());
         dll.Lib_Con_Printf(fmt.c_str());
 
-        edit_line = (edit_line + 1) & 31;
-        history_line = edit_line;
-        key_lines[edit_line][0] = ']';
-        key_linepos = 1;
-
         qwe.Flush();
 
         if (dll.CL_IsStateDisconnected())
@@ -293,68 +286,26 @@ void Key_Console(int key)
             cmd = dll.Cvar_CompleteVariable(qwe.GetEditLine().substr(1).data());
         if (cmd)
         {
-            strcpy(key_lines[edit_line] + 1, cmd);
-            key_linepos = strlen(cmd) + 1;
-            key_lines[edit_line][key_linepos] = ' ';
-            key_linepos++;
-            key_lines[edit_line][key_linepos] = 0;
-
             qwe.SetEditLine(cmd);
-
             return;
         }
     }
 
     if (key == K_BACKSPACE || key == K_LEFTARROW)
     {
-        if (key_linepos > 1)
-            key_linepos--;
-
         qwe.Pop();
-
         return;
     }
 
     if (key == K_UPARROW)
     {
-        do
-        {
-            history_line = (history_line - 1) & 31;
-        } while (history_line != edit_line
-                 && !key_lines[history_line][1]);
-        if (history_line == edit_line)
-            history_line = (edit_line + 1) & 31;
-        strcpy(key_lines[edit_line], key_lines[history_line]);
-        key_linepos = strlen(key_lines[edit_line]);
-
         qwe.Prev();
-
         return;
     }
 
     if (key == K_DOWNARROW)
     {
-        if (history_line != edit_line)
-        {
-            do
-            {
-                history_line = (history_line + 1) & 31;
-            } while (history_line != edit_line
-                     && !key_lines[history_line][1]);
-            if (history_line == edit_line)
-            {
-                key_lines[edit_line][0] = ']';
-                key_linepos = 1;
-            }
-            else
-            {
-                strcpy(key_lines[edit_line], key_lines[history_line]);
-                key_linepos = strlen(key_lines[edit_line]);
-            }
-        }
-
         qwe.Next();
-
         return;
     }
 
@@ -389,12 +340,6 @@ void Key_Console(int key)
     if (key < 32 || key > 127)
         return; // non printable
 
-    if (key_linepos < MAXCMDLINE - 1)
-    {
-        key_lines[edit_line][key_linepos] = key;
-        key_linepos++;
-        key_lines[edit_line][key_linepos] = 0;
-    }
     qwe.AppendChar(key);
 }
 
@@ -624,13 +569,6 @@ Key_Init
 void Key_Init()
 {
     int i;
-
-    for (i = 0; i < 32; i++)
-    {
-        key_lines[i][0] = ']';
-        key_lines[i][1] = 0;
-    }
-    key_linepos = 1;
 
     //
     // init ascii characters in console mode
@@ -875,8 +813,5 @@ const char * Key_GetEditLine() { return qwe.GetEditLine().data(); }
 int Key_Get_LinePos() { return qwe.GetLinePos(); }
 void Key_ClearAnyTyping()
 {
-    key_lines[edit_line][1] = 0; // clear any typing
-    key_linepos = 1;
-
     qwe.ClearAnyTyping();
 }

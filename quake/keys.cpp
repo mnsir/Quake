@@ -79,7 +79,7 @@ struct Qwe
             recent.push_back(std::string()); // may throw
             if (recent.size() > recent_max_size)
                 recent.pop_front();
-            std::swap(recent.front(), edit_line);
+            std::swap(recent.back(), edit_line);
             it_recent = recent.end();
         }
         catch (const std::exception & e)

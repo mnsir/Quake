@@ -547,11 +547,8 @@ void Con_DrawNotify()
         x = 0;
 
         Draw_String(8, v, "say:");
-        while (g_pAppApi->Key_GetChatBuffer()[x])
-        {
-            Draw_Character((x + 5) << 3, v, g_pAppApi->Key_GetChatBuffer()[x]);
-            x++;
-        }
+        for (const char* msg = g_pAppApi->Key_GetChatBuffer(); msg[x]; x++)
+            Draw_Character((x + 5) << 3, v, msg[x]);
         Draw_Character((x + 5) << 3, v, 10 + ((int)(realtime * con_cursorspeed) & 1));
         v += 8;
     }

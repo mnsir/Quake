@@ -41,85 +41,85 @@ key up events are sent even if in console mode
 class CommandLineHistory
 {
 public:
-    CommandLineHistory()
-        : recent({""}) // "" need to repeat the behavior
-    {
-    }
+	CommandLineHistory()
+		: recent({ "" }) // "" need to repeat the behavior
+	{
+	}
 
-    void SetEditLine(std::string cmd) noexcept { std::swap(edit_line, cmd); }
+	void SetEditLine(std::string cmd) noexcept { std::swap(edit_line, cmd); }
 
-    void TryPushBack(char ch) noexcept
-    {
-        if (edit_line.size() < edit_line_max_size)
-        {
-            try
-            {
-                edit_line.reserve(edit_line.size() + 1); // may throw
-                edit_line.push_back(ch);
-            }
-            catch (const std::exception & e)
-            {
-            }
-        }
-    }
+	void TryPushBack(char ch) noexcept
+	{
+		if (edit_line.size() < edit_line_max_size)
+		{
+			try
+			{
+				edit_line.reserve(edit_line.size() + 1); // may throw
+				edit_line.push_back(ch);
+			}
+			catch (const std::exception& e)
+			{
+			}
+		}
+	}
 
-    void ClearAnyTyping() noexcept { edit_line.clear(); }
+	void ClearAnyTyping() noexcept { edit_line.clear(); }
 
-    void TryPopBack() noexcept
-    {
-        if (!edit_line.empty())
-            edit_line.pop_back();
-    }
+	void TryPopBack() noexcept
+	{
+		if (!edit_line.empty())
+			edit_line.pop_back();
+	}
 
-    const std::string & GetEditLine() const noexcept { return edit_line; }
+	const std::string& GetEditLine() const noexcept { return edit_line; }
 
-    void Flush() noexcept
-    {
-        try
-        {
-            recent.push_back(std::string()); // may throw
-            if (recent.size() > recent_max_size)
-                recent.pop_front();
-            std::swap(recent.back(), edit_line);
-            it_recent = recent.end();
-        }
-        catch (const std::exception & e)
-        {
-        }
-    }
+	void Flush() noexcept
+	{
+		try
+		{
+			recent.push_back(std::string()); // may throw
+			if (recent.size() > recent_max_size)
+				recent.pop_front();
+			std::swap(recent.back(), edit_line);
+			it_recent = recent.end();
+		}
+		catch (const std::exception& e)
+		{
+		}
+	}
 
-    void Prev()
-    {
-        if (auto it = it_recent; it != recent.begin())
-        {
-            it--;
-            edit_line = *it; // may throw
-            it_recent = it;
-        }
-    }
+	void Prev()
+	{
+		if (auto it = it_recent; it != recent.begin())
+		{
+			it--;
+			edit_line = *it; // may throw
+			it_recent = it;
+		}
+	}
 
-    void Next()
-    {
-        if (auto it = it_recent; it != recent.end())
-        {
-            it++;
-            if (it != recent.end())
-                edit_line = *it; // may throw
-            else
-                edit_line.clear();
+	void Next()
+	{
+		if (auto it = it_recent; it != recent.end())
+		{
+			it++;
+			if (it != recent.end())
+				edit_line = *it; // may throw
+			else
+				edit_line.clear();
 
-            it_recent = it;
-        }
-    }
+			it_recent = it;
+		}
+	}
 
 private:
-    static constexpr size_t edit_line_max_size = 0xFF;
-    static constexpr size_t recent_max_size = 0x1F;
+	static constexpr size_t edit_line_max_size = 0xFF;
+	static constexpr size_t recent_max_size = 0x1F;
 
-    std::list<std::string> recent;
-    decltype(recent)::const_iterator it_recent = recent.end();
+	std::list<std::string> recent;
+	decltype(recent)::const_iterator it_recent = recent.end();
 
-    std::string edit_line;
+	std::string edit_line;
 };
 
 CommandLineHistory commandLineHistory;
@@ -138,100 +138,86 @@ int keyshift[256]; // key to map to if shift held down in console
 int key_repeats[256]; // if > 1, it is autorepeating
 bool keydown[256];
 
-typedef struct
-{
-    const char * name;
-    int keynum;
-} keyname_t;
+namespace {
 
-keyname_t keynames[] =
-{
-    {"TAB", K_TAB},
-    {"ENTER", K_ENTER},
-    {"ESCAPE", K_ESCAPE},
-    {"SPACE", K_SPACE},
-    {"BACKSPACE", K_BACKSPACE},
-    {"UPARROW", K_UPARROW},
-    {"DOWNARROW", K_DOWNARROW},
-    {"LEFTARROW", K_LEFTARROW},
-    {"RIGHTARROW", K_RIGHTARROW},
+	using namespace std::string_view_literals;
 
-    {"ALT", K_ALT},
-    {"CTRL", K_CTRL},
-    {"SHIFT", K_SHIFT},
-
-    {"F1", K_F1},
-    {"F2", K_F2},
-    {"F3", K_F3},
-    {"F4", K_F4},
-    {"F5", K_F5},
-    {"F6", K_F6},
-    {"F7", K_F7},
-    {"F8", K_F8},
-    {"F9", K_F9},
-    {"F10", K_F10},
-    {"F11", K_F11},
-    {"F12", K_F12},
-
-    {"INS", K_INS},
-    {"DEL", K_DEL},
-    {"PGDN", K_PGDN},
-    {"PGUP", K_PGUP},
-    {"HOME", K_HOME},
-    {"END", K_END},
-
-    {"MOUSE1", K_MOUSE1},
-    {"MOUSE2", K_MOUSE2},
-    {"MOUSE3", K_MOUSE3},
-
-    {"JOY1", K_JOY1},
-    {"JOY2", K_JOY2},
-    {"JOY3", K_JOY3},
-    {"JOY4", K_JOY4},
-
-    {"AUX1", K_AUX1},
-    {"AUX2", K_AUX2},
-    {"AUX3", K_AUX3},
-    {"AUX4", K_AUX4},
-    {"AUX5", K_AUX5},
-    {"AUX6", K_AUX6},
-    {"AUX7", K_AUX7},
-    {"AUX8", K_AUX8},
-    {"AUX9", K_AUX9},
-    {"AUX10", K_AUX10},
-    {"AUX11", K_AUX11},
-    {"AUX12", K_AUX12},
-    {"AUX13", K_AUX13},
-    {"AUX14", K_AUX14},
-    {"AUX15", K_AUX15},
-    {"AUX16", K_AUX16},
-    {"AUX17", K_AUX17},
-    {"AUX18", K_AUX18},
-    {"AUX19", K_AUX19},
-    {"AUX20", K_AUX20},
-    {"AUX21", K_AUX21},
-    {"AUX22", K_AUX22},
-    {"AUX23", K_AUX23},
-    {"AUX24", K_AUX24},
-    {"AUX25", K_AUX25},
-    {"AUX26", K_AUX26},
-    {"AUX27", K_AUX27},
-    {"AUX28", K_AUX28},
-    {"AUX29", K_AUX29},
-    {"AUX30", K_AUX30},
-    {"AUX31", K_AUX31},
-    {"AUX32", K_AUX32},
-
-    {"PAUSE", K_PAUSE},
-
-    {"MWHEELUP", K_MWHEELUP},
-    {"MWHEELDOWN", K_MWHEELDOWN},
-
-    {"SEMICOLON", ';'}, // because a raw semicolon seperates commands
-
-    {nullptr, 0}
-};
-
+	auto keynames = std::to_array({
+			std::pair{"TAB"sv, K_TAB},
+			std::pair{"ENTER"sv, K_ENTER},
+			std::pair{"ESCAPE"sv, K_ESCAPE},
+			std::pair{"SPACE"sv, K_SPACE},
+			std::pair{"BACKSPACE"sv, K_BACKSPACE},
+			std::pair{"UPARROW"sv, K_UPARROW},
+			std::pair{"DOWNARROW"sv, K_DOWNARROW},
+			std::pair{"LEFTARROW"sv, K_LEFTARROW},
+			std::pair{"RIGHTARROW"sv, K_RIGHTARROW},
+			std::pair{"ALT"sv, K_ALT},
+			std::pair{"CTRL"sv, K_CTRL},
+			std::pair{"SHIFT"sv, K_SHIFT},
+			std::pair{"F1"sv, K_F1},
+			std::pair{"F2"sv, K_F2},
+			std::pair{"F3"sv, K_F3},
+			std::pair{"F4"sv, K_F4},
+			std::pair{"F5"sv, K_F5},
+			std::pair{"F6"sv, K_F6},
+			std::pair{"F7"sv, K_F7},
+			std::pair{"F8"sv, K_F8},
+			std::pair{"F9"sv, K_F9},
+			std::pair{"F10"sv, K_F10},
+			std::pair{"F11"sv, K_F11},
+			std::pair{"F12"sv, K_F12},
+			std::pair{"INS"sv, K_INS},
+			std::pair{"DEL"sv, K_DEL},
+			std::pair{"PGDN"sv, K_PGDN},
+			std::pair{"PGUP"sv, K_PGUP},
+			std::pair{"HOME"sv, K_HOME},
+			std::pair{"END"sv, K_END},
+			std::pair{"MOUSE1"sv, K_MOUSE1},
+			std::pair{"MOUSE2"sv, K_MOUSE2},
+			std::pair{"MOUSE3"sv, K_MOUSE3},
+			std::pair{"JOY1"sv, K_JOY1},
+			std::pair{"JOY2"sv, K_JOY2},
+			std::pair{"JOY3"sv, K_JOY3},
+			std::pair{"JOY4"sv, K_JOY4},
+			std::pair{"AUX1"sv, K_AUX1},
+			std::pair{"AUX2"sv, K_AUX2},
+			std::pair{"AUX3"sv, K_AUX3},
+			std::pair{"AUX4"sv, K_AUX4},
+			std::pair{"AUX5"sv, K_AUX5},
+			std::pair{"AUX6"sv, K_AUX6},
+			std::pair{"AUX7"sv, K_AUX7},
+			std::pair{"AUX8"sv, K_AUX8},
+			std::pair{"AUX9"sv, K_AUX9},
+			std::pair{"AUX10"sv, K_AUX10},
+			std::pair{"AUX11"sv, K_AUX11},
+			std::pair{"AUX12"sv, K_AUX12},
+			std::pair{"AUX13"sv, K_AUX13},
+			std::pair{"AUX14"sv, K_AUX14},
+			std::pair{"AUX15"sv, K_AUX15},
+			std::pair{"AUX16"sv, K_AUX16},
+			std::pair{"AUX17"sv, K_AUX17},
+			std::pair{"AUX18"sv, K_AUX18},
+			std::pair{"AUX19"sv, K_AUX19},
+			std::pair{"AUX20"sv, K_AUX20},
+			std::pair{"AUX21"sv, K_AUX21},
+			std::pair{"AUX22"sv, K_AUX22},
+			std::pair{"AUX23"sv, K_AUX23},
+			std::pair{"AUX24"sv, K_AUX24},
+			std::pair{"AUX25"sv, K_AUX25},
+			std::pair{"AUX26"sv, K_AUX26},
+			std::pair{"AUX27"sv, K_AUX27},
+			std::pair{"AUX28"sv, K_AUX28},
+			std::pair{"AUX29"sv, K_AUX29},
+			std::pair{"AUX30"sv, K_AUX30},
+			std::pair{"AUX31"sv, K_AUX31},
+			std::pair{"AUX32"sv, K_AUX32},
+			std::pair{"PAUSE"sv, K_PAUSE},
+			std::pair{"MWHEELUP"sv, K_MWHEELUP},
+			std::pair{"MWHEELDOWN"sv, K_MWHEELDOWN},
+			std::pair{"SEMICOLON"sv, static_cast<int>(';')}, // because a raw semicolon seperates commands
+		});
+}
 /*
 ==============================================================================
 
@@ -250,137 +236,132 @@ Interactive line editing and console scrollback
 */
 void Key_Console(int key)
 {
-    if (key == K_ENTER)
-    {
-        auto && line = commandLineHistory.GetEditLine();
-        auto fmt = std::format("{}\n", line); // no prompt
-        dll.Cbuf_AddText(fmt.c_str());
-        fmt = std::format("]{}\n", line); // prompt
-        dll.Lib_Con_Printf(fmt.c_str());
+	if (key == K_ENTER)
+	{
+		auto&& line = commandLineHistory.GetEditLine();
+		auto fmt = std::format("{}\n", line); // no prompt
+		dll.Cbuf_AddText(fmt.c_str());
+		fmt = std::format("]{}\n", line); // prompt
+		dll.Lib_Con_Printf(fmt.c_str());
 
-        commandLineHistory.Flush();
+		commandLineHistory.Flush();
 
-        if (dll.CL_IsStateDisconnected())
-            dll.SCR_UpdateScreen(); // force an update, because the command
-        // may take some time
-        return;
-    }
+		if (dll.CL_IsStateDisconnected())
+			dll.SCR_UpdateScreen(); // force an update, because the command
+		// may take some time
+		return;
+	}
 
-    if (key == K_TAB)
-    { // command completion
-        auto && line = commandLineHistory.GetEditLine();
-        const char * cmd = dll.Cmd_CompleteCommand(line.data());
-        if (!cmd)
-            cmd = dll.Cvar_CompleteVariable(line.data());
-        if (cmd)
-        {
-            commandLineHistory.SetEditLine(std::format("{} ", cmd));
-            return;
-        }
-    }
+	if (key == K_TAB)
+	{ // command completion
+		auto&& line = commandLineHistory.GetEditLine();
+		const char* cmd = dll.Cmd_CompleteCommand(line.data());
+		if (!cmd)
+			cmd = dll.Cvar_CompleteVariable(line.data());
+		if (cmd)
+		{
+			commandLineHistory.SetEditLine(std::format("{} ", cmd));
+			return;
+		}
+	}
 
-    if (key == K_BACKSPACE || key == K_LEFTARROW)
-    {
-        commandLineHistory.TryPopBack();
-        return;
-    }
+	if (key == K_BACKSPACE || key == K_LEFTARROW)
+	{
+		commandLineHistory.TryPopBack();
+		return;
+	}
 
-    if (key == K_UPARROW)
-    {
-        commandLineHistory.Prev();
-        return;
-    }
+	if (key == K_UPARROW)
+	{
+		commandLineHistory.Prev();
+		return;
+	}
 
-    if (key == K_DOWNARROW)
-    {
-        commandLineHistory.Next();
-        return;
-    }
+	if (key == K_DOWNARROW)
+	{
+		commandLineHistory.Next();
+		return;
+	}
 
-    if (key == K_PGUP || key == K_MWHEELUP)
-    {
-        dll.Con_SetBackScroll(dll.Con_GetBackScroll() + 2);
-        if (dll.Con_GetBackScroll() > dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1)
-            dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
-        return;
-    }
+	if (key == K_PGUP || key == K_MWHEELUP)
+	{
+		dll.Con_SetBackScroll(dll.Con_GetBackScroll() + 2);
+		if (dll.Con_GetBackScroll() > dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1)
+			dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
+		return;
+	}
 
-    if (key == K_PGDN || key == K_MWHEELDOWN)
-    {
-        dll.Con_SetBackScroll(dll.Con_GetBackScroll() - 2);
-        if (dll.Con_GetBackScroll() < 0)
-            dll.Con_SetBackScroll(0);
-        return;
-    }
+	if (key == K_PGDN || key == K_MWHEELDOWN)
+	{
+		dll.Con_SetBackScroll(dll.Con_GetBackScroll() - 2);
+		if (dll.Con_GetBackScroll() < 0)
+			dll.Con_SetBackScroll(0);
+		return;
+	}
 
-    if (key == K_HOME)
-    {
-        dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
-        return;
-    }
+	if (key == K_HOME)
+	{
+		dll.Con_SetBackScroll(dll.Con_GetTotalLines() - (dll.VID_GetHeight() >> 3) - 1);
+		return;
+	}
 
-    if (key == K_END)
-    {
-        dll.Con_SetBackScroll(0);
-        return;
-    }
+	if (key == K_END)
+	{
+		dll.Con_SetBackScroll(0);
+		return;
+	}
 
-    if (key < 32 || key > 127)
-        return; // non printable
+	if (key < 32 || key > 127)
+		return; // non printable
 
-    commandLineHistory.TryPushBack(key);
+	commandLineHistory.TryPushBack(key);
 }
 
 //============================================================================
 
-char chat_buffer[32];
+std::string chat_buffer;
 bool team_message = false;
 
 void Key_Message(int key)
 {
-    static int chat_bufferlen = 0;
+	constexpr size_t chat_buffer_max_size = 31;
 
-    if (key == K_ENTER)
-    {
-        if (team_message)
-            dll.Cbuf_AddText("say_team \"");
-        else
-            dll.Cbuf_AddText("say \"");
-        dll.Cbuf_AddText(chat_buffer);
-        dll.Cbuf_AddText("\"\n");
+	if (key == K_ENTER)
+	{
+		std::array<char, 64> buf;
+		if (team_message)
+			*std::format_to(buf.data(), "say_team \"{}\"\n", chat_buffer) = '\0';
+		else
+			*std::format_to(buf.data(), "say \"{}\"\n", chat_buffer) = '\0';
+		dll.Cbuf_AddText(buf.data());
 
-        Key_SetDest(key_game);
-        chat_bufferlen = 0;
-        chat_buffer[0] = 0;
-        return;
-    }
+		Key_SetDest(key_game);
+		chat_buffer.clear();
+		return;
+	}
 
-    if (key == K_ESCAPE)
-    {
-        Key_SetDest(key_game);
-        chat_bufferlen = 0;
-        chat_buffer[0] = 0;
-        return;
-    }
+	if (key == K_ESCAPE)
+	{
+		Key_SetDest(key_game);
+		chat_buffer.clear();
+		return;
+	}
 
-    if (key < 32 || key > 127)
-        return; // non printable
+	if (key < 32 || key > 127)
+		return; // non printable
 
-    if (key == K_BACKSPACE)
-    {
-        if (chat_bufferlen)
-        {
-            chat_bufferlen--;
-            chat_buffer[chat_bufferlen] = 0;
-        }
-        return;
-    }
+	if (key == K_BACKSPACE)
+	{
+		if (!chat_buffer.empty())
+			chat_buffer.pop_back();
+		return;
+	}
 
-    if (chat_bufferlen == 31)
-        return; // all full
-
-    chat_buffer[chat_bufferlen++] = key;
-    chat_buffer[chat_bufferlen] = 0;
+	if (chat_buffer.size() < chat_buffer_max_size)
+	{
+		chat_buffer.reserve(chat_buffer.size() + 1); // may throw
+		chat_buffer.push_back(key);
+	}
 }
 
 //============================================================================
@@ -395,21 +376,21 @@ the given string. Single ascii characters return themselves, while
 the K_* names are matched up.
 ===================
 */
-int Key_StringToKeynum(const char * str)
+int Key_StringToKeynum(const char* str)
 {
-    keyname_t * kn;
+	if (!str || !str[0])
+		return -1;
+	if (!str[1])
+		return str[0];
+	
+	auto&& str_ = std::string(str);
+	for (auto&& ch : str_)
+		ch = std::toupper(ch);
 
-    if (!str || !str[0])
-        return -1;
-    if (!str[1])
-        return str[0];
+	if (auto it = std::ranges::find(keynames, str_, &decltype(keynames)::value_type::first); it != keynames.end())
+		return it->second;
 
-    for (kn = keynames; kn->name; kn++)
-    {
-        if (!_stricmp(str, kn->name))
-            return kn->keynum;
-    }
-    return -1;
+	return -1;
 }
 
 /*
@@ -421,25 +402,23 @@ given keynum.
 FIXME: handle quote special (general escape sequence?)
 ===================
 */
-const char * Key_KeynumToString(int keynum)
+const char* Key_KeynumToString(int keynum)
 {
-    keyname_t * kn;
-    static char tinystr[2];
+	static char tinystr[2];
 
-    if (keynum == -1)
-        return "<KEY NOT FOUND>";
-    if (keynum > 32 && keynum < 127)
-    { // printable ascii
-        tinystr[0] = keynum;
-        tinystr[1] = 0;
-        return tinystr;
-    }
+	if (keynum == -1)
+		return "<KEY NOT FOUND>";
+	if (keynum > 32 && keynum < 127)
+	{ // printable ascii
+		tinystr[0] = keynum;
+		tinystr[1] = 0;
+		return tinystr;
+	}
 
-    for (kn = keynames; kn->name; kn++)
-        if (keynum == kn->keynum)
-            return kn->name;
+	if (auto it = std::ranges::find(keynames, keynum, &decltype(keynames)::value_type::second); it != keynames.end())
+		return it->first.data();
 
-    return "<UNKNOWN KEYNUM>";
+	return "<UNKNOWN KEYNUM>";
 }
 
 
@@ -448,12 +427,12 @@ const char * Key_KeynumToString(int keynum)
 Key_SetBinding
 ===================
 */
-void Key_SetBinding(int keynum, const char * binding)
+void Key_SetBinding(int keynum, const char* binding)
 {
-    if (keynum == -1)
-        return;
+	if (keynum == -1)
+		return;
 
-    keybindings[keynum] = binding;
+	keybindings[keynum] = binding;
 }
 
 /*
@@ -463,29 +442,29 @@ Key_Unbind_f
 */
 void Key_Unbind_f()
 {
-    int b;
+	int b;
 
-    if (dll.Cmd_Argc() != 2)
-    {
-        dll.Lib_Con_Printf("unbind <key> : remove commands from a key\n");
-        return;
-    }
+	if (dll.Cmd_Argc() != 2)
+	{
+		dll.Lib_Con_Printf("unbind <key> : remove commands from a key\n");
+		return;
+	}
 
-    b = Key_StringToKeynum(dll.Cmd_Argv(1));
-    if (b == -1)
-    {
-        auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
-        dll.Lib_Con_Printf(fmt.c_str());
-        return;
-    }
+	b = Key_StringToKeynum(dll.Cmd_Argv(1));
+	if (b == -1)
+	{
+		auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
+		dll.Lib_Con_Printf(fmt.c_str());
+		return;
+	}
 
-    Key_SetBinding(b, "");
+	Key_SetBinding(b, "");
 }
 
 void Key_Unbindall_f()
 {
-    for (auto && keybinding : keybindings)
-        keybinding.clear();
+	for (auto&& keybinding : keybindings)
+		keybinding.clear();
 }
 
 
@@ -496,41 +475,41 @@ Key_Bind_f
 */
 void Key_Bind_f()
 {
-    int i, c, b;
-    char cmd[1024];
+	int i, c, b;
+	char cmd[1024];
 
-    c = dll.Cmd_Argc();
+	c = dll.Cmd_Argc();
 
-    if (c != 2 && c != 3)
-    {
-        dll.Lib_Con_Printf("bind <key> [command] : attach a command to a key\n");
-        return;
-    }
-    b = Key_StringToKeynum(dll.Cmd_Argv(1));
-    if (b == -1)
-    {
-        auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
-        dll.Lib_Con_Printf(fmt.c_str());
-        return;
-    }
+	if (c != 2 && c != 3)
+	{
+		dll.Lib_Con_Printf("bind <key> [command] : attach a command to a key\n");
+		return;
+	}
+	b = Key_StringToKeynum(dll.Cmd_Argv(1));
+	if (b == -1)
+	{
+		auto fmt = std::format("\"{}\" isn't a valid key\n", dll.Cmd_Argv(1));
+		dll.Lib_Con_Printf(fmt.c_str());
+		return;
+	}
 
-    if (c == 2)
-    {
-        auto fmt = std::format("\"{}\" = \"{}\"\n", dll.Cmd_Argv(1), keybindings[b]);
-        dll.Lib_Con_Printf(fmt.c_str());
-        return;
-    }
+	if (c == 2)
+	{
+		auto fmt = std::format("\"{}\" = \"{}\"\n", dll.Cmd_Argv(1), keybindings[b]);
+		dll.Lib_Con_Printf(fmt.c_str());
+		return;
+	}
 
-    // copy the rest of the command line
-    cmd[0] = 0; // start out with a null string
-    for (i = 2; i < c; i++)
-    {
-        if (i > 2)
-            strcat(cmd, " ");
-        strcat(cmd, dll.Cmd_Argv(i));
-    }
+	// copy the rest of the command line
+	cmd[0] = 0; // start out with a null string
+	for (i = 2; i < c; i++)
+	{
+		if (i > 2)
+			strcat(cmd, " ");
+		strcat(cmd, dll.Cmd_Argv(i));
+	}
 
-    Key_SetBinding(b, cmd);
+	Key_SetBinding(b, cmd);
 }
 
 /*
@@ -540,12 +519,12 @@ Key_WriteBindings
 Writes lines containing "bind key value"
 ============
 */
-void Key_WriteBindings(void * f_)
+void Key_WriteBindings(void* f_)
 {
-    FILE * f = reinterpret_cast<FILE *>(f_);
-    for (size_t i = 0; i < keybindings.size(); ++i)
-        if (!keybindings[i].empty())
-            fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+	FILE* f = reinterpret_cast<FILE*>(f_);
+	for (size_t i = 0; i < keybindings.size(); ++i)
+		if (!keybindings[i].empty())
+			fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 }
 
 
@@ -556,64 +535,64 @@ Key_Init
 */
 void Key_Init()
 {
-    int i;
+	int i;
 
-    //
-    // init ascii characters in console mode
-    //
-    for (i = 32; i < 128; i++)
-        consolekeys[i] = true;
-    consolekeys[K_ENTER] = true;
-    consolekeys[K_TAB] = true;
-    consolekeys[K_LEFTARROW] = true;
-    consolekeys[K_RIGHTARROW] = true;
-    consolekeys[K_UPARROW] = true;
-    consolekeys[K_DOWNARROW] = true;
-    consolekeys[K_BACKSPACE] = true;
-    consolekeys[K_PGUP] = true;
-    consolekeys[K_PGDN] = true;
-    consolekeys[K_SHIFT] = true;
-    consolekeys[K_MWHEELUP] = true;
-    consolekeys[K_MWHEELDOWN] = true;
-    consolekeys['`'] = false;
-    consolekeys['~'] = false;
+	//
+	// init ascii characters in console mode
+	//
+	for (i = 32; i < 128; i++)
+		consolekeys[i] = true;
+	consolekeys[K_ENTER] = true;
+	consolekeys[K_TAB] = true;
+	consolekeys[K_LEFTARROW] = true;
+	consolekeys[K_RIGHTARROW] = true;
+	consolekeys[K_UPARROW] = true;
+	consolekeys[K_DOWNARROW] = true;
+	consolekeys[K_BACKSPACE] = true;
+	consolekeys[K_PGUP] = true;
+	consolekeys[K_PGDN] = true;
+	consolekeys[K_SHIFT] = true;
+	consolekeys[K_MWHEELUP] = true;
+	consolekeys[K_MWHEELDOWN] = true;
+	consolekeys['`'] = false;
+	consolekeys['~'] = false;
 
-    for (i = 0; i < 256; i++)
-        keyshift[i] = i;
-    for (i = 'a'; i <= 'z'; i++)
-        keyshift[i] = i - 'a' + 'A';
-    keyshift['1'] = '!';
-    keyshift['2'] = '@';
-    keyshift['3'] = '#';
-    keyshift['4'] = '$';
-    keyshift['5'] = '%';
-    keyshift['6'] = '^';
-    keyshift['7'] = '&';
-    keyshift['8'] = '*';
-    keyshift['9'] = '(';
-    keyshift['0'] = ')';
-    keyshift['-'] = '_';
-    keyshift['='] = '+';
-    keyshift[','] = '<';
-    keyshift['.'] = '>';
-    keyshift['/'] = '?';
-    keyshift[';'] = ':';
-    keyshift['\''] = '"';
-    keyshift['['] = '{';
-    keyshift[']'] = '}';
-    keyshift['`'] = '~';
-    keyshift['\\'] = '|';
+	for (i = 0; i < 256; i++)
+		keyshift[i] = i;
+	for (i = 'a'; i <= 'z'; i++)
+		keyshift[i] = i - 'a' + 'A';
+	keyshift['1'] = '!';
+	keyshift['2'] = '@';
+	keyshift['3'] = '#';
+	keyshift['4'] = '$';
+	keyshift['5'] = '%';
+	keyshift['6'] = '^';
+	keyshift['7'] = '&';
+	keyshift['8'] = '*';
+	keyshift['9'] = '(';
+	keyshift['0'] = ')';
+	keyshift['-'] = '_';
+	keyshift['='] = '+';
+	keyshift[','] = '<';
+	keyshift['.'] = '>';
+	keyshift['/'] = '?';
+	keyshift[';'] = ':';
+	keyshift['\''] = '"';
+	keyshift['['] = '{';
+	keyshift[']'] = '}';
+	keyshift['`'] = '~';
+	keyshift['\\'] = '|';
 
-    menubound[K_ESCAPE] = true;
-    for (i = 0; i < 12; i++)
-        menubound[K_F1 + i] = true;
+	menubound[K_ESCAPE] = true;
+	for (i = 0; i < 12; i++)
+		menubound[K_F1 + i] = true;
 
-    //
-    // register our functions
-    //
-    dll.Cmd_AddCommand("bind", Key_Bind_f);
-    dll.Cmd_AddCommand("unbind", Key_Unbind_f);
-    dll.Cmd_AddCommand("unbindall", Key_Unbindall_f);
+	//
+	// register our functions
+	//
+	dll.Cmd_AddCommand("bind", Key_Bind_f);
+	dll.Cmd_AddCommand("unbind", Key_Unbind_f);
+	dll.Cmd_AddCommand("unbindall", Key_Unbindall_f);
 
 
 }
@@ -628,146 +607,146 @@ Should NOT be called during an interrupt!
 */
 void Key_Event(int key, int down_)
 {
-    bool down = static_cast<bool>(down_);
-    char cmd[1024];
+	bool down = static_cast<bool>(down_);
+	char cmd[1024];
 
-    keydown[key] = down;
+	keydown[key] = down;
 
-    if (!down)
-        key_repeats[key] = 0;
+	if (!down)
+		key_repeats[key] = 0;
 
-    key_lastpress = key;
-    key_count++;
-    if (key_count <= 0)
-    {
-        return; // just catching keys for Con_NotifyBox
-    }
+	key_lastpress = key;
+	key_count++;
+	if (key_count <= 0)
+	{
+		return; // just catching keys for Con_NotifyBox
+	}
 
-    // update auto-repeat status
-    if (down)
-    {
-        key_repeats[key]++;
-        if (key != K_BACKSPACE && key != K_PAUSE && key_repeats[key] > 1)
-        {
-            return; // ignore most autorepeats
-        }
+	// update auto-repeat status
+	if (down)
+	{
+		key_repeats[key]++;
+		if (key != K_BACKSPACE && key != K_PAUSE && key_repeats[key] > 1)
+		{
+			return; // ignore most autorepeats
+		}
 
-        if (key >= 200)
-        {
-            auto fmt = std::format("{} is unbound, hit F4 to set.\n", Key_KeynumToString(key));
-            dll.Lib_Con_Printf(fmt.c_str());
-        }
-    }
+		if (key >= 200)
+		{
+			auto fmt = std::format("{} is unbound, hit F4 to set.\n", Key_KeynumToString(key));
+			dll.Lib_Con_Printf(fmt.c_str());
+		}
+	}
 
-    if (key == K_SHIFT)
-        shift_down = down;
+	if (key == K_SHIFT)
+		shift_down = down;
 
-    //
-    // handle escape specialy, so the user can never unbind it
-    //
-    if (key == K_ESCAPE)
-    {
-        if (!down)
-            return;
-        switch (key_dest)
-        {
-        case key_message:
-            Key_Message(key);
-            break;
-        case key_menu:
-            dll.M_Keydown(key);
-            break;
-        case key_game:
-        case key_console:
-            dll.Lib_M_ToggleMenu_f();
-            break;
-        default:
-            throw std::runtime_error("Bad key_dest");
-        }
-        return;
-    }
+	//
+	// handle escape specialy, so the user can never unbind it
+	//
+	if (key == K_ESCAPE)
+	{
+		if (!down)
+			return;
+		switch (key_dest)
+		{
+		case key_message:
+			Key_Message(key);
+			break;
+		case key_menu:
+			dll.M_Keydown(key);
+			break;
+		case key_game:
+		case key_console:
+			dll.Lib_M_ToggleMenu_f();
+			break;
+		default:
+			throw std::runtime_error("Bad key_dest");
+		}
+		return;
+	}
 
-    //
-    // key up events only generate commands if the game key binding is
-    // a button command (leading + sign). These will occur even in console mode,
-    // to keep the character from continuing an action started before a console
-    // switch. Button commands include the kenum as a parameter, so multiple
-    // downs can be matched with ups
-    //
-    if (!down)
-    {
-        auto && kb = keybindings[key];
-        if (kb[0] == '+')
-        {
-            sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
-            dll.Cbuf_AddText(cmd);
-        }
-        if (keyshift[key] != key)
-        {
-            auto && kb = keybindings[keyshift[key]];
-            if (kb[0] == '+')
-            {
-                sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
-                dll.Cbuf_AddText(cmd);
-            }
-        }
-        return;
-    }
+	//
+	// key up events only generate commands if the game key binding is
+	// a button command (leading + sign). These will occur even in console mode,
+	// to keep the character from continuing an action started before a console
+	// switch. Button commands include the kenum as a parameter, so multiple
+	// downs can be matched with ups
+	//
+	if (!down)
+	{
+		auto&& kb = keybindings[key];
+		if (kb[0] == '+')
+		{
+			sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
+			dll.Cbuf_AddText(cmd);
+		}
+		if (keyshift[key] != key)
+		{
+			auto&& kb = keybindings[keyshift[key]];
+			if (kb[0] == '+')
+			{
+				sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
+				dll.Cbuf_AddText(cmd);
+			}
+		}
+		return;
+	}
 
-    //
-    // during demo playback, most keys bring up the main menu
-    //
-    if (dll.CL_IsDemoPlayBack() && down && consolekeys[key] && Key_GetDest() == key_game)
-    {
-        dll.Lib_M_ToggleMenu_f();
-        return;
-    }
+	//
+	// during demo playback, most keys bring up the main menu
+	//
+	if (dll.CL_IsDemoPlayBack() && down && consolekeys[key] && Key_GetDest() == key_game)
+	{
+		dll.Lib_M_ToggleMenu_f();
+		return;
+	}
 
-    //
-    // if not a consolekey, send to the interpreter no matter what mode is
-    //
-    if ((Key_GetDest() == key_menu && menubound[key])
-        || (Key_GetDest() == key_console && !consolekeys[key])
-        || (Key_GetDest() == key_game && (!dll.Con_IsForcedUp() || !consolekeys[key])))
-    {
-        auto && kb = keybindings[key];
-        if (kb[0] == '+')
-        { // button commands add keynum as a parm
-            sprintf(cmd, "%s %i\n", kb.c_str(), key);
-            dll.Cbuf_AddText(cmd);
-        }
-        else
-        {
-            dll.Cbuf_AddText(kb.c_str());
-            dll.Cbuf_AddText("\n");
-        }
-        return;
-    }
+	//
+	// if not a consolekey, send to the interpreter no matter what mode is
+	//
+	if ((Key_GetDest() == key_menu && menubound[key])
+		|| (Key_GetDest() == key_console && !consolekeys[key])
+		|| (Key_GetDest() == key_game && (!dll.Con_IsForcedUp() || !consolekeys[key])))
+	{
+		auto&& kb = keybindings[key];
+		if (kb[0] == '+')
+		{ // button commands add keynum as a parm
+			sprintf(cmd, "%s %i\n", kb.c_str(), key);
+			dll.Cbuf_AddText(cmd);
+		}
+		else
+		{
+			dll.Cbuf_AddText(kb.c_str());
+			dll.Cbuf_AddText("\n");
+		}
+		return;
+	}
 
-    if (!down)
-        return; // other systems only care about key down events
+	if (!down)
+		return; // other systems only care about key down events
 
-    if (shift_down)
-    {
-        key = keyshift[key];
-    }
+	if (shift_down)
+	{
+		key = keyshift[key];
+	}
 
-    switch (key_dest)
-    {
-    case key_message:
-        Key_Message(key);
-        break;
-    case key_menu:
-        dll.M_Keydown(key);
-        break;
+	switch (key_dest)
+	{
+	case key_message:
+		Key_Message(key);
+		break;
+	case key_menu:
+		dll.M_Keydown(key);
+		break;
 
-    case key_game:
-    case key_console:
-        Key_Console(key);
-        break;
-    default:
-        throw std::runtime_error("Bad key_dest");
-    }
+	case key_game:
+	case key_console:
+		Key_Console(key);
+		break;
+	default:
+		throw std::runtime_error("Bad key_dest");
+	}
 }
 
 
@@ -778,28 +757,28 @@ Key_ClearStates
 */
 void Key_ClearStates()
 {
-    int i;
+	int i;
 
-    for (i = 0; i < 256; i++)
-    {
-        keydown[i] = false;
-        key_repeats[i] = 0;
-    }
+	for (i = 0; i < 256; i++)
+	{
+		keydown[i] = false;
+		key_repeats[i] = 0;
+	}
 }
 
 
 int Key_GetDest() { return key_dest; }
 void Key_SetDest(int val) { key_dest = val; }
-const char * Key_GetBinding(int i) { return keybindings[i].c_str(); }
+const char* Key_GetBinding(int i) { return keybindings[i].c_str(); }
 int Key_GetLastPress() { return key_lastpress; }
 int Key_GetCount() { return key_count; }
 void Key_SetCount(int val) { key_count = val; }
-const char * Key_GetChatBuffer() { return chat_buffer; }
+const char* Key_GetChatBuffer() { return chat_buffer.c_str(); }
 void Key_SetTeamMessage(int val) { team_message = val; }
 
-const char * Key_GetEditLine() { return commandLineHistory.GetEditLine().c_str(); }
+const char* Key_GetEditLine() { return commandLineHistory.GetEditLine().c_str(); }
 int Key_Get_LinePos() { return commandLineHistory.GetEditLine().size(); }
 void Key_ClearAnyTyping()
 {
-    commandLineHistory.ClearAnyTyping();
+	commandLineHistory.ClearAnyTyping();
 }

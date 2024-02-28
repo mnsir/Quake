@@ -467,7 +467,7 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput()
 {
-    char buf[256];
+    char buf[0xFF + 2]; // MAXCMDLINE + prompt + cursor
     char * it = buf;
 
     if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)

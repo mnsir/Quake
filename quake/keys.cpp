@@ -8,6 +8,7 @@
 #include <format>
 #include <string>
 #include <array>
+#include <list>
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -40,82 +41,83 @@ key up events are sent even if in console mode
 struct Qwe
 {
     Qwe()
+        : recent({""}) // "" need to repeat the behavior
     {
     }
 
-    void SetEditLine(std::string_view cmd)
-    {
-        lines[edit_line] = std::format("{} ", cmd);
-    }
+    void SetEditLine(std::string cmd) noexcept { std::swap(edit_line, cmd); }
 
-    void AppendChar(char ch)
+    void TryPushBack(char ch) noexcept
     {
-        if (lines[edit_line].size() < MAXCMDLINE - 1)
+        if (edit_line.size() < MAXCMDLINE)
         {
-            lines[edit_line] += ch;
+            try
+            {
+                edit_line.reserve(edit_line.size() + 1); // may throw
+                edit_line.push_back(ch);
+            }
+            catch (const std::exception & e)
+            {
+            }
         }
     }
 
-    void ClearAnyTyping()
+    void ClearAnyTyping() noexcept { edit_line.clear(); }
+
+    void TryPopBack() noexcept
     {
-        lines[edit_line].clear();
+        if (!edit_line.empty())
+            edit_line.pop_back();
+    }
+
+    const std::string & GetEditLine() const noexcept { return edit_line; }
+
+    void Flush() noexcept
+    {
+        try
+        {
+            recent.push_back(std::string()); // may throw
+            if (recent.size() > recent_max_size)
+                recent.pop_front();
+            std::swap(recent.front(), edit_line);
+            it_recent = recent.end();
+        }
+        catch (const std::exception & e)
+        {
+        }
     }
 
     void Prev()
     {
-        do
+        if (auto it = it_recent; it != recent.begin())
         {
-            history_line = (history_line - 1) & 31;
-        } while (history_line != edit_line && lines[history_line].empty());
-        if (history_line == edit_line)
-            history_line = (edit_line + 1) & 31;
-
-        lines[edit_line] = lines[history_line];
+            it--;
+            edit_line = *it; // may throw
+            it_recent = it;
+        }
     }
 
     void Next()
     {
-        if (history_line != edit_line)
+        if (auto it = it_recent; it != recent.end())
         {
-            do
-            {
-                history_line = (history_line + 1) & 31;
-            } while (history_line != edit_line && lines[history_line].empty());
-            if (history_line == edit_line)
-            {
-                ClearAnyTyping();
-            }
+            it++;
+            if (it != recent.end())
+                edit_line = *it; // may throw
             else
-            {
-                lines[edit_line] = lines[history_line];
-            }
+                edit_line.clear();
+
+            it_recent = it;
         }
-    }
-
-    void Pop()
-    {
-        if (!lines[edit_line].empty())
-        {
-            lines[edit_line].pop_back();
-        }
-    }
-
-    std::string_view GetEditLine() const
-    {
-        return lines[edit_line];
-    }
-
-    void Flush()
-    {
-        edit_line = (edit_line + 1) & 31;
-        history_line = edit_line;
-        ClearAnyTyping();
     }
 
     static constexpr size_t MAXCMDLINE = 0xFF;
-    std::array<std::string, 32> lines;
-    size_t edit_line = 0;
-    size_t history_line = 0;
+    static constexpr size_t recent_max_size = 0x1F;
+
+    std::list<std::string> recent;
+    decltype(recent)::const_iterator it_recent = recent.end();
+
+    std::string edit_line;
 };
 
 Qwe qwe;
@@ -270,14 +272,14 @@ void Key_Console(int key)
             cmd = dll.Cvar_CompleteVariable(line.data());
         if (cmd)
         {
-            qwe.SetEditLine(cmd);
+            qwe.SetEditLine(std::format("{} ", cmd));
             return;
         }
     }
 
     if (key == K_BACKSPACE || key == K_LEFTARROW)
     {
-        qwe.Pop();
+        qwe.TryPopBack();
         return;
     }
 
@@ -324,7 +326,7 @@ void Key_Console(int key)
     if (key < 32 || key > 127)
         return; // non printable
 
-    qwe.AppendChar(key);
+    qwe.TryPushBack(key);
 }
 
 //============================================================================

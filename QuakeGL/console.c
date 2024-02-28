@@ -467,32 +467,38 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput()
 {
-    int y;
-    int i;
-    char buf[256];
-    char * text = buf;
+    char buf[0xFF + 2]; // MAXCMDLINE + prompt + cursor
+    char * it = buf;
 
     if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)
         return; // don't draw anything
 
-    strcpy(text, g_pAppApi->Key_GetEditLine());
+    const char prompt = ']';
+    *it = prompt;
+    it++;
 
-    // add the cursor frame
-    text[g_pAppApi->Key_Get_LinePos()] = 10 + ((int)(realtime * con_cursorspeed) & 1);
+    const char * pLine = g_pAppApi->Key_GetEditLine();
+    int size = g_pAppApi->Key_Get_LinePos();
+    strcpy(it, pLine);
+    it += size;
 
-    // fill out remainder with spaces
-    for (i = g_pAppApi->Key_Get_LinePos() + 1; i < con_linewidth; i++)
-        text[i] = ' ';
+    const char cursor = 10 + ((int)(realtime * con_cursorspeed) & 1);
+    *it = cursor;
+    it++;
 
-    // prestep if horizontally scrolling
-    if (g_pAppApi->Key_Get_LinePos() >= con_linewidth)
-        text += 1 + g_pAppApi->Key_Get_LinePos() - con_linewidth;
+    *it = '\0';
 
-    // draw it
-    y = con_vislines - 16;
+    int offset = 0;
+    if (it - buf > con_linewidth)
+        offset = (it - buf) - con_linewidth;
 
-    for (i = 0; i < con_linewidth; i++)
-        Draw_Character((i + 1) << 3, con_vislines - 16, text[i]);
+    const int y = con_vislines - 16;
+    int i = 0;
+    for (const char * ptr = buf + offset; *ptr; ++ptr)
+    {
+        Draw_Character((i + 1) << 3, y, *ptr);
+        ++i;
+    }
 }
 
 

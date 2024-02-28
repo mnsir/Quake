@@ -41,13 +41,11 @@ struct Qwe
 {
     Qwe()
     {
-        for (auto && line : lines)
-            line = prompt;
     }
 
     void SetEditLine(std::string_view cmd)
     {
-        lines[edit_line] = std::format("{}{} ", prompt, cmd);
+        lines[edit_line] = std::format("{} ", cmd);
     }
 
     void AppendChar(char ch)
@@ -60,7 +58,7 @@ struct Qwe
 
     void ClearAnyTyping()
     {
-        lines[edit_line] = prompt;
+        lines[edit_line].clear();
     }
 
     void Prev()
@@ -68,8 +66,7 @@ struct Qwe
         do
         {
             history_line = (history_line - 1) & 31;
-        } while (history_line != edit_line
-                 && lines[history_line].size() == 1);
+        } while (history_line != edit_line && lines[history_line].empty());
         if (history_line == edit_line)
             history_line = (edit_line + 1) & 31;
 
@@ -83,11 +80,10 @@ struct Qwe
             do
             {
                 history_line = (history_line + 1) & 31;
-            } while (history_line != edit_line
-                     && lines[history_line].size() == 1);
+            } while (history_line != edit_line && lines[history_line].empty());
             if (history_line == edit_line)
             {
-                lines[edit_line] = prompt;
+                ClearAnyTyping();
             }
             else
             {
@@ -98,7 +94,7 @@ struct Qwe
 
     void Pop()
     {
-        if (lines[edit_line].size() > 1)
+        if (!lines[edit_line].empty())
         {
             lines[edit_line].pop_back();
         }
@@ -116,13 +112,7 @@ struct Qwe
         ClearAnyTyping();
     }
 
-    size_t GetLinePos() const
-    {
-        return lines[edit_line].size();
-    }
-
-    static constexpr std::string_view prompt{"]"};
-    static constexpr size_t MAXCMDLINE = 256;
+    static constexpr size_t MAXCMDLINE = 0xFF;
     std::array<std::string, 32> lines;
     size_t edit_line = 0;
     size_t history_line = 0;
@@ -258,9 +248,10 @@ void Key_Console(int key)
 {
     if (key == K_ENTER)
     {
-        dll.Cbuf_AddText(qwe.GetEditLine().substr(1).data()); // skip the >
-        dll.Cbuf_AddText("\n");
-        auto fmt = std::format("{}\n", qwe.GetEditLine().data());
+        auto line = qwe.GetEditLine();
+        auto fmt = std::format("{}\n", line); // no prompt
+        dll.Cbuf_AddText(fmt.c_str());
+        fmt = std::format("]{}\n", line); // prompt
         dll.Lib_Con_Printf(fmt.c_str());
 
         qwe.Flush();
@@ -273,9 +264,10 @@ void Key_Console(int key)
 
     if (key == K_TAB)
     { // command completion
-        const char * cmd = dll.Cmd_CompleteCommand(qwe.GetEditLine().substr(1).data());
+        auto line = qwe.GetEditLine();
+        const char * cmd = dll.Cmd_CompleteCommand(line.data());
         if (!cmd)
-            cmd = dll.Cvar_CompleteVariable(qwe.GetEditLine().substr(1).data());
+            cmd = dll.Cvar_CompleteVariable(line.data());
         if (cmd)
         {
             qwe.SetEditLine(cmd);
@@ -802,7 +794,7 @@ const char * Key_GetChatBuffer() { return chat_buffer; }
 void Key_SetTeamMessage(int val) { team_message = val; }
 
 const char * Key_GetEditLine() { return qwe.GetEditLine().data(); }
-int Key_Get_LinePos() { return qwe.GetLinePos(); }
+int Key_Get_LinePos() { return qwe.GetEditLine().size(); }
 void Key_ClearAnyTyping()
 {
     qwe.ClearAnyTyping();

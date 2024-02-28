@@ -467,7 +467,7 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 void Con_DrawInput()
 {
-    char buf[0xFF + 3]; // MAXCMDLINE + prompt + cursor + \0
+    char buf[0xFF + 3]; // prompt + edit_line_max_size + cursor + \0
     char * it = buf;
 
     if (g_pAppApi->Key_GetDest() != key_console && !con_forcedup)
@@ -479,7 +479,7 @@ void Con_DrawInput()
 
     const char * pLine = g_pAppApi->Key_GetEditLine();
     int size = g_pAppApi->Key_Get_LinePos();
-    strcpy(it, pLine);
+    strcpy(it, pLine); // TODO remove it
     it += size;
 
     const char cursor = 10 + ((int)(realtime * con_cursorspeed) & 1);

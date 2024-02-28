@@ -38,9 +38,10 @@ key up events are sent even if in console mode
 
 //typedef enum { key_game, key_console, key_message, key_menu } keydest_t;
 
-struct Qwe
+class CommandLineHistory
 {
-    Qwe()
+public:
+    CommandLineHistory()
         : recent({""}) // "" need to repeat the behavior
     {
     }
@@ -49,7 +50,7 @@ struct Qwe
 
     void TryPushBack(char ch) noexcept
     {
-        if (edit_line.size() < MAXCMDLINE)
+        if (edit_line.size() < edit_line_max_size)
         {
             try
             {
@@ -111,7 +112,8 @@ struct Qwe
         }
     }
 
-    static constexpr size_t MAXCMDLINE = 0xFF;
+private:
+    static constexpr size_t edit_line_max_size = 0xFF;
     static constexpr size_t recent_max_size = 0x1F;
 
     std::list<std::string> recent;
@@ -120,7 +122,7 @@ struct Qwe
     std::string edit_line;
 };
 
-Qwe qwe;
+CommandLineHistory commandLineHistory;
 
 int shift_down = false;
 int key_lastpress;
@@ -250,13 +252,13 @@ void Key_Console(int key)
 {
     if (key == K_ENTER)
     {
-        auto line = qwe.GetEditLine();
+        auto && line = commandLineHistory.GetEditLine();
         auto fmt = std::format("{}\n", line); // no prompt
         dll.Cbuf_AddText(fmt.c_str());
         fmt = std::format("]{}\n", line); // prompt
         dll.Lib_Con_Printf(fmt.c_str());
 
-        qwe.Flush();
+        commandLineHistory.Flush();
 
         if (dll.CL_IsStateDisconnected())
             dll.SCR_UpdateScreen(); // force an update, because the command
@@ -266,32 +268,32 @@ void Key_Console(int key)
 
     if (key == K_TAB)
     { // command completion
-        auto line = qwe.GetEditLine();
+        auto && line = commandLineHistory.GetEditLine();
         const char * cmd = dll.Cmd_CompleteCommand(line.data());
         if (!cmd)
             cmd = dll.Cvar_CompleteVariable(line.data());
         if (cmd)
         {
-            qwe.SetEditLine(std::format("{} ", cmd));
+            commandLineHistory.SetEditLine(std::format("{} ", cmd));
             return;
         }
     }
 
     if (key == K_BACKSPACE || key == K_LEFTARROW)
     {
-        qwe.TryPopBack();
+        commandLineHistory.TryPopBack();
         return;
     }
 
     if (key == K_UPARROW)
     {
-        qwe.Prev();
+        commandLineHistory.Prev();
         return;
     }
 
     if (key == K_DOWNARROW)
     {
-        qwe.Next();
+        commandLineHistory.Next();
         return;
     }
 
@@ -326,7 +328,7 @@ void Key_Console(int key)
     if (key < 32 || key > 127)
         return; // non printable
 
-    qwe.TryPushBack(key);
+    commandLineHistory.TryPushBack(key);
 }
 
 //============================================================================
@@ -795,9 +797,9 @@ void Key_SetCount(int val) { key_count = val; }
 const char * Key_GetChatBuffer() { return chat_buffer; }
 void Key_SetTeamMessage(int val) { team_message = val; }
 
-const char * Key_GetEditLine() { return qwe.GetEditLine().data(); }
-int Key_Get_LinePos() { return qwe.GetEditLine().size(); }
+const char * Key_GetEditLine() { return commandLineHistory.GetEditLine().c_str(); }
+int Key_Get_LinePos() { return commandLineHistory.GetEditLine().size(); }
 void Key_ClearAnyTyping()
 {
-    qwe.ClearAnyTyping();
+    commandLineHistory.ClearAnyTyping();
 }

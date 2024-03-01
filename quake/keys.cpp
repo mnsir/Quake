@@ -9,6 +9,7 @@
 #include <string>
 #include <array>
 #include <list>
+#include <variant>
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -126,8 +127,40 @@ CommandLineHistory commandLineHistory;
 
 int shift_down = false;
 int key_lastpress;
+void Key_Console(int key);
+void Key_Message(int key);
 
-/*keydest_t*/int key_dest;
+namespace key
+{
+	struct Game
+	{
+		constexpr static int id = key_game;
+		void Handle(int key) { Key_Console(key); }
+		void HandleEscape(int key) { dll.Lib_M_ToggleMenu_f(); }
+	};
+	struct Console
+	{
+		constexpr static int id = key_console;
+		void Handle(int key) { Key_Console(key); }
+		void HandleEscape(int key) { dll.Lib_M_ToggleMenu_f(); }
+	};
+	struct Message
+	{
+		constexpr static int id = key_message;
+		void Handle(int key) { Key_Message(key); }
+		void HandleEscape(int key) { Key_Message(key); }
+	};
+	struct Menu
+	{
+		constexpr static int id = key_menu;
+		void Handle(int key) { dll.M_Keydown(key); }
+		void HandleEscape(int key) { dll.M_Keydown(key); }
+	};
+
+	std::variant<Game, Console, Message, Menu> destination;
+
+}
+
 
 int key_count; // incremented every key event
 
@@ -335,14 +368,14 @@ void Key_Message(int key)
 			*std::format_to(buf.data(), "say \"{}\"\n", chat_buffer) = '\0';
 		dll.Cbuf_AddText(buf.data());
 
-		Key_SetDest(key_game);
+		key::destination = key::Game();
 		chat_buffer.clear();
 		return;
 	}
 
 	if (key == K_ESCAPE)
 	{
-		Key_SetDest(key_game);
+		key::destination = key::Game();
 		chat_buffer.clear();
 		return;
 	}
@@ -382,7 +415,7 @@ int Key_StringToKeynum(const char* str)
 		return -1;
 	if (!str[1])
 		return str[0];
-	
+
 	auto&& str_ = std::string(str);
 	for (auto&& ch : str_)
 		ch = std::toupper(ch);
@@ -524,7 +557,7 @@ void Key_WriteBindings(void* f_)
 	FILE* f = reinterpret_cast<FILE*>(f_);
 	for (size_t i = 0; i < keybindings.size(); ++i)
 		if (!keybindings[i].empty())
-			fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+			fprintf(f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i].c_str());
 }
 
 
@@ -608,8 +641,7 @@ Should NOT be called during an interrupt!
 void Key_Event(int key, int down_)
 {
 	bool down = static_cast<bool>(down_);
-	char cmd[1024];
-
+	
 	keydown[key] = down;
 
 	if (!down)
@@ -648,21 +680,7 @@ void Key_Event(int key, int down_)
 	{
 		if (!down)
 			return;
-		switch (key_dest)
-		{
-		case key_message:
-			Key_Message(key);
-			break;
-		case key_menu:
-			dll.M_Keydown(key);
-			break;
-		case key_game:
-		case key_console:
-			dll.Lib_M_ToggleMenu_f();
-			break;
-		default:
-			throw std::runtime_error("Bad key_dest");
-		}
+		std::visit([key](auto&& arg) { arg.HandleEscape(key); }, key::destination);
 		return;
 	}
 
@@ -678,6 +696,7 @@ void Key_Event(int key, int down_)
 		auto&& kb = keybindings[key];
 		if (kb[0] == '+')
 		{
+			char cmd[1024];
 			sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
 			dll.Cbuf_AddText(cmd);
 		}
@@ -686,6 +705,7 @@ void Key_Event(int key, int down_)
 			auto&& kb = keybindings[keyshift[key]];
 			if (kb[0] == '+')
 			{
+				char cmd[1024];
 				sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
 				dll.Cbuf_AddText(cmd);
 			}
@@ -712,6 +732,7 @@ void Key_Event(int key, int down_)
 		auto&& kb = keybindings[key];
 		if (kb[0] == '+')
 		{ // button commands add keynum as a parm
+			char cmd[1024];
 			sprintf(cmd, "%s %i\n", kb.c_str(), key);
 			dll.Cbuf_AddText(cmd);
 		}
@@ -731,22 +752,7 @@ void Key_Event(int key, int down_)
 		key = keyshift[key];
 	}
 
-	switch (key_dest)
-	{
-	case key_message:
-		Key_Message(key);
-		break;
-	case key_menu:
-		dll.M_Keydown(key);
-		break;
-
-	case key_game:
-	case key_console:
-		Key_Console(key);
-		break;
-	default:
-		throw std::runtime_error("Bad key_dest");
-	}
+	std::visit([key](auto&& arg) { arg.Handle(key); }, key::destination);
 }
 
 
@@ -767,8 +773,25 @@ void Key_ClearStates()
 }
 
 
-int Key_GetDest() { return key_dest; }
-void Key_SetDest(int val) { key_dest = val; }
+int Key_GetDest() { return std::visit([](auto&& arg) {return arg.id; }, key::destination); }
+void Key_SetDest(int val) {
+
+	switch (val)
+	{
+	case key_game:
+		key::destination = key::Game();
+		break;
+	case key_console:
+		key::destination = key::Console();
+		break;
+	case key_message:
+		key::destination = key::Message();
+		break;
+	case key_menu:
+		key::destination = key::Menu();
+		break;
+	}
+}
 const char* Key_GetBinding(int i) { return keybindings[i].c_str(); }
 int Key_GetLastPress() { return key_lastpress; }
 int Key_GetCount() { return key_count; }

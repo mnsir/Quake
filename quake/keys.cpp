@@ -697,7 +697,7 @@ void Key_Event(int key, int down_)
 		if (kb[0] == '+')
 		{
 			char cmd[1024];
-			sprintf(cmd, "-%s %i\n", kb.c_str() + 1, key);
+			*std::format_to(std::ranges::begin(cmd), "-{} {}\n", kb.c_str() + 1, key) = 0;
 			dll.Cbuf_AddText(cmd);
 		}
 		if (keyshift[key] != key)

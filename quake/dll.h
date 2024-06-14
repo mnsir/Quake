@@ -9,7 +9,8 @@
 extern "C" {
 #endif
 
-	typedef int (CALLBACK* RunFunc)();
+	typedef void (CALLBACK* SetupFunc)();
+	typedef void (CALLBACK* LoopFunc)();
 	typedef void (CALLBACK* InitializeFunc)(AppAPI* pAppApi);
 
 	typedef void (CALLBACK* Cbuf_AddTextFunc)(const char* text);
@@ -32,7 +33,8 @@ extern "C" {
 
 	typedef struct
 	{
-		RunFunc Run;
+		SetupFunc Setup;
+		LoopFunc Loop;
 		InitializeFunc Initialize;
 
 		Cbuf_AddTextFunc Cbuf_AddText;

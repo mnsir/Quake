@@ -91,7 +91,9 @@ AppAPI g_appApi = {
     .Key_ClearAnyTyping = Key_ClearAnyTyping,
 };
 
+
 Dll dll;
+
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
@@ -112,7 +114,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     if (hModule)
     {
-        dll.Run = GetProcAddress(hModule, "_Run@0");
+        dll.Setup = GetProcAddress(hModule, "_Setup@0");
+        dll.Loop = GetProcAddress(hModule, "_Loop@0");
         dll.Initialize = GetProcAddress(hModule, "_Initialize@4");
 
         dll.CL_IsDemoPlayBack = GetProcAddress(hModule, "_CL_IsDemoPlayBack@0");
@@ -138,15 +141,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     {
         dll.Initialize(&g_appApi);
 
-        if (dll.Run)
-            res = dll.Run();
+        if (dll.Setup && dll.Loop)
+        {
+            dll.Setup();
+            while (1)
+            {
+                dll.Loop();
+            }
+            res = 1;
+        }
         else
-            MessageBox(NULL, "RunFunc not loaded", "RunFunc not loaded!", 0);
+            MessageBox(NULL, "Setup or Loop not loaded", "Setup or Loop not loaded!", 0);
     }
     else
         MessageBox(NULL, "Initialize not loaded", "Initialize not loaded!", 0);
 
-    dll.Run = NULL;
+    dll.Setup = NULL;
+    dll.Loop = NULL;
     dll.Initialize = NULL;
     dll.Cbuf_AddText = NULL;
     dll.Lib_Con_Printf = NULL;

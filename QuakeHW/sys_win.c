@@ -645,10 +645,13 @@ WinMain
 HWND hwnd_dialog;
 
 
-int WINAPI Win_Main()
+double time;
+double oldtime;
+double newtime;
+
+__declspec(dllexport) void CALLBACK Setup()
 {
     MSG msg;
-    double time, oldtime, newtime;
     int t;
     RECT rect;
 
@@ -665,9 +668,9 @@ int WINAPI Win_Main()
                 if (rect.left > (rect.top * 2))
                 {
                     SetWindowPos(hwnd_dialog, 0,
-                                 (rect.left / 2) - ((rect.right - rect.left) / 2),
-                                 rect.top, 0, 0,
-                                 SWP_NOZORDER | SWP_NOSIZE);
+                        (rect.left / 2) - ((rect.right - rect.left) / 2),
+                        rect.top, 0, 0,
+                        SWP_NOZORDER | SWP_NOSIZE);
                 }
             }
 
@@ -723,51 +726,42 @@ int WINAPI Win_Main()
     Host_Init();
 
     oldtime = Sys_FloatTime();
-
-    /* main window message loop */
-    while (1)
-    {
-        if (isDedicated)
-        {
-            newtime = Sys_FloatTime();
-            time = newtime - oldtime;
-
-            while (time < sys_ticrate.value)
-            {
-                Sys_Sleep();
-                newtime = Sys_FloatTime();
-                time = newtime - oldtime;
-            }
-        }
-        else
-        {
-            // yield the CPU for a little while when paused, minimized, or not the focus
-            if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
-            {
-                SleepUntilInput(PAUSE_SLEEP);
-                scr_skipupdate = 1; // no point in bothering to draw
-            }
-            else if (!ActiveApp && !DDActive)
-            {
-                SleepUntilInput(NOT_FOCUS_SLEEP);
-            }
-
-            newtime = Sys_FloatTime();
-            time = newtime - oldtime;
-        }
-
-        Host_Frame(time);
-        oldtime = newtime;
-    }
-
-    /* return success of application */
-    return TRUE;
 }
 
 
-__declspec(dllexport) int CALLBACK Run()
+__declspec(dllexport) void CALLBACK Loop()
 {
-    return Win_Main();
+    if (isDedicated)
+    {
+        newtime = Sys_FloatTime();
+        time = newtime - oldtime;
+
+        while (time < sys_ticrate.value)
+        {
+            Sys_Sleep();
+            newtime = Sys_FloatTime();
+            time = newtime - oldtime;
+        }
+    }
+    else
+    {
+        // yield the CPU for a little while when paused, minimized, or not the focus
+        if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
+        {
+            SleepUntilInput(PAUSE_SLEEP);
+            scr_skipupdate = 1; // no point in bothering to draw
+        }
+        else if (!ActiveApp && !DDActive)
+        {
+            SleepUntilInput(NOT_FOCUS_SLEEP);
+        }
+
+        newtime = Sys_FloatTime();
+        time = newtime - oldtime;
+    }
+
+    Host_Frame(time);
+    oldtime = newtime;
 }
 
 

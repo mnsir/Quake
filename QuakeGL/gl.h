@@ -6,5 +6,6 @@
 #include <Windows.h>
 
 
-__declspec(dllexport) int CALLBACK Run();
+__declspec(dllexport) void CALLBACK Setup();
+__declspec(dllexport) void CALLBACK Loop();
 

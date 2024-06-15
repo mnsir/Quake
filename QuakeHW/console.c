@@ -623,10 +623,10 @@ void Con_NotifyBox(char * text)
 
     do
     {
-        t1 = Sys_FloatTime();
+        t1 = g_pAppApi->Sys_FloatTime();
         SCR_UpdateScreen();
         Sys_SendKeyEvents();
-        t2 = Sys_FloatTime();
+        t2 = g_pAppApi->Sys_FloatTime();
         realtime += t2 - t1; // make the cursor blink
     } while (g_pAppApi->Key_GetCount() < 0);
 

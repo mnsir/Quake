@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <appapi.h>
+
 //define PASSAGES
 
 void * colormap;
@@ -905,7 +907,7 @@ void R_EdgeDrawing()
 
     if (r_dspeeds.value)
     {
-        rw_time1 = Sys_FloatTime();
+        rw_time1 = g_pAppApi->Sys_FloatTime();
     }
 
     R_RenderWorld();
@@ -919,7 +921,7 @@ void R_EdgeDrawing()
 
     if (r_dspeeds.value)
     {
-        rw_time2 = Sys_FloatTime();
+        rw_time2 = g_pAppApi->Sys_FloatTime();
         db_time1 = rw_time2;
     }
 
@@ -927,7 +929,7 @@ void R_EdgeDrawing()
 
     if (r_dspeeds.value)
     {
-        db_time2 = Sys_FloatTime();
+        db_time2 = g_pAppApi->Sys_FloatTime();
         se_time1 = db_time2;
     }
 
@@ -957,7 +959,7 @@ void R_RenderView_()
     r_warpbuffer = warpbuffer;
 
     if (r_timegraph.value || r_speeds.value || r_dspeeds.value)
-        r_time1 = Sys_FloatTime();
+        r_time1 = g_pAppApi->Sys_FloatTime();
 
     R_SetupFrame();
 
@@ -994,7 +996,7 @@ void R_RenderView_()
 
     if (r_dspeeds.value)
     {
-        se_time2 = Sys_FloatTime();
+        se_time2 = g_pAppApi->Sys_FloatTime();
         de_time1 = se_time2;
     }
 
@@ -1002,7 +1004,7 @@ void R_RenderView_()
 
     if (r_dspeeds.value)
     {
-        de_time2 = Sys_FloatTime();
+        de_time2 = g_pAppApi->Sys_FloatTime();
         dv_time1 = de_time2;
     }
 
@@ -1010,14 +1012,14 @@ void R_RenderView_()
 
     if (r_dspeeds.value)
     {
-        dv_time2 = Sys_FloatTime();
-        dp_time1 = Sys_FloatTime();
+        dv_time2 = g_pAppApi->Sys_FloatTime();
+        dp_time1 = g_pAppApi->Sys_FloatTime();
     }
 
     R_DrawParticles();
 
     if (r_dspeeds.value)
-        dp_time2 = Sys_FloatTime();
+        dp_time2 = g_pAppApi->Sys_FloatTime();
 
     if (r_dowarp)
         D_WarpScreen();

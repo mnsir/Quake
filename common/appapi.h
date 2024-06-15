@@ -147,6 +147,9 @@ typedef struct
     const char* (*Key_GetChatBuffer)();
     void (*Key_ClearAnyTyping)();
 
+    void (*Sys_Init)();
+    double (*Sys_FloatTime)();
+
 } AppAPI;
 
 

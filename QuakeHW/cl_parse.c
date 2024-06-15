@@ -184,7 +184,7 @@ void CL_KeepaliveMessage()
     memcpy(net_message.data, olddata, net_message.cursize);
 
     // check time
-    time = Sys_FloatTime();
+    time = g_pAppApi->Sys_FloatTime();
     if (time - lastmsg < 5)
         return;
     lastmsg = time;

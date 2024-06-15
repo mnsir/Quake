@@ -1322,7 +1322,7 @@ void Host_Spawn_f()
         pr_global_struct->self = EDICT_TO_PROG(sv_player);
         PR_ExecuteProgram(pr_global_struct->ClientConnect);
 
-        if ((Sys_FloatTime() - host_client->netconnection->connecttime) <= sv.time)
+        if ((g_pAppApi->Sys_FloatTime() - host_client->netconnection->connecttime) <= sv.time)
             Sys_Printf("%s entered the game\n", host_client->name);
 
         PR_ExecuteProgram(pr_global_struct->PutClientInServer);

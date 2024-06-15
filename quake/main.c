@@ -3,6 +3,7 @@
 #include "mode.h"
 #include "memory.h"
 #include "keys.h"
+#include "sys.h"
 #include "dll.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -89,6 +90,9 @@ AppAPI g_appApi = {
     .Key_GetChatBuffer = Key_GetChatBuffer,
     .Key_Init = Key_Init,
     .Key_ClearAnyTyping = Key_ClearAnyTyping,
+
+    .Sys_Init = Sys_Init,
+    .Sys_FloatTime = Sys_FloatTime,
 };
 
 

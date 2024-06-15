@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <appapi.h>
+
 entity_t r_worldentity;
 
 bool r_cache_thrash; // compatability
@@ -1119,7 +1121,7 @@ void R_RenderView()
     if (r_speeds.value)
     {
         glFinish();
-        time1 = Sys_FloatTime();
+        time1 = g_pAppApi->Sys_FloatTime();
         c_brush_polys = 0;
         c_alias_polys = 0;
     }
@@ -1157,7 +1159,7 @@ void R_RenderView()
     if (r_speeds.value)
     {
         // glFinish ();
-        time2 = Sys_FloatTime();
+        time2 = g_pAppApi->Sys_FloatTime();
         Con_Printf("%3i ms %4i wpoly %4i epoly\n", (int)((time2 - time1) * 1000), c_brush_polys, c_alias_polys);
     }
 }

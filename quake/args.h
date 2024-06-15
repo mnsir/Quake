@@ -7,6 +7,7 @@
 #include <string_view>
 
 std::optional<int> Args_GetInt(std::string_view arg);
+std::optional<double> Args_GetDouble(std::string_view arg);
 
 #endif
 

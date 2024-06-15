@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <appapi.h>
 
 /*
 ===============
@@ -75,7 +76,7 @@ void R_TimeRefresh_f()
 
     startangle = r_refdef.viewangles[1];
 
-    start = Sys_FloatTime();
+    start = g_pAppApi->Sys_FloatTime();
     for (i = 0; i < 128; i++)
     {
         r_refdef.viewangles[1] = i / 128.0 * 360.0;
@@ -93,7 +94,7 @@ void R_TimeRefresh_f()
         vr.pnext = NULL;
         VID_Update(&vr);
     }
-    stop = Sys_FloatTime();
+    stop = g_pAppApi->Sys_FloatTime();
     time = stop - start;
     Con_Printf("%f seconds (%f fps)\n", time, 128 / time);
 
@@ -155,7 +156,7 @@ void R_TimeGraph()
     static byte r_timings[MAX_TIMINGS];
     int x;
 
-    r_time2 = Sys_FloatTime();
+    r_time2 = g_pAppApi->Sys_FloatTime();
 
     a = (r_time2 - r_time1) / 0.01;
     //a = fabs(mouse_y * 0.05);
@@ -196,7 +197,7 @@ void R_PrintTimes()
     float r_time2;
     float ms;
 
-    r_time2 = Sys_FloatTime();
+    r_time2 = g_pAppApi->Sys_FloatTime();
 
     ms = 1000 * (r_time2 - r_time1);
 
@@ -215,7 +216,7 @@ void R_PrintDSpeeds()
 {
     float ms, dp_time, r_time2, rw_time, db_time, se_time, de_time, dv_time;
 
-    r_time2 = Sys_FloatTime();
+    r_time2 = g_pAppApi->Sys_FloatTime();
 
     dp_time = (dp_time2 - dp_time1) * 1000;
     rw_time = (rw_time2 - rw_time1) * 1000;

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 #include "quakedef.h"
 
-
+#include <appapi.h>
 
 /*
 ==================
@@ -435,7 +435,7 @@ void R_TimeRefresh_f()
     glDrawBuffer(GL_FRONT);
     glFinish();
 
-    start = Sys_FloatTime();
+    start = g_pAppApi->Sys_FloatTime();
     for (i = 0; i < 128; i++)
     {
         r_refdef.viewangles[1] = i / 128.0 * 360.0;
@@ -443,7 +443,7 @@ void R_TimeRefresh_f()
     }
 
     glFinish();
-    stop = Sys_FloatTime();
+    stop = g_pAppApi->Sys_FloatTime();
     time = stop - start;
     Con_Printf("%f seconds (%f fps)\n", time, 128 / time);
 

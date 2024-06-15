@@ -54,8 +54,6 @@ void Sys_Printf(char * fmt, ...);
 
 void Sys_Quit();
 
-double Sys_FloatTime();
-
 char * Sys_ConsoleInput();
 
 void Sys_Sleep();

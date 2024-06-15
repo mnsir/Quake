@@ -70,7 +70,7 @@ BOOL PASCAL FAR BlockingHook()
     MSG msg;
     BOOL ret;
 
-    if ((Sys_FloatTime() - blocktime) > 2.0)
+    if ((g_pAppApi->Sys_FloatTime() - blocktime) > 2.0)
     {
         WSACancelBlockingCall();
         return FALSE;
@@ -103,7 +103,7 @@ void WINS_GetLocalAddress()
     if (pgethostname(buff, MAXHOSTNAMELEN) == SOCKET_ERROR)
         return;
 
-    blocktime = Sys_FloatTime();
+    blocktime = g_pAppApi->Sys_FloatTime();
     WSASetBlockingHook(BlockingHook);
     local = pgethostbyname(buff);
     WSAUnhookBlockingHook();

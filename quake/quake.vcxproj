@@ -157,6 +157,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="mode.cpp" />
+    <ClCompile Include="sys.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\appapi.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="dll.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="mode.h" />
+    <ClInclude Include="sys.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -91,7 +91,6 @@ AppAPI g_appApi = {
     .Key_Init = Key_Init,
     .Key_ClearAnyTyping = Key_ClearAnyTyping,
 
-    .Sys_Init = Sys_Init,
     .Sys_FloatTime = Sys_FloatTime,
 };
 
@@ -109,7 +108,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = gl;
+    const VideoMode mode = hw;
     InitCommandLine(aArgs[mode] /*lpCmdLine*/);
     Mode_Init();
     Memory_Init();

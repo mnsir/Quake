@@ -567,8 +567,6 @@ __declspec(dllexport) void CALLBACK Setup()
         InitConProc(hFile, heventParent, heventChild);
     }
 
-    g_pAppApi->Sys_Init();
-
     // because sound is off until we become active
     S_BlockSound();
 

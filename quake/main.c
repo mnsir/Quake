@@ -108,8 +108,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = hw;
+    const VideoMode mode = gl;
     InitCommandLine(aArgs[mode] /*lpCmdLine*/);
+
+    const int isDedicated = Args_Dedicated();
+
     Mode_Init();
     Memory_Init();
 
@@ -117,8 +120,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     if (hModule)
     {
-        dll.Setup = GetProcAddress(hModule, "_Setup@0");
-        dll.Loop = GetProcAddress(hModule, "_Loop@0");
+        dll.Setup = GetProcAddress(hModule, isDedicated ? "_Setup_Dedicated@0" : "_Setup@0");
+        dll.Loop = GetProcAddress(hModule, isDedicated ? "_Loop_Dedicated@8" : "_Loop@8");
         dll.Initialize = GetProcAddress(hModule, "_Initialize@4");
 
         dll.CL_IsDemoPlayBack = GetProcAddress(hModule, "_CL_IsDemoPlayBack@0");
@@ -147,9 +150,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         if (dll.Setup && dll.Loop)
         {
             dll.Setup();
+            double old_time = Sys_FloatTime();
+
             while (1)
             {
-                dll.Loop();
+                old_time = dll.Loop(old_time);
             }
             res = 1;
         }

@@ -7,4 +7,7 @@
 
 
 __declspec(dllexport) void CALLBACK Setup();
-__declspec(dllexport) void CALLBACK Loop();
+__declspec(dllexport) double CALLBACK Loop(double old_time);
+
+__declspec(dllexport) void CALLBACK Setup_Dedicated();
+__declspec(dllexport) double CALLBACK Loop_Dedicated(double old_time);

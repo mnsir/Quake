@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 	typedef void (CALLBACK* SetupFunc)();
-	typedef void (CALLBACK* LoopFunc)();
+	typedef double (CALLBACK* LoopFunc)(double old_time);
 	typedef void (CALLBACK* InitializeFunc)(AppAPI* pAppApi);
 
 	typedef void (CALLBACK* Cbuf_AddTextFunc)(const char* text);

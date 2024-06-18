@@ -27,6 +27,7 @@ extern "C" {
 	int Args_NoAudio();
 	int Args_Rogue();
 	int Args_Hipnotic();
+	int Args_Dedicated();
 
 	// int
 	

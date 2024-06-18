@@ -261,3 +261,9 @@ int Args_Hipnotic()
 {
     return Args_GetIndex("-hipnotic");
 }
+
+
+int Args_Dedicated()
+{
+    return Args_GetIndex("-dedicated");
+}

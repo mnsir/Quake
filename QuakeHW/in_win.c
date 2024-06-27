@@ -28,8 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #define DINPUT_BUFFERSIZE 16
 #define iDirectInputCreate(a,b,c,d) pDirectInputCreate(a,b,c,d)
 
-HRESULT(WINAPI * pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
-                                     LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
+HRESULT(WINAPI * pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
 cvar_t m_filter = {"m_filter", "0"};
@@ -114,7 +113,7 @@ static LPDIRECTINPUTDEVICE g_pMouse;
 
 static JOYINFOEX ji;
 
-static HINSTANCE hInstDI;
+static HMODULE hInstDI;
 
 static bool dinput;
 
@@ -423,8 +422,6 @@ IN_StartupMouse
 */
 void IN_StartupMouse()
 {
-    HDC hdc;
-
     if (g_pAppApi->Args_GetIndex("-nomouse"))
         return;
 

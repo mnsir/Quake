@@ -26,10 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <appapi.h>
 
 #define DINPUT_BUFFERSIZE 16
-#define iDirectInputCreate(a,b,c,d) pDirectInputCreate(a,b,c,d)
 
-HRESULT(WINAPI * pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
-                                     LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
+HRESULT(WINAPI * pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
 cvar_t m_filter = {"m_filter", "0"};
@@ -114,7 +112,7 @@ static LPDIRECTINPUTDEVICE g_pMouse;
 
 static JOYINFOEX ji;
 
-static HINSTANCE hInstDI;
+static HMODULE hInstDI;
 
 static bool dinput;
 
@@ -366,7 +364,7 @@ bool IN_InitDInput()
     }
 
     // register with DirectInput and get an IDirectInput to play with.
-    hr = iDirectInputCreate(g_pAppApi->GetAppInstance(), DIRECTINPUT_VERSION, &g_pdi, NULL);
+    hr = pDirectInputCreate(g_pAppApi->GetAppInstance(), DIRECTINPUT_VERSION, &g_pdi, NULL);
 
     if (FAILED(hr))
     {

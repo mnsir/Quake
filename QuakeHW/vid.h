@@ -84,3 +84,4 @@ void VID_HandlePause(bool pause);
 // called only on Win32, when pause happens, so the mouse can be released
 
 __declspec(dllexport) int __stdcall VID_GetHeight();
+__declspec(dllexport) long __stdcall MainWndProcDll(void* hWnd, unsigned uMsg, unsigned wParam, long lParam);

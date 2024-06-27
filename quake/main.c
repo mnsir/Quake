@@ -98,6 +98,101 @@ AppAPI g_appApi = {
 Dll dll;
 
 
+unsigned char scantokey[128] =
+{
+    // 0 1 2 3 4 5 6 7 
+    // 8 9 A B C D E F 
+    0, 27, '1', '2', '3', '4', '5', '6',
+    '7', '8', '9', '0', '-', '=', K_BACKSPACE, 9, // 0 
+    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
+    'o', 'p', '[', ']', 13, K_CTRL, 'a', 's', // 1 
+    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
+    '\'', '`', K_SHIFT, '\\', 'z', 'x', 'c', 'v', // 2 
+    'b', 'n', 'm', ',', '.', '/', K_SHIFT, '*',
+    K_ALT, ' ', 0, K_F1, K_F2, K_F3, K_F4, K_F5, // 3 
+    K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE, 0, K_HOME,
+    K_UPARROW, K_PGUP, '-', K_LEFTARROW, '5', K_RIGHTARROW, '+', K_END, //4 
+    K_DOWNARROW, K_PGDN, K_INS, K_DEL, 0, 0, 0, K_F11,
+    K_F12, 0, 0, 0, 0, 0, 0, 0, // 5 
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, // 6 
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0 // 7 
+};
+
+int MapKey(int key)
+{
+    key = (key >> 16) & 255;
+    if (key > 127)
+        return 0;
+    if (scantokey[key] == 0)
+    {
+        //TODO Con_DPrintf("key 0x%02x has no translation\n", key);
+    }
+    return scantokey[key];
+}
+
+LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    LONG retVal = 0;
+    switch (uMsg)
+    {
+    case WM_KEYDOWN:
+    case WM_SYSKEYDOWN:
+        Key_Event(MapKey(lParam), 1);
+        break;
+
+    case WM_KEYUP:
+    case WM_SYSKEYUP:
+        Key_Event(MapKey(lParam), 0);
+        break;
+
+        // JACK: This is the mouse wheel with the Intellimouse
+        // Its delta is either positive or neg, and we generate the proper
+        // Event.
+    case WM_MOUSEWHEEL:
+        if ((short)HIWORD(wParam) > 0)
+        {
+            Key_Event(K_MWHEELUP, 1);
+            Key_Event(K_MWHEELUP, 0);
+        }
+        else
+        {
+            Key_Event(K_MWHEELDOWN, 1);
+            Key_Event(K_MWHEELDOWN, 0);
+        }
+        break;
+
+    default:
+        retVal = dll.MainWndProcDll(hWnd, uMsg, wParam, lParam);
+        break;
+    }
+    return retVal;
+}
+
+void WinInit()
+{
+    WNDCLASS wc;
+
+    /* Register the frame class */
+    wc.style = 0;
+    wc.lpfnWndProc = (WNDPROC)MainWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = g_hInstance;
+    wc.hIcon = 0;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = NULL;
+    wc.lpszMenuName = 0;
+    wc.lpszClassName = "WinQuake";
+
+    if (!RegisterClass(&wc))
+    {
+        //Sys_Error("Couldn't register window class");
+    }
+}
+
+
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
     BOOL res = TRUE;
@@ -108,7 +203,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = gl;
+    const VideoMode mode = hw;
     InitCommandLine(aArgs[mode] /*lpCmdLine*/);
 
     const int isDedicated = Args_Dedicated();
@@ -141,6 +236,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         dll.M_Keydown = GetProcAddress(hModule, "_M_Keydown@4");
         dll.SCR_UpdateScreen = GetProcAddress(hModule, "_SCR_UpdateScreen@0");
         dll.VID_GetHeight = GetProcAddress(hModule, "_VID_GetHeight@0");
+
+        dll.MainWndProcDll = GetProcAddress(hModule, "_MainWndProcDll@16");
     }
 
     if (dll.Initialize)
@@ -149,6 +246,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
         if (dll.Setup && dll.Loop)
         {
+            WinInit();
             dll.Setup();
             double old_time = Sys_FloatTime();
 
@@ -184,7 +282,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     dll.Con_SetBackScroll = NULL;
     dll.CL_IsDemoPlayBack = NULL;
     dll.Con_IsForcedUp = NULL;
-
+    dll.MainWndProcDll = NULL;
     if (hModule)
     {
         FreeLibrary(hModule);

@@ -109,8 +109,6 @@ glvert_t glv;
 
 cvar_t gl_ztrick = {"gl_ztrick", "1"};
 
-HWND WINAPI InitializeWindow(HINSTANCE hInstance, int nCmdShow);
-
 viddef_t vid; // global video state
 
 unsigned short d_8to16table[256];
@@ -124,7 +122,6 @@ modestate_t modestate = MS_UNINIT;
 void VID_MenuDraw();
 void VID_MenuKey(int key);
 
-LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 char * VID_GetModeDescription(int mode);
 void ClearAllStates();
@@ -507,7 +504,6 @@ void CheckTextureExtensions()
 {
     char * tmp;
     bool texture_ext;
-    HINSTANCE hInstGL;
 
     texture_ext = FALSE;
     /* check for texture extension */
@@ -521,12 +517,12 @@ void CheckTextureExtensions()
 
     if (!texture_ext || g_pAppApi->Args_GetIndex("-gl11"))
     {
-        hInstGL = LoadLibrary("opengl32.dll");
+        HMODULE hModule = LoadLibraryA("opengl32.dll");
 
-        if (hInstGL == NULL)
+        if (hModule == NULL)
             Sys_Error("Couldn't load opengl32.dll\n");
 
-        bindTexFunc = (void *)GetProcAddress(hInstGL, "glBindTexture");
+        bindTexFunc = (void *)GetProcAddress(hModule, "glBindTexture");
 
         if (!bindTexFunc)
             Sys_Error("No texture objects!");
@@ -866,77 +862,6 @@ BOOL bSetupPixelFormat(HDC hDC)
 }
 
 
-
-byte scantokey[128] =
-{
-    // 0 1 2 3 4 5 6 7 
-    // 8 9 A B C D E F 
-    0, 27, '1', '2', '3', '4', '5', '6',
-    '7', '8', '9', '0', '-', '=', K_BACKSPACE, 9, // 0 
-    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
-    'o', 'p', '[', ']', 13, K_CTRL, 'a', 's', // 1 
-    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
-    '\'', '`', K_SHIFT, '\\', 'z', 'x', 'c', 'v', // 2 
-    'b', 'n', 'm', ',', '.', '/', K_SHIFT, '*',
-    K_ALT, ' ', 0, K_F1, K_F2, K_F3, K_F4, K_F5, // 3 
-    K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE, 0, K_HOME,
-    K_UPARROW, K_PGUP, '-', K_LEFTARROW, '5', K_RIGHTARROW, '+', K_END, //4 
-    K_DOWNARROW, K_PGDN, K_INS, K_DEL, 0, 0, 0, K_F11,
-    K_F12, 0, 0, 0, 0, 0, 0, 0, // 5 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, // 6 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0 // 7 
-};
-
-byte shiftscantokey[128] =
-{
-    // 0 1 2 3 4 5 6 7 
-    // 8 9 A B C D E F 
-    0, 27, '!', '@', '#', '$', '%', '^',
-    '&', '*', '(', ')', '_', '+', K_BACKSPACE, 9, // 0 
-    'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I',
-    'O', 'P', '{', '}', 13, K_CTRL, 'A', 'S', // 1 
-    'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
-    '"', '~', K_SHIFT, '|', 'Z', 'X', 'C', 'V', // 2 
-    'B', 'N', 'M', '<', '>', '?', K_SHIFT, '*',
-    K_ALT, ' ', 0, K_F1, K_F2, K_F3, K_F4, K_F5, // 3 
-    K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE, 0, K_HOME,
-    K_UPARROW, K_PGUP, '_', K_LEFTARROW, '%', K_RIGHTARROW, '+', K_END, //4 
-    K_DOWNARROW, K_PGDN, K_INS, K_DEL, 0, 0, 0, K_F11,
-    K_F12, 0, 0, 0, 0, 0, 0, 0, // 5 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, // 6 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0 // 7 
-};
-
-
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
-int MapKey(int key)
-{
-    key = (key >> 16) & 255;
-    if (key > 127)
-        return 0;
-    if (scantokey[key] == 0)
-        Con_DPrintf("key 0x%02x has no translation\n", key);
-    return scantokey[key];
-}
-
-/*
-===================================================================
-
-MAIN WINDOW
-
-===================================================================
-*/
-
 /*
 ================
 ClearAllStates
@@ -1030,14 +955,9 @@ void AppActivate(BOOL fActive, BOOL minimize)
 
 
 /* main window procedure */
-LONG WINAPI MainWndProc(
-    HWND hWnd,
-    UINT uMsg,
-    WPARAM wParam,
-    LPARAM lParam)
+__declspec(dllexport) long __stdcall MainWndProcDll(void* hWnd, unsigned uMsg, unsigned wParam, long lParam)
 {
     LONG lRet = 1;
-    int fwKeys, xPos, yPos, fActive, fMinimized, temp;
     extern unsigned int uiWheelMessage;
 
     if (uMsg == uiWheelMessage)
@@ -1059,16 +979,6 @@ LONG WINAPI MainWndProc(
         VID_UpdateWindowStatus();
         break;
 
-    case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
-        g_pAppApi->Key_Event(MapKey(lParam), true);
-        break;
-
-    case WM_KEYUP:
-    case WM_SYSKEYUP:
-        g_pAppApi->Key_Event(MapKey(lParam), false);
-        break;
-
     case WM_SYSCHAR:
         // keep Alt-Space from happening
         break;
@@ -1082,7 +992,7 @@ LONG WINAPI MainWndProc(
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
     case WM_MOUSEMOVE:
-        temp = 0;
+        int temp = 0;
 
         if (wParam & MK_LBUTTON)
             temp |= 1;
@@ -1097,28 +1007,11 @@ LONG WINAPI MainWndProc(
 
         break;
 
-        // JACK: This is the mouse wheel with the Intellimouse
-        // Its delta is either positive or neg, and we generate the proper
-        // Event.
-    case WM_MOUSEWHEEL:
-        if ((short)HIWORD(wParam) > 0)
-        {
-            g_pAppApi->Key_Event(K_MWHEELUP, true);
-            g_pAppApi->Key_Event(K_MWHEELUP, false);
-        }
-        else
-        {
-            g_pAppApi->Key_Event(K_MWHEELDOWN, true);
-            g_pAppApi->Key_Event(K_MWHEELDOWN, false);
-        }
-        break;
-
     case WM_SIZE:
         break;
 
     case WM_CLOSE:
-        if (MessageBox(mainwindow, "Are you sure you want to quit?", "Confirm Exit",
-                       MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
+        if (MessageBox(mainwindow, "Are you sure you want to quit?", "Confirm Exit", MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
         {
             Sys_Quit();
         }
@@ -1126,8 +1019,8 @@ LONG WINAPI MainWndProc(
         break;
 
     case WM_ACTIVATE:
-        fActive = LOWORD(wParam);
-        fMinimized = (BOOL)HIWORD(wParam);
+        int fActive = LOWORD(wParam);
+        int fMinimized = (BOOL)HIWORD(wParam);
         AppActivate(!(fActive == WA_INACTIVE), fMinimized);
 
         // fix the leftover Alt from any Alt-Tab or the like that switched us away
@@ -1325,27 +1218,8 @@ void VID_DescribeModes_f()
 }
 
 
-void VID_InitDIB(HINSTANCE hInstance)
+void VID_InitDIB()
 {
-    WNDCLASS wc;
-    HDC hdc;
-    int i;
-
-    /* Register the frame class */
-    wc.style = 0;
-    wc.lpfnWndProc = (WNDPROC)MainWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = 0;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = NULL;
-    wc.lpszMenuName = 0;
-    wc.lpszClassName = "WinQuake";
-
-    if (!RegisterClass(&wc))
-        Sys_Error("Couldn't register window class");
-
     modelist[0].type = MS_WINDOWED;
 
     if (g_pAppApi->Args_GetIndex("-width"))
@@ -1382,7 +1256,7 @@ void VID_InitDIB(HINSTANCE hInstance)
 VID_InitFullDIB
 =================
 */
-void VID_InitFullDIB(HINSTANCE hInstance)
+void VID_InitFullDIB()
 {
     DEVMODE devmode;
     int i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
@@ -1626,7 +1500,7 @@ void VID_Init(unsigned char * palette)
 
     InitCommonControls();
 
-    VID_InitDIB(g_pAppApi->GetAppInstance());
+    VID_InitDIB();
     basenummodes = nummodes = 1;
 
     VID_InitFullDIB(g_pAppApi->GetAppInstance());

@@ -362,7 +362,7 @@ static void CD_f()
 }
 
 
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LONG CDAudio_MessageHandler(WPARAM wParam, LPARAM lParam)
 {
     if (lParam != wDeviceID)
         return 1;

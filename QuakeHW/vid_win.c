@@ -41,8 +41,6 @@ extern bool Minimized;
 
 HWND mainwindow;
 
-HWND WINAPI InitializeWindow(HINSTANCE hInstance, int nCmdShow);
-
 int DIBWidth, DIBHeight;
 bool DDActive;
 RECT WindowRect;
@@ -152,7 +150,6 @@ static byte backingbuf[48 * 24];
 void VID_MenuDraw();
 void VID_MenuKey(int key);
 
-LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 
 
@@ -390,7 +387,7 @@ void registerAllMemDrivers()
 }
 
 
-void VID_InitMGLFull(HINSTANCE hInstance)
+void VID_InitMGLFull()
 {
     int i, xRes, yRes, bits, vMode, lowres, curmode, temp;
     int lowstretchedres, stretchedmode, lowstretched;
@@ -623,32 +620,11 @@ MGLDC * createDisplayDC(int forcemem)
 }
 
 
-void VID_InitMGLDIB(HINSTANCE hInstance)
+void VID_InitMGLDIB()
 {
-    WNDCLASS wc;
-    HDC hdc;
-    int i;
-
-    hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
-
-    /* Register the frame class */
-    wc.style = 0;
-    wc.lpfnWndProc = (WNDPROC)MainWndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = 0;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = NULL;
-    wc.lpszMenuName = 0;
-    wc.lpszClassName = "WinQuake";
-
-    if (!RegisterClass(&wc))
-        Sys_Error("Couldn't register window class");
-
     /* Find the size for the DIB window */
     /* Initialise the MGL for windowed operation */
-    MGL_setAppInstance(hInstance);
+    MGL_setAppInstance(g_pAppApi->GetAppInstance());
     registerAllMemDrivers();
     MGL_initWindowed("");
 
@@ -689,7 +665,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
     modelist[2].bpp = 8;
 
     // automatically stretch the default mode up if > 640x480 desktop resolution
-    hdc = GetDC(NULL);
+    HDC hdc = GetDC(NULL);
 
     if ((GetDeviceCaps(hdc, HORZRES) > 640) && !g_pAppApi->Args_GetIndex("-noautostretch"))
     {
@@ -715,7 +691,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 VID_InitFullDIB
 =================
 */
-void VID_InitFullDIB(HINSTANCE hInstance)
+void VID_InitFullDIB()
 {
     DEVMODE devmode;
     int i, j, modenum, cmodes, existingmode, originalnummodes, lowestres;
@@ -2095,10 +2071,12 @@ void VID_Init(unsigned char * palette)
     Cmd_AddCommand("vid_fullscreen", VID_Fullscreen_f);
     Cmd_AddCommand("vid_minimize", VID_Minimize_f);
 
+    hIcon = LoadIcon(g_pAppApi->GetAppInstance(), MAKEINTRESOURCE(IDI_ICON2));
+
     if (g_pAppApi->Args_GetIndex("-dibonly"))
         dibonly = true;
 
-    VID_InitMGLDIB(g_pAppApi->GetAppInstance());
+    VID_InitMGLDIB();
 
     basenummodes = nummodes;
 
@@ -2274,9 +2252,7 @@ void FlipScreen(vrect_t * rects)
     }
     else
     {
-        HDC hdcScreen;
-
-        hdcScreen = GetDC(mainwindow);
+        HDC hdcScreen = GetDC(mainwindow);
 
         if (windc && dibdc)
         {
@@ -2599,44 +2575,6 @@ void D_EndDirectRect(int x, int y, int width, int height)
 
 //==========================================================================
 
-byte scantokey[128] =
-{
-    // 0 1 2 3 4 5 6 7 
-    // 8 9 A B C D E F 
-    0, 27, '1', '2', '3', '4', '5', '6',
-    '7', '8', '9', '0', '-', '=', K_BACKSPACE, 9, // 0 
-    'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
-    'o', 'p', '[', ']', 13, K_CTRL, 'a', 's', // 1 
-    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
-    '\'', '`', K_SHIFT, '\\', 'z', 'x', 'c', 'v', // 2 
-    'b', 'n', 'm', ',', '.', '/', K_SHIFT, '*',
-    K_ALT, ' ', 0, K_F1, K_F2, K_F3, K_F4, K_F5, // 3 
-    K_F6, K_F7, K_F8, K_F9, K_F10, K_PAUSE, 0, K_HOME,
-    K_UPARROW, K_PGUP, '-', K_LEFTARROW, '5', K_RIGHTARROW, '+', K_END, //4 
-    K_DOWNARROW, K_PGDN, K_INS, K_DEL, 0, 0, 0, K_F11,
-    K_F12, 0, 0, 0, 0, 0, 0, 0, // 5
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, // 6 
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0 // 7 
-};
-
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
-int MapKey(int key)
-{
-    key = (key >> 16) & 255;
-    if (key > 127)
-        return 0;
-
-    return scantokey[key];
-}
-
 void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
@@ -2817,19 +2755,30 @@ MAIN WINDOW
 ===================================================================
 */
 
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LONG CDAudio_MessageHandler(WPARAM wParam, LPARAM lParam);
+
+
+
+//
+//WM_DESTROY
+//WM_KILLFOCUS
+//
+//
+//
+//
+//WM_DISPLAYCHANGE
+//WM_PAINT
+//WM_PALETTECHANGED
+//WM_QUERYNEWPALETTE
+//WM_SYSCOMMAND
+
+
+
 
 /* main window procedure */
-LONG WINAPI MainWndProc(
-    HWND hWnd,
-    UINT uMsg,
-    WPARAM wParam,
-    LPARAM lParam)
+__declspec(dllexport) long __stdcall MainWndProcDll(void* hWnd, unsigned uMsg, unsigned wParam, long lParam)
 {
     LONG lRet = 0;
-    int fwKeys, xPos, yPos, fActive, fMinimized, temp;
-    HDC hdc;
-    PAINTSTRUCT ps;
     static int recursiveflag;
 
     switch (uMsg)
@@ -2907,8 +2856,8 @@ LONG WINAPI MainWndProc(
         break;
 
     case WM_ACTIVATE:
-        fActive = LOWORD(wParam);
-        fMinimized = (BOOL)HIWORD(wParam);
+        int fActive = LOWORD(wParam);
+        int fMinimized = (BOOL)HIWORD(wParam);
         AppActivate(!(fActive == WA_INACTIVE), fMinimized);
 
         // fix the leftover Alt from any Alt-Tab or the like that switched us away
@@ -2925,24 +2874,13 @@ LONG WINAPI MainWndProc(
         break;
 
     case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
 
         if (!in_mode_set && host_initialized)
             SCR_UpdateWholeScreen();
 
         EndPaint(hWnd, &ps);
-        break;
-
-    case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
-        if (!in_mode_set)
-            g_pAppApi->Key_Event(MapKey(lParam), true);
-        break;
-
-    case WM_KEYUP:
-    case WM_SYSKEYUP:
-        if (!in_mode_set)
-            g_pAppApi->Key_Event(MapKey(lParam), false);
         break;
 
         // this is complicated because Win32 seems to pack multiple mouse events into
@@ -2956,7 +2894,7 @@ LONG WINAPI MainWndProc(
     case WM_MOUSEMOVE:
         if (!in_mode_set)
         {
-            temp = 0;
+            int temp = 0;
 
             if (wParam & MK_LBUTTON)
                 temp |= 1;
@@ -2971,21 +2909,6 @@ LONG WINAPI MainWndProc(
         }
         break;
 
-        // JACK: This is the mouse wheel with the Intellimouse
-        // Its delta is either positive or neg, and we generate the proper
-        // Event.
-    case WM_MOUSEWHEEL:
-        if ((short)HIWORD(wParam) > 0)
-        {
-            g_pAppApi->Key_Event(K_MWHEELUP, true);
-            g_pAppApi->Key_Event(K_MWHEELUP, false);
-        }
-        else
-        {
-            g_pAppApi->Key_Event(K_MWHEELDOWN, true);
-            g_pAppApi->Key_Event(K_MWHEELDOWN, false);
-        }
-        break;
         // KJB: Added these new palette functions
     case WM_PALETTECHANGED:
         if ((HWND)wParam == hWnd)
@@ -3037,7 +2960,7 @@ LONG WINAPI MainWndProc(
         break;
 
     case MM_MCINOTIFY:
-        lRet = CDAudio_MessageHandler(hWnd, uMsg, wParam, lParam);
+        lRet = CDAudio_MessageHandler(wParam, lParam);
         break;
 
     default:

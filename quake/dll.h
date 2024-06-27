@@ -30,6 +30,7 @@ extern "C" {
 	typedef void (CALLBACK* M_KeydownFunc)(int key);
 	typedef void (CALLBACK* SCR_UpdateScreenFunc)();
 	typedef int (CALLBACK* VID_GetHeightFunc)();
+	typedef long (CALLBACK* MainWndProcDllFunc)(void* hWnd, unsigned uMsg, unsigned wParam, long lParam);
 
 	typedef struct
 	{
@@ -54,6 +55,7 @@ extern "C" {
 		M_KeydownFunc M_Keydown;
 		SCR_UpdateScreenFunc SCR_UpdateScreen;
 		VID_GetHeightFunc VID_GetHeight;
+		MainWndProcDllFunc MainWndProcDll;
 	} Dll;
 
 	extern Dll dll;

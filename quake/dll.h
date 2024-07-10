@@ -24,7 +24,6 @@ extern "C" {
 	typedef int (CALLBACK* Con_GetTotalLinesFunc)();
 	typedef int (CALLBACK* Con_IsForcedUpFunc)();
 	typedef void (CALLBACK* Con_SetBackScrollFunc)(int backscroll);
-	typedef const char* (CALLBACK* Cvar_CompleteVariableFunc)(const char* partial);
 	typedef void (CALLBACK* Lib_Con_PrintfFunc)(const char* str);
 	typedef void (CALLBACK* Lib_M_ToggleMenu_fFunc)();
 	typedef void (CALLBACK* M_KeydownFunc)(int key);
@@ -49,7 +48,6 @@ extern "C" {
 		Con_GetTotalLinesFunc Con_GetTotalLines;
 		Con_IsForcedUpFunc Con_IsForcedUp;
 		Con_SetBackScrollFunc Con_SetBackScroll;
-		Cvar_CompleteVariableFunc Cvar_CompleteVariable;
 		Lib_Con_PrintfFunc Lib_Con_Printf;
 		Lib_M_ToggleMenu_fFunc Lib_M_ToggleMenu_f;
 		M_KeydownFunc M_Keydown;

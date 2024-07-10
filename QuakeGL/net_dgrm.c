@@ -900,28 +900,9 @@ static qsocket_t * _Datagram_CheckNewConnections()
 
     if (command == CCREQ_RULE_INFO)
     {
-        char * prevCvarName;
-        cvar_t * var;
-
         // find the search start location
-        prevCvarName = MSG_ReadString();
-        if (*prevCvarName)
-        {
-            var = Cvar_FindVar(prevCvarName);
-            if (!var)
-                return NULL;
-            var = var->next;
-        }
-        else
-            var = cvar_vars;
-
-        // search for the next server cvar
-        while (var)
-        {
-            if (var->server)
-                break;
-            var = var->next;
-        }
+        char * prevCvarName = MSG_ReadString();
+        const char * name = Cvar_GetFirstServer(prevCvarName);
 
         // send the response
 
@@ -929,10 +910,10 @@ static qsocket_t * _Datagram_CheckNewConnections()
         // save space for the header, filled in later
         MSG_WriteLong(&net_message, 0);
         MSG_WriteByte(&net_message, CCREP_RULE_INFO);
-        if (var)
+        if (name)
         {
-            MSG_WriteString(&net_message, var->name);
-            MSG_WriteString(&net_message, var->string);
+            MSG_WriteString(&net_message, name);
+            MSG_WriteString(&net_message, Cvar_VariableString(name));
         }
         *((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
         dfunc.Write(acceptsock, net_message.data, net_message.cursize, &clientaddr);

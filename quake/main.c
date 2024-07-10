@@ -4,6 +4,7 @@
 #include "memory.h"
 #include "keys.h"
 #include "sys.h"
+#include "cvar.h"
 #include "dll.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -92,6 +93,16 @@ AppAPI g_appApi = {
     .Key_ClearAnyTyping = Key_ClearAnyTyping,
 
     .Sys_FloatTime = Sys_FloatTime,
+
+    .Cvar_RegisterVariable = Cvar_RegisterVariable,
+    .Cvar_Set = Cvar_Set,
+    .Cvar_SetValue = Cvar_SetValue,
+    .Cvar_VariableValue = Cvar_VariableValue,
+    .Cvar_VariableString = Cvar_VariableString,
+    .Cvar_Command = Cvar_Command,
+    .Cvar_WriteVariables = Cvar_WriteVariables,
+    .Cvar_FindVar = Cvar_FindVar,
+    .Cvar_GetFirstServer = Cvar_GetFirstServer,
 };
 
 
@@ -230,7 +241,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         dll.Con_GetTotalLines = GetProcAddress(hModule, "_Con_GetTotalLines@0");
         dll.Con_IsForcedUp = GetProcAddress(hModule, "_Con_IsForcedUp@0");
         dll.Con_SetBackScroll = GetProcAddress(hModule, "_Con_SetBackScroll@4");
-        dll.Cvar_CompleteVariable = GetProcAddress(hModule, "_Cvar_CompleteVariable@4");
         dll.Lib_Con_Printf = GetProcAddress(hModule, "_Lib_Con_Printf@4");
         dll.Lib_M_ToggleMenu_f = GetProcAddress(hModule, "_Lib_M_ToggleMenu_f@0");
         dll.M_Keydown = GetProcAddress(hModule, "_M_Keydown@4");
@@ -274,7 +284,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     dll.Cmd_Argv = NULL;
     dll.SCR_UpdateScreen = NULL;
     dll.Cmd_CompleteCommand = NULL;
-    dll.Cvar_CompleteVariable = NULL;
     dll.CL_IsStateDisconnected = NULL;
     dll.Con_GetTotalLines = NULL;
     dll.VID_GetHeight = NULL;

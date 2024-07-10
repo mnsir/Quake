@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="args.cpp" />
+    <ClCompile Include="cvar.cpp" />
     <ClCompile Include="keys.cpp" />
     <ClCompile Include="main.c" />
     <ClCompile Include="memory.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="..\common\appapi.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="args.h" />
+    <ClInclude Include="cvar.h" />
     <ClInclude Include="keys.h" />
     <ClInclude Include="dll.h" />
     <ClInclude Include="memory.h" />

@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "keys.h"
 
+#include "cvar.h"
 #include "dll.h"
 
 #include <stdexcept>
@@ -288,10 +289,12 @@ void Key_Console(int key)
 	if (key == K_TAB)
 	{ // command completion
 		auto&& line = commandLineHistory.GetEditLine();
-		const char* cmd = dll.Cmd_CompleteCommand(line.data());
-		if (!cmd)
-			cmd = dll.Cvar_CompleteVariable(line.data());
-		if (cmd)
+		if (const char* cmd = dll.Cmd_CompleteCommand(line.data()))
+		{
+			commandLineHistory.SetEditLine(std::format("{} ", cmd));
+			return;
+		}
+		else if (auto&& cmd = Cvar::CompleteVariable(line); !cmd.empty())
 		{
 			commandLineHistory.SetEditLine(std::format("{} ", cmd));
 			return;

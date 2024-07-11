@@ -5,6 +5,7 @@
 #include <map>
 #include <charconv>
 #include <optional>
+#include <format>
 
 typedef struct cvar_s
 {
@@ -33,13 +34,56 @@ cvar_t * FindVar(const char * var_name)
     return nullptr;
 }
 
-std::optional<double> FromString(std::string_view str)
+
+
+std::optional<uint32_t> AsHex(std::string_view str)
 {
-    double out = 0.0;
-    auto&& [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), out);
+    uint32_t out{};
+    auto&& [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), out, 16);
     if (ec == std::errc{} && ptr == str.data() + str.size())
         return out;
     return{};
+}
+
+std::optional<double> AsDouble(std::string_view str)
+{
+    double out{};
+    auto&& [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), out, std::chars_format::fixed);
+    if (ec == std::errc{} && ptr == str.data() + str.size())
+        return out;
+    return{};
+}
+
+double TryConvert(std::string_view str)
+{
+    constexpr std::string_view kHexPrefix = "0x";
+    double res{};
+
+    if (str.starts_with(kHexPrefix))
+    {
+        auto asHex = AsHex(str.substr(kHexPrefix.size())); // TODO realy need this??
+        if (asHex)
+            res = *asHex;
+        else
+        {
+            int i = 0;
+            i++;
+        }
+    }
+    else
+    {
+        auto asDouble = AsDouble(str);
+        if (asDouble)
+        {
+            res = *asDouble;
+        }
+        else
+        {
+            int i = 0;
+            i++;
+        }
+    }
+    return res;
 }
 
 }
@@ -139,15 +183,7 @@ void Cvar_Set(const char * var_name, const char * value)
     auto && ref = data[var->name];
     ref = value;
     var->string = ref.data();
-    
-    auto val = FromString(var->string);
-    if (val)
-        var->value = *val;
-    else
-    {
-        int i = 0;
-        ++i;
-    }
+    var->value = TryConvert(var->string);
 
     if (var->server && changed)
     {
@@ -163,10 +199,8 @@ Cvar_SetValue
 */
 void Cvar_SetValue(const char * var_name, float value)
 {
-    char val[32];
-
-    sprintf(val, "%f", value);
-    Cvar_Set(var_name, val);
+    auto val = std::format("{}", value);
+    Cvar_Set(var_name, val.data());
 }
 
 
@@ -200,14 +234,7 @@ void Cvar_RegisterVariable(void * var)
     ref = variable->string;
     variable->string = ref.data();
 
-    auto val = FromString(variable->string);
-    if (val)
-        variable->value = *val;
-    else
-    {
-        int i = 0;
-        ++i;
-    }
+    variable->value = TryConvert(variable->string);
 
     // link the variable in
     variable->next = cvar_vars;

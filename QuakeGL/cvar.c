@@ -39,7 +39,7 @@ void Cvar_RegisterVariable(cvar_t * variable)
 
 bool Cvar_Command()
 {
-    return g_pAppApi->Cvar_Command(Cmd_Argv(0), Cmd_Argv(0), Cmd_Argc());
+    return g_pAppApi->Cvar_Command(Cmd_Argv(0), Cmd_Argv(1), Cmd_Argc());
 }
 
 void Cvar_WriteVariables(FILE * f)

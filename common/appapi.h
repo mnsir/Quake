@@ -150,13 +150,13 @@ typedef struct
     double (*Sys_FloatTime)();
 
     void (*Cvar_RegisterVariable)(void * variable);
-    void (*Cvar_Set)(char * var_name, char * value);
-    void (*Cvar_SetValue)(char * var_name, float value);
-    float (*Cvar_VariableValue)(char * var_name);
-    char * (*Cvar_VariableString)(char * var_name);
-    bool (*Cvar_Command)();
+    void (*Cvar_Set)(const char * var_name, const char * value);
+    void (*Cvar_SetValue)(const char * var_name, float value);
+    float (*Cvar_VariableValue)(const char * var_name);
+    const char * (*Cvar_VariableString)(const char * var_name);
+    int (*Cvar_Command)(const char * arg1, const char * arg2, int argc);
     void (*Cvar_WriteVariables)(void * f);
-    void * (*Cvar_FindVar)(char * var_name);
+    void * (*Cvar_FindVar)(const char * var_name);
     const char * (*Cvar_GetFirstServer)(const char * prevCvarName);
 
 } AppAPI;

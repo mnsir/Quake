@@ -14,7 +14,12 @@ const char * Cvar_GetFirstServer(const char * prevCvarName)
 
 float Cvar_VariableValue(char * var_name)
 {
-    g_pAppApi->Cvar_VariableValue(var_name);
+    return g_pAppApi->Cvar_VariableValue(var_name);
+}
+
+char * Cvar_VariableString(char * var_name)
+{
+    return g_pAppApi->Cvar_VariableString(var_name);
 }
 
 void Cvar_Set(char * var_name, char * value)
@@ -34,7 +39,7 @@ void Cvar_RegisterVariable(cvar_t * variable)
 
 bool Cvar_Command()
 {
-    return g_pAppApi->Cvar_Command();
+    return g_pAppApi->Cvar_Command(Cmd_Argv(0), Cmd_Argv(0), Cmd_Argc());
 }
 
 void Cvar_WriteVariables(FILE * f)

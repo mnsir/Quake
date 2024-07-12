@@ -394,6 +394,7 @@ void M_SinglePlayer_Key(int key)
     switch (key)
     {
     case K_ESCAPE:
+        
         M_Menu_Main_f();
         break;
 

@@ -106,7 +106,6 @@ Grab six views for environment mapping tests
 void R_Envmap_f()
 {
     byte buffer[256 * 256 * 4];
-    char name[1024];
 
     glDrawBuffer(GL_FRONT);
     glReadBuffer(GL_FRONT);
@@ -429,8 +428,6 @@ void R_TimeRefresh_f()
 {
     int i;
     float start, stop, time;
-    int startangle;
-    vrect_t vr;
 
     glDrawBuffer(GL_FRONT);
     glFinish();

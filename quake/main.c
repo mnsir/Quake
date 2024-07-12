@@ -214,7 +214,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     g_hInstance = hInstance;
 
-    const VideoMode mode = hw;
+    const VideoMode mode = gl;
     InitCommandLine(aArgs[mode] /*lpCmdLine*/);
 
     const int isDedicated = Args_Dedicated();

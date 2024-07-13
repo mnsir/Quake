@@ -389,7 +389,7 @@ void registerAllMemDrivers()
 
 void VID_InitMGLFull()
 {
-    int i, xRes, yRes, bits, vMode, lowres, curmode, temp;
+    int i, xRes, yRes, bits, lowres, curmode, temp;
     int lowstretchedres, stretchedmode, lowstretched;
     uchar * m;
 
@@ -694,7 +694,7 @@ VID_InitFullDIB
 void VID_InitFullDIB()
 {
     DEVMODE devmode;
-    int i, j, modenum, cmodes, existingmode, originalnummodes, lowestres;
+    int i, j, modenum, existingmode, originalnummodes, lowestres;
     int numlowresmodes, bpp, done;
     int cstretch, istretch, mstretch;
     BOOL stat;
@@ -1202,7 +1202,6 @@ bool VID_SetWindowedMode(int modenum)
     pixel_format_t pf;
     bool stretched;
     int lastmodestate;
-    LONG wlong;
 
     if (!windowed_mode_set)
     {
@@ -1547,7 +1546,7 @@ void VID_SetDefaultMode()
 
 int VID_SetMode(int modenum, unsigned char * palette)
 {
-    int original_mode, temp, dummy;
+    int original_mode, temp;
     bool stat;
     MSG msg;
     HDC hdc;
@@ -2026,7 +2025,6 @@ VID_ForceMode_f
 void VID_ForceMode_f()
 {
     int modenum;
-    double testduration;
 
     if (!vid_testingmode)
     {
@@ -2166,9 +2164,6 @@ void VID_Init(unsigned char * palette)
 
 void VID_Shutdown()
 {
-    HDC hdc;
-    int dummy;
-
     if (vid_initialized)
     {
         if (modestate == MS_FULLDIB)
@@ -2203,8 +2198,6 @@ FlipScreen
 */
 void FlipScreen(vrect_t * rects)
 {
-    HRESULT ddrval;
-
     // Flip the surfaces
 
     if (DDActive)

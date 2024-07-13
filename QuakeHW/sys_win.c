@@ -367,8 +367,7 @@ char* Sys_ConsoleInput()
 	static char text[256];
 	static int len;
 	INPUT_RECORD recs[1024];
-	int count;
-	int i, dummy;
+	int dummy;
 	int ch, numread, numevents;
 
 	if (!isDedicated)

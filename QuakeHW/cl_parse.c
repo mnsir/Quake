@@ -336,7 +336,6 @@ void CL_ParseUpdate(int bits)
     bool forcelink;
     entity_t * ent;
     int num;
-    int skin;
 
     if (cls.signon == SIGNONS - 1)
     { // first update is the final signon stage

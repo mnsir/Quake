@@ -1,6 +1,5 @@
 #include "cvar.h"
 
-#include <cstring>
 #include <string>
 #include <map>
 #include <charconv>

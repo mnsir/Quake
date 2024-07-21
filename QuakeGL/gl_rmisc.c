@@ -391,9 +391,6 @@ void R_NewMap()
             mirrortexturenum = i;
         cl.worldmodel->textures[i]->texturechain = NULL;
     }
-#ifdef QUAKE2
-    R_LoadSkys();
-#endif
 }
 
 

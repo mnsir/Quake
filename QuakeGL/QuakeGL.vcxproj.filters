@@ -177,9 +177,6 @@
     <ClCompile Include="gl_screen.c">
       <Filter>diff</Filter>
     </ClCompile>
-    <ClCompile Include="gl_test.c">
-      <Filter>diff</Filter>
-    </ClCompile>
     <ClCompile Include="gl_vidnt.c">
       <Filter>diff</Filter>
     </ClCompile>

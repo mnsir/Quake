@@ -23,11 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 int skytexturenum;
 
-#ifndef GL_RGBA4
-#define GL_RGBA4 0
-#endif
-
-
 int lightmap_bytes; // 1, 2, or 4
 
 int lightmap_textures;

@@ -19,12 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 // net_dgrm.c
 
-// This is enables a simple IP banning mechanism
-#define BAN_TEST
-
-#ifdef BAN_TEST
 #include <windows.h>
-#endif // BAN_TEST
 
 #include "quakedef.h"
 #include "net_dgrm.h"
@@ -57,97 +52,11 @@ extern int m_state;
 extern bool m_return_onerror;
 extern char m_return_reason[32];
 
-
-#ifdef DEBUG
-char * StrAddr(struct qsockaddr * addr)
-{
-    static char buf[34];
-    byte * p = (byte *)addr;
-    int n;
-
-    for (n = 0; n < 16; n++)
-        sprintf(buf + n * 2, "%02x", *p++);
-    return buf;
-}
-#endif
-
-
-#ifdef BAN_TEST
-unsigned long banAddr = 0x00000000;
-unsigned long banMask = 0xffffffff;
-
-void NET_Ban_f()
-{
-    char addrStr[32];
-    char maskStr[32];
-    void (*print) (char * fmt, ...);
-
-    if (cmd_source == src_command)
-    {
-        if (!sv.active)
-        {
-            Cmd_ForwardToServer();
-            return;
-        }
-        print = Con_Printf;
-    }
-    else
-    {
-        if (pr_global_struct->deathmatch && !host_client->privileged)
-            return;
-        print = SV_ClientPrintf;
-    }
-
-    switch (Cmd_Argc())
-    {
-    case 1:
-        if (((struct in_addr *)&banAddr)->s_addr)
-        {
-            Q_strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
-            Q_strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
-            print("Banning %s [%s]\n", addrStr, maskStr);
-        }
-        else
-            print("Banning not active\n");
-        break;
-
-    case 2:
-        if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
-            banAddr = 0x00000000;
-        else
-            banAddr = inet_addr(Cmd_Argv(1));
-        banMask = 0xffffffff;
-        break;
-
-    case 3:
-        banAddr = inet_addr(Cmd_Argv(1));
-        banMask = inet_addr(Cmd_Argv(2));
-        break;
-
-    default:
-        print("BAN ip_address [mask]\n");
-        break;
-    }
-}
-#endif
-
-
 int Datagram_SendMessage(qsocket_t * sock, sizebuf_t * data)
 {
     unsigned int packetLen;
     unsigned int dataLen;
     unsigned int eom;
-
-#ifdef DEBUG
-    if (data->cursize == 0)
-        Sys_Error("Datagram_SendMessage: zero length message\n");
-
-    if (data->cursize > NET_MAXMESSAGE)
-        Sys_Error("Datagram_SendMessage: message too big %u\n", data->cursize);
-
-    if (sock->canSend == false)
-        Sys_Error("SendMessage: called with canSend == false\n");
-#endif
 
     Q_memcpy(sock->sendMessage, data->data, data->cursize);
     sock->sendMessageLength = data->cursize;
@@ -264,14 +173,6 @@ int Datagram_SendUnreliableMessage(qsocket_t * sock, sizebuf_t * data)
 {
     int packetLen;
 
-#ifdef DEBUG
-    if (data->cursize == 0)
-        Sys_Error("Datagram_SendUnreliableMessage: zero length message\n");
-
-    if (data->cursize > MAX_DATAGRAM)
-        Sys_Error("Datagram_SendUnreliableMessage: message too big %u\n", data->cursize);
-#endif
-
     packetLen = NET_HEADERSIZE + data->cursize;
 
     packetBuffer.length = BigLong(packetLen | NETFLAG_UNRELIABLE);
@@ -317,11 +218,6 @@ int Datagram_GetMessage(qsocket_t * sock)
 
         if (sfunc.AddrCompare(&readaddr, &sock->addr) != 0)
         {
-#ifdef DEBUG
-            Con_DPrintf("Forged packet received\n");
-            Con_DPrintf("Expected: %s\n", StrAddr(&sock->addr));
-            Con_DPrintf("Received: %s\n", StrAddr(&readaddr));
-#endif
             continue;
         }
 
@@ -757,9 +653,6 @@ int Datagram_Init()
         net_landrivers[i].controlSock = csock;
     }
 
-#ifdef BAN_TEST
-    Cmd_AddCommand("ban", NET_Ban_f);
-#endif
     Cmd_AddCommand("test", Test_f);
     Cmd_AddCommand("test2", Test2_f);
 
@@ -957,27 +850,6 @@ static qsocket_t * _Datagram_CheckNewConnections()
         SZ_Clear(&net_message);
         return NULL;
     }
-
-#ifdef BAN_TEST
-    // check for a ban
-    if (clientaddr.sa_family == AF_INET)
-    {
-        unsigned long testAddr;
-        testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
-        if ((testAddr & banMask) == banAddr)
-        {
-            SZ_Clear(&net_message);
-            // save space for the header, filled in later
-            MSG_WriteLong(&net_message, 0);
-            MSG_WriteByte(&net_message, CCREP_REJECT);
-            MSG_WriteString(&net_message, "You have been banned.\n");
-            *((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
-            dfunc.Write(acceptsock, net_message.data, net_message.cursize, &clientaddr);
-            SZ_Clear(&net_message);
-            return NULL;
-        }
-    }
-#endif
 
     // see if this guy is already connected
     for (s = net_activeSockets; s; s = s->next)
@@ -1239,12 +1111,6 @@ static qsocket_t * _Datagram_Connect(char * host)
                 // is it from the right place?
                 if (sfunc.AddrCompare(&readaddr, &sendaddr) != 0)
                 {
-#ifdef DEBUG
-                    Con_Printf("wrong reply address\n");
-                    Con_Printf("Expected: %s\n", StrAddr(&sendaddr));
-                    Con_Printf("Received: %s\n", StrAddr(&readaddr));
-                    SCR_UpdateScreen();
-#endif
                     ret = 0;
                     continue;
                 }

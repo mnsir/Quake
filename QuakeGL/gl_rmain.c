@@ -1149,11 +1149,6 @@ void R_RenderScene()
     R_RenderDlights();
 
     R_DrawParticles();
-
-#ifdef GLTEST
-    Test_Draw();
-#endif
-
 }
 
 

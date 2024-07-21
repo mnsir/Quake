@@ -540,61 +540,6 @@ void Host_GetConsoleCommands()
     }
 }
 
-
-/*
-==================
-Host_ServerFrame
-
-==================
-*/
-#ifdef FPS_20
-
-void _Host_ServerFrame()
-{
-    // run the world state 
-    pr_global_struct->frametime = host_frametime;
-
-    // read client messages
-    SV_RunClients();
-
-    // move things around and think
-    // always pause in single player if in console or menus
-    if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game))
-        SV_Physics();
-}
-
-void Host_ServerFrame()
-{
-    float save_host_frametime;
-    float temp_host_frametime;
-
-    // run the world state 
-    pr_global_struct->frametime = host_frametime;
-
-    // set the time and clear the general datagram
-    SV_ClearDatagram();
-
-    // check for new clients
-    SV_CheckForNewClients();
-
-    temp_host_frametime = save_host_frametime = host_frametime;
-    while (temp_host_frametime > (1.0 / 72.0))
-    {
-        if (temp_host_frametime > 0.05)
-            host_frametime = 0.05;
-        else
-            host_frametime = temp_host_frametime;
-        temp_host_frametime -= host_frametime;
-        _Host_ServerFrame();
-    }
-    host_frametime = save_host_frametime;
-
-    // send all messages to the clients
-    SV_SendClientMessages();
-}
-
-#else
-
 void Host_ServerFrame()
 {
     // run the world state 
@@ -617,9 +562,6 @@ void Host_ServerFrame()
     // send all messages to the clients
     SV_SendClientMessages();
 }
-
-#endif
-
 
 /*
 ==================

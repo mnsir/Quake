@@ -491,8 +491,6 @@ void R_DrawSequentialPoly(msurface_t * s)
         glDisable(GL_BLEND);
     }
 }
-#endif
-
 
 /*
 ================
@@ -885,8 +883,6 @@ void R_DrawWaterSurfaces()
     }
 
 }
-
-#endif
 
 /*
 ================

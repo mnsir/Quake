@@ -188,12 +188,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adivtab.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="anorms.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="bspfile.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -314,13 +308,7 @@
     <ClInclude Include="zone.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="anorm_dots.h">
-      <Filter>diff</Filter>
-    </ClInclude>
     <ClInclude Include="gl_model.h">
-      <Filter>diff</Filter>
-    </ClInclude>
-    <ClInclude Include="gl_warp_sin.h">
       <Filter>diff</Filter>
     </ClInclude>
     <ClInclude Include="glquake.h">

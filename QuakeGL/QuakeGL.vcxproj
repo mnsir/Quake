@@ -205,9 +205,6 @@
     <ClCompile Include="zone.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="adivtab.h" />
-    <ClInclude Include="anorms.h" />
-    <ClInclude Include="anorm_dots.h" />
     <ClInclude Include="bspfile.h" />
     <ClInclude Include="cdaudio.h" />
     <ClInclude Include="client.h" />
@@ -220,7 +217,6 @@
     <ClInclude Include="draw.h" />
     <ClInclude Include="glquake.h" />
     <ClInclude Include="gl_model.h" />
-    <ClInclude Include="gl_warp_sin.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keys.h" />
     <ClInclude Include="mathlib.h" />

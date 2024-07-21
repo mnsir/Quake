@@ -94,8 +94,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="adivtab.h" />
-    <ClInclude Include="anorms.h" />
     <ClInclude Include="bspfile.h" />
     <ClInclude Include="cdaudio.h" />
     <ClInclude Include="client.h" />
@@ -108,7 +106,6 @@
     <ClInclude Include="draw.h" />
     <ClInclude Include="d_iface.h" />
     <ClInclude Include="d_local.h" />
-    <ClInclude Include="framework.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="keys.h" />
     <ClInclude Include="mathlib.h" />
@@ -135,7 +132,6 @@
     <ClInclude Include="spritegn.h" />
     <ClInclude Include="sys.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="vid.h" />
     <ClInclude Include="view.h" />
     <ClInclude Include="wad.h" />

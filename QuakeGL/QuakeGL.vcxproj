@@ -73,10 +73,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\repos\Quake\scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>D:\repos\Quake\scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)out\gl\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\gl\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>D:\repos\Quake\scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>D:\repos\Quake\scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)out\gl\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\gl\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -46,10 +46,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)out\hw\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\hw\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)scitech\INCLUDE;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)scitech\LIB\WIN32\VC;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)out\hw\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)temp\hw\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

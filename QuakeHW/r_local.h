@@ -245,7 +245,6 @@ void R_DrawParticles();
 void R_InitParticles();
 void R_ClearParticles();
 void R_ReadPointFile_f();
-void R_SurfacePatch();
 
 extern int r_amodels_drawn;
 extern edge_t * auxedges;

@@ -99,9 +99,6 @@
     <ClCompile Include="net_wipx.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="nonintel.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="pr_cmds.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

@@ -263,9 +263,6 @@
     <ClInclude Include="pr_comp.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="progdefs.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="progs.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -329,9 +326,6 @@
     <ClInclude Include="glquake.h">
       <Filter>diff</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="progdefs.q1" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="quake.ico">

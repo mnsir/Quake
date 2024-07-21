@@ -121,7 +121,6 @@
     <ClInclude Include="net_vcr.h" />
     <ClInclude Include="net_wins.h" />
     <ClInclude Include="net_wipx.h" />
-    <ClInclude Include="progdefs.h" />
     <ClInclude Include="progs.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="pr_comp.h" />
@@ -224,9 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="quake.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="progdefs.q1" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

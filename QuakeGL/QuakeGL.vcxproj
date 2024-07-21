@@ -240,8 +240,6 @@
     <ClInclude Include="quakedef.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="r_local.h" />
-    <ClInclude Include="r_shared.h" />
     <ClInclude Include="sbar.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="server.h" />

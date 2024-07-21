@@ -275,12 +275,6 @@
     <ClInclude Include="quakedef.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="r_local.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="r_shared.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="render.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>

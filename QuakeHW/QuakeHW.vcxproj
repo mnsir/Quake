@@ -65,6 +65,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dxguid.lib;mgllt.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)scitech\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -85,6 +86,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dxguid.lib;mgllt.lib;winmm.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libc.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)scitech\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

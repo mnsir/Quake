@@ -1,0 +1,159 @@
+cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
+
+set(this_target "QuakeHW")
+
+project(${this_target})
+
+set(${this_target}_sources
+  #"pch.h"
+  
+  "bspfile.h"
+  "cdaudio.h"
+  "client.h"
+  "cmd.h"
+  "common.h"
+  "conproc.h"
+  "console.h"
+  "crc.h"
+  "cvar.h"
+  "d_iface.h"
+  "d_local.h"
+  "draw.h"
+  "input.h"
+  "keys.h"
+  "mathlib.h"
+  "menu.h"
+  "model.h"
+  "modelgen.h"
+  "net_dgrm.h"
+  "net_loop.h"
+  "net_vcr.h"
+  "net_wins.h"
+  "net_wipx.h"
+  "net.h"
+  "pr_comp.h"
+  "progs.h"
+  "protocol.h"
+  "quakedef.h"
+  "r_local.h"
+  "r_shared.h"
+  "render.h"
+  "Resource.h"
+  "sbar.h"
+  "screen.h"
+  "server.h"
+  "sound.h"
+  "spritegn.h"
+  "sys.h"
+  "vid.h"
+  "view.h"
+  "wad.h"
+  "winquake.h"
+  "world.h"
+  "zone.h"
+
+  "cd_win.c"
+  "chase.c"
+  "cl_demo.c"
+  "cl_input.c"
+  "cl_main.c"
+  "cl_parse.c"
+  "cl_tent.c"
+  "cmd.c"
+  "common.c"
+  "conproc.c"
+  "console.c"
+  "crc.c"
+  "cvar.c"
+  "d_edge.c"
+  "d_fill.c"
+  "d_init.c"
+  "d_modech.c"
+  "d_part.c"
+  "d_polyse.c"
+  "d_scan.c"
+  "d_sky.c"
+  "d_sprite.c"
+  "d_surf.c"
+  "d_vars.c"
+  "d_zpoint.c"
+  "draw.c"
+  "host_cmd.c"
+  "host.c"
+  "in_win.c"
+  "keys.c"
+  "mathlib.c"
+  "menu.c"
+  "model.c"
+  "net_dgrm.c"
+  "net_loop.c"
+  "net_main.c"
+  "net_vcr.c"
+  "net_win.c"
+  "net_wins.c"
+  "net_wipx.c"
+  "pr_cmds.c"
+  "pr_edict.c"
+  "pr_exec.c"
+  "r_aclip.c"
+  "r_alias.c"
+  "r_bsp.c"
+  "r_draw.c"
+  "r_edge.c"
+  "r_efrag.c"
+  "r_light.c"
+  "r_main.c"
+  "r_misc.c"
+  "r_part.c"
+  "r_sky.c"
+  "r_sprite.c"
+  "r_surf.c"
+  "r_vars.c"
+  "sbar.c"
+  "screen.c"
+  "snd_dma.c"
+  "snd_mem.c"
+  "snd_mix.c"
+  "snd_win.c"
+  "sv_main.c"
+  "sv_move.c"
+  "sv_phys.c"
+  "sv_user.c"
+  "sys_win.c"
+  "vid_win.c"
+  "view.c"
+  "wad.c"
+  "world.c"
+  "zone.c"
+)
+
+add_executable(${this_target} WIN32
+  ${${this_target}_sources}
+)
+# "-startwindowed",
+#    //"-playback",
+#    //"-startwindowed -record",
+#    "-cachedir -width 800 -height 600 -bpp 32 -window -no8bit"
+
+target_include_directories(${this_target} PRIVATE
+  "${CMAKE_SOURCE_DIR}/scitech/INCLUDE"
+)
+
+target_link_directories(${this_target} PRIVATE
+  "${CMAKE_SOURCE_DIR}/scitech/lib"
+)
+
+#dxguid.lib;winmm.lib;wsock32.lib;opengl32.lib;comctl32.
+target_link_libraries(${this_target}
+  PRIVATE
+  #OpenGL::GL
+  dxguid
+  winmm
+  wsock32
+  libc
+  mgllt
+)
+
+#add_library(quake::gl ALIAS ${this_target})
+
+#target_precompile_headers(${this_target} PRIVATE pch.h)

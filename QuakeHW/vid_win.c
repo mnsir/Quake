@@ -2254,34 +2254,25 @@ void FlipScreen(vrect_t * rects)
     }
     else
     {
-        HDC hdcScreen;
-
-        hdcScreen = GetDC(mainwindow);
+        HDC hdcScreen = GetDC(mainwindow);
 
         if (windc && dibdc)
         {
             MGL_setWinDC(windc, hdcScreen);
+            HDC hSrcDC = MGL_getWinDC(dibdc);
 
-            while (rects)
+            for (;rects; rects = rects->pnext)
             {
                 if (vid_stretched)
                 {
-                    MGL_stretchBltCoord(windc, dibdc,
-                                        rects->x, rects->y,
-                                        rects->x + rects->width, rects->y + rects->height,
-                                        rects->x << 1, rects->y << 1,
-                                        (rects->x + rects->width) << 1,
-                                        (rects->y + rects->height) << 1);
+                    StretchBlt(hdcScreen, rects->x << 1, rects->y << 1, (rects->x + rects->width) << 1, (rects->y + rects->height) << 1,
+                               hSrcDC, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height,
+                               SRCCOPY);
                 }
                 else
                 {
-                    MGL_bitBltCoord(windc, dibdc,
-                                    rects->x, rects->y,
-                                    rects->x + rects->width, rects->y + rects->height,
-                                    rects->x, rects->y, MGL_REPLACE_MODE);
+                    BitBlt(hdcScreen, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height, hSrcDC, rects->x, rects->y, SRCCOPY);
                 }
-
-                rects = rects->pnext;
             }
         }
 

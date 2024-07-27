@@ -98,7 +98,10 @@ unsigned d_8to24table[256];
 
 int driver = grDETECT, mode;
 bool useWinDirect = true, useDirectDraw = true;
-MGLDC * mgldc = NULL, * memdc = NULL, * dibdc = NULL, * windc = NULL;
+MGLDC * mgldc = NULL, * memdc = NULL, * windc = NULL;
+HDC hdcDib = NULL;
+HBITMAP hbmDib = NULL;
+HBITMAP hbmOld = NULL;
 
 typedef struct
 {
@@ -133,6 +136,66 @@ void VID_MenuKey(int key);
 LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 
+typedef struct {
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD bmiColors[256];
+} BitMapInfo;
+
+void CreateDIB()
+{
+    BitMapInfo bmi;
+    bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
+    bmi.bmiHeader.biWidth = DIBWidth;
+    bmi.bmiHeader.biHeight = -DIBHeight;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 8;
+    bmi.bmiHeader.biCompression = BI_RGB;
+    bmi.bmiHeader.biSizeImage = 0;
+    bmi.bmiHeader.biXPelsPerMeter = 0;
+    bmi.bmiHeader.biYPelsPerMeter = 0;
+    bmi.bmiHeader.biClrUsed = 256;
+    bmi.bmiHeader.biClrImportant = 0;
+
+    for (int i = 0; i < 256; ++i) {
+        bmi.bmiColors[i].rgbRed = i;
+        bmi.bmiColors[i].rgbGreen = vid_curpal[i * 3 + 1];
+        bmi.bmiColors[i].rgbBlue = vid_curpal[i * 3 + 2];
+        bmi.bmiColors[i].rgbReserved = 0;
+    }
+
+    // Создайте DIB section
+    void* pBits = NULL;
+    HDC hdc = GetDC(mainwindow);
+    hbmDib = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pBits, NULL, 0);
+
+    hdcDib = CreateCompatibleDC(hdc);
+    ReleaseDC(mainwindow, hdc);
+
+    hbmOld = (HBITMAP)SelectObject(hdcDib, hbmDib);
+
+    BITMAP bm;
+    GetObject((HBITMAP)hbmDib, sizeof(BITMAP), &bm);
+
+    vid.buffer = bm.bmBits;
+    vid.conbuffer = bm.bmBits;
+    vid.direct = bm.bmBits;
+    vid.rowbytes = bm.bmWidthBytes;
+    vid.conrowbytes = bm.bmWidthBytes;
+}
+
+void DeleteDIBDC()
+{
+    if (hdcDib)
+    {
+        // Восстанавливаем старый битмап
+        SelectObject(hdcDib, hbmOld);
+
+        // Удаляем битмап и контекст устройства
+        DeleteObject(hbmDib);
+        DeleteDC(hdcDib);
+        hdcDib = NULL;
+    }
+}
 
 /*
 ================
@@ -1161,9 +1224,8 @@ void DestroyDIBWindow()
         // destroy the associated MGL DC's; the window gets reused
         if (windc)
             MGL_destroyDC(windc);
-        if (dibdc)
-            MGL_destroyDC(dibdc);
-        windc = dibdc = NULL;
+        windc = NULL;
+        DeleteDIBDC();
     }
 }
 
@@ -1193,9 +1255,8 @@ void DestroyFullDIBWindow()
         // Destroy the fullscreen DIB window and associated MGL DC's
         if (windc)
             MGL_destroyDC(windc);
-        if (dibdc)
-            MGL_destroyDC(dibdc);
-        windc = dibdc = NULL;
+        windc = NULL;
+        DeleteDIBDC();
     }
 }
 
@@ -1229,9 +1290,8 @@ bool VID_SetWindowedMode(int modenum)
 
     if (windc)
         MGL_destroyDC(windc);
-    if (dibdc)
-        MGL_destroyDC(dibdc);
-    windc = dibdc = NULL;
+    windc = NULL;
+    DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
     if (!MGL_changeDisplayMode(grWINDOWED))
@@ -1331,13 +1391,8 @@ bool VID_SetWindowedMode(int modenum)
     if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
         MGL_fatalError("Unable to create Windowed DC!");
 
-    if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
-        MGL_fatalError("Unable to create Memory DC!");
+    CreateDIB();
 
-    MGL_makeCurrentDC(dibdc);
-
-    vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
-    vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
     vid.numpages = 1;
     vid.maxwarpwidth = WARP_WIDTH;
     vid.maxwarpheight = WARP_HEIGHT;
@@ -1420,9 +1475,8 @@ bool VID_SetFullDIBMode(int modenum)
 
     if (windc)
         MGL_destroyDC(windc);
-    if (dibdc)
-        MGL_destroyDC(dibdc);
-    windc = dibdc = NULL;
+    windc = NULL;
+    DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
     if (!MGL_changeDisplayMode(grWINDOWED))
@@ -1489,13 +1543,8 @@ bool VID_SetFullDIBMode(int modenum)
     if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
         MGL_fatalError("Unable to create Fullscreen DIB DC!");
 
-    if ((dibdc = MGL_createMemoryDC(DIBWidth, DIBHeight, 8, &pf)) == NULL)
-        MGL_fatalError("Unable to create Memory DC!");
+    CreateDIB();
 
-    MGL_makeCurrentDC(dibdc);
-
-    vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
-    vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
     vid.numpages = 1;
     vid.maxwarpwidth = WARP_WIDTH;
     vid.maxwarpheight = WARP_HEIGHT;
@@ -1704,8 +1753,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
 
 void VID_LockBuffer()
 {
-
-    if (dibdc)
+    if (hdcDib)
         return;
 
     lockcount++;
@@ -1745,7 +1793,7 @@ void VID_LockBuffer()
 
 void VID_UnlockBuffer()
 {
-    if (dibdc)
+    if (hdcDib)
         return;
 
     lockcount--;
@@ -1773,7 +1821,7 @@ int VID_ForceUnlockedAndReturnState()
 
     lk = lockcount;
 
-    if (dibdc)
+    if (hdcDib)
     {
         lockcount = 0;
     }
@@ -1790,7 +1838,7 @@ int VID_ForceUnlockedAndReturnState()
 void VID_ForceLockState(int lk)
 {
 
-    if (!dibdc && lk)
+    if (!hdcDib && lk)
     {
         lockcount = 0;
         VID_LockBuffer();
@@ -1850,14 +1898,19 @@ void VID_SetPalette(unsigned char * palette)
             if (!windc)
                 return;
 
-            MGL_setPalette(windc, pal, 256, 0);
-            MGL_realizePalette(windc, 256, 0, false);
-            if (dibdc)
-            {
-                MGL_setPalette(dibdc, pal, 256, 0);
-                MGL_realizePalette(dibdc, 256, 0, false);
-            }
-        }
+			MGL_setPalette(windc, pal, 256, 0);
+			MGL_realizePalette(windc, 256, 0, false);
+
+			RGBQUAD colors[256];
+			for (int i = 0; i < 256; ++i)
+			{
+				colors[i].rgbRed = palette[i * 3];
+				colors[i].rgbGreen = palette[i * 3 + 1];
+				colors[i].rgbBlue = palette[i * 3 + 2];
+				colors[i].rgbReserved = 0;
+			}
+			SetDIBColorTable(hdcDib, 0, 256, colors);
+		}
     }
 
     memcpy(vid_curpal, palette, sizeof(vid_curpal));
@@ -2256,22 +2309,21 @@ void FlipScreen(vrect_t * rects)
     {
         HDC hdcScreen = GetDC(mainwindow);
 
-        if (windc && dibdc)
+        if (windc && hdcDib)
         {
             MGL_setWinDC(windc, hdcScreen);
-            HDC hSrcDC = MGL_getWinDC(dibdc);
 
             for (;rects; rects = rects->pnext)
             {
                 if (vid_stretched)
                 {
                     StretchBlt(hdcScreen, rects->x << 1, rects->y << 1, (rects->x + rects->width) << 1, (rects->y + rects->height) << 1,
-                               hSrcDC, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height,
+                               hdcDib, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height,
                                SRCCOPY);
                 }
                 else
                 {
-                    BitBlt(hdcScreen, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height, hSrcDC, rects->x, rects->y, SRCCOPY);
+                    BitBlt(hdcScreen, rects->x, rects->y, rects->x + rects->width, rects->y + rects->height, hdcDib, rects->x, rects->y, SRCCOPY);
                 }
             }
         }

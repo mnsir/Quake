@@ -6,9 +6,9 @@
 #include "d_local.h"
 #include "resource.h"
 
-#ifndef GLQUAKE
-#include <mgraph.h>
-#endif
+//#ifndef GLQUAKE
+//#include <mgraph.h>
+//#endif
 
 #define MAX_MODE_LIST 30
 #define VID_ROW_SIZE 3
@@ -96,9 +96,10 @@ unsigned char vid_curpal[256 * 3];
 unsigned short d_8to16table[256];
 unsigned d_8to24table[256];
 
-int driver = grDETECT, mode;
+//int driver = grDETECT;
+int mode;
 bool useWinDirect = true, useDirectDraw = true;
-MGLDC * mgldc = NULL, * memdc = NULL;
+//MGLDC * mgldc = NULL, * memdc = NULL;
 HDC hdcWin = NULL;
 HDC hdcDib = NULL;
 HBITMAP hbmDib = NULL;
@@ -370,315 +371,315 @@ void initFatalError()
 }
 
 
-int VID_Suspend(MGLDC * dc, m_int flags)
-{
+//int VID_Suspend(MGLDC * dc, m_int flags)
+//{
+//
+//    if (flags & MGL_DEACTIVATE)
+//    {
+//        // FIXME: this doesn't currently work on NT
+//        if (block_switch.value && !WinNT)
+//        {
+//            return MGL_NO_DEACTIVATE;
+//        }
+//
+//        S_BlockSound();
+//        S_ClearBuffer();
+//
+//        IN_RestoreOriginalMouseState();
+//        CDAudio_Pause();
+//
+//        // keep WM_PAINT from trying to redraw
+//        in_mode_set = true;
+//
+//        block_drawing = true; // so we don't try to draw while switched away
+//
+//        return MGL_NO_SUSPEND_APP;
+//    }
+//    else if (flags & MGL_REACTIVATE)
+//    {
+//        IN_SetQuakeMouseState();
+//        // fix the leftover Alt from any Alt-Tab or the like that switched us away
+//        ClearAllStates();
+//        CDAudio_Resume();
+//        S_UnblockSound();
+//
+//        in_mode_set = false;
+//
+//        vid.recalc_refdef = 1;
+//
+//        block_drawing = false;
+//
+//        return MGL_NO_SUSPEND_APP;
+//    }
+//
+//}
 
-    if (flags & MGL_DEACTIVATE)
-    {
-        // FIXME: this doesn't currently work on NT
-        if (block_switch.value && !WinNT)
-        {
-            return MGL_NO_DEACTIVATE;
-        }
 
-        S_BlockSound();
-        S_ClearBuffer();
-
-        IN_RestoreOriginalMouseState();
-        CDAudio_Pause();
-
-        // keep WM_PAINT from trying to redraw
-        in_mode_set = true;
-
-        block_drawing = true; // so we don't try to draw while switched away
-
-        return MGL_NO_SUSPEND_APP;
-    }
-    else if (flags & MGL_REACTIVATE)
-    {
-        IN_SetQuakeMouseState();
-        // fix the leftover Alt from any Alt-Tab or the like that switched us away
-        ClearAllStates();
-        CDAudio_Resume();
-        S_UnblockSound();
-
-        in_mode_set = false;
-
-        vid.recalc_refdef = 1;
-
-        block_drawing = false;
-
-        return MGL_NO_SUSPEND_APP;
-    }
-
-}
-
-
-void registerAllDispDrivers()
-{
-    /* Event though these driver require WinDirect, we register
-    * them so that they will still be available even if DirectDraw
-    * is present and the user has disable the high performance
-    * WinDirect modes.
-    */
-    MGL_registerDriver(MGL_VGA8NAME, VGA8_driver);
-    // MGL_registerDriver(MGL_VGAXNAME,VGAX_driver);
-
-     /* Register display drivers */
-    if (useWinDirect)
-    {
-        //we don't want VESA 1.X drivers MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
-        MGL_registerDriver(MGL_LINEAR8NAME, LINEAR8_driver);
-
-        if (!COM_CheckParm("-novbeaf"))
-            MGL_registerDriver(MGL_ACCEL8NAME, ACCEL8_driver);
-    }
-
-    if (useDirectDraw)
-    {
-        MGL_registerDriver(MGL_DDRAW8NAME, DDRAW8_driver);
-    }
-}
+//void registerAllDispDrivers()
+//{
+//    /* Event though these driver require WinDirect, we register
+//    * them so that they will still be available even if DirectDraw
+//    * is present and the user has disable the high performance
+//    * WinDirect modes.
+//    */
+//    MGL_registerDriver(MGL_VGA8NAME, VGA8_driver);
+//    // MGL_registerDriver(MGL_VGAXNAME,VGAX_driver);
+//
+//     /* Register display drivers */
+//    if (useWinDirect)
+//    {
+//        //we don't want VESA 1.X drivers MGL_registerDriver(MGL_SVGA8NAME,SVGA8_driver);
+//        MGL_registerDriver(MGL_LINEAR8NAME, LINEAR8_driver);
+//
+//        if (!COM_CheckParm("-novbeaf"))
+//            MGL_registerDriver(MGL_ACCEL8NAME, ACCEL8_driver);
+//    }
+//
+//    if (useDirectDraw)
+//    {
+//        MGL_registerDriver(MGL_DDRAW8NAME, DDRAW8_driver);
+//    }
+//}
 
 
 void registerAllMemDrivers()
 {
-    /* Register memory context drivers */
-    MGL_registerDriver(MGL_PACKED8NAME, PACKED8_driver);
+//    /* Register memory context drivers */
+//    MGL_registerDriver(MGL_PACKED8NAME, PACKED8_driver);
 }
 
 
 void VID_InitMGLFull(HINSTANCE hInstance)
 {
-    int i, xRes, yRes, bits, vMode, lowres, curmode, temp;
-    int lowstretchedres, stretchedmode, lowstretched;
-    uchar * m;
-
-    // FIXME: NT is checked for because MGL currently has a bug that causes it
-    // to try to use WinDirect modes even on NT
-    if (COM_CheckParm("-nowindirect") ||
-        COM_CheckParm("-nowd") ||
-        COM_CheckParm("-novesa") ||
-        WinNT)
-    {
-        useWinDirect = false;
-    }
-
-    if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
-        useDirectDraw = false;
-
-    // Initialise the MGL
-    MGL_unregisterAllDrivers();
-    registerAllDispDrivers();
-    registerAllMemDrivers();
-    MGL_detectGraph(&driver, &mode);
-    m = MGL_availableModes();
-
-    if (m[0] != 0xFF)
-    {
-        lowres = lowstretchedres = 99999;
-        lowstretched = 0;
-        curmode = 0;
-
-        // find the lowest-res mode, or a mode we can stretch up to and get
-        // lowest-res that way
-        for (i = 0; m[i] != 0xFF; i++)
-        {
-            MGL_modeResolution(m[i], &xRes, &yRes, &bits);
-
-            if ((bits == 8) &&
-                (xRes <= MAXWIDTH) &&
-                (yRes <= MAXHEIGHT) &&
-                (curmode < MAX_MODE_LIST))
-            {
-                if (m[i] == grVGA_320x200x256)
-                    is_mode0x13 = true;
-
-                if (!COM_CheckParm("-noforcevga"))
-                {
-                    if (m[i] == grVGA_320x200x256)
-                    {
-                        mode = i;
-                        break;
-                    }
-                }
-
-                if (xRes < lowres)
-                {
-                    lowres = xRes;
-                    mode = i;
-                }
-
-                if ((xRes < lowstretchedres) && ((xRes >> 1) >= 320))
-                {
-                    lowstretchedres = xRes >> 1;
-                    stretchedmode = i;
-                }
-            }
-
-            curmode++;
-        }
-
-        // if there's a mode we can stretch by 2 up to, thereby effectively getting
-        // a lower-res mode than the lowest-res real but still at least 320x200, that
-        // will be our default mode
-        if (lowstretchedres < lowres)
-        {
-            mode = stretchedmode;
-            lowres = lowstretchedres;
-            lowstretched = 1;
-        }
-
-        // build the mode list, leaving room for the low-res stretched mode, if any
-        nummodes++; // leave room for default mode
-
-        for (i = 0; m[i] != 0xFF; i++)
-        {
-            MGL_modeResolution(m[i], &xRes, &yRes, &bits);
-
-            if ((bits == 8) &&
-                (xRes <= MAXWIDTH) &&
-                (yRes <= MAXHEIGHT) &&
-                (nummodes < MAX_MODE_LIST))
-            {
-                if (i == mode)
-                {
-                    if (lowstretched)
-                    {
-                        stretchedmode = nummodes;
-                        curmode = nummodes++;
-                    }
-                    else
-                    {
-                        curmode = MODE_FULLSCREEN_DEFAULT;
-                    }
-                }
-                else
-                {
-                    curmode = nummodes++;
-                }
-
-                modelist[curmode].type = MS_FULLSCREEN;
-                modelist[curmode].width = xRes;
-                modelist[curmode].height = yRes;
-                sprintf(modelist[curmode].modedesc, "%dx%d", xRes, yRes);
-
-                if (m[i] == grVGA_320x200x256)
-                    modelist[curmode].mode13 = 1;
-                else
-                    modelist[curmode].mode13 = 0;
-
-                modelist[curmode].modenum = m[i];
-                modelist[curmode].stretched = 0;
-                modelist[curmode].dib = 0;
-                modelist[curmode].fullscreen = 1;
-                modelist[curmode].halfscreen = 0;
-                modelist[curmode].bpp = 8;
-            }
-        }
-
-        if (lowstretched)
-        {
-            modelist[MODE_FULLSCREEN_DEFAULT] = modelist[stretchedmode];
-            modelist[MODE_FULLSCREEN_DEFAULT].stretched = 1;
-            modelist[MODE_FULLSCREEN_DEFAULT].width >>= 1;
-            modelist[MODE_FULLSCREEN_DEFAULT].height >>= 1;
-            sprintf(modelist[MODE_FULLSCREEN_DEFAULT].modedesc, "%dx%d",
-                    modelist[MODE_FULLSCREEN_DEFAULT].width,
-                    modelist[MODE_FULLSCREEN_DEFAULT].height);
-        }
-
-        vid_default = MODE_FULLSCREEN_DEFAULT;
-
-        temp = m[0];
-
-        if (!MGL_init(&driver, &temp, ""))
-        {
-            initFatalError();
-        }
-    }
-
-    MGL_setSuspendAppCallback(VID_Suspend);
+//    int i, xRes, yRes, bits, vMode, lowres, curmode, temp;
+//    int lowstretchedres, stretchedmode, lowstretched;
+//    uchar * m;
+//
+//    // FIXME: NT is checked for because MGL currently has a bug that causes it
+//    // to try to use WinDirect modes even on NT
+//    if (COM_CheckParm("-nowindirect") ||
+//        COM_CheckParm("-nowd") ||
+//        COM_CheckParm("-novesa") ||
+//        WinNT)
+//    {
+//        useWinDirect = false;
+//    }
+//
+//    if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
+//        useDirectDraw = false;
+//
+//    // Initialise the MGL
+//    MGL_unregisterAllDrivers();
+//    registerAllDispDrivers();
+//    registerAllMemDrivers();
+//    MGL_detectGraph(&driver, &mode);
+//    m = MGL_availableModes();
+//
+//    if (m[0] != 0xFF)
+//    {
+//        lowres = lowstretchedres = 99999;
+//        lowstretched = 0;
+//        curmode = 0;
+//
+//        // find the lowest-res mode, or a mode we can stretch up to and get
+//        // lowest-res that way
+//        for (i = 0; m[i] != 0xFF; i++)
+//        {
+//            MGL_modeResolution(m[i], &xRes, &yRes, &bits);
+//
+//            if ((bits == 8) &&
+//                (xRes <= MAXWIDTH) &&
+//                (yRes <= MAXHEIGHT) &&
+//                (curmode < MAX_MODE_LIST))
+//            {
+//                if (m[i] == grVGA_320x200x256)
+//                    is_mode0x13 = true;
+//
+//                if (!COM_CheckParm("-noforcevga"))
+//                {
+//                    if (m[i] == grVGA_320x200x256)
+//                    {
+//                        mode = i;
+//                        break;
+//                    }
+//                }
+//
+//                if (xRes < lowres)
+//                {
+//                    lowres = xRes;
+//                    mode = i;
+//                }
+//
+//                if ((xRes < lowstretchedres) && ((xRes >> 1) >= 320))
+//                {
+//                    lowstretchedres = xRes >> 1;
+//                    stretchedmode = i;
+//                }
+//            }
+//
+//            curmode++;
+//        }
+//
+//        // if there's a mode we can stretch by 2 up to, thereby effectively getting
+//        // a lower-res mode than the lowest-res real but still at least 320x200, that
+//        // will be our default mode
+//        if (lowstretchedres < lowres)
+//        {
+//            mode = stretchedmode;
+//            lowres = lowstretchedres;
+//            lowstretched = 1;
+//        }
+//
+//        // build the mode list, leaving room for the low-res stretched mode, if any
+//        nummodes++; // leave room for default mode
+//
+//        for (i = 0; m[i] != 0xFF; i++)
+//        {
+//            MGL_modeResolution(m[i], &xRes, &yRes, &bits);
+//
+//            if ((bits == 8) &&
+//                (xRes <= MAXWIDTH) &&
+//                (yRes <= MAXHEIGHT) &&
+//                (nummodes < MAX_MODE_LIST))
+//            {
+//                if (i == mode)
+//                {
+//                    if (lowstretched)
+//                    {
+//                        stretchedmode = nummodes;
+//                        curmode = nummodes++;
+//                    }
+//                    else
+//                    {
+//                        curmode = MODE_FULLSCREEN_DEFAULT;
+//                    }
+//                }
+//                else
+//                {
+//                    curmode = nummodes++;
+//                }
+//
+//                modelist[curmode].type = MS_FULLSCREEN;
+//                modelist[curmode].width = xRes;
+//                modelist[curmode].height = yRes;
+//                sprintf(modelist[curmode].modedesc, "%dx%d", xRes, yRes);
+//
+//                if (m[i] == grVGA_320x200x256)
+//                    modelist[curmode].mode13 = 1;
+//                else
+//                    modelist[curmode].mode13 = 0;
+//
+//                modelist[curmode].modenum = m[i];
+//                modelist[curmode].stretched = 0;
+//                modelist[curmode].dib = 0;
+//                modelist[curmode].fullscreen = 1;
+//                modelist[curmode].halfscreen = 0;
+//                modelist[curmode].bpp = 8;
+//            }
+//        }
+//
+//        if (lowstretched)
+//        {
+//            modelist[MODE_FULLSCREEN_DEFAULT] = modelist[stretchedmode];
+//            modelist[MODE_FULLSCREEN_DEFAULT].stretched = 1;
+//            modelist[MODE_FULLSCREEN_DEFAULT].width >>= 1;
+//            modelist[MODE_FULLSCREEN_DEFAULT].height >>= 1;
+//            sprintf(modelist[MODE_FULLSCREEN_DEFAULT].modedesc, "%dx%d",
+//                    modelist[MODE_FULLSCREEN_DEFAULT].width,
+//                    modelist[MODE_FULLSCREEN_DEFAULT].height);
+//        }
+//
+//        vid_default = MODE_FULLSCREEN_DEFAULT;
+//
+//        temp = m[0];
+//
+//        if (!MGL_init(&driver, &temp, ""))
+//        {
+//            initFatalError();
+//        }
+//    }
+//
+//    MGL_setSuspendAppCallback(VID_Suspend);
 }
 
 
-MGLDC * createDisplayDC(int forcemem)
-/****************************************************************************
-*
-* Function: createDisplayDC
-* Returns: Pointer to the MGL device context to use for the application
-*
-* Description: Initialises the MGL and creates an appropriate display
-* device context to be used by the GUI. This creates and
-* apropriate device context depending on the system being
-* compile for, and should be the only place where system
-* specific code is required.
-*
-****************************************************************************/
-{
-    MGLDC * dc;
-    pixel_format_t pf;
-    int npages;
-
-    // Start the specified video mode
-    if (!MGL_changeDisplayMode(mode))
-        initFatalError();
-
-    npages = MGL_availablePages(mode);
-
-    if (npages > 3)
-        npages = 3;
-
-    if (!COM_CheckParm("-notriplebuf"))
-    {
-        if (npages > 2)
-        {
-            npages = 2;
-        }
-    }
-
-    if ((dc = MGL_createDisplayDC(npages)) == NULL)
-        return NULL;
-
-    if (!forcemem && (MGL_surfaceAccessType(dc)) == MGL_LINEAR_ACCESS && (dc->mi.maxPage > 0))
-    {
-        MGL_makeCurrentDC(dc);
-        memdc = NULL;
-    }
-    else
-    {
-        // Set up for blitting from a memory buffer
-        memdc = MGL_createMemoryDC(MGL_sizex(dc) + 1, MGL_sizey(dc) + 1, 8, &pf);
-        MGL_makeCurrentDC(memdc);
-    }
-
-    // Enable page flipping even for even for blitted surfaces
-    if (forcemem)
-    {
-        vid.numpages = 1;
-    }
-    else
-    {
-        vid.numpages = dc->mi.maxPage + 1;
-
-        if (vid.numpages > 1)
-        {
-            // Set up for page flipping
-            MGL_setActivePage(dc, aPage = 1);
-            MGL_setVisualPage(dc, vPage = 0, false);
-        }
-
-        if (vid.numpages > 3)
-            vid.numpages = 3;
-    }
-
-    if (vid.numpages == 2)
-        waitVRT = true;
-    else
-        waitVRT = false;
-
-    return dc;
-}
+//MGLDC * createDisplayDC(int forcemem)
+///****************************************************************************
+//*
+//* Function: createDisplayDC
+//* Returns: Pointer to the MGL device context to use for the application
+//*
+//* Description: Initialises the MGL and creates an appropriate display
+//* device context to be used by the GUI. This creates and
+//* apropriate device context depending on the system being
+//* compile for, and should be the only place where system
+//* specific code is required.
+//*
+//****************************************************************************/
+//{
+//    MGLDC * dc;
+//    pixel_format_t pf;
+//    int npages;
+//
+//    // Start the specified video mode
+//    if (!MGL_changeDisplayMode(mode))
+//        initFatalError();
+//
+//    npages = MGL_availablePages(mode);
+//
+//    if (npages > 3)
+//        npages = 3;
+//
+//    if (!COM_CheckParm("-notriplebuf"))
+//    {
+//        if (npages > 2)
+//        {
+//            npages = 2;
+//        }
+//    }
+//
+//    if ((dc = MGL_createDisplayDC(npages)) == NULL)
+//        return NULL;
+//
+//    if (!forcemem && (MGL_surfaceAccessType(dc)) == MGL_LINEAR_ACCESS && (dc->mi.maxPage > 0))
+//    {
+//        MGL_makeCurrentDC(dc);
+//        memdc = NULL;
+//    }
+//    else
+//    {
+//        // Set up for blitting from a memory buffer
+//        memdc = MGL_createMemoryDC(MGL_sizex(dc) + 1, MGL_sizey(dc) + 1, 8, &pf);
+//        MGL_makeCurrentDC(memdc);
+//    }
+//
+//    // Enable page flipping even for even for blitted surfaces
+//    if (forcemem)
+//    {
+//        vid.numpages = 1;
+//    }
+//    else
+//    {
+//        vid.numpages = dc->mi.maxPage + 1;
+//
+//        if (vid.numpages > 1)
+//        {
+//            // Set up for page flipping
+//            MGL_setActivePage(dc, aPage = 1);
+//            MGL_setVisualPage(dc, vPage = 0, false);
+//        }
+//
+//        if (vid.numpages > 3)
+//            vid.numpages = 3;
+//    }
+//
+//    if (vid.numpages == 2)
+//        waitVRT = true;
+//    else
+//        waitVRT = false;
+//
+//    return dc;
+//}
 
 
 void VID_InitMGLDIB(HINSTANCE hInstance)
@@ -1248,11 +1249,11 @@ void DestroyFullscreenWindow()
     if (modestate == MS_FULLSCREEN)
     {
         // destroy the existing fullscreen mode and DC's
-        if (mgldc)
-            MGL_destroyDC(mgldc);
-        if (memdc)
-            MGL_destroyDC(memdc);
-        mgldc = memdc = NULL;
+        //if (mgldc)
+        //    MGL_destroyDC(mgldc);
+        //if (memdc)
+        //    MGL_destroyDC(memdc);
+        //mgldc = memdc = NULL;
     }
 }
 
@@ -1274,7 +1275,7 @@ void DestroyFullDIBWindow()
 bool VID_SetWindowedMode(int modenum)
 {
     HDC hdc;
-    pixel_format_t pf;
+    //pixel_format_t pf;
     bool stretched;
     int lastmodestate;
     LONG wlong;
@@ -1302,8 +1303,8 @@ bool VID_SetWindowedMode(int modenum)
     DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
-    if (!MGL_changeDisplayMode(grWINDOWED))
-        initFatalError();
+    //if (!MGL_changeDisplayMode(grWINDOWED))
+    //    initFatalError();
 
     WindowRect.top = WindowRect.left = 0;
 
@@ -1426,17 +1427,17 @@ bool VID_SetFullscreenMode(int modenum)
     mode = modelist[modenum].modenum;
 
     // Destroy old DC's, resetting back to fullscreen mode
-    if (mgldc)
-        MGL_destroyDC(mgldc);
-    if (memdc)
-        MGL_destroyDC(memdc);
-    mgldc = memdc = NULL;
-
-    if ((mgldc = createDisplayDC(modelist[modenum].stretched ||
-                                 (int)vid_nopageflip.value)) == NULL)
-    {
-        return false;
-    }
+    //if (mgldc)
+    //    MGL_destroyDC(mgldc);
+    //if (memdc)
+    //    MGL_destroyDC(memdc);
+    //mgldc = memdc = NULL;
+    //
+    //if ((mgldc = createDisplayDC(modelist[modenum].stretched ||
+    //                             (int)vid_nopageflip.value)) == NULL)
+    //{
+    //    return false;
+    //}
 
     modestate = MS_FULLSCREEN;
     vid_fulldib_on_focus_mode = 0;
@@ -1470,7 +1471,7 @@ bool VID_SetFullscreenMode(int modenum)
 bool VID_SetFullDIBMode(int modenum)
 {
     HDC hdc;
-    pixel_format_t pf;
+    //pixel_format_t pf;
     int lastmodestate;
 
     DDActive = 0;
@@ -1482,8 +1483,8 @@ bool VID_SetFullDIBMode(int modenum)
     DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
-    if (!MGL_changeDisplayMode(grWINDOWED))
-        initFatalError();
+    //if (!MGL_changeDisplayMode(grWINDOWED))
+    //    initFatalError();
 
     gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
     gdevmode.dmBitsPerPel = modelist[modenum].bpp;
@@ -1764,18 +1765,18 @@ void VID_LockBuffer()
 
     MGL_beginDirectAccess();
 
-    if (memdc)
-    {
-        // Update surface pointer for linear access modes
-        vid.buffer = vid.conbuffer = vid.direct = memdc->surface;
-        vid.rowbytes = vid.conrowbytes = memdc->mi.bytesPerLine;
-    }
-    else if (mgldc)
-    {
-        // Update surface pointer for linear access modes
-        vid.buffer = vid.conbuffer = vid.direct = mgldc->surface;
-        vid.rowbytes = vid.conrowbytes = mgldc->mi.bytesPerLine;
-    }
+    //if (memdc)
+    //{
+    //    // Update surface pointer for linear access modes
+    //    vid.buffer = vid.conbuffer = vid.direct = memdc->surface;
+    //    vid.rowbytes = vid.conrowbytes = memdc->mi.bytesPerLine;
+    //}
+    //else if (mgldc)
+    //{
+    //    // Update surface pointer for linear access modes
+    //    vid.buffer = vid.conbuffer = vid.direct = mgldc->surface;
+    //    vid.rowbytes = vid.conrowbytes = mgldc->mi.bytesPerLine;
+    //}
 
     if (r_dowarp)
         d_viewbuffer = r_warpbuffer;
@@ -1873,23 +1874,23 @@ void VID_SetPalette(unsigned char * palette)
 
         // Translate the palette values to an MGL palette array and
         // set the values.
-        palette_t pal[256];
-        for (int i = 0; i < 256; i++)
-        {
-            pal[i].red = palette[i * 3];
-            pal[i].green = palette[i * 3 + 1];
-            pal[i].blue = palette[i * 3 + 2];
-        }
+        //palette_t pal[256];
+        //for (int i = 0; i < 256; i++)
+        //{
+        //    pal[i].red = palette[i * 3];
+        //    pal[i].green = palette[i * 3 + 1];
+        //    pal[i].blue = palette[i * 3 + 2];
+        //}
 
         if (DDActive)
         {
-            if (!mgldc)
-                return;
-
-            MGL_setPalette(mgldc, pal, 256, 0);
-            MGL_realizePalette(mgldc, 256, 0, false);
-            if (memdc)
-                MGL_setPalette(memdc, pal, 256, 0);
+            //if (!mgldc)
+            //    return;
+            //
+            //MGL_setPalette(mgldc, pal, 256, 0);
+            //MGL_realizePalette(mgldc, 256, 0, false);
+            //if (memdc)
+            //    MGL_setPalette(memdc, pal, 256, 0);
         }
         else
         {
@@ -2241,7 +2242,7 @@ void VID_Shutdown()
         if (mainwindow)
             DestroyWindow(mainwindow);
 
-        MGL_exit();
+        //MGL_exit();
 
         vid_testingmode = 0;
         vid_initialized = 0;
@@ -2262,46 +2263,46 @@ void FlipScreen(vrect_t * rects)
 
     if (DDActive)
     {
-        if (mgldc)
-        {
-            if (memdc)
-            {
-                while (rects)
-                {
-                    if (vid_stretched)
-                    {
-                        MGL_stretchBltCoord(mgldc, memdc,
-                                            rects->x,
-                                            rects->y,
-                                            rects->x + rects->width,
-                                            rects->y + rects->height,
-                                            rects->x << 1,
-                                            rects->y << 1,
-                                            (rects->x + rects->width) << 1,
-                                            (rects->y + rects->height) << 1);
-                    }
-                    else
-                    {
-                        MGL_bitBltCoord(mgldc, memdc,
-                                        rects->x, rects->y,
-                                        (rects->x + rects->width),
-                                        (rects->y + rects->height),
-                                        rects->x, rects->y, MGL_REPLACE_MODE);
-                    }
-
-                    rects = rects->pnext;
-                }
-            }
-
-            if (vid.numpages > 1)
-            {
-                // We have a flipping surface, so do a hard page flip
-                aPage = (aPage + 1) % vid.numpages;
-                vPage = (vPage + 1) % vid.numpages;
-                MGL_setActivePage(mgldc, aPage);
-                MGL_setVisualPage(mgldc, vPage, waitVRT);
-            }
-        }
+        //if (mgldc)
+        //{
+        //    if (memdc)
+        //    {
+        //        while (rects)
+        //        {
+        //            if (vid_stretched)
+        //            {
+        //                MGL_stretchBltCoord(mgldc, memdc,
+        //                                    rects->x,
+        //                                    rects->y,
+        //                                    rects->x + rects->width,
+        //                                    rects->y + rects->height,
+        //                                    rects->x << 1,
+        //                                    rects->y << 1,
+        //                                    (rects->x + rects->width) << 1,
+        //                                    (rects->y + rects->height) << 1);
+        //            }
+        //            else
+        //            {
+        //                MGL_bitBltCoord(mgldc, memdc,
+        //                                rects->x, rects->y,
+        //                                (rects->x + rects->width),
+        //                                (rects->y + rects->height),
+        //                                rects->x, rects->y, MGL_REPLACE_MODE);
+        //            }
+        //
+        //            rects = rects->pnext;
+        //        }
+        //    }
+        //
+        //    if (vid.numpages > 1)
+        //    {
+        //        // We have a flipping surface, so do a hard page flip
+        //        aPage = (aPage + 1) % vid.numpages;
+        //        vPage = (vPage + 1) % vid.numpages;
+        //        MGL_setActivePage(mgldc, aPage);
+        //        MGL_setVisualPage(mgldc, vPage, waitVRT);
+        //    }
+        //}
     }
     else
     {
@@ -2489,41 +2490,41 @@ void D_BeginDirectRect(int x, int y, byte * pbitmap, int width, int height)
     }
     else
     {
-        // unlock if locked
-        if (lockcount > 0)
-            MGL_endDirectAccess();
-
-        // set the active page to the displayed page
-        MGL_setActivePage(mgldc, vPage);
-
-        // lock the screen
-        MGL_beginDirectAccess();
-
-        // save from and draw to screen
-        for (i = 0; i < (height << repshift); i += reps)
-        {
-            for (j = 0; j < reps; j++)
-            {
-                memcpy(&backingbuf[(i + j) * 24],
-                       (byte *)mgldc->surface + x +
-                       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
-                       width);
-                memcpy((byte *)mgldc->surface + x +
-                       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
-                       &pbitmap[(i >> repshift) * width],
-                       width);
-            }
-        }
-
-        // unlock the screen
-        MGL_endDirectAccess();
-
-        // restore the original active page
-        MGL_setActivePage(mgldc, aPage);
-
-        // relock the screen if it was locked
-        if (lockcount > 0)
-            MGL_beginDirectAccess();
+        //// unlock if locked
+        //if (lockcount > 0)
+        //    MGL_endDirectAccess();
+        //
+        //// set the active page to the displayed page
+        //MGL_setActivePage(mgldc, vPage);
+        //
+        //// lock the screen
+        //MGL_beginDirectAccess();
+        //
+        //// save from and draw to screen
+        //for (i = 0; i < (height << repshift); i += reps)
+        //{
+        //    for (j = 0; j < reps; j++)
+        //    {
+        //        memcpy(&backingbuf[(i + j) * 24],
+        //               (byte *)mgldc->surface + x +
+        //               ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
+        //               width);
+        //        memcpy((byte *)mgldc->surface + x +
+        //               ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
+        //               &pbitmap[(i >> repshift) * width],
+        //               width);
+        //    }
+        //}
+        //
+        //// unlock the screen
+        //MGL_endDirectAccess();
+        //
+        //// restore the original active page
+        //MGL_setActivePage(mgldc, aPage);
+        //
+        //// relock the screen if it was locked
+        //if (lockcount > 0)
+        //    MGL_beginDirectAccess();
     }
 }
 
@@ -2581,37 +2582,37 @@ void D_EndDirectRect(int x, int y, int width, int height)
     }
     else
     {
-        // unlock if locked
-        if (lockcount > 0)
-            MGL_endDirectAccess();
-
-        // set the active page to the displayed page
-        MGL_setActivePage(mgldc, vPage);
-
-        // lock the screen
-        MGL_beginDirectAccess();
-
-        // restore to the screen
-        for (i = 0; i < (height << repshift); i += reps)
-        {
-            for (j = 0; j < reps; j++)
-            {
-                memcpy((byte *)mgldc->surface + x +
-                       ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
-                       &backingbuf[(i + j) * 24],
-                       width);
-            }
-        }
-
-        // unlock the screen
-        MGL_endDirectAccess();
-
-        // restore the original active page
-        MGL_setActivePage(mgldc, aPage);
-
-        // relock the screen if it was locked
-        if (lockcount > 0)
-            MGL_beginDirectAccess();
+        //// unlock if locked
+        //if (lockcount > 0)
+        //    MGL_endDirectAccess();
+        //
+        //// set the active page to the displayed page
+        //MGL_setActivePage(mgldc, vPage);
+        //
+        //// lock the screen
+        //MGL_beginDirectAccess();
+        //
+        //// restore to the screen
+        //for (i = 0; i < (height << repshift); i += reps)
+        //{
+        //    for (j = 0; j < reps; j++)
+        //    {
+        //        memcpy((byte *)mgldc->surface + x +
+        //               ((y << repshift) + i + j) * mgldc->mi.bytesPerLine,
+        //               &backingbuf[(i + j) * 24],
+        //               width);
+        //    }
+        //}
+        //
+        //// unlock the screen
+        //MGL_endDirectAccess();
+        //
+        //// restore the original active page
+        //MGL_setActivePage(mgldc, aPage);
+        //
+        //// relock the screen if it was locked
+        //if (lockcount > 0)
+        //    MGL_beginDirectAccess();
     }
 }
 

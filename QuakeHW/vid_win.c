@@ -98,7 +98,8 @@ unsigned d_8to24table[256];
 
 int driver = grDETECT, mode;
 bool useWinDirect = true, useDirectDraw = true;
-MGLDC * mgldc = NULL, * memdc = NULL, * windc = NULL;
+MGLDC * mgldc = NULL, * memdc = NULL;
+HDC hdcWin = NULL;
 HDC hdcDib = NULL;
 HBITMAP hbmDib = NULL;
 HBITMAP hbmOld = NULL;
@@ -140,6 +141,20 @@ typedef struct {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 } BitMapInfo;
+
+void CreateWinDC()
+{
+    hdcWin = GetDC(mainwindow);
+}
+
+void DeleteWinDC()
+{
+    if (hdcWin)
+    {
+        DeleteDC(hdcWin);
+        hdcWin = NULL;
+    }
+}
 
 void CreateDIB()
 {
@@ -1218,13 +1233,10 @@ char * VID_GetExtModeDescription(int mode)
 
 void DestroyDIBWindow()
 {
-
     if (modestate == MS_WINDOWED)
     {
         // destroy the associated MGL DC's; the window gets reused
-        if (windc)
-            MGL_destroyDC(windc);
-        windc = NULL;
+        DeleteWinDC();
         DeleteDIBDC();
     }
 }
@@ -1253,9 +1265,7 @@ void DestroyFullDIBWindow()
         ChangeDisplaySettings(NULL, CDS_FULLSCREEN);
 
         // Destroy the fullscreen DIB window and associated MGL DC's
-        if (windc)
-            MGL_destroyDC(windc);
-        windc = NULL;
+        DeleteWinDC();
         DeleteDIBDC();
     }
 }
@@ -1288,9 +1298,7 @@ bool VID_SetWindowedMode(int modenum)
     DestroyFullscreenWindow();
     DestroyFullDIBWindow();
 
-    if (windc)
-        MGL_destroyDC(windc);
-    windc = NULL;
+    DeleteWinDC();
     DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
@@ -1387,10 +1395,7 @@ bool VID_SetWindowedMode(int modenum)
     PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
     ReleaseDC(mainwindow, hdc);
 
-    /* Create the MGL window DC and the MGL memory DC */
-    if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
-        MGL_fatalError("Unable to create Windowed DC!");
-
+    CreateWinDC();
     CreateDIB();
 
     vid.numpages = 1;
@@ -1473,9 +1478,7 @@ bool VID_SetFullDIBMode(int modenum)
     DestroyFullscreenWindow();
     DestroyDIBWindow();
 
-    if (windc)
-        MGL_destroyDC(windc);
-    windc = NULL;
+    DeleteWinDC();
     DeleteDIBDC();
 
     // KJB: Signal to the MGL that we are going back to windowed mode
@@ -1539,9 +1542,7 @@ bool VID_SetFullDIBMode(int modenum)
     PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
     ReleaseDC(mainwindow, hdc);
 
-    /* Create the MGL window DC and the MGL memory DC */
-    if ((windc = MGL_createWindowedDC(mainwindow)) == NULL)
-        MGL_fatalError("Unable to create Fullscreen DIB DC!");
+    CreateWinDC();
 
     CreateDIB();
 
@@ -1850,16 +1851,12 @@ void VID_ForceLockState(int lk)
 
 void VID_SetPalette(unsigned char * palette)
 {
-    INT i;
-    palette_t pal[256];
-    HDC hdc;
-
     if (!Minimized)
     {
         palette_changed = true;
 
         // make sure we have the static colors if we're the active app
-        hdc = GetDC(NULL);
+        HDC hdc = GetDC(NULL);
 
         if (vid_palettized && ActiveApp)
         {
@@ -1876,7 +1873,8 @@ void VID_SetPalette(unsigned char * palette)
 
         // Translate the palette values to an MGL palette array and
         // set the values.
-        for (i = 0; i < 256; i++)
+        palette_t pal[256];
+        for (int i = 0; i < 256; i++)
         {
             pal[i].red = palette[i * 3];
             pal[i].green = palette[i * 3 + 1];
@@ -1895,11 +1893,11 @@ void VID_SetPalette(unsigned char * palette)
         }
         else
         {
-            if (!windc)
+            if (!hdcWin)
                 return;
 
-			MGL_setPalette(windc, pal, 256, 0);
-			MGL_realizePalette(windc, 256, 0, false);
+			//0MGL_setPalette(windc, pal, 256, 0);
+			//MGL_realizePalette(windc, 256, 0, false);
 
 			RGBQUAD colors[256];
 			for (int i = 0; i < 256; ++i)
@@ -2309,10 +2307,8 @@ void FlipScreen(vrect_t * rects)
     {
         HDC hdcScreen = GetDC(mainwindow);
 
-        if (windc && hdcDib)
+        if (hdcWin && hdcDib)
         {
-            MGL_setWinDC(windc, hdcScreen);
-
             for (;rects; rects = rects->pnext)
             {
                 if (vid_stretched)
@@ -2687,7 +2683,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
             ActiveApp = false;
     }
 
-    MGL_appActivate(windc, ActiveApp);
+    //MGL_appActivate(windc, ActiveApp);
 
     if (vid_initialized)
     {
@@ -2939,8 +2935,8 @@ LONG WINAPI MainWndProc(
 
         if (!in_mode_set)
         {
-            if (windc)
-                MGL_activatePalette(windc, true);
+            //if (windc)
+            //    MGL_activatePalette(windc, true);
 
             VID_SetPalette(vid_curpal);
         }
@@ -3026,7 +3022,7 @@ LONG WINAPI MainWndProc(
 
         scr_fullupdate = 0;
 
-        if (vid_initialized && !in_mode_set && windc && MGL_activatePalette(windc, false) && !Minimized)
+        if (vid_initialized && !in_mode_set && /*windc && MGL_activatePalette(windc, false) &&*/ !Minimized)
         {
             VID_SetPalette(vid_curpal);
             InvalidateRect(mainwindow, NULL, false);

@@ -130,28 +130,12 @@ set(${this_target}_sources
 add_executable(${this_target} WIN32
   ${${this_target}_sources}
 )
-# "-startwindowed",
-#    //"-playback",
-#    //"-startwindowed -record",
-#    "-cachedir -width 800 -height 600 -bpp 32 -window -no8bit"
 
-target_include_directories(${this_target} PRIVATE
-  "${CMAKE_SOURCE_DIR}/scitech/INCLUDE"
-)
-
-target_link_directories(${this_target} PRIVATE
-  "${CMAKE_SOURCE_DIR}/scitech/lib"
-)
-
-#dxguid.lib;winmm.lib;wsock32.lib;opengl32.lib;comctl32.
 target_link_libraries(${this_target}
   PRIVATE
-  #OpenGL::GL
   dxguid
   winmm
   wsock32
-  libc
-  mgllt
 )
 
 #add_library(quake::gl ALIAS ${this_target})

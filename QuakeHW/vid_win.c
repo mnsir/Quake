@@ -365,8 +365,8 @@ bool VID_AllocBuffers(int width, int height)
 
 void initFatalError()
 {
-    MGL_exit();
-    MGL_fatalError(MGL_errorMsg(MGL_result()));
+    //MGL_exit();
+    //MGL_fatalError(MGL_errorMsg(MGL_result()));
     exit(EXIT_FAILURE);
 }
 
@@ -707,9 +707,9 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 
     /* Find the size for the DIB window */
     /* Initialise the MGL for windowed operation */
-    MGL_setAppInstance(hInstance);
+    //MGL_setAppInstance(hInstance);
     registerAllMemDrivers();
-    MGL_initWindowed("");
+    //MGL_initWindowed("");
 
     modelist[0].type = MS_WINDOWED;
     modelist[0].width = 320;
@@ -1216,8 +1216,8 @@ char * VID_GetExtModeDescription(int mode)
     pv = VID_GetModePtr(mode);
     if (modelist[mode].type == MS_FULLSCREEN)
     {
-        sprintf(pinfo, "%s fullscreen %s", pv->modedesc,
-                MGL_modeDriverName(pv->modenum));
+        //sprintf(pinfo, "%s fullscreen %s", pv->modedesc,
+        //        MGL_modeDriverName(pv->modenum));
     }
     else if (modelist[mode].type == MS_FULLDIB)
     {
@@ -1348,7 +1348,7 @@ bool VID_SetWindowedMode(int modenum)
             Sys_Error("Couldn't create DIB window");
 
         // tell MGL to use this window for fullscreen modes
-        MGL_registerFullScreenWindow(mainwindow);
+        //MGL_registerFullScreenWindow(mainwindow);
 
         vid_mode_set = true;
     }
@@ -1763,7 +1763,7 @@ void VID_LockBuffer()
     if (lockcount > 1)
         return;
 
-    MGL_beginDirectAccess();
+    //MGL_beginDirectAccess();
 
     //if (memdc)
     //{
@@ -1806,7 +1806,7 @@ void VID_UnlockBuffer()
     if (lockcount < 0)
         Sys_Error("Unbalanced unlock");
 
-    MGL_endDirectAccess();
+    //MGL_endDirectAccess();
 
     // to turn up any unlocked accesses
     vid.buffer = vid.conbuffer = vid.direct = d_viewbuffer = NULL;

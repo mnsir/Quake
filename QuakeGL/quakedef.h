@@ -10,12 +10,12 @@
 
 #define GAMENAME "id1"
 
-#include <math.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
+#include <cmath>
+#include <cstring>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <csetjmp>
 
 void VID_LockBuffer();
 void VID_UnlockBuffer();

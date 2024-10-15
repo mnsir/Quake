@@ -983,10 +983,6 @@ void PR_LoadProgs()
     for (i = 0; i < com_filesize; i++)
         CRC_ProcessByte(&pr_crc, ((byte *)progs)[i]);
 
-    // byte swap the header
-    for (i = 0; i < sizeof(*progs) / 4; i++)
-        ((int *)progs)[i] = LittleLong(((int *)progs)[i]);
-
     if (progs->version != PROG_VERSION)
         Sys_Error("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
     if (progs->crc != PROGHEADER_CRC)
@@ -1002,44 +998,6 @@ void PR_LoadProgs()
     pr_globals = (float *)pr_global_struct;
 
     pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
-
-    // byte swap the lumps
-    for (i = 0; i < progs->numstatements; i++)
-    {
-        pr_statements[i].op = LittleShort(pr_statements[i].op);
-        pr_statements[i].a = LittleShort(pr_statements[i].a);
-        pr_statements[i].b = LittleShort(pr_statements[i].b);
-        pr_statements[i].c = LittleShort(pr_statements[i].c);
-    }
-
-    for (i = 0; i < progs->numfunctions; i++)
-    {
-        pr_functions[i].first_statement = LittleLong(pr_functions[i].first_statement);
-        pr_functions[i].parm_start = LittleLong(pr_functions[i].parm_start);
-        pr_functions[i].s_name = LittleLong(pr_functions[i].s_name);
-        pr_functions[i].s_file = LittleLong(pr_functions[i].s_file);
-        pr_functions[i].numparms = LittleLong(pr_functions[i].numparms);
-        pr_functions[i].locals = LittleLong(pr_functions[i].locals);
-    }
-
-    for (i = 0; i < progs->numglobaldefs; i++)
-    {
-        pr_globaldefs[i].type = LittleShort(pr_globaldefs[i].type);
-        pr_globaldefs[i].ofs = LittleShort(pr_globaldefs[i].ofs);
-        pr_globaldefs[i].s_name = LittleLong(pr_globaldefs[i].s_name);
-    }
-
-    for (i = 0; i < progs->numfielddefs; i++)
-    {
-        pr_fielddefs[i].type = LittleShort(pr_fielddefs[i].type);
-        if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-            Sys_Error("PR_LoadProgs: pr_fielddefs[i].type & DEF_SAVEGLOBAL");
-        pr_fielddefs[i].ofs = LittleShort(pr_fielddefs[i].ofs);
-        pr_fielddefs[i].s_name = LittleLong(pr_fielddefs[i].s_name);
-    }
-
-    for (i = 0; i < progs->numglobals; i++)
-        ((int *)pr_globals)[i] = LittleLong(((int *)pr_globals)[i]);
 }
 
 

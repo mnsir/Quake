@@ -263,7 +263,7 @@ model_t * Mod_LoadModel(model_t * mod, bool crash)
     // call the apropriate loader
     mod->needload = false;
 
-    switch (LittleLong(*(unsigned *)buf))
+    switch (*(unsigned *)buf)
     {
     case IDPOLYHEADER:
         Mod_LoadAliasModel(mod, buf);
@@ -330,21 +330,21 @@ void Mod_LoadTextures(lump_t * l)
     }
     m = (dmiptexlump_t *)(mod_base + l->fileofs);
 
-    m->nummiptex = LittleLong(m->nummiptex);
+    m->nummiptex = m->nummiptex;
 
     loadmodel->numtextures = m->nummiptex;
     loadmodel->textures = Hunk_AllocName(m->nummiptex * sizeof(*loadmodel->textures), loadname);
 
     for (i = 0; i < m->nummiptex; i++)
     {
-        m->dataofs[i] = LittleLong(m->dataofs[i]);
+        m->dataofs[i] = m->dataofs[i];
         if (m->dataofs[i] == -1)
             continue;
         mt = (miptex_t *)((byte *)m + m->dataofs[i]);
-        mt->width = LittleLong(mt->width);
-        mt->height = LittleLong(mt->height);
+        mt->width = mt->width;
+        mt->height = mt->height;
         for (j = 0; j < MIPLEVELS; j++)
-            mt->offsets[j] = LittleLong(mt->offsets[j]);
+            mt->offsets[j] = mt->offsets[j];
 
         if ((mt->width & 15) || (mt->height & 15))
             Sys_Error("Texture %s is not 16 aligned", mt->name);
@@ -538,9 +538,9 @@ void Mod_LoadVertexes(lump_t * l)
 
     for (i = 0; i < count; i++, in++, out++)
     {
-        out->position[0] = LittleFloat(in->point[0]);
-        out->position[1] = LittleFloat(in->point[1]);
-        out->position[2] = LittleFloat(in->point[2]);
+        out->position[0] = in->point[0];
+        out->position[1] = in->point[1];
+        out->position[2] = in->point[2];
     }
 }
 
@@ -568,15 +568,15 @@ void Mod_LoadSubmodels(lump_t * l)
     {
         for (j = 0; j < 3; j++)
         { // spread the mins / maxs by a pixel
-            out->mins[j] = LittleFloat(in->mins[j]) - 1;
-            out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
-            out->origin[j] = LittleFloat(in->origin[j]);
+            out->mins[j] = in->mins[j] - 1;
+            out->maxs[j] = in->maxs[j] + 1;
+            out->origin[j] = in->origin[j];
         }
         for (j = 0; j < MAX_MAP_HULLS; j++)
-            out->headnode[j] = LittleLong(in->headnode[j]);
-        out->visleafs = LittleLong(in->visleafs);
-        out->firstface = LittleLong(in->firstface);
-        out->numfaces = LittleLong(in->numfaces);
+            out->headnode[j] = in->headnode[j];
+        out->visleafs = in->visleafs;
+        out->firstface = in->firstface;
+        out->numfaces = in->numfaces;
     }
 }
 
@@ -602,8 +602,8 @@ void Mod_LoadEdges(lump_t * l)
 
     for (i = 0; i < count; i++, in++, out++)
     {
-        out->v[0] = (unsigned short)LittleShort(in->v[0]);
-        out->v[1] = (unsigned short)LittleShort(in->v[1]);
+        out->v[0] = (unsigned short)in->v[0];
+        out->v[1] = (unsigned short)in->v[1];
     }
 }
 
@@ -632,7 +632,7 @@ void Mod_LoadTexinfo(lump_t * l)
     for (i = 0; i < count; i++, in++, out++)
     {
         for (j = 0; j < 8; j++)
-            out->vecs[0][j] = LittleFloat(in->vecs[0][j]);
+            out->vecs[0][j] = in->vecs[0][j];
         len1 = Length(out->vecs[0]);
         len2 = Length(out->vecs[1]);
         len1 = (len1 + len2) / 2;
@@ -645,8 +645,8 @@ void Mod_LoadTexinfo(lump_t * l)
         else
             out->mipadjust = 1;
 
-        miptex = LittleLong(in->miptex);
-        out->flags = LittleLong(in->flags);
+        miptex = in->miptex;
+        out->flags = in->flags;
 
         if (!loadmodel->textures)
         {
@@ -744,18 +744,18 @@ void Mod_LoadFaces(lump_t * l)
 
     for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
     {
-        out->firstedge = LittleLong(in->firstedge);
-        out->numedges = LittleShort(in->numedges);
+        out->firstedge = in->firstedge;
+        out->numedges = in->numedges;
         out->flags = 0;
 
-        planenum = LittleShort(in->planenum);
-        side = LittleShort(in->side);
+        planenum = in->planenum;
+        side = in->side;
         if (side)
             out->flags |= SURF_PLANEBACK;
 
         out->plane = loadmodel->planes + planenum;
 
-        out->texinfo = loadmodel->texinfo + LittleShort(in->texinfo);
+        out->texinfo = loadmodel->texinfo + in->texinfo;
 
         CalcSurfaceExtents(out);
 
@@ -763,7 +763,7 @@ void Mod_LoadFaces(lump_t * l)
 
         for (i = 0; i < MAXLIGHTMAPS; i++)
             out->styles[i] = in->styles[i];
-        i = LittleLong(in->lightofs);
+        i = in->lightofs;
         if (i == -1)
             out->samples = NULL;
         else
@@ -832,19 +832,19 @@ void Mod_LoadNodes(lump_t * l)
     {
         for (j = 0; j < 3; j++)
         {
-            out->minmaxs[j] = LittleShort(in->mins[j]);
-            out->minmaxs[3 + j] = LittleShort(in->maxs[j]);
+            out->minmaxs[j] = in->mins[j];
+            out->minmaxs[3 + j] = in->maxs[j];
         }
 
-        p = LittleLong(in->planenum);
+        p = in->planenum;
         out->plane = loadmodel->planes + p;
 
-        out->firstsurface = LittleShort(in->firstface);
-        out->numsurfaces = LittleShort(in->numfaces);
+        out->firstsurface = in->firstface;
+        out->numsurfaces = in->numfaces;
 
         for (j = 0; j < 2; j++)
         {
-            p = LittleShort(in->children[j]);
+            p = in->children[j];
             if (p >= 0)
                 out->children[j] = loadmodel->nodes + p;
             else
@@ -879,18 +879,18 @@ void Mod_LoadLeafs(lump_t * l)
     {
         for (j = 0; j < 3; j++)
         {
-            out->minmaxs[j] = LittleShort(in->mins[j]);
-            out->minmaxs[3 + j] = LittleShort(in->maxs[j]);
+            out->minmaxs[j] = in->mins[j];
+            out->minmaxs[3 + j] = in->maxs[j];
         }
 
-        p = LittleLong(in->contents);
+        p = in->contents;
         out->contents = p;
 
         out->firstmarksurface = loadmodel->marksurfaces +
-            LittleShort(in->firstmarksurface);
-        out->nummarksurfaces = LittleShort(in->nummarksurfaces);
+            in->firstmarksurface;
+        out->nummarksurfaces = in->nummarksurfaces;
 
-        p = LittleLong(in->visofs);
+        p = in->visofs;
         if (p == -1)
             out->compressed_vis = NULL;
         else
@@ -955,9 +955,9 @@ void Mod_LoadClipnodes(lump_t * l)
 
     for (i = 0; i < count; i++, out++, in++)
     {
-        out->planenum = LittleLong(in->planenum);
-        out->children[0] = LittleShort(in->children[0]);
-        out->children[1] = LittleShort(in->children[1]);
+        out->planenum = in->planenum;
+        out->children[0] = in->children[0];
+        out->children[1] = in->children[1];
     }
 }
 
@@ -1022,7 +1022,7 @@ void Mod_LoadMarksurfaces(lump_t * l)
 
     for (i = 0; i < count; i++)
     {
-        j = LittleShort(in[i]);
+        j = in[i];
         if (j >= loadmodel->numsurfaces)
             Sys_Error("Mod_ParseMarksurfaces: bad surface number");
         out[i] = loadmodel->surfaces + j;
@@ -1049,7 +1049,7 @@ void Mod_LoadSurfedges(lump_t * l)
     loadmodel->numsurfedges = count;
 
     for (i = 0; i < count; i++)
-        out[i] = LittleLong(in[i]);
+        out[i] = in[i];
 }
 
 
@@ -1080,13 +1080,13 @@ void Mod_LoadPlanes(lump_t * l)
         bits = 0;
         for (j = 0; j < 3; j++)
         {
-            out->normal[j] = LittleFloat(in->normal[j]);
+            out->normal[j] = in->normal[j];
             if (out->normal[j] < 0)
                 bits |= 1 << j;
         }
 
-        out->dist = LittleFloat(in->dist);
-        out->type = LittleLong(in->type);
+        out->dist = in->dist;
+        out->type = in->type;
         out->signbits = bits;
     }
 }
@@ -1124,7 +1124,7 @@ void Mod_LoadBrushModel(model_t * mod, void * buffer)
 
     header = (dheader_t *)buffer;
 
-    i = LittleLong(header->version);
+    i = header->version;
     if (i != BSPVERSION)
         Sys_Error("Mod_LoadBrushModel: %s has wrong version number (%i should be %i)", mod->name, i, BSPVERSION);
 
@@ -1132,7 +1132,7 @@ void Mod_LoadBrushModel(model_t * mod, void * buffer)
     mod_base = (byte *)header;
 
     for (i = 0; i < sizeof(dheader_t) / 4; i++)
-        ((int *)header)[i] = LittleLong(((int *)header)[i]);
+        ((int *)header)[i] = ((int *)header)[i];
 
     // load into heap
 
@@ -1264,7 +1264,7 @@ void * Mod_LoadAliasGroup(void * pin, maliasframedesc_t * frame)
 
     pingroup = (daliasgroup_t *)pin;
 
-    numframes = LittleLong(pingroup->numframes);
+    numframes = pingroup->numframes;
 
     frame->firstpose = posenum;
     frame->numposes = numframes;
@@ -1278,7 +1278,7 @@ void * Mod_LoadAliasGroup(void * pin, maliasframedesc_t * frame)
 
     pin_intervals = (daliasinterval_t *)(pingroup + 1);
 
-    frame->interval = LittleFloat(pin_intervals->interval);
+    frame->interval = pin_intervals->interval;
 
     pin_intervals += numframes;
 
@@ -1423,7 +1423,7 @@ void * Mod_LoadAllSkins(int numskins, daliasskintype_t * pskintype)
             // animating skin group. yuck.
             pskintype++;
             pinskingroup = (daliasskingroup_t *)pskintype;
-            groupskins = LittleLong(pinskingroup->numskins);
+            groupskins = pinskingroup->numskins;
             pinskinintervals = (daliasskininterval_t *)(pinskingroup + 1);
 
             pskintype = (void *)(pinskinintervals + groupskins);
@@ -1476,7 +1476,7 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
 
     pinmodel = (mdl_t *)buffer;
 
-    version = LittleLong(pinmodel->version);
+    version = pinmodel->version;
     if (version != ALIAS_VERSION)
         Sys_Error("%s has wrong version number (%i should be %i)",
                   mod->name, version, ALIAS_VERSION);
@@ -1486,25 +1486,25 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
     // skin and group info
     //
     size = sizeof(aliashdr_t)
-        + (LittleLong(pinmodel->numframes) - 1) *
+        + (pinmodel->numframes - 1) *
         sizeof(pheader->frames[0]);
     pheader = Hunk_AllocName(size, loadname);
 
-    mod->flags = LittleLong(pinmodel->flags);
+    mod->flags = pinmodel->flags;
 
     //
     // endian-adjust and copy the data, starting with the alias model header
     //
-    pheader->boundingradius = LittleFloat(pinmodel->boundingradius);
-    pheader->numskins = LittleLong(pinmodel->numskins);
-    pheader->skinwidth = LittleLong(pinmodel->skinwidth);
-    pheader->skinheight = LittleLong(pinmodel->skinheight);
+    pheader->boundingradius = pinmodel->boundingradius;
+    pheader->numskins = pinmodel->numskins;
+    pheader->skinwidth = pinmodel->skinwidth;
+    pheader->skinheight = pinmodel->skinheight;
 
     if (pheader->skinheight > MAX_LBM_HEIGHT)
         Sys_Error("model %s has a skin taller than %d", mod->name,
                   MAX_LBM_HEIGHT);
 
-    pheader->numverts = LittleLong(pinmodel->numverts);
+    pheader->numverts = pinmodel->numverts;
 
     if (pheader->numverts <= 0)
         Sys_Error("model %s has no vertices", mod->name);
@@ -1512,25 +1512,25 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
     if (pheader->numverts > MAXALIASVERTS)
         Sys_Error("model %s has too many vertices", mod->name);
 
-    pheader->numtris = LittleLong(pinmodel->numtris);
+    pheader->numtris = pinmodel->numtris;
 
     if (pheader->numtris <= 0)
         Sys_Error("model %s has no triangles", mod->name);
 
-    pheader->numframes = LittleLong(pinmodel->numframes);
+    pheader->numframes = pinmodel->numframes;
     numframes = pheader->numframes;
     if (numframes < 1)
         Sys_Error("Mod_LoadAliasModel: Invalid # of frames: %d\n", numframes);
 
-    pheader->size = LittleFloat(pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
-    mod->synctype = LittleLong(pinmodel->synctype);
+    pheader->size = pinmodel->size * ALIAS_BASE_SIZE_RATIO;
+    mod->synctype = pinmodel->synctype;
     mod->numframes = pheader->numframes;
 
     for (i = 0; i < 3; i++)
     {
-        pheader->scale[i] = LittleFloat(pinmodel->scale[i]);
-        pheader->scale_origin[i] = LittleFloat(pinmodel->scale_origin[i]);
-        pheader->eyeposition[i] = LittleFloat(pinmodel->eyeposition[i]);
+        pheader->scale[i] = pinmodel->scale[i];
+        pheader->scale_origin[i] = pinmodel->scale_origin[i];
+        pheader->eyeposition[i] = pinmodel->eyeposition[i];
     }
 
 
@@ -1547,9 +1547,9 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
 
     for (i = 0; i < pheader->numverts; i++)
     {
-        stverts[i].onseam = LittleLong(pinstverts[i].onseam);
-        stverts[i].s = LittleLong(pinstverts[i].s);
-        stverts[i].t = LittleLong(pinstverts[i].t);
+        stverts[i].onseam = pinstverts[i].onseam;
+        stverts[i].s = pinstverts[i].s;
+        stverts[i].t = pinstverts[i].t;
     }
 
     //
@@ -1559,12 +1559,12 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
 
     for (i = 0; i < pheader->numtris; i++)
     {
-        triangles[i].facesfront = LittleLong(pintriangles[i].facesfront);
+        triangles[i].facesfront = pintriangles[i].facesfront;
 
         for (j = 0; j < 3; j++)
         {
             triangles[i].vertindex[j] =
-                LittleLong(pintriangles[i].vertindex[j]);
+                pintriangles[i].vertindex[j];
         }
     }
 
@@ -1578,7 +1578,7 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
     {
         aliasframetype_t frametype;
 
-        frametype = LittleLong(pframetype->type);
+        frametype = pframetype->type;
 
         if (frametype == ALIAS_SINGLE)
         {
@@ -1637,8 +1637,8 @@ void * Mod_LoadSpriteFrame(void * pin, mspriteframe_t ** ppframe, int framenum)
 
     pinframe = (dspriteframe_t *)pin;
 
-    width = LittleLong(pinframe->width);
-    height = LittleLong(pinframe->height);
+    width = pinframe->width;
+    height = pinframe->height;
     size = width * height;
 
     pspriteframe = Hunk_AllocName(sizeof(mspriteframe_t), loadname);
@@ -1649,8 +1649,8 @@ void * Mod_LoadSpriteFrame(void * pin, mspriteframe_t ** ppframe, int framenum)
 
     pspriteframe->width = width;
     pspriteframe->height = height;
-    origin[0] = LittleLong(pinframe->origin[0]);
-    origin[1] = LittleLong(pinframe->origin[1]);
+    origin[0] = pinframe->origin[0];
+    origin[1] = pinframe->origin[1];
 
     pspriteframe->up = origin[1];
     pspriteframe->down = origin[1] - height;
@@ -1680,7 +1680,7 @@ void * Mod_LoadSpriteGroup(void * pin, mspriteframe_t ** ppframe, int framenum)
 
     pingroup = (dspritegroup_t *)pin;
 
-    numframes = LittleLong(pingroup->numframes);
+    numframes = pingroup->numframes;
 
     pspritegroup = Hunk_AllocName(sizeof(mspritegroup_t) +
                                   (numframes - 1) * sizeof(pspritegroup->frames[0]), loadname);
@@ -1697,7 +1697,7 @@ void * Mod_LoadSpriteGroup(void * pin, mspriteframe_t ** ppframe, int framenum)
 
     for (i = 0; i < numframes; i++)
     {
-        *poutintervals = LittleFloat(pin_intervals->interval);
+        *poutintervals = pin_intervals->interval;
         if (*poutintervals <= 0.0)
             Sys_Error("Mod_LoadSpriteGroup: interval<=0");
 
@@ -1733,12 +1733,12 @@ void Mod_LoadSpriteModel(model_t * mod, void * buffer)
 
     pin = (dsprite_t *)buffer;
 
-    version = LittleLong(pin->version);
+    version = pin->version;
     if (version != SPRITE_VERSION)
         Sys_Error("%s has wrong version number "
                   "(%i should be %i)", mod->name, version, SPRITE_VERSION);
 
-    numframes = LittleLong(pin->numframes);
+    numframes = pin->numframes;
 
     size = sizeof(msprite_t) + (numframes - 1) * sizeof(psprite->frames);
 
@@ -1746,11 +1746,11 @@ void Mod_LoadSpriteModel(model_t * mod, void * buffer)
 
     mod->cache.data = psprite;
 
-    psprite->type = LittleLong(pin->type);
-    psprite->maxwidth = LittleLong(pin->width);
-    psprite->maxheight = LittleLong(pin->height);
-    psprite->beamlength = LittleFloat(pin->beamlength);
-    mod->synctype = LittleLong(pin->synctype);
+    psprite->type = pin->type;
+    psprite->maxwidth = pin->width;
+    psprite->maxheight = pin->height;
+    psprite->beamlength = pin->beamlength;
+    mod->synctype = pin->synctype;
     psprite->numframes = numframes;
 
     mod->mins[0] = mod->mins[1] = -psprite->maxwidth / 2;
@@ -1772,7 +1772,7 @@ void Mod_LoadSpriteModel(model_t * mod, void * buffer)
     {
         spriteframetype_t frametype;
 
-        frametype = LittleLong(pframetype->type);
+        frametype = pframetype->type;
         psprite->frames[i].type = frametype;
 
         if (frametype == SPR_SINGLE)

@@ -34,6 +34,18 @@ extern int m_state;
 extern bool m_return_onerror;
 extern char m_return_reason[32];
 
+int BigLong(int l)
+{
+    byte b1, b2, b3, b4;
+
+    b1 = l & 255;
+    b2 = (l >> 8) & 255;
+    b3 = (l >> 16) & 255;
+    b4 = (l >> 24) & 255;
+
+    return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
+}
+
 int Datagram_SendMessage(qsocket_t * sock, sizebuf_t * data)
 {
     unsigned int packetLen;

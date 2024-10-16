@@ -3,7 +3,11 @@
 
 #include "quakedef.h"
 
-
+void R_InitParticles();
+void R_ClearParticles();
+void GL_BuildLightmaps();
+void GL_Upload8_EXT(byte* data, int width, int height, bool mipmap, bool alpha);
+bool VID_Is8bit();
 
 /*
 ==================
@@ -16,7 +20,7 @@ void R_InitTextures()
     byte * dest;
 
     // create a simple checkerboard texture for the default
-    r_notexture_mip = Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, "notexture");
+    r_notexture_mip = (texture_t*)Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, "notexture");
 
     r_notexture_mip->width = r_notexture_mip->height = 16;
     r_notexture_mip->offsets[0] = sizeof(texture_t);

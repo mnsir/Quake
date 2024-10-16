@@ -4,6 +4,7 @@
 
 #include "quakedef.h"
 
+void GL_Set2D();
 /*
 
 background clear
@@ -600,7 +601,7 @@ void SCR_ScreenShot_f()
     }
 
 
-    buffer = malloc(glwidth * glheight * 3 + 18);
+    buffer = (byte*)malloc(glwidth * glheight * 3 + 18);
     memset(buffer, 0, 18);
     buffer[2] = 2; // uncompressed type
     buffer[12] = glwidth & 255;

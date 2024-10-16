@@ -953,7 +953,7 @@ void SV_SendReconnect()
     char data[128];
     sizebuf_t msg;
 
-    msg.data = data;
+    msg.data = (byte*)data;
     msg.cursize = 0;
     msg.maxsize = sizeof(data);
 
@@ -1052,7 +1052,7 @@ void SV_SpawnServer(char * server)
     // allocate server memory
     sv.max_edicts = MAX_EDICTS;
 
-    sv.edicts = Hunk_AllocName(sv.max_edicts * pr_edict_size, "edicts");
+    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * pr_edict_size, "edicts");
 
     sv.datagram.maxsize = sizeof(sv.datagram_buf);
     sv.datagram.cursize = 0;

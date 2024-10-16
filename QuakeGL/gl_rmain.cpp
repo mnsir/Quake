@@ -3,6 +3,17 @@
 
 #include "quakedef.h"
 
+int R_LightPoint(vec3_t p);
+void R_DrawBrushModel(entity_t* e);
+void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);
+void R_AnimateLight();
+void V_CalcBlend();
+void R_DrawWorld();
+void R_RenderDlights();
+void R_DrawParticles();
+void R_DrawWaterSurfaces();
+void R_RenderBrushPoly(msurface_t* fa);
+
 entity_t r_worldentity;
 
 bool r_cache_thrash; // compatability
@@ -131,7 +142,7 @@ mspriteframe_t * R_GetSpriteFrame(entity_t * currententity)
     int i, numframes, frame;
     float * pintervals, fullinterval, targettime, time;
 
-    psprite = currententity->model->cache.data;
+    psprite = (msprite_t*)currententity->model->cache.data;
     frame = currententity->frame;
 
     if ((frame >= psprite->numframes) || (frame < 0))
@@ -187,7 +198,7 @@ void R_DrawSpriteModel(entity_t * e)
     // don't even bother culling, because it's just a single
     // polygon without a surface cache
     frame = R_GetSpriteFrame(e);
-    psprite = currententity->model->cache.data;
+    psprite = (msprite_t*)currententity->model->cache.data;
 
     if (psprite->type == SPR_ORIENTED)
     { // bullet marks on walls

@@ -7,6 +7,9 @@
 
 #define GL_COLOR_INDEX8_EXT 0x80E5
 
+int GL_LoadPicTexture(qpic_t* pic);
+bool VID_Is8bit();
+
 extern unsigned char d_15to8table[65536];
 
 cvar_t gl_nobind = {"gl_nobind", "0"};
@@ -165,7 +168,7 @@ qpic_t * Draw_PicFromWad(char * name)
     qpic_t * p;
     glpic_t * gl;
 
-    p = W_GetLumpName(name);
+    p = (qpic_t *)W_GetLumpName(name);
     gl = (glpic_t *)p->data;
 
     // load little ones into the scrap
@@ -372,7 +375,7 @@ void Draw_Init()
     // by hand, because we need to write the version
     // string into the background before turning
     // it into a texture
-    draw_chars = W_GetLumpName("conchars");
+    draw_chars = (byte*)W_GetLumpName("conchars");
     for (i = 0; i < 256 * 64; i++)
         if (draw_chars[i] == 0)
             draw_chars[i] = 255; // proper transparent color

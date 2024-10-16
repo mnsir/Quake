@@ -202,7 +202,7 @@ void Con_Init()
         }
     }
 
-    con_text = Hunk_AllocName(CON_TEXTSIZE, "context");
+    con_text = (char*)Hunk_AllocName(CON_TEXTSIZE, "context");
     Q_memset(con_text, ' ', CON_TEXTSIZE);
     con_linewidth = -1;
     Con_CheckResize();
@@ -330,14 +330,14 @@ void Con_DebugLog(char * file, char * fmt, ...)
 {
     va_list argptr;
     static char data[1024];
-    int fd;
+    FILE* fd;
 
     va_start(argptr, fmt);
     vsnprintf(data, 1024, fmt, argptr);
     va_end(argptr);
-    fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-    write(fd, data, strlen(data));
-    close(fd);
+    fd = fopen(file, "w");
+    fwrite(data, sizeof(char), strlen(data), fd);
+    fclose(fd);
 }
 
 

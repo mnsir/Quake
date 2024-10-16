@@ -422,7 +422,7 @@ void MSG_WriteChar(sizebuf_t * sb, int c)
 {
     byte * buf;
 
-    buf = SZ_GetSpace(sb, 1);
+    buf = (byte*)SZ_GetSpace(sb, 1);
     buf[0] = c;
 }
 
@@ -430,7 +430,7 @@ void MSG_WriteByte(sizebuf_t * sb, int c)
 {
     byte * buf;
 
-    buf = SZ_GetSpace(sb, 1);
+    buf = (byte*)SZ_GetSpace(sb, 1);
     buf[0] = c;
 }
 
@@ -438,7 +438,7 @@ void MSG_WriteShort(sizebuf_t * sb, int c)
 {
     byte * buf;
 
-    buf = SZ_GetSpace(sb, 2);
+    buf = (byte*)SZ_GetSpace(sb, 2);
     buf[0] = c & 0xff;
     buf[1] = c >> 8;
 }
@@ -447,7 +447,7 @@ void MSG_WriteLong(sizebuf_t * sb, int c)
 {
     byte * buf;
 
-    buf = SZ_GetSpace(sb, 4);
+    buf = (byte*)SZ_GetSpace(sb, 4);
     buf[0] = c & 0xff;
     buf[1] = (c >> 8) & 0xff;
     buf[2] = (c >> 16) & 0xff;
@@ -628,7 +628,7 @@ void SZ_Alloc(sizebuf_t * buf, int startsize)
 {
     if (startsize < 256)
         startsize = 256;
-    buf->data = Hunk_AllocName(startsize, "sizebuf");
+    buf->data = (byte*)Hunk_AllocName(startsize, "sizebuf");
     buf->maxsize = startsize;
     buf->cursize = 0;
 }
@@ -1423,17 +1423,17 @@ byte * COM_LoadFile(char * path, int usehunk)
     COM_FileBase(path, base);
 
     if (usehunk == 1)
-        buf = Hunk_AllocName(len + 1, base);
+        buf = (byte*)Hunk_AllocName(len + 1, base);
     else if (usehunk == 2)
-        buf = Hunk_TempAlloc(len + 1);
+        buf = (byte*)Hunk_TempAlloc(len + 1);
     else if (usehunk == 0)
-        buf = Z_Malloc(len + 1);
+        buf = (byte*)Z_Malloc(len + 1);
     else if (usehunk == 3)
-        buf = Cache_Alloc(loadcache, len + 1, base);
+        buf = (byte*)Cache_Alloc(loadcache, len + 1, base);
     else if (usehunk == 4)
     {
         if (len + 1 > loadsize)
-            buf = Hunk_TempAlloc(len + 1);
+            buf = (byte*)Hunk_TempAlloc(len + 1);
         else
             buf = loadbuf;
     }
@@ -1522,7 +1522,7 @@ pack_t * COM_LoadPackFile(char * packfile)
     if (numpackfiles != PAK0_COUNT)
         com_modified = true; // not the original file
 
-    newfiles = Hunk_AllocName(numpackfiles * sizeof(packfile_t), "packfile");
+    newfiles = (packfile_t*)Hunk_AllocName(numpackfiles * sizeof(packfile_t), "packfile");
 
     Sys_FileSeek(packhandle, header.dirofs);
     Sys_FileRead(packhandle, (void *)info, header.dirlen);
@@ -1542,7 +1542,7 @@ pack_t * COM_LoadPackFile(char * packfile)
         newfiles[i].filelen = info[i].filelen;
     }
 
-    pack = Hunk_Alloc(sizeof(pack_t));
+    pack = (pack_t*)Hunk_Alloc(sizeof(pack_t));
     strcpy(pack->filename, packfile);
     pack->handle = packhandle;
     pack->numfiles = numpackfiles;
@@ -1573,7 +1573,7 @@ void COM_AddGameDirectory(char * dir)
     //
     // add the directory to the search path
     //
-    search = Hunk_Alloc(sizeof(searchpath_t));
+    search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
     strcpy(search->filename, dir);
     search->next = com_searchpaths;
     com_searchpaths = search;
@@ -1587,7 +1587,7 @@ void COM_AddGameDirectory(char * dir)
         pak = COM_LoadPackFile(pakfile);
         if (!pak)
             break;
-        search = Hunk_Alloc(sizeof(searchpath_t));
+        search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
         search->pack = pak;
         search->next = com_searchpaths;
         com_searchpaths = search;
@@ -1649,7 +1649,7 @@ void COM_InitFilesystem()
     //
     // start up with GAMENAME by default (id1)
     //
-    COM_AddGameDirectory(va("%s/"GAMENAME, basedir));
+    COM_AddGameDirectory(va("%s/" GAMENAME, basedir));
 
     if (COM_CheckParm("-rogue"))
         COM_AddGameDirectory(va("%s/rogue", basedir));
@@ -1681,7 +1681,7 @@ void COM_InitFilesystem()
             if (!com_argv[i] || com_argv[i][0] == '+' || com_argv[i][0] == '-')
                 break;
 
-            search = Hunk_Alloc(sizeof(searchpath_t));
+            search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
             if (!strcmp(COM_FileExtension(com_argv[i]), "pak"))
             {
                 search->pack = COM_LoadPackFile(com_argv[i]);

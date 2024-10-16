@@ -3,6 +3,15 @@
 
 #include "quakedef.h"
 
+void EmitWaterPolys(msurface_t* fa);
+void EmitSkyPolys(msurface_t* fa);
+void EmitBothSkyLayers(msurface_t* fa);
+void R_DrawSkyChain(msurface_t* s);
+bool R_CullBox(vec3_t mins, vec3_t maxs);
+void R_MarkLights(dlight_t* light, int bit, mnode_t* node);
+void R_RotateForEntity(entity_t* e);
+void R_StoreEfrags(efrag_t** ppefrag);
+
 int skytexturenum;
 
 int lightmap_bytes; // 1, 2, or 4
@@ -1314,7 +1323,7 @@ void BuildSurfaceDisplayList(msurface_t * fa)
     //
     // draw texture
     //
-    poly = Hunk_Alloc(sizeof(glpoly_t) + (lnumverts - 4) * VERTEXSIZE * sizeof(float));
+    poly = (glpoly_t*)Hunk_Alloc(sizeof(glpoly_t) + (lnumverts - 4) * VERTEXSIZE * sizeof(float));
     poly->next = fa->polys;
     poly->flags = fa->flags;
     fa->polys = poly;
@@ -1371,14 +1380,14 @@ void BuildSurfaceDisplayList(msurface_t * fa)
         for (i = 0; i < lnumverts; ++i)
         {
             vec3_t v1, v2;
-            float * prev, * this, * next;
+            float * prev, * this_, * next;
             float f;
 
             prev = poly->verts[(i + lnumverts - 1) % lnumverts];
-            this = poly->verts[i];
+            this_ = poly->verts[i];
             next = poly->verts[(i + 1) % lnumverts];
 
-            VectorSubtract(this, prev, v1);
+            VectorSubtract(this_, prev, v1);
             VectorNormalize(v1);
             VectorSubtract(next, prev, v2);
             VectorNormalize(v2);

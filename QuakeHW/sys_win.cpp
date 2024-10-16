@@ -228,8 +228,7 @@ int Sys_FileTime(char * path)
 
 void Sys_mkdir(char * path)
 {
-    exit(1);
-    //_mkdir(path);
+    
 }
 
 

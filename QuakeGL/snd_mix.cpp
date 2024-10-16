@@ -57,8 +57,8 @@ void S_TransferStereo16(int endtime)
     {
         reps = 0;
 
-        while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize,
-                                               &pbuf2, &dwSize2, 0)) != DS_OK)
+        while ((hresult = pDSBuf->Lock(0, gSndBufSize, (void**) & pbuf, &dwSize,
+                                               (void**) & pbuf2, &dwSize2, 0)) != DS_OK)
         {
             if (hresult != DSERR_BUFFERLOST)
             {
@@ -103,7 +103,7 @@ void S_TransferStereo16(int endtime)
     }
 
     if (pDSBuf)
-        pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+        pDSBuf->Unlock(pbuf, dwSize, NULL, 0);
 }
 
 void S_TransferPaintBuffer(int endtime)
@@ -138,8 +138,8 @@ void S_TransferPaintBuffer(int endtime)
     {
         reps = 0;
 
-        while ((hresult = pDSBuf->lpVtbl->Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize,
-                                               &pbuf2, &dwSize2, 0)) != DS_OK)
+        while ((hresult = pDSBuf->Lock(0, gSndBufSize, (void**)&pbuf, &dwSize,
+                                               (void**)&pbuf2, &dwSize2, 0)) != DS_OK)
         {
             if (hresult != DSERR_BUFFERLOST)
             {
@@ -202,9 +202,9 @@ void S_TransferPaintBuffer(int endtime)
 
         ir += il;
 
-        pDSBuf->lpVtbl->Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
+        pDSBuf->Unlock(pbuf, dwSize, NULL, 0);
 
-        pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &dwNewpos, &dwWrite);
+        pDSBuf->GetCurrentPosition(&dwNewpos, &dwWrite);
     }
 }
 
@@ -316,7 +316,7 @@ void SND_PaintChannelFrom8(channel_t * ch, sfxcache_t * sc, int count)
 
     lscale = snd_scaletable[ch->leftvol >> 3];
     rscale = snd_scaletable[ch->rightvol >> 3];
-    sfx = (signed char *)sc->data + ch->pos;
+    sfx = (unsigned char *)sc->data + ch->pos;
 
     for (i = 0; i < count; i++)
     {

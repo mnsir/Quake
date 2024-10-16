@@ -163,7 +163,7 @@ int WIPX_OpenSocket(int port)
     memset(address.sa_netnum, 0, 4);
     memset(address.sa_nodenum, 0, 6);;
     address.sa_socket = htons((unsigned short)port);
-    if (bind(newsocket, (void *)&address, sizeof(address)) == 0)
+    if (bind(newsocket, (sockaddr *)&address, sizeof(address)) == 0)
     {
         ipxsocket[handle] = newsocket;
         sequence[handle] = 0;
@@ -222,7 +222,7 @@ int WIPX_Read(int handle, byte * buf, int len, struct qsockaddr * addr)
     int socket = ipxsocket[handle];
     int ret;
 
-    ret = precvfrom(socket, packetBuffer, len + 4, 0, (struct sockaddr *)addr, &addrlen);
+    ret = precvfrom(socket, (char*)packetBuffer, len + 4, 0, (struct sockaddr *)addr, &addrlen);
     if (ret == -1)
     {
         int err = pWSAGetLastError();
@@ -262,7 +262,7 @@ int WIPX_Write(int handle, byte * buf, int len, struct qsockaddr * addr)
     memcpy(&packetBuffer[4], buf, len);
     len += 4;
 
-    ret = psendto(socket, packetBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+    ret = psendto(socket, (char*)packetBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
     if (ret == -1)
         if (pWSAGetLastError() == WSAEWOULDBLOCK)
             return 0;

@@ -119,19 +119,19 @@ int WINS_Init()
 
     winsock_lib_initialized = true;
 
-    pWSAStartup = (void *)GetProcAddress(hInst, "WSAStartup");
-    pWSACleanup = (void *)GetProcAddress(hInst, "WSACleanup");
-    pWSAGetLastError = (void *)GetProcAddress(hInst, "WSAGetLastError");
-    psocket = (void *)GetProcAddress(hInst, "socket");
-    pioctlsocket = (void *)GetProcAddress(hInst, "ioctlsocket");
-    psetsockopt = (void *)GetProcAddress(hInst, "setsockopt");
-    precvfrom = (void *)GetProcAddress(hInst, "recvfrom");
-    psendto = (void *)GetProcAddress(hInst, "sendto");
-    pclosesocket = (void *)GetProcAddress(hInst, "closesocket");
-    pgethostname = (void *)GetProcAddress(hInst, "gethostname");
-    pgethostbyname = (void *)GetProcAddress(hInst, "gethostbyname");
-    pgethostbyaddr = (void *)GetProcAddress(hInst, "gethostbyaddr");
-    pgetsockname = (void *)GetProcAddress(hInst, "getsockname");
+    pWSAStartup = (decltype(pWSAStartup))GetProcAddress(hInst, "WSAStartup");
+    pWSACleanup = (decltype(pWSACleanup))GetProcAddress(hInst, "WSACleanup");
+    pWSAGetLastError = (decltype(pWSAGetLastError))GetProcAddress(hInst, "WSAGetLastError");
+    psocket = (decltype(psocket))GetProcAddress(hInst, "socket");
+    pioctlsocket = (decltype(pioctlsocket))GetProcAddress(hInst, "ioctlsocket");
+    psetsockopt = (decltype(psetsockopt))GetProcAddress(hInst, "setsockopt");
+    precvfrom = (decltype(precvfrom))GetProcAddress(hInst, "recvfrom");
+    psendto = (decltype(psendto))GetProcAddress(hInst, "sendto");
+    pclosesocket = (decltype(pclosesocket))GetProcAddress(hInst, "closesocket");
+    pgethostname = (decltype(pgethostname))GetProcAddress(hInst, "gethostname");
+    pgethostbyname = (decltype(pgethostbyname))GetProcAddress(hInst, "gethostbyname");
+    pgethostbyaddr = (decltype(pgethostbyaddr))GetProcAddress(hInst, "gethostbyaddr");
+    pgetsockname = (decltype(pgetsockname))GetProcAddress(hInst, "getsockname");
 
     if (!pWSAStartup || !pWSACleanup || !pWSAGetLastError ||
         !psocket || !pioctlsocket || !psetsockopt ||
@@ -276,7 +276,7 @@ int WINS_OpenSocket(int port)
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = myAddr;
     address.sin_port = htons((unsigned short)port);
-    if (bind(newsocket, (void *)&address, sizeof(address)) == 0)
+    if (bind(newsocket, (sockaddr *)&address, sizeof(address)) == 0)
         return newsocket;
 
     Sys_Error("Unable to bind to %s", WINS_AddrToString((struct qsockaddr *)&address));
@@ -382,7 +382,7 @@ int WINS_Read(int socket, byte * buf, int len, struct qsockaddr * addr)
     int addrlen = sizeof(struct qsockaddr);
     int ret;
 
-    ret = precvfrom(socket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
+    ret = precvfrom(socket, (char*)buf, len, 0, (struct sockaddr *)addr, &addrlen);
     if (ret == -1)
     {
         int err = pWSAGetLastError();
@@ -436,7 +436,7 @@ int WINS_Write(int socket, byte * buf, int len, struct qsockaddr * addr)
 {
     int ret;
 
-    ret = psendto(socket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+    ret = psendto(socket, (char*)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
     if (ret == -1)
         if (pWSAGetLastError() == WSAEWOULDBLOCK)
             return 0;

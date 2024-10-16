@@ -169,7 +169,7 @@ void Host_FindMaxClients()
     svs.maxclientslimit = svs.maxclients;
     if (svs.maxclientslimit < 4)
         svs.maxclientslimit = 4;
-    svs.clients = Hunk_AllocName(svs.maxclientslimit * sizeof(client_t), "clients");
+    svs.clients = (client_t*)Hunk_AllocName(svs.maxclientslimit * sizeof(client_t), "clients");
 
     if (svs.maxclients > 1)
         Cvar_SetValue("deathmatch", 1.0);
@@ -422,7 +422,7 @@ void Host_ShutdownServer(bool crash)
     } while (count);
 
     // make sure all the clients know we're disconnecting
-    buf.data = message;
+    buf.data = (byte*)message;
     buf.maxsize = 4;
     buf.cursize = 0;
     MSG_WriteByte(&buf, svc_disconnect);
@@ -706,12 +706,12 @@ void Host_InitVCR(quakeparms_t * parms)
             Sys_Error("Invalid signature in vcr file\n");
 
         Sys_FileRead(vcrFile, &com_argc, sizeof(int));
-        com_argv = malloc(com_argc * sizeof(char *));
+        com_argv = (char**)malloc(com_argc * sizeof(char *));
         com_argv[0] = parms->argv[0];
         for (i = 0; i < com_argc; i++)
         {
             Sys_FileRead(vcrFile, &len, sizeof(int));
-            p = malloc(len);
+            p = (char*)malloc(len);
             Sys_FileRead(vcrFile, p, len);
             com_argv[i + 1] = p;
         }
@@ -786,7 +786,7 @@ void Host_Init(quakeparms_t * parms)
     NET_Init();
     SV_Init();
 
-    Con_Printf("Exe: "__TIME__" "__DATE__"\n");
+    Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
     Con_Printf("%4.1f megabyte heap\n", parms->memsize / (1024 * 1024.0));
 
     R_InitTextures(); // needed even for dedicated servers

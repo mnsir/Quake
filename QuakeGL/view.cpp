@@ -506,7 +506,7 @@ V_UpdatePalette
 void V_UpdatePalette()
 {
     int i, j;
-    bool new;
+    bool new_;
     byte * basepal, * newpal;
     byte pal[768];
     float r, g, b, a;
@@ -515,19 +515,19 @@ void V_UpdatePalette()
 
     V_CalcPowerupCshift();
 
-    new = false;
+    new_ = false;
 
     for (i = 0; i < NUM_CSHIFTS; i++)
     {
         if (cl.cshifts[i].percent != cl.prev_cshifts[i].percent)
         {
-            new = true;
+            new_ = true;
             cl.prev_cshifts[i].percent = cl.cshifts[i].percent;
         }
         for (j = 0; j < 3; j++)
             if (cl.cshifts[i].destcolor[j] != cl.prev_cshifts[i].destcolor[j])
             {
-                new = true;
+                new_ = true;
                 cl.prev_cshifts[i].destcolor[j] = cl.cshifts[i].destcolor[j];
             }
     }
@@ -543,7 +543,7 @@ void V_UpdatePalette()
         cl.cshifts[CSHIFT_BONUS].percent = 0;
 
     force = V_CheckGamma();
-    if (!new && !force)
+    if (!new_ && !force)
         return;
 
     V_CalcBlend();

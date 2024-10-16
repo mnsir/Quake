@@ -575,7 +575,7 @@ void Host_Loadgame_f()
     for (i = 0; i < MAX_LIGHTSTYLES; i++)
     {
         fscanf(f, "%s\n", str);
-        sv.lightstyles[i] = Hunk_Alloc(strlen(str) + 1);
+        sv.lightstyles[i] = (char*)Hunk_Alloc(strlen(str) + 1);
         strcpy(sv.lightstyles[i], str);
     }
 
@@ -689,7 +689,7 @@ void Host_Name_f()
 void Host_Version_f()
 {
     Con_Printf("Version %4.2f\n", VERSION);
-    Con_Printf("Exe: "__TIME__" "__DATE__"\n");
+    Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
 }
 
 void Host_Say(bool teamonly)
@@ -698,7 +698,7 @@ void Host_Say(bool teamonly)
     client_t * save;
     int j;
     char * p;
-    unsigned char text[64];
+    char text[64];
     bool fromServer = false;
 
     if (cmd_source == src_command)

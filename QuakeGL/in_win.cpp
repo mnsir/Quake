@@ -337,7 +337,7 @@ bool IN_InitDInput()
 
     if (!pDirectInputCreate)
     {
-        pDirectInputCreate = (void *)GetProcAddress(hInstDI, "DirectInputCreateA");
+        pDirectInputCreate = (decltype(pDirectInputCreate))GetProcAddress(hInstDI, "DirectInputCreateA");
 
         if (!pDirectInputCreate)
         {
@@ -355,7 +355,7 @@ bool IN_InitDInput()
     }
 
     // obtain an interface to the system mouse device.
-    hr = IDirectInput_CreateDevice(g_pdi, &GUID_SysMouse, &g_pMouse, NULL);
+    hr = IDirectInput_CreateDevice(g_pdi, GUID_SysMouse, &g_pMouse, NULL);
 
     if (FAILED(hr))
     {

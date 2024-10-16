@@ -228,7 +228,6 @@ int Sys_FileTime(char * path)
 
 void Sys_mkdir(char * path)
 {
-    _mkdir(path);
 }
 
 
@@ -527,8 +526,11 @@ char * Sys_ConsoleInput()
     static int len;
     INPUT_RECORD recs[1024];
     int count;
-    int i, dummy;
-    int ch, numread, numevents;
+    int i;
+    DWORD dummy;
+    int ch;
+    DWORD numread;
+    DWORD numevents;
 
     if (!isDedicated)
         return NULL;

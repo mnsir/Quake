@@ -26,8 +26,6 @@ int host_framecount;
 
 int host_hunklevel;
 
-int minimum_memory;
-
 client_t * host_client; // current client
 
 jmp_buf host_abortserver;
@@ -687,7 +685,7 @@ extern int vcrFile;
 #define VCR_SIGNATURE 0x56435231
 // "VCR1"
 
-void Host_InitVCR(quakeparms_t * parms)
+void Host_InitVCR(char* arg0)
 {
     int i, len, n;
     char * p;
@@ -707,7 +705,7 @@ void Host_InitVCR(quakeparms_t * parms)
 
         Sys_FileRead(vcrFile, &com_argc, sizeof(int));
         com_argv = (char**)malloc(com_argc * sizeof(char *));
-        com_argv[0] = parms->argv[0];
+        com_argv[0] = arg0;
         for (i = 0; i < com_argc; i++)
         {
             Sys_FileRead(vcrFile, &len, sizeof(int));
@@ -716,8 +714,8 @@ void Host_InitVCR(quakeparms_t * parms)
             com_argv[i + 1] = p;
         }
         com_argc++; /* add one for arg[0] */
-        parms->argc = com_argc;
-        parms->argv = com_argv;
+        host_parms.argc = com_argc;
+        host_parms.argv = com_argv;
     }
 
     if ((n = COM_CheckParm("-record")) != 0)
@@ -750,32 +748,23 @@ void Host_InitVCR(quakeparms_t * parms)
 Host_Init
 ====================
 */
-void Host_Init(quakeparms_t * parms)
+void Host_Init(const quakeparms_t& parms)
 {
+    host_parms = std::move(parms);
 
-    if (standard_quake)
-        minimum_memory = MINIMUM_MEMORY;
-    else
-        minimum_memory = MINIMUM_MEMORY_LEVELPAK;
+    if (host_parms.mem.size() < minimum_memory)
+        Sys_Error("Only %4.1f megs of memory available, can't execute game", host_parms.mem.size() / (float)0x100000);
 
-    if (COM_CheckParm("-minmemory"))
-        parms->memsize = minimum_memory;
+    com_argc = host_parms.argc;
+    com_argv = host_parms.argv;
 
-    host_parms = *parms;
-
-    if (parms->memsize < minimum_memory)
-        Sys_Error("Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
-
-    com_argc = parms->argc;
-    com_argv = parms->argv;
-
-    Memory_Init(parms->membase, parms->memsize);
+    Memory_Init(host_parms.mem.data(), host_parms.mem.size());
     Cbuf_Init();
     Cmd_Init();
     V_Init();
     Chase_Init();
-    Host_InitVCR(parms);
-    COM_Init(parms->basedir);
+    Host_InitVCR(host_parms.argv[0]);
+    COM_Init(host_parms.basedir);
     Host_InitLocal();
     W_LoadWadFile("gfx.wad");
     Key_Init();
@@ -787,7 +776,7 @@ void Host_Init(quakeparms_t * parms)
     SV_Init();
 
     Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
-    Con_Printf("%4.1f megabyte heap\n", parms->memsize / (1024 * 1024.0));
+    Con_Printf("%4.1f megabyte heap\n", host_parms.mem.size() / (1024 * 1024.0));
 
     R_InitTextures(); // needed even for dedicated servers
 

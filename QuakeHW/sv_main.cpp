@@ -661,7 +661,7 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     MSG_WriteByte(msg, ent->v.ammo_rockets);
     MSG_WriteByte(msg, ent->v.ammo_cells);
 
-    if (standard_quake)
+    if constexpr (standard_quake)
     {
         MSG_WriteByte(msg, ent->v.weapon);
     }

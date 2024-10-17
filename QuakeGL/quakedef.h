@@ -25,9 +25,6 @@ void VID_UnlockBuffer();
 
 #define UNUSED(x) (x = x) // for pesky compiler / lint warnings
 
-#define MINIMUM_MEMORY 0x550000
-#define MINIMUM_MEMORY_LEVELPAK (MINIMUM_MEMORY + 0x100000)
-
 #define MAX_NUM_ARGVS 50
 
 // up / down
@@ -205,6 +202,8 @@ typedef struct
 #include "glquake.h"
 #endif
 
+#include <vector>
+
 //=============================================================================
 
 // the host system specifies the base of the directory tree, the
@@ -217,8 +216,7 @@ typedef struct
     char * cachedir; // for development over ISDN lines
     int argc;
     char ** argv;
-    void * membase;
-    int memsize;
+    std::vector<byte> mem;
 } quakeparms_t;
 
 
@@ -249,7 +247,7 @@ extern double realtime; // not bounded in any way, changed at
 void Host_ClearMemory();
 void Host_ServerFrame();
 void Host_InitCommands();
-void Host_Init(quakeparms_t * parms);
+void Host_Init(const quakeparms_t& parms);
 void Host_Shutdown();
 void Host_Error(char * error, ...);
 void Host_EndGame(char * message, ...);
@@ -266,7 +264,9 @@ extern int current_skill; // skill level for currently loaded level (in case
 
 extern bool isDedicated;
 
-extern int minimum_memory;
+constexpr size_t MINIMUM_MEMORY = 0x550000;
+constexpr size_t MINIMUM_MEMORY_LEVELPAK = MINIMUM_MEMORY + 0x100000;
+constexpr size_t minimum_memory = standard_quake ? MINIMUM_MEMORY : MINIMUM_MEMORY_LEVELPAK;
 
 //
 // chase

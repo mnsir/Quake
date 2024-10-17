@@ -41,34 +41,6 @@ void Sys_InitFloatTime();
 void Sys_PushFPCW_SetHigh();
 void Sys_PopFPCW();
 
-volatile int sys_checksum;
-
-
-/*
-================
-Sys_PageIn
-================
-*/
-void Sys_PageIn(void * ptr, int size)
-{
-    byte * x;
-    int j, m, n;
-
-    // touch all the memory to make sure it's there. The 16-page skip is to
-    // keep Win 95 from thinking we're trying to page ourselves in (we are
-    // doing that, of course, but there's no reason we shouldn't)
-    x = (byte *)ptr;
-
-    for (n = 0; n < 4; n++)
-    {
-        for (m = 0; m < (size - 16 * 0x1000); m += 4)
-        {
-            sys_checksum += *(int *)&x[m];
-            sys_checksum += *(int *)&x[m + 16 * 0x1000];
-        }
-    }
-}
-
 
 /*
 ===============================================================================
@@ -228,6 +200,7 @@ int Sys_FileTime(char * path)
 
 void Sys_mkdir(char * path)
 {
+    //TODO
 }
 
 
@@ -665,7 +638,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     MSG msg;
     quakeparms_t parms;
     double time, oldtime, newtime;
-    MEMORYSTATUS lpBuffer;
     static char cwd[1024];
     int t;
     RECT rect;
@@ -677,6 +649,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     global_hInstance = hInstance;
     global_nCmdShow = nCmdShow;
 
+    MEMORYSTATUS lpBuffer;
     lpBuffer.dwLength = sizeof(MEMORYSTATUS);
     GlobalMemoryStatus(&lpBuffer);
 
@@ -749,31 +722,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // take the greater of all the available memory or half the total memory,
     // but at least 8 Mb and no more than 16 Mb, unless they explicitly
     // request otherwise
-    parms.memsize = lpBuffer.dwAvailPhys;
+    size_t memsize = lpBuffer.dwAvailPhys;
 
-    if (parms.memsize < MINIMUM_WIN_MEMORY)
-        parms.memsize = MINIMUM_WIN_MEMORY;
+    if (memsize < MINIMUM_WIN_MEMORY)
+        memsize = MINIMUM_WIN_MEMORY;
 
-    if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
-        parms.memsize = lpBuffer.dwTotalPhys >> 1;
+    if (memsize < (lpBuffer.dwTotalPhys >> 1))
+        memsize = lpBuffer.dwTotalPhys >> 1;
 
-    if (parms.memsize > MAXIMUM_WIN_MEMORY)
-        parms.memsize = MAXIMUM_WIN_MEMORY;
+    if (memsize > MAXIMUM_WIN_MEMORY)
+        memsize = MAXIMUM_WIN_MEMORY;
 
     if (COM_CheckParm("-heapsize"))
     {
         t = COM_CheckParm("-heapsize") + 1;
 
         if (t < com_argc)
-            parms.memsize = Q_atoi(com_argv[t]) * 1024;
+            memsize = Q_atoi(com_argv[t]) * 1024;
     }
 
-    parms.membase = malloc(parms.memsize);
+    if (COM_CheckParm("-minmemory"))
+        memsize = minimum_memory;
 
-    if (!parms.membase)
-        Sys_Error("Not enough memory free; check disk space\n");
-
-    Sys_PageIn(parms.membase, parms.memsize);
+    parms.mem = std::vector<byte>(memsize, byte());
 
     tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -818,7 +789,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     S_BlockSound();
 
     Sys_Printf("Host_Init\n");
-    Host_Init(&parms);
+    Host_Init(parms);
 
     oldtime = Sys_FloatTime();
 

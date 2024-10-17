@@ -255,7 +255,7 @@ typedef struct
 } hunk_t;
 
 byte * hunk_base;
-int hunk_size;
+size_t hunk_size;
 
 int hunk_low_used;
 int hunk_high_used;
@@ -884,12 +884,12 @@ void * Cache_Alloc(cache_user_t * c, int size, char * name)
 Memory_Init
 ========================
 */
-void Memory_Init(void * buf, int size)
+void Memory_Init(byte* buf, size_t size)
 {
     int p;
     int zonesize = DYNAMIC_SIZE;
 
-    hunk_base = (byte*)buf;
+    hunk_base = buf;
     hunk_size = size;
     hunk_low_used = 0;
     hunk_high_used = 0;

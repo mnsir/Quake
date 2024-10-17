@@ -1231,7 +1231,7 @@ void Host_Give_f()
     case '8':
     case '9':
         // MED 01/04/97 added hipnotic give stuff
-        if (hipnotic)
+        if constexpr (hipnotic)
         {
             if (t[0] == '6')
             {
@@ -1255,7 +1255,7 @@ void Host_Give_f()
         break;
 
     case 's':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_shells1");
             if (val)
@@ -1265,7 +1265,7 @@ void Host_Give_f()
         sv_player->v.ammo_shells = v;
         break;
     case 'n':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_nails1");
             if (val)
@@ -1281,7 +1281,7 @@ void Host_Give_f()
         }
         break;
     case 'l':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_lava_nails");
             if (val)
@@ -1293,7 +1293,7 @@ void Host_Give_f()
         }
         break;
     case 'r':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_rockets1");
             if (val)
@@ -1309,7 +1309,7 @@ void Host_Give_f()
         }
         break;
     case 'm':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_multi_rockets");
             if (val)
@@ -1324,7 +1324,7 @@ void Host_Give_f()
         sv_player->v.health = v;
         break;
     case 'c':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_cells1");
             if (val)
@@ -1340,7 +1340,7 @@ void Host_Give_f()
         }
         break;
     case 'p':
-        if (rogue)
+        if constexpr (rogue)
         {
             val = GetEdictFieldValue(sv_player, "ammo_plasma");
             if (val)

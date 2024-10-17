@@ -587,7 +587,7 @@ void CL_ParseClientdata(int bits)
 
     i = MSG_ReadByte();
 
-    if (standard_quake)
+    if constexpr (standard_quake)
     {
         if (cl.stats[STAT_ACTIVEWEAPON] != i)
         {

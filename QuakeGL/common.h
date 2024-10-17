@@ -145,4 +145,6 @@ void COM_LoadCacheFile(char * path, struct cache_user_s * cu);
 
 extern struct cvar_s registered;
 
-extern bool standard_quake, rogue, hipnotic;
+constexpr bool rogue = false;    // TODO must be checked only one game param // COM_CheckParm("-rogue")
+constexpr bool hipnotic = false; // TODO must be checked only one game param // COM_CheckParm("-hipnotic")
+constexpr bool standard_quake = !rogue && !hipnotic;

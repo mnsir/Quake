@@ -170,7 +170,7 @@ void S_Init()
     Cvar_RegisterVariable(&snd_show);
     Cvar_RegisterVariable(&_snd_mixahead);
 
-    if (host_parms.memsize < 0x800000)
+    if (host_parms.mem.size() < 0x800000)
     {
         Cvar_Set("loadas8bit", "1");
         Con_Printf("loading all sounds as 8bit\n");
@@ -259,12 +259,12 @@ sfx_t * S_FindName(char * name)
     if (!name)
         Sys_Error("S_FindName: NULL\n");
 
-    if (Q_strlen(name) >= MAX_QPATH)
+    if (std::strlen(name) >= MAX_QPATH)
         Sys_Error("Sound name too long: %s", name);
 
     // see if already loaded
     for (i = 0; i < num_sfx; i++)
-        if (!Q_strcmp(known_sfx[i].name, name))
+        if (!std::strcmp(known_sfx[i].name, name))
         {
             return &known_sfx[i];
         }
@@ -522,7 +522,7 @@ void S_StopAllSounds(bool clear)
         if (channels[i].sfx)
             channels[i].sfx = NULL;
 
-    Q_memset(channels, 0, MAX_CHANNELS * sizeof(channel_t));
+    std::memset(channels, 0, MAX_CHANNELS * sizeof(channel_t));
 
     if (clear)
         S_ClearBuffer();
@@ -571,14 +571,14 @@ void S_ClearBuffer()
             }
         }
 
-        Q_memset(pData, clear, shm->samples * shm->samplebits / 8);
+        std::memset(pData, clear, shm->samples * shm->samplebits / 8);
 
         pDSBuf->Unlock(pData, dwSize, NULL, 0);
 
     }
     else
     {
-        Q_memset(shm->buffer, clear, shm->samples * shm->samplebits / 8);
+        std::memset(shm->buffer, clear, shm->samples * shm->samplebits / 8);
     }
 }
 
@@ -878,13 +878,13 @@ void S_Play()
     i = 1;
     while (i < Cmd_Argc())
     {
-        if (!Q_strrchr(Cmd_Argv(i), '.'))
+        if (!std::strrchr(Cmd_Argv(i), '.'))
         {
-            Q_strcpy(name, Cmd_Argv(i));
-            Q_strcat(name, ".wav");
+            std::strcpy(name, Cmd_Argv(i));
+            std::strcat(name, ".wav");
         }
         else
-            Q_strcpy(name, Cmd_Argv(i));
+            std::strcpy(name, Cmd_Argv(i));
         sfx = S_PrecacheSound(name);
         S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
         i++;
@@ -902,15 +902,15 @@ void S_PlayVol()
     i = 1;
     while (i < Cmd_Argc())
     {
-        if (!Q_strrchr(Cmd_Argv(i), '.'))
+        if (!std::strrchr(Cmd_Argv(i), '.'))
         {
-            Q_strcpy(name, Cmd_Argv(i));
-            Q_strcat(name, ".wav");
+            std::strcpy(name, Cmd_Argv(i));
+            std::strcat(name, ".wav");
         }
         else
-            Q_strcpy(name, Cmd_Argv(i));
+            std::strcpy(name, Cmd_Argv(i));
         sfx = S_PrecacheSound(name);
-        vol = Q_atof(Cmd_Argv(i + 1));
+        vol = std::atof(Cmd_Argv(i + 1));
         S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
         i += 2;
     }

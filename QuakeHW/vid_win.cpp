@@ -309,7 +309,7 @@ bool VID_CheckAdequateMem(int width, int height)
 
     // see if there's enough memory, allowing for the normal mode 0x13 pixel,
     // z, and surface buffers
-    if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+    if ((host_parms.mem.size() - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
          0x10000 * 3) < minimum_memory)
     {
         return false; // not enough memory for mode
@@ -336,7 +336,7 @@ bool VID_AllocBuffers(int width, int height)
 
     // see if there's enough memory, allowing for the normal mode 0x13 pixel,
     // z, and surface buffers
-    if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
+    if ((host_parms.mem.size() - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
          0x10000 * 3) < minimum_memory)
     {
         Con_SafePrintf("Not enough memory for video mode\n");
@@ -1963,7 +1963,7 @@ void VID_DescribeMode_f()
 {
     int modenum;
 
-    modenum = Q_atoi(Cmd_Argv(1));
+    modenum = std::atoi(Cmd_Argv(1));
 
     Con_Printf("%s\n", VID_GetExtModeDescription(modenum));
 }
@@ -2020,12 +2020,12 @@ void VID_TestMode_f()
 
     if (!vid_testingmode)
     {
-        modenum = Q_atoi(Cmd_Argv(1));
+        modenum = std::atoi(Cmd_Argv(1));
 
         if (VID_SetMode(modenum, vid_curpal))
         {
             vid_testingmode = 1;
-            testduration = Q_atof(Cmd_Argv(2));
+            testduration = std::atof(Cmd_Argv(2));
             if (testduration == 0)
                 testduration = 5.0;
             vid_testendtime = realtime + testduration;
@@ -2086,7 +2086,7 @@ void VID_ForceMode_f()
 
     if (!vid_testingmode)
     {
-        modenum = Q_atoi(Cmd_Argv(1));
+        modenum = std::atoi(Cmd_Argv(1));
 
         force_mode_set = 1;
         VID_SetMode(modenum, vid_curpal);

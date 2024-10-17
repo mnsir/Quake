@@ -164,8 +164,8 @@ void Key_Console(int key)
             cmd = Cvar_CompleteVariable(key_lines[edit_line] + 1);
         if (cmd)
         {
-            Q_strcpy(key_lines[edit_line] + 1, cmd);
-            key_linepos = Q_strlen(cmd) + 1;
+            std::strcpy(key_lines[edit_line] + 1, cmd);
+            key_linepos = std::strlen(cmd) + 1;
             key_lines[edit_line][key_linepos] = ' ';
             key_linepos++;
             key_lines[edit_line][key_linepos] = 0;
@@ -189,8 +189,8 @@ void Key_Console(int key)
                  && !key_lines[history_line][1]);
         if (history_line == edit_line)
             history_line = (edit_line + 1) & 31;
-        Q_strcpy(key_lines[edit_line], key_lines[history_line]);
-        key_linepos = Q_strlen(key_lines[edit_line]);
+        std::strcpy(key_lines[edit_line], key_lines[history_line]);
+        key_linepos = std::strlen(key_lines[edit_line]);
         return;
     }
 
@@ -209,8 +209,8 @@ void Key_Console(int key)
         }
         else
         {
-            Q_strcpy(key_lines[edit_line], key_lines[history_line]);
-            key_linepos = Q_strlen(key_lines[edit_line]);
+            std::strcpy(key_lines[edit_line], key_lines[history_line]);
+            key_linepos = std::strlen(key_lines[edit_line]);
         }
         return;
     }
@@ -388,9 +388,9 @@ void Key_SetBinding(int keynum, char * binding)
     }
 
     // allocate memory for new binding
-    l = Q_strlen(binding);
+    l = std::strlen(binding);
     new_ = (char*)Z_Malloc(l + 1);
-    Q_strcpy(new_, binding);
+    std::strcpy(new_, binding);
     new_[l] = 0;
     keybindings[keynum] = new_;
 }

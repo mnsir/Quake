@@ -482,7 +482,7 @@ void Sys_InitFloatTime()
 
     if (j)
     {
-        curtime = (double)(Q_atof(com_argv[j + 1]));
+        curtime = (double)(std::atof(com_argv[j + 1]));
     }
     else
     {
@@ -656,8 +656,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!GetCurrentDirectory(sizeof(cwd), cwd))
         Sys_Error("Couldn't determine current directory");
 
-    if (cwd[Q_strlen(cwd) - 1] == '/')
-        cwd[Q_strlen(cwd) - 1] = 0;
+    if (cwd[std::strlen(cwd) - 1] == '/')
+        cwd[std::strlen(cwd) - 1] = 0;
 
     parms.basedir = cwd;
     parms.cachedir = NULL;
@@ -738,7 +738,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         t = COM_CheckParm("-heapsize") + 1;
 
         if (t < com_argc)
-            memsize = Q_atoi(com_argv[t]) * 1024;
+            memsize = std::atoi(com_argv[t]) * 1024;
     }
 
     if (COM_CheckParm("-minmemory"))
@@ -765,19 +765,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if ((t = COM_CheckParm("-HFILE")) > 0)
         {
             if (t < com_argc)
-                hFile = (HANDLE)Q_atoi(com_argv[t + 1]);
+                hFile = (HANDLE)std::atoi(com_argv[t + 1]);
         }
 
         if ((t = COM_CheckParm("-HPARENT")) > 0)
         {
             if (t < com_argc)
-                heventParent = (HANDLE)Q_atoi(com_argv[t + 1]);
+                heventParent = (HANDLE)std::atoi(com_argv[t + 1]);
         }
 
         if ((t = COM_CheckParm("-HCHILD")) > 0)
         {
             if (t < com_argc)
-                heventChild = (HANDLE)Q_atoi(com_argv[t + 1]);
+                heventChild = (HANDLE)std::atoi(com_argv[t + 1]);
         }
 
         InitConProc(hFile, heventParent, heventChild);

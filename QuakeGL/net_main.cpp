@@ -105,7 +105,7 @@ qsocket_t * NET_NewQSocket()
 
     sock->disconnected = false;
     sock->connecttime = net_time;
-    Q_strcpy(sock->address, "UNSET ADDRESS");
+    std::strcpy(sock->address, "UNSET ADDRESS");
     sock->driver = net_driverlevel;
     sock->socket = 0;
     sock->driverdata = NULL;
@@ -158,7 +158,7 @@ static void NET_Listen_f()
         return;
     }
 
-    listening = Q_atoi(Cmd_Argv(1)) ? true : false;
+    listening = std::atoi(Cmd_Argv(1)) ? true : false;
 
     for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
     {
@@ -185,7 +185,7 @@ static void MaxPlayers_f()
         return;
     }
 
-    n = Q_atoi(Cmd_Argv(1));
+    n = std::atoi(Cmd_Argv(1));
     if (n < 1)
         n = 1;
     if (n > svs.maxclientslimit)
@@ -218,7 +218,7 @@ static void NET_Port_f()
         return;
     }
 
-    n = Q_atoi(Cmd_Argv(1));
+    n = std::atoi(Cmd_Argv(1));
     if (n < 1 || n > 65534)
     {
         Con_Printf("Bad value, must be between 1 and 65534\n");
@@ -803,7 +803,7 @@ void NET_Init()
     if (i)
     {
         if (i < com_argc - 1)
-            DEFAULTnet_hostport = Q_atoi(com_argv[i + 1]);
+            DEFAULTnet_hostport = std::atoi(com_argv[i + 1]);
         else
             Sys_Error("NET_Init: you must specify a number after -port");
     }

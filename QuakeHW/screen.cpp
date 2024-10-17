@@ -550,11 +550,11 @@ void WritePCXfile(char * filename, byte * data, int width, int height,
     pcx->ymax = (short)(height - 1);
     pcx->hres = (short)width;
     pcx->vres = (short)height;
-    Q_memset(pcx->palette, 0, sizeof(pcx->palette));
+    std::memset(pcx->palette, 0, sizeof(pcx->palette));
     pcx->color_planes = 1; // chunky image
     pcx->bytes_per_line = (short)width;
     pcx->palette_type = 2; // not a grey scale
-    Q_memset(pcx->filler, 0, sizeof(pcx->filler));
+    std::memset(pcx->filler, 0, sizeof(pcx->filler));
 
     // pack the image
     pack = &pcx->data;

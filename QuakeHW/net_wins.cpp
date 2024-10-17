@@ -170,7 +170,7 @@ int WINS_Init()
     }
 
     // if the quake hostname isn't set, set it to the machine name
-    if (Q_strcmp(hostname.string, "UNNAMED") == 0)
+    if (std::strcmp(hostname.string, "UNNAMED") == 0)
     {
         // see if it's a text IP address (well, close enough)
         for (p = buff; *p; p++)
@@ -342,7 +342,7 @@ static int PartialIPAddress(char * in, struct qsockaddr * hostaddr)
     }
 
     if (*b++ == ':')
-        port = Q_atoi(b);
+        port = std::atoi(b);
     else
         port = net_hostport;
 
@@ -479,7 +479,7 @@ int WINS_GetSocketAddr(int socket, struct qsockaddr * addr)
     int addrlen = sizeof(struct qsockaddr);
     unsigned int a;
 
-    Q_memset(addr, 0, sizeof(struct qsockaddr));
+    std::memset(addr, 0, sizeof(struct qsockaddr));
     pgetsockname(socket, (struct sockaddr *)addr, &addrlen);
     a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
     if (a == 0 || a == inet_addr("127.0.0.1"))
@@ -497,11 +497,11 @@ int WINS_GetNameFromAddr(struct qsockaddr * addr, char * name)
     hostentry = pgethostbyaddr((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
     if (hostentry)
     {
-        Q_strncpy(name, (char *)hostentry->h_name, NET_NAMELEN - 1);
+        std::strncpy(name, (char *)hostentry->h_name, NET_NAMELEN - 1);
         return 0;
     }
 
-    Q_strcpy(name, WINS_AddrToString(addr));
+    std::strcpy(name, WINS_AddrToString(addr));
     return 0;
 }
 

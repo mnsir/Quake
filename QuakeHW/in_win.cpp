@@ -897,7 +897,7 @@ void Joy_AdvancedUpdate_f()
     }
     else
     {
-        if (Q_strcmp(joy_name.string, "joystick") != 0)
+        if (std::strcmp(joy_name.string, "joystick") != 0)
         {
             // notify user of advanced controller
             Con_Printf("\n%s configured\n\n", joy_name.string);

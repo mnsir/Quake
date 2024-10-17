@@ -33,7 +33,7 @@ void R_InitParticles()
 
     if (i)
     {
-        r_numparticles = (int)(Q_atoi(com_argv[i + 1]));
+        r_numparticles = (int)(std::atoi(com_argv[i + 1]));
         if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
             r_numparticles = ABSOLUTE_MIN_PARTICLES;
     }

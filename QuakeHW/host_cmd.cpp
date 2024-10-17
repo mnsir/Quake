@@ -663,7 +663,7 @@ void Host_Name_f()
 
     if (cmd_source == src_command)
     {
-        if (Q_strcmp(cl_name.string, newName) == 0)
+        if (std::strcmp(cl_name.string, newName) == 0)
             return;
         Cvar_Set("_cl_name", newName);
         if (cls.state == ca_connected)
@@ -672,9 +672,9 @@ void Host_Name_f()
     }
 
     if (host_client->name[0] && strcmp(host_client->name, "unconnected"))
-        if (Q_strcmp(host_client->name, newName) != 0)
+        if (std::strcmp(host_client->name, newName) != 0)
             Con_Printf("%s renamed to %s\n", host_client->name, newName);
-    Q_strcpy(host_client->name, newName);
+    std::strcpy(host_client->name, newName);
     host_client->edict->v.netname = host_client->name - pr_strings;
 
     // send notification to all clients
@@ -724,7 +724,7 @@ void Host_Say(bool teamonly)
     if (*p == '"')
     {
         p++;
-        p[Q_strlen(p) - 1] = 0;
+        p[std::strlen(p) - 1] = 0;
     }
 
     // turn on color set 1
@@ -733,8 +733,8 @@ void Host_Say(bool teamonly)
     else
         sprintf(text, "%c<%s> ", 1, hostname.string);
 
-    j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
-    if (Q_strlen(p) > j)
+    j = sizeof(text) - 2 - std::strlen(text); // -2 for /n and null terminator
+    if (std::strlen(p) > j)
         p[j] = 0;
 
     strcat(text, p);
@@ -784,8 +784,8 @@ void Host_Tell_f()
     if (Cmd_Argc() < 3)
         return;
 
-    Q_strcpy(text, host_client->name);
-    Q_strcat(text, ": ");
+    std::strcpy(text, host_client->name);
+    std::strcat(text, ": ");
 
     p = Cmd_Args();
 
@@ -793,12 +793,12 @@ void Host_Tell_f()
     if (*p == '"')
     {
         p++;
-        p[Q_strlen(p) - 1] = 0;
+        p[std::strlen(p) - 1] = 0;
     }
 
     // check length & truncate if necessary
-    j = sizeof(text) - 2 - Q_strlen(text); // -2 for /n and null terminator
-    if (Q_strlen(p) > j)
+    j = sizeof(text) - 2 - std::strlen(text); // -2 for /n and null terminator
+    if (std::strlen(p) > j)
         p[j] = 0;
 
     strcat(text, p);
@@ -1128,9 +1128,9 @@ void Host_Kick_f()
 
     save = host_client;
 
-    if (Cmd_Argc() > 2 && Q_strcmp(Cmd_Argv(1), "#") == 0)
+    if (Cmd_Argc() > 2 && std::strcmp(Cmd_Argv(1), "#") == 0)
     {
-        i = Q_atof(Cmd_Argv(2)) - 1;
+        i = std::atof(Cmd_Argv(2)) - 1;
         if (i < 0 || i >= svs.maxclients)
             return;
         if (!svs.clients[i].active)
@@ -1171,7 +1171,7 @@ void Host_Kick_f()
                 message++; // skip the #
                 while (*message == ' ') // skip white space
                     message++;
-                message += Q_strlen(Cmd_Argv(2)); // skip the number
+                message += std::strlen(Cmd_Argv(2)); // skip the number
             }
             while (*message && *message == ' ')
                 message++;

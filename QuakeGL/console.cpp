@@ -75,7 +75,7 @@ Con_Clear_f
 void Con_Clear_f()
 {
     if (con_text)
-        Q_memset(con_text, ' ', CON_TEXTSIZE);
+        std::memset(con_text, ' ', CON_TEXTSIZE);
 }
 
 
@@ -141,7 +141,7 @@ void Con_CheckResize()
         width = 38;
         con_linewidth = width;
         con_totallines = CON_TEXTSIZE / con_linewidth;
-        Q_memset(con_text, ' ', CON_TEXTSIZE);
+        std::memset(con_text, ' ', CON_TEXTSIZE);
     }
     else
     {
@@ -159,8 +159,8 @@ void Con_CheckResize()
         if (con_linewidth < numchars)
             numchars = con_linewidth;
 
-        Q_memcpy(tbuf, con_text, CON_TEXTSIZE);
-        Q_memset(con_text, ' ', CON_TEXTSIZE);
+        std::memcpy(tbuf, con_text, CON_TEXTSIZE);
+        std::memset(con_text, ' ', CON_TEXTSIZE);
 
         for (i = 0; i < numlines; i++)
         {
@@ -203,7 +203,7 @@ void Con_Init()
     }
 
     con_text = (char*)Hunk_AllocName(CON_TEXTSIZE, "context");
-    Q_memset(con_text, ' ', CON_TEXTSIZE);
+    std::memset(con_text, ' ', CON_TEXTSIZE);
     con_linewidth = -1;
     Con_CheckResize();
 
@@ -231,7 +231,7 @@ void Con_Linefeed()
 {
     con_x = 0;
     con_current++;
-    Q_memset(&con_text[(con_current % con_totallines) * con_linewidth]
+    std::memset(&con_text[(con_current % con_totallines) * con_linewidth]
              , ' ', con_linewidth);
 }
 

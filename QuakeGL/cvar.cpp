@@ -16,7 +16,7 @@ cvar_t * Cvar_FindVar(char * var_name)
     cvar_t * var;
 
     for (var = cvar_vars; var; var = var->next)
-        if (!Q_strcmp(var_name, var->name))
+        if (!std::strcmp(var_name, var->name))
             return var;
 
     return NULL;
@@ -34,7 +34,7 @@ float Cvar_VariableValue(char * var_name)
     var = Cvar_FindVar(var_name);
     if (!var)
         return 0;
-    return Q_atof(var->string);
+    return std::atof(var->string);
 }
 
 
@@ -64,14 +64,14 @@ char * Cvar_CompleteVariable(char * partial)
     cvar_t * cvar;
     int len;
 
-    len = Q_strlen(partial);
+    len = std::strlen(partial);
 
     if (!len)
         return NULL;
 
     // check functions
     for (cvar = cvar_vars; cvar; cvar = cvar->next)
-        if (!Q_strncmp(partial, cvar->name, len))
+        if (!std::strncmp(partial, cvar->name, len))
             return cvar->name;
 
     return NULL;
@@ -95,13 +95,13 @@ void Cvar_Set(char * var_name, char * value)
         return;
     }
 
-    changed = Q_strcmp(var->string, value);
+    changed = std::strcmp(var->string, value);
 
     Z_Free(var->string); // free the old value string
 
-    var->string = (char*)Z_Malloc(Q_strlen(value) + 1);
-    Q_strcpy(var->string, value);
-    var->value = Q_atof(var->string);
+    var->string = (char*)Z_Malloc(std::strlen(value) + 1);
+    std::strcpy(var->string, value);
+    var->value = std::atof(var->string);
     if (var->server && changed)
     {
         if (sv.active)
@@ -150,9 +150,9 @@ void Cvar_RegisterVariable(cvar_t * variable)
 
     // copy the value off, because future sets will Z_Free it
     oldstr = variable->string;
-    variable->string = (char*)Z_Malloc(Q_strlen(variable->string) + 1);
-    Q_strcpy(variable->string, oldstr);
-    variable->value = Q_atof(variable->string);
+    variable->string = (char*)Z_Malloc(std::strlen(variable->string) + 1);
+    std::strcpy(variable->string, oldstr);
+    variable->value = std::atof(variable->string);
 
     // link the variable in
     variable->next = cvar_vars;

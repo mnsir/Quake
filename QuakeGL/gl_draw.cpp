@@ -233,7 +233,6 @@ qpic_t * Draw_CachePic(char * path)
     dat = (qpic_t *)COM_LoadTempFile(path);
     if (!dat)
         Sys_Error("Draw_CachePic: failed to load %s", path);
-    SwapPic(dat);
 
     // HACK HACK HACK --- we need to keep the bytes for
     // the translatable player picture just for the menu
@@ -388,7 +387,6 @@ void Draw_Init()
     cb = (qpic_t *)COM_LoadTempFile("gfx/conback.lmp");
     if (!cb)
         Sys_Error("Couldn't load gfx/conback.lmp");
-    SwapPic(cb);
 
     sprintf(ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 

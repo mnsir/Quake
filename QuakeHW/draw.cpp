@@ -78,8 +78,6 @@ qpic_t * Draw_CachePic(char * path)
         Sys_Error("Draw_CachePic: failed to load %s", path);
     }
 
-    SwapPic(dat);
-
     return dat;
 }
 

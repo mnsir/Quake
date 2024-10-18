@@ -21,11 +21,11 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t sv_friction = {"sv_friction", "4", false, true};
-cvar_t sv_stopspeed = {"sv_stopspeed", "100"};
-cvar_t sv_gravity = {"sv_gravity", "800", false, true};
-cvar_t sv_maxvelocity = {"sv_maxvelocity", "2000"};
-cvar_t sv_nostep = {"sv_nostep", "0"};
+cvar_t sv_friction = {(char*)"sv_friction", (char*)"4", false, true};
+cvar_t sv_stopspeed = {(char*)"sv_stopspeed", (char*)"100"};
+cvar_t sv_gravity = {(char*)"sv_gravity", (char*)"800", false, true};
+cvar_t sv_maxvelocity = {(char*)"sv_maxvelocity", (char*)"2000"};
+cvar_t sv_nostep = {(char*)"sv_nostep", (char*)"0"};
 
 #define MOVE_EPSILON 0.01
 
@@ -53,7 +53,7 @@ void SV_CheckAllEnts()
             continue;
 
         if (SV_TestEntityPosition(check))
-            Con_Printf("entity in invalid position\n");
+            Con_Printf((char*)"entity in invalid position\n");
     }
 }
 
@@ -73,12 +73,12 @@ void SV_CheckVelocity(edict_t * ent)
     {
         if (IS_NAN(ent->v.velocity[i]))
         {
-            Con_Printf("Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
+            Con_Printf((char*)"Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
             ent->v.velocity[i] = 0;
         }
         if (IS_NAN(ent->v.origin[i]))
         {
-            Con_Printf("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
+            Con_Printf((char*)"Got a NaN origin on %s\n", pr_strings + ent->v.classname);
             ent->v.origin[i] = 0;
         }
         if (ent->v.velocity[i] > sv_maxvelocity.value)
@@ -251,7 +251,7 @@ int SV_FlyMove(edict_t * ent, float time, trace_t * steptrace)
             break; // moved the entire distance
 
         if (!trace.ent)
-            Sys_Error("SV_FlyMove: !trace.ent");
+            Sys_Error((char*)"SV_FlyMove: !trace.ent");
 
         if (trace.plane.normal[2] > 0.7)
         {
@@ -349,7 +349,7 @@ void SV_AddGravity(edict_t * ent)
 
     eval_t * val;
 
-    val = GetEdictFieldValue(ent, "gravity");
+    val = GetEdictFieldValue(ent, (char*)"gravity");
     if (val && val->_float)
         ent_gravity = val->_float;
     else
@@ -596,7 +596,7 @@ void SV_CheckStuck(edict_t * ent)
     VectorCopy(ent->v.oldorigin, ent->v.origin);
     if (!SV_TestEntityPosition(ent))
     {
-        Con_DPrintf("Unstuck.\n");
+        Con_DPrintf((char*)"Unstuck.\n");
         SV_LinkEdict(ent, true);
         return;
     }
@@ -610,14 +610,14 @@ void SV_CheckStuck(edict_t * ent)
                 ent->v.origin[2] = org[2] + z;
                 if (!SV_TestEntityPosition(ent))
                 {
-                    Con_DPrintf("Unstuck.\n");
+                    Con_DPrintf((char*)"Unstuck.\n");
                     SV_LinkEdict(ent, true);
                     return;
                 }
             }
 
     VectorCopy(org, ent->v.origin);
-    Con_DPrintf("player is stuck.\n");
+    Con_DPrintf((char*)"player is stuck.\n");
 }
 
 
@@ -909,7 +909,7 @@ void SV_Physics_Client(edict_t * ent, int num)
         break;
 
     default:
-        Sys_Error("SV_Physics_client: bad movetype %i", (int)ent->v.movetype);
+        Sys_Error((char*)"SV_Physics_client: bad movetype %i", (int)ent->v.movetype);
     }
 
     //
@@ -985,7 +985,7 @@ void SV_CheckWaterTransition(edict_t * ent)
     {
         if (ent->v.watertype == CONTENTS_EMPTY)
         { // just crossed into water
-            SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
+            SV_StartSound(ent, 0, (char*)"misc/h2ohit1.wav", 255, 1);
         }
         ent->v.watertype = cont;
         ent->v.waterlevel = 1;
@@ -994,7 +994,7 @@ void SV_CheckWaterTransition(edict_t * ent)
     {
         if (ent->v.watertype != CONTENTS_EMPTY)
         { // just crossed into water
-            SV_StartSound(ent, 0, "misc/h2ohit1.wav", 255, 1);
+            SV_StartSound(ent, 0, (char*)"misc/h2ohit1.wav", 255, 1);
         }
         ent->v.watertype = CONTENTS_EMPTY;
         ent->v.waterlevel = cont;
@@ -1101,7 +1101,7 @@ void SV_Physics_Step(edict_t * ent)
         if ((int)ent->v.flags & FL_ONGROUND) // just hit ground
         {
             if (hitsound)
-                SV_StartSound(ent, 0, "demon/dland2.wav", 255, 1);
+                SV_StartSound(ent, 0, (char*)"demon/dland2.wav", 255, 1);
         }
     }
 
@@ -1162,7 +1162,7 @@ void SV_Physics()
                  || ent->v.movetype == MOVETYPE_FLYMISSILE)
             SV_Physics_Toss(ent);
         else
-            Sys_Error("SV_Physics: bad movetype %i", (int)ent->v.movetype);
+            Sys_Error((char*)"SV_Physics: bad movetype %i", (int)ent->v.movetype);
     }
 
     if (pr_global_struct->force_retouch)

@@ -4,7 +4,7 @@
 #include "quakedef.h"
 
 cvar_t * cvar_vars;
-char * cvar_null_string = "";
+char * cvar_null_string = (char*)"";
 
 /*
 ============
@@ -91,7 +91,7 @@ void Cvar_Set(char * var_name, char * value)
     var = Cvar_FindVar(var_name);
     if (!var)
     { // there is an error in C code if this happens
-        Con_Printf("Cvar_Set: variable %s not found\n", var_name);
+        Con_Printf((char*)"Cvar_Set: variable %s not found\n", var_name);
         return;
     }
 
@@ -105,7 +105,7 @@ void Cvar_Set(char * var_name, char * value)
     if (var->server && changed)
     {
         if (sv.active)
-            SV_BroadcastPrintf("\"%s\" changed to \"%s\"\n", var->name, var->string);
+            SV_BroadcastPrintf((char*)"\"%s\" changed to \"%s\"\n", var->name, var->string);
     }
 }
 
@@ -137,14 +137,14 @@ void Cvar_RegisterVariable(cvar_t * variable)
     // first check to see if it has allready been defined
     if (Cvar_FindVar(variable->name))
     {
-        Con_Printf("Can't register variable %s, allready defined\n", variable->name);
+        Con_Printf((char*)"Can't register variable %s, allready defined\n", variable->name);
         return;
     }
 
     // check for overlap with a command
     if (Cmd_Exists(variable->name))
     {
-        Con_Printf("Cvar_RegisterVariable: %s is a command\n", variable->name);
+        Con_Printf((char*)"Cvar_RegisterVariable: %s is a command\n", variable->name);
         return;
     }
 
@@ -178,7 +178,7 @@ bool Cvar_Command()
     // perform a variable print or set
     if (Cmd_Argc() == 1)
     {
-        Con_Printf("\"%s\" is \"%s\"\n", v->name, v->string);
+        Con_Printf((char*)"\"%s\" is \"%s\"\n", v->name, v->string);
         return true;
     }
 

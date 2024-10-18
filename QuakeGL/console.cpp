@@ -18,7 +18,7 @@ int con_current; // where next message will be printed
 int con_x; // offset in current line for next print
 char * con_text = 0;
 
-cvar_t con_notifytime = {"con_notifytime", "3"}; //seconds
+cvar_t con_notifytime = {(char*)"con_notifytime", (char*)"3"}; //seconds
 
 #define NUM_CON_TIMES 4
 float con_times[NUM_CON_TIMES]; // realtime time the line was generated
@@ -189,9 +189,9 @@ void Con_Init()
 {
 #define MAXGAMEDIRLEN 1000
     char temp[MAXGAMEDIRLEN + 1];
-    char * t2 = "/qconsole.log";
+    char * t2 = (char*)"/qconsole.log";
 
-    con_debuglog = COM_CheckParm("-condebug");
+    con_debuglog = COM_CheckParm((char*)"-condebug");
 
     if (con_debuglog)
     {
@@ -202,22 +202,22 @@ void Con_Init()
         }
     }
 
-    con_text = (char*)Hunk_AllocName(CON_TEXTSIZE, "context");
+    con_text = (char*)Hunk_AllocName(CON_TEXTSIZE, (char*)"context");
     std::memset(con_text, ' ', CON_TEXTSIZE);
     con_linewidth = -1;
     Con_CheckResize();
 
-    Con_Printf("Console initialized.\n");
+    Con_Printf((char*)"Console initialized.\n");
 
     //
     // register our commands
     //
     Cvar_RegisterVariable(&con_notifytime);
 
-    Cmd_AddCommand("toggleconsole", Con_ToggleConsole_f);
-    Cmd_AddCommand("messagemode", Con_MessageMode_f);
-    Cmd_AddCommand("messagemode2", Con_MessageMode2_f);
-    Cmd_AddCommand("clear", Con_Clear_f);
+    Cmd_AddCommand((char*)"toggleconsole", Con_ToggleConsole_f);
+    Cmd_AddCommand((char*)"messagemode", Con_MessageMode_f);
+    Cmd_AddCommand((char*)"messagemode2", Con_MessageMode2_f);
+    Cmd_AddCommand((char*)"clear", Con_Clear_f);
     con_initialized = true;
 }
 
@@ -256,7 +256,7 @@ void Con_Print(char * txt)
     if (txt[0] == 1)
     {
         mask = 128; // go to colored text
-        S_LocalSound("misc/talk.wav");
+        S_LocalSound((char*)"misc/talk.wav");
         // play talk wav
         txt++;
     }
@@ -361,11 +361,11 @@ void Con_Printf(char * fmt, ...)
     va_end(argptr);
 
     // also echo to debugging console
-    Sys_Printf("%s", msg); // also echo to debugging console
+    Sys_Printf((char*)"%s", msg); // also echo to debugging console
 
     // log all messages to file
     if (con_debuglog)
-        Con_DebugLog(va("%s/qconsole.log", com_gamedir), "%s", msg);
+        Con_DebugLog(va((char*)"%s/qconsole.log", com_gamedir), (char*)"%s", msg);
 
     if (!con_initialized)
         return;
@@ -409,7 +409,7 @@ void Con_DPrintf(char * fmt, ...)
     vsnprintf(msg, MAXPRINTMSG, fmt, argptr);
     va_end(argptr);
 
-    Con_Printf("%s", msg);
+    Con_Printf((char*)"%s", msg);
 }
 
 
@@ -432,7 +432,7 @@ void Con_SafePrintf(char * fmt, ...)
 
     temp = scr_disabled_for_loading;
     scr_disabled_for_loading = true;
-    Con_Printf("%s", msg);
+    Con_Printf((char*)"%s", msg);
     scr_disabled_for_loading = temp;
 }
 
@@ -531,7 +531,7 @@ void Con_DrawNotify()
 
         x = 0;
 
-        Draw_String(8, v, "say:");
+        Draw_String(8, v, (char*)"say:");
         while (chat_buffer[x])
         {
             Draw_Character((x + 5) << 3, v, chat_buffer[x]);
@@ -599,12 +599,12 @@ void Con_NotifyBox(char * text)
     double t1, t2;
 
     // during startup for sound / cd warnings
-    Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
+    Con_Printf((char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
     Con_Printf(text);
 
-    Con_Printf("Press a key.\n");
-    Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
+    Con_Printf((char*)"Press a key.\n");
+    Con_Printf((char*)"\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
     key_count = -2; // wait for a key down and up
     key_dest = key_console;
@@ -618,7 +618,7 @@ void Con_NotifyBox(char * text)
         realtime += t2 - t1; // make the cursor blink
     } while (key_count < 0);
 
-    Con_Printf("\n");
+    Con_Printf((char*)"\n");
     key_dest = key_game;
     realtime = 0; // put the cursor back to invisible
 }

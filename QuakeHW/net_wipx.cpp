@@ -32,7 +32,7 @@ int WIPX_Init()
     int r;
     WORD wVersionRequested;
 
-    if (COM_CheckParm("-noipx"))
+    if (COM_CheckParm((char*)"-noipx"))
         return -1;
 
     // make sure LoadLibrary has happened successfully
@@ -47,7 +47,7 @@ int WIPX_Init()
 
         if (r)
         {
-            Con_Printf("Winsock initialization failed.\n");
+            Con_Printf((char*)"Winsock initialization failed.\n");
             return -1;
         }
     }
@@ -75,13 +75,13 @@ int WIPX_Init()
                         break;
                 buff[i] = 0;
             }
-            Cvar_Set("hostname", buff);
+            Cvar_Set((char*)"hostname", buff);
         }
     }
 
     if ((net_controlsocket = WIPX_OpenSocket(0)) == -1)
     {
-        Con_Printf("WIPX_Init: Unable to open control socket\n");
+        Con_Printf((char*)"WIPX_Init: Unable to open control socket\n");
         if (--winsock_initialized == 0)
             pWSACleanup();
         return -1;
@@ -98,7 +98,7 @@ int WIPX_Init()
     if (p)
         *p = 0;
 
-    Con_Printf("Winsock IPX Initialized\n");
+    Con_Printf((char*)"Winsock IPX Initialized\n");
     ipxAvailable = true;
 
     return net_controlsocket;
@@ -124,7 +124,7 @@ void WIPX_Listen(bool state)
         if (net_acceptsocket != -1)
             return;
         if ((net_acceptsocket = WIPX_OpenSocket(net_hostport)) == -1)
-            Sys_Error("WIPX_Listen: Unable to open accept socket\n");
+            Sys_Error((char*)"WIPX_Listen: Unable to open accept socket\n");
         return;
     }
 
@@ -170,7 +170,7 @@ int WIPX_OpenSocket(int port)
         return handle;
     }
 
-    Sys_Error("Winsock IPX bind failed\n");
+    Sys_Error((char*)"Winsock IPX bind failed\n");
 ErrorReturn:
     pclosesocket(newsocket);
     return -1;
@@ -206,7 +206,7 @@ int WIPX_CheckNewConnections()
         return -1;
 
     if (pioctlsocket(ipxsocket[net_acceptsocket], FIONREAD, &available) == -1)
-        Sys_Error("WIPX: ioctlsocket (FIONREAD) failed\n");
+        Sys_Error((char*)"WIPX: ioctlsocket (FIONREAD) failed\n");
     if (available)
         return net_acceptsocket;
     return -1;

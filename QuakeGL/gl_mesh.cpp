@@ -257,7 +257,7 @@ void BuildTris()
 
     commands[numcommands++] = 0; // end of list marker
 
-    Con_DPrintf("%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
+    Con_DPrintf((char*)"%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
 
     allverts += numorder;
     alltris += pheader->numtris;
@@ -304,7 +304,7 @@ void GL_MakeAliasModelDisplayLists(model_t * m, aliashdr_t * hdr)
         //
         // build it from scratch
         //
-        Con_Printf("meshing %s...\n", m->name);
+        Con_Printf((char*)"meshing %s...\n", m->name);
 
         BuildTris(); // trifans or lists
 

@@ -205,7 +205,7 @@ store:
         }
         break;
     default:
-        Sys_Error("Bad lightmap format");
+        Sys_Error((char*)"Bad lightmap format");
     }
 }
 
@@ -238,9 +238,9 @@ texture_t * R_TextureAnimation(texture_t * base)
     {
         base = base->anim_next;
         if (!base)
-            Sys_Error("R_TextureAnimation: broken cycle");
+            Sys_Error((char*)"R_TextureAnimation: broken cycle");
         if (++count > 100)
-            Sys_Error("R_TextureAnimation: infinite cycle");
+            Sys_Error((char*)"R_TextureAnimation: infinite cycle");
     }
 
     return base;
@@ -1287,7 +1287,7 @@ int AllocBlock(int w, int h, int * x, int * y)
         return texnum;
     }
 
-    Sys_Error("AllocBlock: full");
+    Sys_Error((char*)"AllocBlock: full");
 }
 
 
@@ -1468,15 +1468,15 @@ void GL_BuildLightmaps()
     if (isPermedia)
         gl_lightmap_format = GL_RGBA;
 
-    if (COM_CheckParm("-lm_1"))
+    if (COM_CheckParm((char*)"-lm_1"))
         gl_lightmap_format = GL_LUMINANCE;
-    if (COM_CheckParm("-lm_a"))
+    if (COM_CheckParm((char*)"-lm_a"))
         gl_lightmap_format = GL_ALPHA;
-    if (COM_CheckParm("-lm_i"))
+    if (COM_CheckParm((char*)"-lm_i"))
         gl_lightmap_format = GL_INTENSITY;
-    if (COM_CheckParm("-lm_2"))
+    if (COM_CheckParm((char*)"-lm_2"))
         gl_lightmap_format = GL_RGBA4;
-    if (COM_CheckParm("-lm_4"))
+    if (COM_CheckParm((char*)"-lm_4"))
         gl_lightmap_format = GL_RGBA;
 
     switch (gl_lightmap_format)

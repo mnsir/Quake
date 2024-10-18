@@ -20,7 +20,7 @@ void R_InitTextures()
     byte * dest;
 
     // create a simple checkerboard texture for the default
-    r_notexture_mip = (texture_t*)Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, "notexture");
+    r_notexture_mip = (texture_t*)Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, (char*)"notexture");
 
     r_notexture_mip->width = r_notexture_mip->height = 16;
     r_notexture_mip->offsets[0] = sizeof(texture_t);
@@ -109,39 +109,39 @@ void R_Envmap_f()
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env0.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env0.rgb", buffer, sizeof(buffer));
 
     r_refdef.viewangles[1] = 90;
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env1.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env1.rgb", buffer, sizeof(buffer));
 
     r_refdef.viewangles[1] = 180;
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env2.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env2.rgb", buffer, sizeof(buffer));
 
     r_refdef.viewangles[1] = 270;
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env3.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env3.rgb", buffer, sizeof(buffer));
 
     r_refdef.viewangles[0] = -90;
     r_refdef.viewangles[1] = 0;
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env4.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env4.rgb", buffer, sizeof(buffer));
 
     r_refdef.viewangles[0] = 90;
     r_refdef.viewangles[1] = 0;
     GL_BeginRendering(&glx, &gly, &glwidth, &glheight);
     R_RenderView();
     glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    COM_WriteFile("env5.rgb", buffer, sizeof(buffer));
+    COM_WriteFile((char*)"env5.rgb", buffer, sizeof(buffer));
 
     envmap = false;
     glDrawBuffer(GL_BACK);
@@ -159,9 +159,9 @@ void R_Init()
     extern byte * hunk_base;
     extern cvar_t gl_finish;
 
-    Cmd_AddCommand("timerefresh", R_TimeRefresh_f);
-    Cmd_AddCommand("envmap", R_Envmap_f);
-    Cmd_AddCommand("pointfile", R_ReadPointFile_f);
+    Cmd_AddCommand((char*)"timerefresh", R_TimeRefresh_f);
+    Cmd_AddCommand((char*)"envmap", R_Envmap_f);
+    Cmd_AddCommand((char*)"pointfile", R_ReadPointFile_f);
 
     Cvar_RegisterVariable(&r_norefresh);
     Cvar_RegisterVariable(&r_lightmap);
@@ -180,7 +180,7 @@ void R_Init()
     Cvar_RegisterVariable(&gl_texsort);
 
     if (gl_mtexable)
-        Cvar_SetValue("gl_texsort", 0.0);
+        Cvar_SetValue((char*)"gl_texsort", 0.0);
 
     Cvar_RegisterVariable(&gl_cull);
     Cvar_RegisterVariable(&gl_smoothmodels);
@@ -260,13 +260,13 @@ void R_TranslatePlayerSkin(int playernum)
     s = paliashdr->skinwidth * paliashdr->skinheight;
     if (currententity->skinnum < 0 || currententity->skinnum >= paliashdr->numskins)
     {
-        Con_Printf("(%d): Invalid player skin #%d\n", playernum, currententity->skinnum);
+        Con_Printf((char*)"(%d): Invalid player skin #%d\n", playernum, currententity->skinnum);
         original = (byte *)paliashdr + paliashdr->texels[0];
     }
     else
         original = (byte *)paliashdr + paliashdr->texels[currententity->skinnum];
     if (s & 3)
-        Sys_Error("R_TranslateSkin: s&3");
+        Sys_Error((char*)"R_TranslateSkin: s&3");
 
     inwidth = paliashdr->skinwidth;
     inheight = paliashdr->skinheight;
@@ -407,7 +407,7 @@ void R_TimeRefresh_f()
     glFinish();
     stop = Sys_FloatTime();
     time = stop - start;
-    Con_Printf("%f seconds (%f fps)\n", time, 128 / time);
+    Con_Printf((char*)"%f seconds (%f fps)\n", time, 128 / time);
 
     glDrawBuffer(GL_BACK);
     GL_EndRendering();

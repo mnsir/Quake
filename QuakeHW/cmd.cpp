@@ -73,7 +73,7 @@ void Cbuf_AddText(char * text)
 
     if (cmd_text.cursize + l >= cmd_text.maxsize)
     {
-        Con_Printf("Cbuf_AddText: overflow\n");
+        Con_Printf((char*)"Cbuf_AddText: overflow\n");
         return;
     }
 
@@ -200,7 +200,7 @@ void Cmd_StuffCmds_f()
 
     if (Cmd_Argc() != 1)
     {
-        Con_Printf("stuffcmds : execute command line parameters\n");
+        Con_Printf((char*)"stuffcmds : execute command line parameters\n");
         return;
     }
 
@@ -269,7 +269,7 @@ void Cmd_Exec_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf("exec <filename> : execute a script file\n");
+        Con_Printf((char*)"exec <filename> : execute a script file\n");
         return;
     }
 
@@ -277,10 +277,10 @@ void Cmd_Exec_f()
     f = (char *)COM_LoadHunkFile(Cmd_Argv(1));
     if (!f)
     {
-        Con_Printf("couldn't exec %s\n", Cmd_Argv(1));
+        Con_Printf((char*)"couldn't exec %s\n", Cmd_Argv(1));
         return;
     }
-    Con_Printf("execing %s\n", Cmd_Argv(1));
+    Con_Printf((char*)"execing %s\n", Cmd_Argv(1));
 
     Cbuf_InsertText(f);
     Hunk_FreeToLowMark(mark);
@@ -299,8 +299,8 @@ void Cmd_Echo_f()
     int i;
 
     for (i = 1; i < Cmd_Argc(); i++)
-        Con_Printf("%s ", Cmd_Argv(i));
-    Con_Printf("\n");
+        Con_Printf((char*)"%s ", Cmd_Argv(i));
+    Con_Printf((char*)"\n");
 }
 
 /*
@@ -329,16 +329,16 @@ void Cmd_Alias_f()
 
     if (Cmd_Argc() == 1)
     {
-        Con_Printf("Current alias commands:\n");
+        Con_Printf((char*)"Current alias commands:\n");
         for (a = cmd_alias; a; a = a->next)
-            Con_Printf("%s : %s\n", a->name, a->value);
+            Con_Printf((char*)"%s : %s\n", a->name, a->value);
         return;
     }
 
     s = Cmd_Argv(1);
     if (strlen(s) >= MAX_ALIAS_NAME)
     {
-        Con_Printf("Alias name is too long\n");
+        Con_Printf((char*)"Alias name is too long\n");
         return;
     }
 
@@ -394,7 +394,7 @@ typedef struct cmd_function_s
 
 static int cmd_argc;
 static char * cmd_argv[MAX_ARGS];
-static char * cmd_null_string = "";
+static char * cmd_null_string = (char*)"";
 static char * cmd_args = NULL;
 
 cmd_source_t cmd_source;
@@ -412,12 +412,12 @@ void Cmd_Init()
     //
     // register our commands
     //
-    Cmd_AddCommand("stuffcmds", Cmd_StuffCmds_f);
-    Cmd_AddCommand("exec", Cmd_Exec_f);
-    Cmd_AddCommand("echo", Cmd_Echo_f);
-    Cmd_AddCommand("alias", Cmd_Alias_f);
-    Cmd_AddCommand("cmd", Cmd_ForwardToServer);
-    Cmd_AddCommand("wait", Cmd_Wait_f);
+    Cmd_AddCommand((char*)"stuffcmds", Cmd_StuffCmds_f);
+    Cmd_AddCommand((char*)"exec", Cmd_Exec_f);
+    Cmd_AddCommand((char*)"echo", Cmd_Echo_f);
+    Cmd_AddCommand((char*)"alias", Cmd_Alias_f);
+    Cmd_AddCommand((char*)"cmd", Cmd_ForwardToServer);
+    Cmd_AddCommand((char*)"wait", Cmd_Wait_f);
 }
 
 /*
@@ -516,12 +516,12 @@ void Cmd_AddCommand(char * cmd_name, xcommand_t function)
     cmd_function_t * cmd;
 
     if (host_initialized) // because hunk allocation would get stomped
-        Sys_Error("Cmd_AddCommand after host_initialized");
+        Sys_Error((char*)"Cmd_AddCommand after host_initialized");
 
     // fail if the command is a variable name
     if (Cvar_VariableString(cmd_name)[0])
     {
-        Con_Printf("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
+        Con_Printf((char*)"Cmd_AddCommand: %s already defined as a var\n", cmd_name);
         return;
     }
 
@@ -530,7 +530,7 @@ void Cmd_AddCommand(char * cmd_name, xcommand_t function)
     {
         if (!std::strcmp(cmd_name, cmd->name))
         {
-            Con_Printf("Cmd_AddCommand: %s already defined\n", cmd_name);
+            Con_Printf((char*)"Cmd_AddCommand: %s already defined\n", cmd_name);
             return;
         }
     }
@@ -627,7 +627,7 @@ void Cmd_ExecuteString(char * text, cmd_source_t src)
 
     // check cvars
     if (!Cvar_Command())
-        Con_Printf("Unknown command \"%s\"\n", Cmd_Argv(0));
+        Con_Printf((char*)"Unknown command \"%s\"\n", Cmd_Argv(0));
 
 }
 
@@ -643,7 +643,7 @@ void Cmd_ForwardToServer()
 {
     if (cls.state != ca_connected)
     {
-        Con_Printf("Can't \"%s\", not connected\n", Cmd_Argv(0));
+        Con_Printf((char*)"Can't \"%s\", not connected\n", Cmd_Argv(0));
         return;
     }
 
@@ -651,15 +651,15 @@ void Cmd_ForwardToServer()
         return; // not really connected
 
     MSG_WriteByte(&cls.message, clc_stringcmd);
-    if (Q_strcasecmp(Cmd_Argv(0), "cmd") != 0)
+    if (Q_strcasecmp(Cmd_Argv(0), (char*)"cmd") != 0)
     {
         SZ_Print(&cls.message, Cmd_Argv(0));
-        SZ_Print(&cls.message, " ");
+        SZ_Print(&cls.message, (char*)" ");
     }
     if (Cmd_Argc() > 1)
         SZ_Print(&cls.message, Cmd_Args());
     else
-        SZ_Print(&cls.message, "\n");
+        SZ_Print(&cls.message, (char*)"\n");
 }
 
 
@@ -677,7 +677,7 @@ int Cmd_CheckParm(char * parm)
     int i;
 
     if (!parm)
-        Sys_Error("Cmd_CheckParm: NULL");
+        Sys_Error((char*)"Cmd_CheckParm: NULL");
 
     for (i = 1; i < Cmd_Argc(); i++)
         if (!Q_strcasecmp(parm, Cmd_Argv(i)))

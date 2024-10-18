@@ -31,91 +31,91 @@ int pr_argc;
 
 char * pr_opnames[] =
 {
-    "DONE",
+    (char*)"DONE",
 
-    "MUL_F",
-    "MUL_V",
-    "MUL_FV",
-    "MUL_VF",
+    (char*)"MUL_F",
+    (char*)"MUL_V",
+    (char*)"MUL_FV",
+    (char*)"MUL_VF",
 
-    "DIV",
+    (char*)"DIV",
 
-    "ADD_F",
-    "ADD_V",
+    (char*)"ADD_F",
+    (char*)"ADD_V",
 
-    "SUB_F",
-    "SUB_V",
+    (char*)"SUB_F",
+    (char*)"SUB_V",
 
-    "EQ_F",
-    "EQ_V",
-    "EQ_S",
-    "EQ_E",
-    "EQ_FNC",
+    (char*)"EQ_F",
+    (char*)"EQ_V",
+    (char*)"EQ_S",
+    (char*)"EQ_E",
+    (char*)"EQ_FNC",
 
-    "NE_F",
-    "NE_V",
-    "NE_S",
-    "NE_E",
-    "NE_FNC",
+    (char*)"NE_F",
+    (char*)"NE_V",
+    (char*)"NE_S",
+    (char*)"NE_E",
+    (char*)"NE_FNC",
 
-    "LE",
-    "GE",
-    "LT",
-    "GT",
+    (char*)"LE",
+    (char*)"GE",
+    (char*)"LT",
+    (char*)"GT",
 
-    "INDIRECT",
-    "INDIRECT",
-    "INDIRECT",
-    "INDIRECT",
-    "INDIRECT",
-    "INDIRECT",
+    (char*)"INDIRECT",
+    (char*)"INDIRECT",
+    (char*)"INDIRECT",
+    (char*)"INDIRECT",
+    (char*)"INDIRECT",
+    (char*)"INDIRECT",
 
-    "ADDRESS",
+    (char*)"ADDRESS",
 
-    "STORE_F",
-    "STORE_V",
-    "STORE_S",
-    "STORE_ENT",
-    "STORE_FLD",
-    "STORE_FNC",
+    (char*)"STORE_F",
+    (char*)"STORE_V",
+    (char*)"STORE_S",
+    (char*)"STORE_ENT",
+    (char*)"STORE_FLD",
+    (char*)"STORE_FNC",
 
-    "STOREP_F",
-    "STOREP_V",
-    "STOREP_S",
-    "STOREP_ENT",
-    "STOREP_FLD",
-    "STOREP_FNC",
+    (char*)"STOREP_F",
+    (char*)"STOREP_V",
+    (char*)"STOREP_S",
+    (char*)"STOREP_ENT",
+    (char*)"STOREP_FLD",
+    (char*)"STOREP_FNC",
 
-    "RETURN",
+    (char*)"RETURN",
 
-    "NOT_F",
-    "NOT_V",
-    "NOT_S",
-    "NOT_ENT",
-    "NOT_FNC",
+    (char*)"NOT_F",
+    (char*)"NOT_V",
+    (char*)"NOT_S",
+    (char*)"NOT_ENT",
+    (char*)"NOT_FNC",
 
-    "IF",
-    "IFNOT",
+    (char*)"IF",
+    (char*)"IFNOT",
 
-    "CALL0",
-    "CALL1",
-    "CALL2",
-    "CALL3",
-    "CALL4",
-    "CALL5",
-    "CALL6",
-    "CALL7",
-    "CALL8",
+    (char*)"CALL0",
+    (char*)"CALL1",
+    (char*)"CALL2",
+    (char*)"CALL3",
+    (char*)"CALL4",
+    (char*)"CALL5",
+    (char*)"CALL6",
+    (char*)"CALL7",
+    (char*)"CALL8",
 
-    "STATE",
+    (char*)"STATE",
 
-    "GOTO",
+    (char*)"GOTO",
 
-    "AND",
-    "OR",
+    (char*)"AND",
+    (char*)"OR",
 
-    "BITAND",
-    "BITOR"
+    (char*)"BITAND",
+    (char*)"BITOR"
 };
 
 char * PR_GlobalString(int ofs);
@@ -135,33 +135,33 @@ void PR_PrintStatement(dstatement_t * s)
 
     if ((unsigned)s->op < sizeof(pr_opnames) / sizeof(pr_opnames[0]))
     {
-        Con_Printf("%s ", pr_opnames[s->op]);
+        Con_Printf((char*)"%s ", pr_opnames[s->op]);
         i = strlen(pr_opnames[s->op]);
         for (; i < 10; i++)
-            Con_Printf(" ");
+            Con_Printf((char*)" ");
     }
 
     if (s->op == OP_IF || s->op == OP_IFNOT)
-        Con_Printf("%sbranch %i", PR_GlobalString(s->a), s->b);
+        Con_Printf((char*)"%sbranch %i", PR_GlobalString(s->a), s->b);
     else if (s->op == OP_GOTO)
     {
-        Con_Printf("branch %i", s->a);
+        Con_Printf((char*)"branch %i", s->a);
     }
     else if ((unsigned)(s->op - OP_STORE_F) < 6)
     {
-        Con_Printf("%s", PR_GlobalString(s->a));
-        Con_Printf("%s", PR_GlobalStringNoContents(s->b));
+        Con_Printf((char*)"%s", PR_GlobalString(s->a));
+        Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->b));
     }
     else
     {
         if (s->a)
-            Con_Printf("%s", PR_GlobalString(s->a));
+            Con_Printf((char*)"%s", PR_GlobalString(s->a));
         if (s->b)
-            Con_Printf("%s", PR_GlobalString(s->b));
+            Con_Printf((char*)"%s", PR_GlobalString(s->b));
         if (s->c)
-            Con_Printf("%s", PR_GlobalStringNoContents(s->c));
+            Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->c));
     }
-    Con_Printf("\n");
+    Con_Printf((char*)"\n");
 }
 
 /*
@@ -176,7 +176,7 @@ void PR_StackTrace()
 
     if (pr_depth == 0)
     {
-        Con_Printf("<NO STACK>\n");
+        Con_Printf((char*)"<NO STACK>\n");
         return;
     }
 
@@ -187,10 +187,10 @@ void PR_StackTrace()
 
         if (!f)
         {
-            Con_Printf("<NO FUNCTION>\n");
+            Con_Printf((char*)"<NO FUNCTION>\n");
         }
         else
-            Con_Printf("%12s : %s\n", pr_strings + f->s_file, pr_strings + f->s_name);
+            Con_Printf((char*)"%12s : %s\n", pr_strings + f->s_file, pr_strings + f->s_name);
     }
 }
 
@@ -225,7 +225,7 @@ void PR_Profile_f()
         if (best)
         {
             if (num < 10)
-                Con_Printf("%7i %s\n", best->profile, pr_strings + best->s_name);
+                Con_Printf((char*)"%7i %s\n", best->profile, pr_strings + best->s_name);
             num++;
             best->profile = 0;
         }
@@ -251,11 +251,11 @@ void PR_RunError(char * error, ...)
 
     PR_PrintStatement(pr_statements + pr_xstatement);
     PR_StackTrace();
-    Con_Printf("%s\n", string);
+    Con_Printf((char*)"%s\n", string);
 
     pr_depth = 0; // dump the stack so host_error can shutdown functions
 
-    Host_Error("Program error");
+    Host_Error((char*)"Program error");
 }
 
 /*
@@ -281,12 +281,12 @@ int PR_EnterFunction(dfunction_t * f)
     pr_stack[pr_depth].f = pr_xfunction;
     pr_depth++;
     if (pr_depth >= MAX_STACK_DEPTH)
-        PR_RunError("stack overflow");
+        PR_RunError((char*)"stack overflow");
 
     // save off any locals that the new function steps on
     c = f->locals;
     if (localstack_used + c > LOCALSTACK_SIZE)
-        PR_RunError("PR_ExecuteProgram: locals stack overflow\n");
+        PR_RunError((char*)"PR_ExecuteProgram: locals stack overflow\n");
 
     for (i = 0; i < c; i++)
         localstack[localstack_used + i] = ((int *)pr_globals)[f->parm_start + i];
@@ -317,13 +317,13 @@ int PR_LeaveFunction()
     int i, c;
 
     if (pr_depth <= 0)
-        Sys_Error("prog stack underflow");
+        Sys_Error((char*)"prog stack underflow");
 
     // restore locals from the stack
     c = pr_xfunction->locals;
     localstack_used -= c;
     if (localstack_used < 0)
-        PR_RunError("PR_ExecuteProgram: locals stack underflow\n");
+        PR_RunError((char*)"PR_ExecuteProgram: locals stack underflow\n");
 
     for (i = 0; i < c; i++)
         ((int *)pr_globals)[pr_xfunction->parm_start + i] = localstack[localstack_used + i];
@@ -356,7 +356,7 @@ void PR_ExecuteProgram(func_t fnum)
     {
         if (pr_global_struct->self)
             ED_Print(PROG_TO_EDICT(pr_global_struct->self));
-        Host_Error("PR_ExecuteProgram: NULL function");
+        Host_Error((char*)"PR_ExecuteProgram: NULL function");
     }
 
     f = &pr_functions[fnum];
@@ -379,7 +379,7 @@ void PR_ExecuteProgram(func_t fnum)
         c = (eval_t *)&pr_globals[st->c];
 
         if (!--runaway)
-            PR_RunError("runaway loop error");
+            PR_RunError((char*)"runaway loop error");
 
         pr_xfunction->profile++;
         pr_xstatement = s;
@@ -543,7 +543,7 @@ void PR_ExecuteProgram(func_t fnum)
         case OP_ADDRESS:
             ed = PROG_TO_EDICT(a->edict);
             if (ed == (edict_t *)sv.edicts && sv.state == ss_active)
-                PR_RunError("assignment to world entity");
+                PR_RunError((char*)"assignment to world entity");
             c->_int = (byte *)((int *)&ed->v + b->_int) - (byte *)sv.edicts;
             break;
 
@@ -592,7 +592,7 @@ void PR_ExecuteProgram(func_t fnum)
         case OP_CALL8:
             pr_argc = st->op - OP_CALL0;
             if (!a->function)
-                PR_RunError("NULL function");
+                PR_RunError((char*)"NULL function");
 
             newf = &pr_functions[a->function];
 
@@ -600,7 +600,7 @@ void PR_ExecuteProgram(func_t fnum)
             { // negative statements are built in functions
                 i = -newf->first_statement;
                 if (i >= pr_numbuiltins)
-                    PR_RunError("Bad builtin call number");
+                    PR_RunError((char*)"Bad builtin call number");
                 pr_builtins[i]();
                 break;
             }
@@ -630,7 +630,7 @@ void PR_ExecuteProgram(func_t fnum)
             break;
 
         default:
-            PR_RunError("Bad opcode %i", st->op);
+            PR_RunError((char*)"Bad opcode %i", st->op);
         }
     }
 

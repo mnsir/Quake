@@ -6,7 +6,7 @@
 edict_t * sv_player;
 
 extern cvar_t sv_friction;
-cvar_t sv_edgefriction = {"edgefriction", "2"};
+cvar_t sv_edgefriction = {(char*)"edgefriction", (char*)"2"};
 extern cvar_t sv_stopspeed;
 
 static vec3_t forward, right, up;
@@ -23,7 +23,7 @@ bool onground;
 
 usercmd_t cmd;
 
-cvar_t sv_idealpitchscale = {"sv_idealpitchscale", "0.8"};
+cvar_t sv_idealpitchscale = {(char*)"sv_idealpitchscale", (char*)"0.8"};
 
 
 /*
@@ -146,8 +146,8 @@ void SV_UserFriction()
 SV_Accelerate
 ==============
 */
-cvar_t sv_maxspeed = {"sv_maxspeed", "320", false, true};
-cvar_t sv_accelerate = {"sv_accelerate", "10"};
+cvar_t sv_maxspeed = {(char*)"sv_maxspeed", (char*)"320", false, true};
+cvar_t sv_accelerate = {(char*)"sv_accelerate", (char*)"10"};
 
 void SV_Accelerate()
 {
@@ -448,7 +448,7 @@ nextmsg:
         ret = NET_GetMessage(host_client->netconnection);
         if (ret == -1)
         {
-            Sys_Printf("SV_ReadClientMessage: NET_GetMessage failed\n");
+            Sys_Printf((char*)"SV_ReadClientMessage: NET_GetMessage failed\n");
             return false;
         }
         if (!ret)
@@ -463,7 +463,7 @@ nextmsg:
 
             if (msg_badread)
             {
-                Sys_Printf("SV_ReadClientMessage: badread\n");
+                Sys_Printf((char*)"SV_ReadClientMessage: badread\n");
                 return false;
             }
 
@@ -475,7 +475,7 @@ nextmsg:
                 goto nextmsg; // end of message
 
             default:
-                Sys_Printf("SV_ReadClientMessage: unknown command char\n");
+                Sys_Printf((char*)"SV_ReadClientMessage: unknown command char\n");
                 return false;
 
             case clc_nop:
@@ -488,50 +488,50 @@ nextmsg:
                     ret = 2;
                 else
                     ret = 0;
-                if (Q_strncasecmp(s, "status", 6) == 0)
+                if (Q_strncasecmp(s, (char*)"status", 6) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "god", 3) == 0)
+                else if (Q_strncasecmp(s, (char*)"god", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "notarget", 8) == 0)
+                else if (Q_strncasecmp(s, (char*)"notarget", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "fly", 3) == 0)
+                else if (Q_strncasecmp(s, (char*)"fly", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "name", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"name", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "noclip", 6) == 0)
+                else if (Q_strncasecmp(s, (char*)"noclip", 6) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "say", 3) == 0)
+                else if (Q_strncasecmp(s, (char*)"say", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "say_team", 8) == 0)
+                else if (Q_strncasecmp(s, (char*)"say_team", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "tell", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"tell", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "color", 5) == 0)
+                else if (Q_strncasecmp(s, (char*)"color", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "kill", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"kill", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "pause", 5) == 0)
+                else if (Q_strncasecmp(s, (char*)"pause", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "spawn", 5) == 0)
+                else if (Q_strncasecmp(s, (char*)"spawn", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "begin", 5) == 0)
+                else if (Q_strncasecmp(s, (char*)"begin", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "prespawn", 8) == 0)
+                else if (Q_strncasecmp(s, (char*)"prespawn", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "kick", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"kick", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "ping", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"ping", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "give", 4) == 0)
+                else if (Q_strncasecmp(s, (char*)"give", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, "ban", 3) == 0)
+                else if (Q_strncasecmp(s, (char*)"ban", 3) == 0)
                     ret = 1;
                 if (ret == 2)
                     Cbuf_InsertText(s);
                 else if (ret == 1)
                     Cmd_ExecuteString(s, src_client);
                 else
-                    Con_DPrintf("%s tried to %s\n", host_client->name, s);
+                    Con_DPrintf((char*)"%s tried to %s\n", host_client->name, s);
                 break;
 
             case clc_disconnect:

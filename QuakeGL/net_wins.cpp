@@ -112,7 +112,7 @@ int WINS_Init()
 
     if (hInst == NULL)
     {
-        Con_SafePrintf("Failed to load winsock.dll\n");
+        Con_SafePrintf((char*)"Failed to load winsock.dll\n");
         winsock_lib_initialized = false;
         return -1;
     }
@@ -139,11 +139,11 @@ int WINS_Init()
         !pgethostname || !pgethostbyname || !pgethostbyaddr ||
         !pgetsockname)
     {
-        Con_SafePrintf("Couldn't GetProcAddress from winsock.dll\n");
+        Con_SafePrintf((char*)"Couldn't GetProcAddress from winsock.dll\n");
         return -1;
     }
 
-    if (COM_CheckParm("-noudp"))
+    if (COM_CheckParm((char*)"-noudp"))
         return -1;
 
     if (winsock_initialized == 0)
@@ -154,7 +154,7 @@ int WINS_Init()
 
         if (r)
         {
-            Con_SafePrintf("Winsock initialization failed.\n");
+            Con_SafePrintf((char*)"Winsock initialization failed.\n");
             return -1;
         }
     }
@@ -163,7 +163,7 @@ int WINS_Init()
     // determine my name
     if (pgethostname(buff, MAXHOSTNAMELEN) == SOCKET_ERROR)
     {
-        Con_DPrintf("Winsock TCP/IP Initialization failed.\n");
+        Con_DPrintf((char*)"Winsock TCP/IP Initialization failed.\n");
         if (--winsock_initialized == 0)
             pWSACleanup();
         return -1;
@@ -185,22 +185,22 @@ int WINS_Init()
                     break;
             buff[i] = 0;
         }
-        Cvar_Set("hostname", buff);
+        Cvar_Set((char*)"hostname", buff);
     }
 
-    i = COM_CheckParm("-ip");
+    i = COM_CheckParm((char*)"-ip");
     if (i)
     {
         if (i < com_argc - 1)
         {
             myAddr = inet_addr(com_argv[i + 1]);
             if (myAddr == INADDR_NONE)
-                Sys_Error("%s is not a valid IP address", com_argv[i + 1]);
+                Sys_Error((char*)"%s is not a valid IP address", com_argv[i + 1]);
             strcpy(my_tcpip_address, com_argv[i + 1]);
         }
         else
         {
-            Sys_Error("NET_Init: you must specify an IP address after -ip");
+            Sys_Error((char*)"NET_Init: you must specify an IP address after -ip");
         }
     }
     else
@@ -211,7 +211,7 @@ int WINS_Init()
 
     if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
     {
-        Con_Printf("WINS_Init: Unable to open control socket\n");
+        Con_Printf((char*)"WINS_Init: Unable to open control socket\n");
         if (--winsock_initialized == 0)
             pWSACleanup();
         return -1;
@@ -221,7 +221,7 @@ int WINS_Init()
     ((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
     ((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
-    Con_Printf("Winsock TCP/IP Initialized\n");
+    Con_Printf((char*)"Winsock TCP/IP Initialized\n");
     tcpipAvailable = true;
 
     return net_controlsocket;
@@ -248,7 +248,7 @@ void WINS_Listen(bool state)
             return;
         WINS_GetLocalAddress();
         if ((net_acceptsocket = WINS_OpenSocket(net_hostport)) == -1)
-            Sys_Error("WINS_Listen: Unable to open accept socket\n");
+            Sys_Error((char*)"WINS_Listen: Unable to open accept socket\n");
         return;
     }
 
@@ -279,7 +279,7 @@ int WINS_OpenSocket(int port)
     if (bind(newsocket, (sockaddr *)&address, sizeof(address)) == 0)
         return newsocket;
 
-    Sys_Error("Unable to bind to %s", WINS_AddrToString((struct qsockaddr *)&address));
+    Sys_Error((char*)"Unable to bind to %s", WINS_AddrToString((struct qsockaddr *)&address));
 ErrorReturn:
     pclosesocket(newsocket);
     return -1;
@@ -417,12 +417,12 @@ int WINS_Broadcast(int socket, byte * buf, int len)
     if (socket != net_broadcastsocket)
     {
         if (net_broadcastsocket != 0)
-            Sys_Error("Attempted to use multiple broadcasts sockets\n");
+            Sys_Error((char*)"Attempted to use multiple broadcasts sockets\n");
         WINS_GetLocalAddress();
         ret = WINS_MakeSocketBroadcastCapable(socket);
         if (ret == -1)
         {
-            Con_Printf("Unable to make socket broadcast capable\n");
+            Con_Printf((char*)"Unable to make socket broadcast capable\n");
             return ret;
         }
     }

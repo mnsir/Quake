@@ -63,15 +63,15 @@ float scr_con_current;
 float scr_conlines; // lines of console to display
 
 float oldscreensize, oldfov;
-cvar_t scr_viewsize = {"viewsize", "100", true};
-cvar_t scr_fov = {"fov", "90"}; // 10 - 170
-cvar_t scr_conspeed = {"scr_conspeed", "300"};
-cvar_t scr_centertime = {"scr_centertime", "2"};
-cvar_t scr_showram = {"showram", "1"};
-cvar_t scr_showturtle = {"showturtle", "0"};
-cvar_t scr_showpause = {"showpause", "1"};
-cvar_t scr_printspeed = {"scr_printspeed", "8"};
-cvar_t gl_triplebuffer = {"gl_triplebuffer", "1", true};
+cvar_t scr_viewsize = {(char*)"viewsize", (char*)"100", true};
+cvar_t scr_fov = {(char*)"fov", (char*)"90"}; // 10 - 170
+cvar_t scr_conspeed = {(char*)"scr_conspeed", (char*)"300"};
+cvar_t scr_centertime = {(char*)"scr_centertime", (char*)"2"};
+cvar_t scr_showram = {(char*)"showram", (char*)"1"};
+cvar_t scr_showturtle = {(char*)"showturtle", (char*)"0"};
+cvar_t scr_showpause = {(char*)"showpause", (char*)"1"};
+cvar_t scr_printspeed = {(char*)"scr_printspeed", (char*)"8"};
+cvar_t gl_triplebuffer = {(char*)"gl_triplebuffer", (char*)"1", true};
 
 extern cvar_t crosshair;
 
@@ -216,7 +216,7 @@ float CalcFov(float fov_x, float width, float height)
     float x;
 
     if (fov_x < 1 || fov_x > 179)
-        Sys_Error("Bad fov: %f", fov_x);
+        Sys_Error((char*)"Bad fov: %f", fov_x);
 
     x = width / tan(fov_x / 360 * M_PI);
 
@@ -253,15 +253,15 @@ static void SCR_CalcRefdef()
 
     // bound viewsize
     if (scr_viewsize.value < 30)
-        Cvar_Set("viewsize", "30");
+        Cvar_Set((char*)"viewsize", (char*)"30");
     if (scr_viewsize.value > 120)
-        Cvar_Set("viewsize", "120");
+        Cvar_Set((char*)"viewsize", (char*)"120");
 
     // bound field of view
     if (scr_fov.value < 10)
-        Cvar_Set("fov", "10");
+        Cvar_Set((char*)"fov", (char*)"10");
     if (scr_fov.value > 170)
-        Cvar_Set("fov", "170");
+        Cvar_Set((char*)"fov", (char*)"170");
 
     // intermission is always full screen 
     if (cl.intermission)
@@ -327,7 +327,7 @@ Keybinding command
 */
 void SCR_SizeUp_f()
 {
-    Cvar_SetValue("viewsize", scr_viewsize.value + 10);
+    Cvar_SetValue((char*)"viewsize", scr_viewsize.value + 10);
     vid.recalc_refdef = 1;
 }
 
@@ -341,7 +341,7 @@ Keybinding command
 */
 void SCR_SizeDown_f()
 {
-    Cvar_SetValue("viewsize", scr_viewsize.value - 10);
+    Cvar_SetValue((char*)"viewsize", scr_viewsize.value - 10);
     vid.recalc_refdef = 1;
 }
 
@@ -368,13 +368,13 @@ void SCR_Init()
     //
     // register our commands
     //
-    Cmd_AddCommand("screenshot", SCR_ScreenShot_f);
-    Cmd_AddCommand("sizeup", SCR_SizeUp_f);
-    Cmd_AddCommand("sizedown", SCR_SizeDown_f);
+    Cmd_AddCommand((char*)"screenshot", SCR_ScreenShot_f);
+    Cmd_AddCommand((char*)"sizeup", SCR_SizeUp_f);
+    Cmd_AddCommand((char*)"sizedown", SCR_SizeDown_f);
 
-    scr_ram = Draw_PicFromWad("ram");
-    scr_net = Draw_PicFromWad("net");
-    scr_turtle = Draw_PicFromWad("turtle");
+    scr_ram = Draw_PicFromWad((char*)"ram");
+    scr_net = Draw_PicFromWad((char*)"net");
+    scr_turtle = Draw_PicFromWad((char*)"turtle");
 
     scr_initialized = true;
 }
@@ -452,7 +452,7 @@ void SCR_DrawPause()
     if (!cl.paused)
         return;
 
-    pic = Draw_CachePic("gfx/pause.lmp");
+    pic = Draw_CachePic((char*)"gfx/pause.lmp");
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -471,7 +471,7 @@ void SCR_DrawLoading()
     if (!scr_drawloading)
         return;
 
-    pic = Draw_CachePic("gfx/loading.lmp");
+    pic = Draw_CachePic((char*)"gfx/loading.lmp");
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -596,7 +596,7 @@ void SCR_ScreenShot_f()
     }
     if (i == 100)
     {
-        Con_Printf("SCR_ScreenShot_f: Couldn't create a PCX file\n");
+        Con_Printf((char*)"SCR_ScreenShot_f: Couldn't create a PCX file\n");
         return;
     }
 
@@ -623,7 +623,7 @@ void SCR_ScreenShot_f()
     COM_WriteFile(pcxname, buffer, glwidth * glheight * 3 + 18);
 
     free(buffer);
-    Con_Printf("Wrote %s\n", pcxname);
+    Con_Printf((char*)"Wrote %s\n", pcxname);
 }
 
 
@@ -824,7 +824,7 @@ void SCR_UpdateScreen()
         if (realtime - scr_disabled_time > 60)
         {
             scr_disabled_for_loading = false;
-            Con_Printf("load failed.\n");
+            Con_Printf((char*)"load failed.\n");
         }
         else
             return;

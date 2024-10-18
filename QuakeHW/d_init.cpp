@@ -6,9 +6,9 @@
 
 #define NUM_MIPS 4
 
-cvar_t d_subdiv16 = {"d_subdiv16", "1"};
-cvar_t d_mipcap = {"d_mipcap", "0"};
-cvar_t d_mipscale = {"d_mipscale", "1"};
+cvar_t d_subdiv16 = {(char*)"d_subdiv16", (char*)"1"};
+cvar_t d_mipcap = {(char*)"d_mipcap", (char*)"0"};
+cvar_t d_mipscale = {(char*)"d_mipscale", (char*)"1"};
 
 surfcache_t * d_initial_rover;
 bool d_roverwrapped;

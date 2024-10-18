@@ -22,13 +22,13 @@ CL_ParseTEnt
 */
 void CL_InitTEnts()
 {
-    cl_sfx_wizhit = S_PrecacheSound("wizard/hit.wav");
-    cl_sfx_knighthit = S_PrecacheSound("hknight/hit.wav");
-    cl_sfx_tink1 = S_PrecacheSound("weapons/tink1.wav");
-    cl_sfx_ric1 = S_PrecacheSound("weapons/ric1.wav");
-    cl_sfx_ric2 = S_PrecacheSound("weapons/ric2.wav");
-    cl_sfx_ric3 = S_PrecacheSound("weapons/ric3.wav");
-    cl_sfx_r_exp3 = S_PrecacheSound("weapons/r_exp3.wav");
+    cl_sfx_wizhit = S_PrecacheSound((char*)"wizard/hit.wav");
+    cl_sfx_knighthit = S_PrecacheSound((char*)"hknight/hit.wav");
+    cl_sfx_tink1 = S_PrecacheSound((char*)"weapons/tink1.wav");
+    cl_sfx_ric1 = S_PrecacheSound((char*)"weapons/ric1.wav");
+    cl_sfx_ric2 = S_PrecacheSound((char*)"weapons/ric2.wav");
+    cl_sfx_ric3 = S_PrecacheSound((char*)"weapons/ric3.wav");
+    cl_sfx_r_exp3 = S_PrecacheSound((char*)"weapons/r_exp3.wav");
 }
 
 /*
@@ -78,7 +78,7 @@ void CL_ParseBeam(model_t * m)
             return;
         }
     }
-    Con_Printf("beam list overflow!\n");
+    Con_Printf((char*)"beam list overflow!\n");
 }
 
 /*
@@ -183,20 +183,20 @@ void CL_ParseTEnt()
         break;
 
     case TE_LIGHTNING1: // lightning bolts
-        CL_ParseBeam(Mod_ForName("progs/bolt.mdl", true));
+        CL_ParseBeam(Mod_ForName((char*)"progs/bolt.mdl", true));
         break;
 
     case TE_LIGHTNING2: // lightning bolts
-        CL_ParseBeam(Mod_ForName("progs/bolt2.mdl", true));
+        CL_ParseBeam(Mod_ForName((char*)"progs/bolt2.mdl", true));
         break;
 
     case TE_LIGHTNING3: // lightning bolts
-        CL_ParseBeam(Mod_ForName("progs/bolt3.mdl", true));
+        CL_ParseBeam(Mod_ForName((char*)"progs/bolt3.mdl", true));
         break;
 
         // PGM 01/21/97 
     case TE_BEAM: // grappling hook beam
-        CL_ParseBeam(Mod_ForName("progs/beam.mdl", true));
+        CL_ParseBeam(Mod_ForName((char*)"progs/beam.mdl", true));
         break;
         // PGM 01/21/97
 
@@ -230,7 +230,7 @@ void CL_ParseTEnt()
         break;
 
     default:
-        Sys_Error("CL_ParseTEnt: bad type");
+        Sys_Error((char*)"CL_ParseTEnt: bad type");
     }
 }
 

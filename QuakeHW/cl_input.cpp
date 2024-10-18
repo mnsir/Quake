@@ -57,7 +57,7 @@ void KeyDown(kbutton_t * b)
         b->down[1] = k;
     else
     {
-        Con_Printf("Three keys down for a button!\n");
+        Con_Printf((char*)"Three keys down for a button!\n");
         return;
     }
 
@@ -192,17 +192,17 @@ float CL_KeyState(kbutton_t * key)
 
 //==========================================================================
 
-cvar_t cl_upspeed = {"cl_upspeed", "200"};
-cvar_t cl_forwardspeed = {"cl_forwardspeed", "200", true};
-cvar_t cl_backspeed = {"cl_backspeed", "200", true};
-cvar_t cl_sidespeed = {"cl_sidespeed", "350"};
+cvar_t cl_upspeed = { (char*)"cl_upspeed", (char*)"200"};
+cvar_t cl_forwardspeed = { (char*)"cl_forwardspeed", (char*)"200", true};
+cvar_t cl_backspeed = { (char*)"cl_backspeed", (char*)"200", true};
+cvar_t cl_sidespeed = { (char*)"cl_sidespeed", (char*)"350"};
 
-cvar_t cl_movespeedkey = {"cl_movespeedkey", "2.0"};
+cvar_t cl_movespeedkey = { (char*)"cl_movespeedkey", (char*)"2.0"};
 
-cvar_t cl_yawspeed = {"cl_yawspeed", "140"};
-cvar_t cl_pitchspeed = {"cl_pitchspeed", "150"};
+cvar_t cl_yawspeed = { (char*)"cl_yawspeed", (char*)"140"};
+cvar_t cl_pitchspeed = { (char*)"cl_pitchspeed", (char*)"150"};
 
-cvar_t cl_anglespeedkey = {"cl_anglespeedkey", "1.5"};
+cvar_t cl_anglespeedkey = { (char*)"cl_anglespeedkey", (char*)"1.5"};
 
 
 /*
@@ -368,7 +368,7 @@ void CL_SendMove(usercmd_t * cmd)
 
     if (NET_SendUnreliableMessage(cls.netcon, &buf) == -1)
     {
-        Con_Printf("CL_SendMove: lost server connection\n");
+        Con_Printf((char*)"CL_SendMove: lost server connection\n");
         CL_Disconnect();
     }
 }
@@ -380,41 +380,41 @@ CL_InitInput
 */
 void CL_InitInput()
 {
-    Cmd_AddCommand("+moveup", IN_UpDown);
-    Cmd_AddCommand("-moveup", IN_UpUp);
-    Cmd_AddCommand("+movedown", IN_DownDown);
-    Cmd_AddCommand("-movedown", IN_DownUp);
-    Cmd_AddCommand("+left", IN_LeftDown);
-    Cmd_AddCommand("-left", IN_LeftUp);
-    Cmd_AddCommand("+right", IN_RightDown);
-    Cmd_AddCommand("-right", IN_RightUp);
-    Cmd_AddCommand("+forward", IN_ForwardDown);
-    Cmd_AddCommand("-forward", IN_ForwardUp);
-    Cmd_AddCommand("+back", IN_BackDown);
-    Cmd_AddCommand("-back", IN_BackUp);
-    Cmd_AddCommand("+lookup", IN_LookupDown);
-    Cmd_AddCommand("-lookup", IN_LookupUp);
-    Cmd_AddCommand("+lookdown", IN_LookdownDown);
-    Cmd_AddCommand("-lookdown", IN_LookdownUp);
-    Cmd_AddCommand("+strafe", IN_StrafeDown);
-    Cmd_AddCommand("-strafe", IN_StrafeUp);
-    Cmd_AddCommand("+moveleft", IN_MoveleftDown);
-    Cmd_AddCommand("-moveleft", IN_MoveleftUp);
-    Cmd_AddCommand("+moveright", IN_MoverightDown);
-    Cmd_AddCommand("-moveright", IN_MoverightUp);
-    Cmd_AddCommand("+speed", IN_SpeedDown);
-    Cmd_AddCommand("-speed", IN_SpeedUp);
-    Cmd_AddCommand("+attack", IN_AttackDown);
-    Cmd_AddCommand("-attack", IN_AttackUp);
-    Cmd_AddCommand("+use", IN_UseDown);
-    Cmd_AddCommand("-use", IN_UseUp);
-    Cmd_AddCommand("+jump", IN_JumpDown);
-    Cmd_AddCommand("-jump", IN_JumpUp);
-    Cmd_AddCommand("impulse", IN_Impulse);
-    Cmd_AddCommand("+klook", IN_KLookDown);
-    Cmd_AddCommand("-klook", IN_KLookUp);
-    Cmd_AddCommand("+mlook", IN_MLookDown);
-    Cmd_AddCommand("-mlook", IN_MLookUp);
+    Cmd_AddCommand((char*)"+moveup", IN_UpDown);
+    Cmd_AddCommand((char*)"-moveup", IN_UpUp);
+    Cmd_AddCommand((char*)"+movedown", IN_DownDown);
+    Cmd_AddCommand((char*)"-movedown", IN_DownUp);
+    Cmd_AddCommand((char*)"+left", IN_LeftDown);
+    Cmd_AddCommand((char*)"-left", IN_LeftUp);
+    Cmd_AddCommand((char*)"+right", IN_RightDown);
+    Cmd_AddCommand((char*)"-right", IN_RightUp);
+    Cmd_AddCommand((char*)"+forward", IN_ForwardDown);
+    Cmd_AddCommand((char*)"-forward", IN_ForwardUp);
+    Cmd_AddCommand((char*)"+back", IN_BackDown);
+    Cmd_AddCommand((char*)"-back", IN_BackUp);
+    Cmd_AddCommand((char*)"+lookup", IN_LookupDown);
+    Cmd_AddCommand((char*)"-lookup", IN_LookupUp);
+    Cmd_AddCommand((char*)"+lookdown", IN_LookdownDown);
+    Cmd_AddCommand((char*)"-lookdown", IN_LookdownUp);
+    Cmd_AddCommand((char*)"+strafe", IN_StrafeDown);
+    Cmd_AddCommand((char*)"-strafe", IN_StrafeUp);
+    Cmd_AddCommand((char*)"+moveleft", IN_MoveleftDown);
+    Cmd_AddCommand((char*)"-moveleft", IN_MoveleftUp);
+    Cmd_AddCommand((char*)"+moveright", IN_MoverightDown);
+    Cmd_AddCommand((char*)"-moveright", IN_MoverightUp);
+    Cmd_AddCommand((char*)"+speed", IN_SpeedDown);
+    Cmd_AddCommand((char*)"-speed", IN_SpeedUp);
+    Cmd_AddCommand((char*)"+attack", IN_AttackDown);
+    Cmd_AddCommand((char*)"-attack", IN_AttackUp);
+    Cmd_AddCommand((char*)"+use", IN_UseDown);
+    Cmd_AddCommand((char*)"-use", IN_UseUp);
+    Cmd_AddCommand((char*)"+jump", IN_JumpDown);
+    Cmd_AddCommand((char*)"-jump", IN_JumpUp);
+    Cmd_AddCommand((char*)"impulse", IN_Impulse);
+    Cmd_AddCommand((char*)"+klook", IN_KLookDown);
+    Cmd_AddCommand((char*)"-klook", IN_KLookUp);
+    Cmd_AddCommand((char*)"+mlook", IN_MLookDown);
+    Cmd_AddCommand((char*)"-mlook", IN_MLookUp);
 
 }
 

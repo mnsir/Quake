@@ -77,7 +77,7 @@ void R_TimeRefresh_f()
     }
     stop = Sys_FloatTime();
     time = stop - start;
-    Con_Printf("%f seconds (%f fps)\n", time, 128 / time);
+    Con_Printf((char*)"%f seconds (%f fps)\n", time, 128 / time);
 
     r_refdef.viewangles[1] = startangle;
 }
@@ -182,7 +182,7 @@ void R_PrintTimes()
 
     ms = 1000 * (r_time2 - r_time1);
 
-    Con_Printf("%5.1f ms %3i/%3i/%3i poly %3i surf\n",
+    Con_Printf((char*)"%5.1f ms %3i/%3i/%3i poly %3i surf\n",
                ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
     c_surf = 0;
 }
@@ -207,7 +207,7 @@ void R_PrintDSpeeds()
     dv_time = (dv_time2 - dv_time1) * 1000;
     ms = (r_time2 - r_time1) * 1000;
 
-    Con_Printf("%3i %4.1fp %3iw %4.1fb %3is %4.1fe %4.1fv\n",
+    Con_Printf((char*)"%3i %4.1fp %3iw %4.1fb %3is %4.1fe %4.1fv\n",
                (int)ms, dp_time, (int)rw_time, db_time, (int)se_time, de_time,
                dv_time);
 }
@@ -220,7 +220,7 @@ R_PrintAliasStats
 */
 void R_PrintAliasStats()
 {
-    Con_Printf("%3i polygon model drawn\n", r_amodels_drawn);
+    Con_Printf((char*)"%3i polygon model drawn\n", r_amodels_drawn);
 }
 
 
@@ -349,10 +349,10 @@ void R_SetupFrame()
     // don't allow cheats in multiplayer
     if (cl.maxclients > 1)
     {
-        Cvar_Set("r_draworder", "0");
-        Cvar_Set("r_fullbright", "0");
-        Cvar_Set("r_ambient", "0");
-        Cvar_Set("r_drawflat", "0");
+        Cvar_Set((char*)"r_draworder", (char*)"0");
+        Cvar_Set((char*)"r_fullbright", (char*)"0");
+        Cvar_Set((char*)"r_ambient", (char*)"0");
+        Cvar_Set((char*)"r_drawflat", (char*)"0");
     }
 
     if (r_numsurfs.value)
@@ -360,7 +360,7 @@ void R_SetupFrame()
         if ((surface_p - surfaces) > r_maxsurfsseen)
             r_maxsurfsseen = surface_p - surfaces;
 
-        Con_Printf("Used %d of %d surfs; %d max\n", surface_p - surfaces,
+        Con_Printf((char*)"Used %d of %d surfs; %d max\n", surface_p - surfaces,
                    surf_max - surfaces, r_maxsurfsseen);
     }
 
@@ -371,7 +371,7 @@ void R_SetupFrame()
         if (edgecount > r_maxedgesseen)
             r_maxedgesseen = edgecount;
 
-        Con_Printf("Used %d of %d edges; %d max\n", edgecount,
+        Con_Printf((char*)"Used %d of %d edges; %d max\n", edgecount,
                    r_numallocatededges, r_maxedgesseen);
     }
 

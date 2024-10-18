@@ -66,31 +66,31 @@ int d_lightstylevalue[256]; // 8.8 fraction of base light value
 
 void R_MarkLeaves();
 
-cvar_t r_norefresh = {"r_norefresh", "0"};
-cvar_t r_drawentities = {"r_drawentities", "1"};
-cvar_t r_drawviewmodel = {"r_drawviewmodel", "1"};
-cvar_t r_speeds = {"r_speeds", "0"};
-cvar_t r_fullbright = {"r_fullbright", "0"};
-cvar_t r_lightmap = {"r_lightmap", "0"};
-cvar_t r_shadows = {"r_shadows", "0"};
-cvar_t r_mirroralpha = {"r_mirroralpha", "1"};
-cvar_t r_wateralpha = {"r_wateralpha", "1"};
-cvar_t r_dynamic = {"r_dynamic", "1"};
-cvar_t r_novis = {"r_novis", "0"};
+cvar_t r_norefresh = {(char*)"r_norefresh", (char*)"0"};
+cvar_t r_drawentities = {(char*)"r_drawentities", (char*)"1"};
+cvar_t r_drawviewmodel = {(char*)"r_drawviewmodel", (char*)"1"};
+cvar_t r_speeds = {(char*)"r_speeds", (char*)"0"};
+cvar_t r_fullbright = {(char*)"r_fullbright", (char*)"0"};
+cvar_t r_lightmap = {(char*)"r_lightmap", (char*)"0"};
+cvar_t r_shadows = {(char*)"r_shadows", (char*)"0"};
+cvar_t r_mirroralpha = {(char*)"r_mirroralpha", (char*)"1"};
+cvar_t r_wateralpha = {(char*)"r_wateralpha", (char*)"1"};
+cvar_t r_dynamic = {(char*)"r_dynamic", (char*)"1"};
+cvar_t r_novis = {(char*)"r_novis", (char*)"0"};
 
-cvar_t gl_finish = {"gl_finish", "0"};
-cvar_t gl_clear = {"gl_clear", "0"};
-cvar_t gl_cull = {"gl_cull", "1"};
-cvar_t gl_texsort = {"gl_texsort", "1"};
-cvar_t gl_smoothmodels = {"gl_smoothmodels", "1"};
-cvar_t gl_affinemodels = {"gl_affinemodels", "0"};
-cvar_t gl_polyblend = {"gl_polyblend", "1"};
-cvar_t gl_flashblend = {"gl_flashblend", "1"};
-cvar_t gl_playermip = {"gl_playermip", "0"};
-cvar_t gl_nocolors = {"gl_nocolors", "0"};
-cvar_t gl_keeptjunctions = {"gl_keeptjunctions", "0"};
-cvar_t gl_reporttjunctions = {"gl_reporttjunctions", "0"};
-cvar_t gl_doubleeyes = {"gl_doubleeys", "1"};
+cvar_t gl_finish = {(char*)"gl_finish", (char*)"0"};
+cvar_t gl_clear = {(char*)"gl_clear", (char*)"0"};
+cvar_t gl_cull = {(char*)"gl_cull", (char*)"1"};
+cvar_t gl_texsort = {(char*)"gl_texsort", (char*)"1"};
+cvar_t gl_smoothmodels = {(char*)"gl_smoothmodels", (char*)"1"};
+cvar_t gl_affinemodels = {(char*)"gl_affinemodels", (char*)"0"};
+cvar_t gl_polyblend = {(char*)"gl_polyblend", (char*)"1"};
+cvar_t gl_flashblend = {(char*)"gl_flashblend", (char*)"1"};
+cvar_t gl_playermip = {(char*)"gl_playermip", (char*)"0"};
+cvar_t gl_nocolors = {(char*)"gl_nocolors", (char*)"0"};
+cvar_t gl_keeptjunctions = {(char*)"gl_keeptjunctions", (char*)"0"};
+cvar_t gl_reporttjunctions = {(char*)"gl_reporttjunctions", (char*)"0"};
+cvar_t gl_doubleeyes = {(char*)"gl_doubleeys", (char*)"1"};
 
 extern cvar_t gl_ztrick;
 
@@ -147,7 +147,7 @@ mspriteframe_t * R_GetSpriteFrame(entity_t * currententity)
 
     if ((frame >= psprite->numframes) || (frame < 0))
     {
-        Con_Printf("R_DrawSprite: no such frame %d\n", frame);
+        Con_Printf((char*)"R_DrawSprite: no such frame %d\n", frame);
         frame = 0;
     }
 
@@ -590,7 +590,7 @@ void R_SetupAliasFrame(int frame, aliashdr_t * paliashdr)
 
     if ((frame >= paliashdr->numframes) || (frame < 0))
     {
-        Con_DPrintf("R_AliasSetupFrame: no such frame %d\n", frame);
+        Con_DPrintf((char*)"R_AliasSetupFrame: no such frame %d\n", frame);
         frame = 0;
     }
 
@@ -990,7 +990,7 @@ void R_SetupFrame()
 
     // don't allow cheats in multiplayer
     if (cl.maxclients > 1)
-        Cvar_Set("r_fullbright", "0");
+        Cvar_Set((char*)"r_fullbright", (char*)"0");
 
     R_AnimateLight();
 
@@ -1280,7 +1280,7 @@ void R_RenderView()
         return;
 
     if (!r_worldentity.model || !cl.worldmodel)
-        Sys_Error("R_RenderView: NULL worldmodel");
+        Sys_Error((char*)"R_RenderView: NULL worldmodel");
 
     if (r_speeds.value)
     {
@@ -1324,6 +1324,6 @@ void R_RenderView()
     {
         // glFinish ();
         time2 = Sys_FloatTime();
-        Con_Printf("%3i ms %4i wpoly %4i epoly\n", (int)((time2 - time1) * 1000), c_brush_polys, c_alias_polys);
+        Con_Printf((char*)"%3i ms %4i wpoly %4i epoly\n", (int)((time2 - time1) * 1000), c_brush_polys, c_alias_polys);
     }
 }

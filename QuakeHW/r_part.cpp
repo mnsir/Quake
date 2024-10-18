@@ -29,7 +29,7 @@ void R_InitParticles()
 {
     int i;
 
-    i = COM_CheckParm("-particles");
+    i = COM_CheckParm((char*)"-particles");
 
     if (i)
     {
@@ -43,7 +43,7 @@ void R_InitParticles()
     }
 
     particles = (particle_t *)
-        Hunk_AllocName(r_numparticles * sizeof(particle_t), "particles");
+        Hunk_AllocName(r_numparticles * sizeof(particle_t), (char*)"particles");
 }
 
 /*
@@ -146,11 +146,11 @@ void R_ReadPointFile_f()
     COM_FOpenFile(name, &f);
     if (!f)
     {
-        Con_Printf("couldn't open %s\n", name);
+        Con_Printf((char*)"couldn't open %s\n", name);
         return;
     }
 
-    Con_Printf("Reading %s...\n", name);
+    Con_Printf((char*)"Reading %s...\n", name);
     c = 0;
     for (;; )
     {
@@ -161,7 +161,7 @@ void R_ReadPointFile_f()
 
         if (!free_particles)
         {
-            Con_Printf("Not enough free particles\n");
+            Con_Printf((char*)"Not enough free particles\n");
             break;
         }
         p = free_particles;
@@ -177,7 +177,7 @@ void R_ReadPointFile_f()
     }
 
     fclose(f);
-    Con_Printf("%i points read\n", c);
+    Con_Printf((char*)"%i points read\n", c);
 }
 
 /*

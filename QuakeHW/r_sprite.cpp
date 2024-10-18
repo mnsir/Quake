@@ -171,7 +171,7 @@ void R_SetupAndDrawSprite()
         if (nump < 3)
             return;
         if (nump >= MAXWORKINGVERTS)
-            Sys_Error("R_SetupAndDrawSprite: too many points");
+            Sys_Error((char*)"R_SetupAndDrawSprite: too many points");
     }
 
     // transform vertices into viewspace and project
@@ -226,7 +226,7 @@ mspriteframe_t * R_GetSpriteframe(msprite_t * psprite)
 
     if ((frame >= psprite->numframes) || (frame < 0))
     {
-        Con_Printf("R_DrawSprite: no such frame %d\n", frame);
+        Con_Printf((char*)"R_DrawSprite: no such frame %d\n", frame);
         frame = 0;
     }
 
@@ -373,7 +373,7 @@ void R_DrawSprite()
     }
     else
     {
-        Sys_Error("R_DrawSprite: Bad sprite type %d", psprite->type);
+        Sys_Error((char*)"R_DrawSprite: Bad sprite type %d", psprite->type);
     }
 
     R_RotateSprite(psprite->beamlength);

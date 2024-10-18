@@ -94,7 +94,7 @@ void R_SplitEntityOnNode(mnode_t * node)
         ef = cl.free_efrags;
         if (!ef)
         {
-            Con_Printf("Too many efrags!\n");
+            Con_Printf((char*)"Too many efrags!\n");
             return; // no free fragments...
         }
         cl.free_efrags = cl.free_efrags->entnext;
@@ -208,7 +208,7 @@ void R_StoreEfrags(efrag_t ** ppefrag)
             break;
 
         default:
-            Sys_Error("R_StoreEfrags: Bad entity type %d\n", clmodel->type);
+            Sys_Error((char*)"R_StoreEfrags: Bad entity type %d\n", clmodel->type);
         }
     }
 }

@@ -36,88 +36,88 @@ typedef struct
 
 keyname_t keynames[] =
 {
-    {"TAB", K_TAB},
-    {"ENTER", K_ENTER},
-    {"ESCAPE", K_ESCAPE},
-    {"SPACE", K_SPACE},
-    {"BACKSPACE", K_BACKSPACE},
-    {"UPARROW", K_UPARROW},
-    {"DOWNARROW", K_DOWNARROW},
-    {"LEFTARROW", K_LEFTARROW},
-    {"RIGHTARROW", K_RIGHTARROW},
+    {(char*)"TAB", K_TAB},
+    {(char*)"ENTER", K_ENTER},
+    {(char*)"ESCAPE", K_ESCAPE},
+    {(char*)"SPACE", K_SPACE},
+    {(char*)"BACKSPACE", K_BACKSPACE},
+    {(char*)"UPARROW", K_UPARROW},
+    {(char*)"DOWNARROW", K_DOWNARROW},
+    {(char*)"LEFTARROW", K_LEFTARROW},
+    {(char*)"RIGHTARROW", K_RIGHTARROW},
 
-    {"ALT", K_ALT},
-    {"CTRL", K_CTRL},
-    {"SHIFT", K_SHIFT},
+    {(char*)"ALT", K_ALT},
+    {(char*)"CTRL", K_CTRL},
+    {(char*)"SHIFT", K_SHIFT},
 
-    {"F1", K_F1},
-    {"F2", K_F2},
-    {"F3", K_F3},
-    {"F4", K_F4},
-    {"F5", K_F5},
-    {"F6", K_F6},
-    {"F7", K_F7},
-    {"F8", K_F8},
-    {"F9", K_F9},
-    {"F10", K_F10},
-    {"F11", K_F11},
-    {"F12", K_F12},
+    {(char*)"F1", K_F1},
+    {(char*)"F2", K_F2},
+    {(char*)"F3", K_F3},
+    {(char*)"F4", K_F4},
+    {(char*)"F5", K_F5},
+    {(char*)"F6", K_F6},
+    {(char*)"F7", K_F7},
+    {(char*)"F8", K_F8},
+    {(char*)"F9", K_F9},
+    {(char*)"F10", K_F10},
+    {(char*)"F11", K_F11},
+    {(char*)"F12", K_F12},
 
-    {"INS", K_INS},
-    {"DEL", K_DEL},
-    {"PGDN", K_PGDN},
-    {"PGUP", K_PGUP},
-    {"HOME", K_HOME},
-    {"END", K_END},
+    {(char*)"INS", K_INS},
+    {(char*)"DEL", K_DEL},
+    {(char*)"PGDN", K_PGDN},
+    {(char*)"PGUP", K_PGUP},
+    {(char*)"HOME", K_HOME},
+    {(char*)"END", K_END},
 
-    {"MOUSE1", K_MOUSE1},
-    {"MOUSE2", K_MOUSE2},
-    {"MOUSE3", K_MOUSE3},
+    {(char*)"MOUSE1", K_MOUSE1},
+    {(char*)"MOUSE2", K_MOUSE2},
+    {(char*)"MOUSE3", K_MOUSE3},
 
-    {"JOY1", K_JOY1},
-    {"JOY2", K_JOY2},
-    {"JOY3", K_JOY3},
-    {"JOY4", K_JOY4},
+    {(char*)"JOY1", K_JOY1},
+    {(char*)"JOY2", K_JOY2},
+    {(char*)"JOY3", K_JOY3},
+    {(char*)"JOY4", K_JOY4},
 
-    {"AUX1", K_AUX1},
-    {"AUX2", K_AUX2},
-    {"AUX3", K_AUX3},
-    {"AUX4", K_AUX4},
-    {"AUX5", K_AUX5},
-    {"AUX6", K_AUX6},
-    {"AUX7", K_AUX7},
-    {"AUX8", K_AUX8},
-    {"AUX9", K_AUX9},
-    {"AUX10", K_AUX10},
-    {"AUX11", K_AUX11},
-    {"AUX12", K_AUX12},
-    {"AUX13", K_AUX13},
-    {"AUX14", K_AUX14},
-    {"AUX15", K_AUX15},
-    {"AUX16", K_AUX16},
-    {"AUX17", K_AUX17},
-    {"AUX18", K_AUX18},
-    {"AUX19", K_AUX19},
-    {"AUX20", K_AUX20},
-    {"AUX21", K_AUX21},
-    {"AUX22", K_AUX22},
-    {"AUX23", K_AUX23},
-    {"AUX24", K_AUX24},
-    {"AUX25", K_AUX25},
-    {"AUX26", K_AUX26},
-    {"AUX27", K_AUX27},
-    {"AUX28", K_AUX28},
-    {"AUX29", K_AUX29},
-    {"AUX30", K_AUX30},
-    {"AUX31", K_AUX31},
-    {"AUX32", K_AUX32},
+    {(char*)"AUX1", K_AUX1},
+    {(char*)"AUX2", K_AUX2},
+    {(char*)"AUX3", K_AUX3},
+    {(char*)"AUX4", K_AUX4},
+    {(char*)"AUX5", K_AUX5},
+    {(char*)"AUX6", K_AUX6},
+    {(char*)"AUX7", K_AUX7},
+    {(char*)"AUX8", K_AUX8},
+    {(char*)"AUX9", K_AUX9},
+    {(char*)"AUX10", K_AUX10},
+    {(char*)"AUX11", K_AUX11},
+    {(char*)"AUX12", K_AUX12},
+    {(char*)"AUX13", K_AUX13},
+    {(char*)"AUX14", K_AUX14},
+    {(char*)"AUX15", K_AUX15},
+    {(char*)"AUX16", K_AUX16},
+    {(char*)"AUX17", K_AUX17},
+    {(char*)"AUX18", K_AUX18},
+    {(char*)"AUX19", K_AUX19},
+    {(char*)"AUX20", K_AUX20},
+    {(char*)"AUX21", K_AUX21},
+    {(char*)"AUX22", K_AUX22},
+    {(char*)"AUX23", K_AUX23},
+    {(char*)"AUX24", K_AUX24},
+    {(char*)"AUX25", K_AUX25},
+    {(char*)"AUX26", K_AUX26},
+    {(char*)"AUX27", K_AUX27},
+    {(char*)"AUX28", K_AUX28},
+    {(char*)"AUX29", K_AUX29},
+    {(char*)"AUX30", K_AUX30},
+    {(char*)"AUX31", K_AUX31},
+    {(char*)"AUX32", K_AUX32},
 
-    {"PAUSE", K_PAUSE},
+    {(char*)"PAUSE", K_PAUSE},
 
-    {"MWHEELUP", K_MWHEELUP},
-    {"MWHEELDOWN", K_MWHEELDOWN},
+    {(char*)"MWHEELUP", K_MWHEELUP},
+    {(char*)"MWHEELDOWN", K_MWHEELDOWN},
 
-    {"SEMICOLON", ';'}, // because a raw semicolon seperates commands
+    {(char*)"SEMICOLON", ';'}, // because a raw semicolon seperates commands
 
     {NULL, 0}
 };
@@ -145,8 +145,8 @@ void Key_Console(int key)
     if (key == K_ENTER)
     {
         Cbuf_AddText(key_lines[edit_line] + 1); // skip the >
-        Cbuf_AddText("\n");
-        Con_Printf("%s\n", key_lines[edit_line]);
+        Cbuf_AddText((char*)"\n");
+        Con_Printf((char*)"%s\n", key_lines[edit_line]);
         edit_line = (edit_line + 1) & 31;
         history_line = edit_line;
         key_lines[edit_line][0] = ']';
@@ -267,11 +267,11 @@ void Key_Message(int key)
     if (key == K_ENTER)
     {
         if (team_message)
-            Cbuf_AddText("say_team \"");
+            Cbuf_AddText((char*)"say_team \"");
         else
-            Cbuf_AddText("say \"");
+            Cbuf_AddText((char*)"say \"");
         Cbuf_AddText(chat_buffer);
-        Cbuf_AddText("\"\n");
+        Cbuf_AddText((char*)"\"\n");
 
         key_dest = key_game;
         chat_bufferlen = 0;
@@ -351,7 +351,7 @@ char * Key_KeynumToString(int keynum)
     static char tinystr[2];
 
     if (keynum == -1)
-        return "<KEY NOT FOUND>";
+        return (char*)"<KEY NOT FOUND>";
     if (keynum > 32 && keynum < 127)
     { // printable ascii
         tinystr[0] = keynum;
@@ -363,7 +363,7 @@ char * Key_KeynumToString(int keynum)
         if (keynum == kn->keynum)
             return kn->name;
 
-    return "<UNKNOWN KEYNUM>";
+    return (char*)"<UNKNOWN KEYNUM>";
 }
 
 
@@ -406,18 +406,18 @@ void Key_Unbind_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf("unbind <key> : remove commands from a key\n");
+        Con_Printf((char*)"unbind <key> : remove commands from a key\n");
         return;
     }
 
     b = Key_StringToKeynum(Cmd_Argv(1));
     if (b == -1)
     {
-        Con_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+        Con_Printf((char*)"\"%s\" isn't a valid key\n", Cmd_Argv(1));
         return;
     }
 
-    Key_SetBinding(b, "");
+    Key_SetBinding(b, (char*)"");
 }
 
 void Key_Unbindall_f()
@@ -426,7 +426,7 @@ void Key_Unbindall_f()
 
     for (i = 0; i < 256; i++)
         if (keybindings[i])
-            Key_SetBinding(i, "");
+            Key_SetBinding(i, (char*)"");
 }
 
 
@@ -444,22 +444,22 @@ void Key_Bind_f()
 
     if (c != 2 && c != 3)
     {
-        Con_Printf("bind <key> [command] : attach a command to a key\n");
+        Con_Printf((char*)"bind <key> [command] : attach a command to a key\n");
         return;
     }
     b = Key_StringToKeynum(Cmd_Argv(1));
     if (b == -1)
     {
-        Con_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+        Con_Printf((char*)"\"%s\" isn't a valid key\n", Cmd_Argv(1));
         return;
     }
 
     if (c == 2)
     {
         if (keybindings[b])
-            Con_Printf("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b]);
+            Con_Printf((char*)"\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b]);
         else
-            Con_Printf("\"%s\" is not bound\n", Cmd_Argv(1));
+            Con_Printf((char*)"\"%s\" is not bound\n", Cmd_Argv(1));
         return;
     }
 
@@ -562,9 +562,9 @@ void Key_Init()
     //
     // register our functions
     //
-    Cmd_AddCommand("bind", Key_Bind_f);
-    Cmd_AddCommand("unbind", Key_Unbind_f);
-    Cmd_AddCommand("unbindall", Key_Unbindall_f);
+    Cmd_AddCommand((char*)"bind", Key_Bind_f);
+    Cmd_AddCommand((char*)"unbind", Key_Unbind_f);
+    Cmd_AddCommand((char*)"unbindall", Key_Unbindall_f);
 
 
 }
@@ -604,7 +604,7 @@ void Key_Event(int key, bool down)
         }
 
         if (key >= 200 && !keybindings[key])
-            Con_Printf("%s is unbound, hit F4 to set.\n", Key_KeynumToString(key));
+            Con_Printf((char*)"%s is unbound, hit F4 to set.\n", Key_KeynumToString(key));
     }
 
     if (key == K_SHIFT)
@@ -630,7 +630,7 @@ void Key_Event(int key, bool down)
             M_ToggleMenu_f();
             break;
         default:
-            Sys_Error("Bad key_dest");
+            Sys_Error((char*)"Bad key_dest");
         }
         return;
     }
@@ -689,7 +689,7 @@ void Key_Event(int key, bool down)
             else
             {
                 Cbuf_AddText(kb);
-                Cbuf_AddText("\n");
+                Cbuf_AddText((char*)"\n");
             }
         }
         return;
@@ -717,7 +717,7 @@ void Key_Event(int key, bool down)
         Key_Console(key);
         break;
     default:
-        Sys_Error("Bad key_dest");
+        Sys_Error((char*)"Bad key_dest");
     }
 }
 

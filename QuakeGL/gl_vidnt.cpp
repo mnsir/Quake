@@ -89,7 +89,7 @@ HDC maindc;
 
 glvert_t glv;
 
-cvar_t gl_ztrick = {"gl_ztrick", "1"};
+cvar_t gl_ztrick = {(char*)"gl_ztrick", (char*)"1"};
 
 HWND WINAPI InitializeWindow(HINSTANCE hInstance, int nCmdShow);
 
@@ -126,18 +126,18 @@ bool gl_mtexable = false;
 
 //====================================
 
-cvar_t vid_mode = {"vid_mode", "0", false};
+cvar_t vid_mode = {(char*)"vid_mode", (char*)"0", false};
 // Note that 0 is MODE_WINDOWED
-cvar_t _vid_default_mode = {"_vid_default_mode", "0", true};
+cvar_t _vid_default_mode = {(char*)"_vid_default_mode", (char*)"0", true};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t _vid_default_mode_win = {"_vid_default_mode_win", "3", true};
-cvar_t vid_wait = {"vid_wait", "0"};
-cvar_t vid_nopageflip = {"vid_nopageflip", "0", true};
-cvar_t _vid_wait_override = {"_vid_wait_override", "0", true};
-cvar_t vid_config_x = {"vid_config_x", "800", true};
-cvar_t vid_config_y = {"vid_config_y", "600", true};
-cvar_t vid_stretch_by_2 = {"vid_stretch_by_2", "1", true};
-cvar_t _windowed_mouse = {"_windowed_mouse", "1", true};
+cvar_t _vid_default_mode_win = {(char*)"_vid_default_mode_win", (char*)"3", true};
+cvar_t vid_wait = {(char*)"vid_wait", (char*)"0"};
+cvar_t vid_nopageflip = {(char*)"vid_nopageflip", (char*)"0", true};
+cvar_t _vid_wait_override = {(char*)"_vid_wait_override", (char*)"0", true};
+cvar_t vid_config_x = {(char*)"vid_config_x", (char*)"800", true};
+cvar_t vid_config_y = {(char*)"vid_config_y", (char*)"600", true};
+cvar_t vid_stretch_by_2 = {(char*)"vid_stretch_by_2", (char*)"1", true};
+cvar_t _windowed_mouse = {(char*)"_windowed_mouse", (char*)"1", true};
 
 int window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT window_rect;
@@ -230,7 +230,7 @@ bool VID_SetWindowedMode(int modenum)
         NULL);
 
     if (!dibwindow)
-        Sys_Error("Couldn't create DIB window");
+        Sys_Error((char*)"Couldn't create DIB window");
 
     // Center and show the DIB window
     CenterWindow(dibwindow, WindowRect.right - WindowRect.left,
@@ -283,7 +283,7 @@ bool VID_SetFullDIBMode(int modenum)
         gdevmode.dmSize = sizeof(gdevmode);
 
         if (ChangeDisplaySettings(&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-            Sys_Error("Couldn't set fullscreen DIB mode");
+            Sys_Error((char*)"Couldn't set fullscreen DIB mode");
     }
 
     lastmodestate = modestate;
@@ -321,7 +321,7 @@ bool VID_SetFullDIBMode(int modenum)
         NULL);
 
     if (!dibwindow)
-        Sys_Error("Couldn't create DIB window");
+        Sys_Error((char*)"Couldn't create DIB window");
 
     ShowWindow(dibwindow, SW_SHOWDEFAULT);
     UpdateWindow(dibwindow);
@@ -367,7 +367,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
         (!windowed && (modenum < 1)) ||
         (!windowed && (modenum >= nummodes)))
     {
-        Sys_Error("Bad video mode\n");
+        Sys_Error((char*)"Bad video mode\n");
     }
 
     // so Con_Printfs don't mess us up by forcing vid and snd updates
@@ -405,7 +405,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
     }
     else
     {
-        Sys_Error("VID_SetMode: Bad mode type in modelist");
+        Sys_Error((char*)"VID_SetMode: Bad mode type in modelist");
     }
 
     window_width = DIBWidth;
@@ -417,7 +417,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
 
     if (!stat)
     {
-        Sys_Error("Couldn't set video mode");
+        Sys_Error((char*)"Couldn't set video mode");
     }
 
     // now we try to make sure we get the focus on the mode switch, because
@@ -429,7 +429,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
     SetForegroundWindow(mainwindow);
     VID_SetPalette(palette);
     vid_modenum = modenum;
-    Cvar_SetValue("vid_mode", (float)vid_modenum);
+    Cvar_SetValue((char*)"vid_mode", (float)vid_modenum);
 
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
@@ -449,7 +449,7 @@ int VID_SetMode(int modenum, unsigned char * palette)
     ClearAllStates();
 
     if (!msg_suppress_1)
-        Con_SafePrintf("Video mode %s initialized.\n", VID_GetModeDescription(vid_modenum));
+        Con_SafePrintf((char*)"Video mode %s initialized.\n", VID_GetModeDescription(vid_modenum));
 
     VID_SetPalette(palette);
 
@@ -501,17 +501,17 @@ void CheckTextureExtensions()
         tmp++;
     }
 
-    if (!texture_ext || COM_CheckParm("-gl11"))
+    if (!texture_ext || COM_CheckParm((char*)"-gl11"))
     {
         hInstGL = LoadLibrary("opengl32.dll");
 
         if (hInstGL == NULL)
-            Sys_Error("Couldn't load opengl32.dll\n");
+            Sys_Error((char*)"Couldn't load opengl32.dll\n");
 
         bindTexFunc = (decltype(bindTexFunc))GetProcAddress(hInstGL, "glBindTexture");
 
         if (!bindTexFunc)
-            Sys_Error("No texture objects!");
+            Sys_Error((char*)"No texture objects!");
         return;
     }
 
@@ -519,7 +519,7 @@ void CheckTextureExtensions()
     if ((bindTexFunc = (BINDTEXFUNCPTR)
          wglGetProcAddress((LPCSTR)"glBindTextureEXT")) == NULL)
     {
-        Sys_Error("GetProcAddress for BindTextureEXT failed");
+        Sys_Error((char*)"GetProcAddress for BindTextureEXT failed");
         return;
     }
 }
@@ -540,7 +540,7 @@ void CheckArrayExtensions()
                 ((glTexCoordPointerEXT = wglGetProcAddress("glTexCoordPointerEXT")) == NULL) ||
                 ((glVertexPointerEXT = wglGetProcAddress("glVertexPointerEXT")) == NULL))
             {
-                Sys_Error("GetProcAddress for vertex extension failed");
+                Sys_Error((char*)"GetProcAddress for vertex extension failed");
                 return;
             }
             return;
@@ -548,7 +548,7 @@ void CheckArrayExtensions()
         tmp++;
     }
 
-    Sys_Error("Vertex array extension not present");
+    Sys_Error((char*)"Vertex array extension not present");
 }
 
 //int texture_mode = GL_NEAREST;
@@ -562,9 +562,9 @@ int texture_extension_number = 1;
 
 void CheckMultiTextureExtensions()
 {
-    if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm("-nomtex"))
+    if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm((char*)"-nomtex"))
     {
-        Con_Printf("Multitexture extensions found.\n");
+        Con_Printf((char*)"Multitexture extensions found.\n");
         qglMTexCoord2fSGIS = (decltype(qglMTexCoord2fSGIS))wglGetProcAddress("glMTexCoord2fSGIS");
         qglSelectTextureSGIS = (decltype(qglSelectTextureSGIS))wglGetProcAddress("glSelectTextureSGIS");
         gl_mtexable = true;
@@ -579,14 +579,14 @@ GL_Init
 void GL_Init()
 {
     gl_vendor = (char*)glGetString(GL_VENDOR);
-    Con_Printf("GL_VENDOR: %s\n", gl_vendor);
+    Con_Printf((char*)"GL_VENDOR: %s\n", gl_vendor);
     gl_renderer = (char*)glGetString(GL_RENDERER);
-    Con_Printf("GL_RENDERER: %s\n", gl_renderer);
+    Con_Printf((char*)"GL_RENDERER: %s\n", gl_renderer);
 
     gl_version = (char*)glGetString(GL_VERSION);
-    Con_Printf("GL_VERSION: %s\n", gl_version);
+    Con_Printf((char*)"GL_VERSION: %s\n", gl_version);
     gl_extensions = (char*)glGetString(GL_EXTENSIONS);
-    Con_Printf("GL_EXTENSIONS: %s\n", gl_extensions);
+    Con_Printf((char*)"GL_EXTENSIONS: %s\n", gl_extensions);
 
     // Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
@@ -890,7 +890,7 @@ int MapKey(int key)
     if (key > 127)
         return 0;
     if (scantokey[key] == 0)
-        Con_DPrintf("key 0x%02x has no translation\n", key);
+        Con_DPrintf((char*)"key 0x%02x has no translation\n", key);
     return scantokey[key];
 }
 
@@ -1224,7 +1224,7 @@ VID_DescribeCurrentMode_f
 */
 void VID_DescribeCurrentMode_f()
 {
-    Con_Printf("%s\n", VID_GetExtModeDescription(vid_modenum));
+    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(vid_modenum));
 }
 
 
@@ -1237,9 +1237,9 @@ void VID_NumModes_f()
 {
 
     if (nummodes == 1)
-        Con_Printf("%d video mode is available\n", nummodes);
+        Con_Printf((char*)"%d video mode is available\n", nummodes);
     else
-        Con_Printf("%d video modes are available\n", nummodes);
+        Con_Printf((char*)"%d video modes are available\n", nummodes);
 }
 
 
@@ -1257,7 +1257,7 @@ void VID_DescribeMode_f()
     t = leavecurrentmode;
     leavecurrentmode = 0;
 
-    Con_Printf("%s\n", VID_GetExtModeDescription(modenum));
+    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(modenum));
 
     leavecurrentmode = t;
 }
@@ -1283,7 +1283,7 @@ void VID_DescribeModes_f()
     {
         pv = VID_GetModePtr(i);
         pinfo = VID_GetExtModeDescription(i);
-        Con_Printf("%2d: %s\n", i, pinfo);
+        Con_Printf((char*)"%2d: %s\n", i, pinfo);
     }
 
     leavecurrentmode = t;
@@ -1309,20 +1309,20 @@ void VID_InitDIB(HINSTANCE hInstance)
     wc.lpszClassName = "WinQuake";
 
     if (!RegisterClass(&wc))
-        Sys_Error("Couldn't register window class");
+        Sys_Error((char*)"Couldn't register window class");
 
     modelist[0].type = MS_WINDOWED;
 
-    if (COM_CheckParm("-width"))
-        modelist[0].width = std::atoi(com_argv[COM_CheckParm("-width") + 1]);
+    if (COM_CheckParm((char*)"-width"))
+        modelist[0].width = std::atoi(com_argv[COM_CheckParm((char*)"-width") + 1]);
     else
         modelist[0].width = 640;
 
     if (modelist[0].width < 320)
         modelist[0].width = 320;
 
-    if (COM_CheckParm("-height"))
-        modelist[0].height = std::atoi(com_argv[COM_CheckParm("-height") + 1]);
+    if (COM_CheckParm((char*)"-height"))
+        modelist[0].height = std::atoi(com_argv[COM_CheckParm((char*)"-height") + 1]);
     else
         modelist[0].height = modelist[0].width * 240 / 320;
 
@@ -1388,7 +1388,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
 
                 // if the width is more than twice the height, reduce it by half because this
                 // is probably a dual-screen monitor
-                if (!COM_CheckParm("-noadjustaspect"))
+                if (!COM_CheckParm((char*)"-noadjustaspect"))
                 {
                     if (modelist[nummodes].width > (modelist[nummodes].height << 1))
                     {
@@ -1485,7 +1485,7 @@ void VID_InitFullDIB(HINSTANCE hInstance)
     } while (!done);
 
     if (nummodes == originalnummodes)
-        Con_SafePrintf("No fullscreen DIB modes found\n");
+        Con_SafePrintf((char*)"No fullscreen DIB modes found\n");
 }
 
 bool VID_Is8bit()
@@ -1504,10 +1504,10 @@ void VID_Init8bitPalette()
 
     glColorTableEXT = (decltype(glColorTableEXT))wglGetProcAddress("glColorTableEXT");
     if (!glColorTableEXT || strstr(gl_extensions, "GL_EXT_shared_texture_palette") ||
-        COM_CheckParm("-no8bit"))
+        COM_CheckParm((char*)"-no8bit"))
         return;
 
-    Con_SafePrintf("8-bit GL extensions enabled.\n");
+    Con_SafePrintf((char*)"8-bit GL extensions enabled.\n");
     glEnable(GL_SHARED_TEXTURE_PALETTE_EXT);
     oldPalette = (char *)d_8to24table; //d_8to24table3dfx;
     newPalette = thePalette;
@@ -1529,7 +1529,7 @@ static void Check_Gamma(unsigned char * pal)
     unsigned char palette[768];
     int i;
 
-    if ((i = COM_CheckParm("-gamma")) == 0)
+    if ((i = COM_CheckParm((char*)"-gamma")) == 0)
     {
         if ((gl_renderer && strstr(gl_renderer, "Voodoo")) ||
             (gl_vendor && strstr(gl_vendor, "3Dfx")))
@@ -1582,10 +1582,10 @@ void VID_Init(unsigned char * palette)
     Cvar_RegisterVariable(&_windowed_mouse);
     Cvar_RegisterVariable(&gl_ztrick);
 
-    Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
-    Cmd_AddCommand("vid_describecurrentmode", VID_DescribeCurrentMode_f);
-    Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
-    Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
+    Cmd_AddCommand((char*)"vid_nummodes", VID_NumModes_f);
+    Cmd_AddCommand((char*)"vid_describecurrentmode", VID_DescribeCurrentMode_f);
+    Cmd_AddCommand((char*)"vid_describemode", VID_DescribeMode_f);
+    Cmd_AddCommand((char*)"vid_describemodes", VID_DescribeModes_f);
 
     hIcon = LoadIcon(global_hInstance, MAKEINTRESOURCE(IDI_ICON2));
 
@@ -1596,13 +1596,13 @@ void VID_Init(unsigned char * palette)
 
     VID_InitFullDIB(global_hInstance);
 
-    if (COM_CheckParm("-window"))
+    if (COM_CheckParm((char*)"-window"))
     {
         hdc = GetDC(NULL);
 
         if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
         {
-            Sys_Error("Can't run in non-RGB mode");
+            Sys_Error((char*)"Can't run in non-RGB mode");
         }
 
         ReleaseDC(NULL, hdc);
@@ -1614,17 +1614,17 @@ void VID_Init(unsigned char * palette)
     else
     {
         if (nummodes == 1)
-            Sys_Error("No RGB fullscreen modes available");
+            Sys_Error((char*)"No RGB fullscreen modes available");
 
         windowed = false;
 
-        if (COM_CheckParm("-mode"))
+        if (COM_CheckParm((char*)"-mode"))
         {
-            vid_default = std::atoi(com_argv[COM_CheckParm("-mode") + 1]);
+            vid_default = std::atoi(com_argv[COM_CheckParm((char*)"-mode") + 1]);
         }
         else
         {
-            if (COM_CheckParm("-current"))
+            if (COM_CheckParm((char*)"-current"))
             {
                 modelist[MODE_FULLSCREEN_DEFAULT].width =
                     GetSystemMetrics(SM_CXSCREEN);
@@ -1635,18 +1635,18 @@ void VID_Init(unsigned char * palette)
             }
             else
             {
-                if (COM_CheckParm("-width"))
+                if (COM_CheckParm((char*)"-width"))
                 {
-                    width = std::atoi(com_argv[COM_CheckParm("-width") + 1]);
+                    width = std::atoi(com_argv[COM_CheckParm((char*)"-width") + 1]);
                 }
                 else
                 {
                     width = 640;
                 }
 
-                if (COM_CheckParm("-bpp"))
+                if (COM_CheckParm((char*)"-bpp"))
                 {
-                    bpp = std::atoi(com_argv[COM_CheckParm("-bpp") + 1]);
+                    bpp = std::atoi(com_argv[COM_CheckParm((char*)"-bpp") + 1]);
                     findbpp = 0;
                 }
                 else
@@ -1655,11 +1655,11 @@ void VID_Init(unsigned char * palette)
                     findbpp = 1;
                 }
 
-                if (COM_CheckParm("-height"))
-                    height = std::atoi(com_argv[COM_CheckParm("-height") + 1]);
+                if (COM_CheckParm((char*)"-height"))
+                    height = std::atoi(com_argv[COM_CheckParm((char*)"-height") + 1]);
 
                 // if they want to force it, add the specified mode to the list
-                if (COM_CheckParm("-force") && (nummodes < MAX_MODE_LIST))
+                if (COM_CheckParm((char*)"-force") && (nummodes < MAX_MODE_LIST))
                 {
                     modelist[nummodes].type = MS_FULLDIB;
                     modelist[nummodes].width = width;
@@ -1694,9 +1694,9 @@ void VID_Init(unsigned char * palette)
 
                 do
                 {
-                    if (COM_CheckParm("-height"))
+                    if (COM_CheckParm((char*)"-height"))
                     {
-                        height = std::atoi(com_argv[COM_CheckParm("-height") + 1]);
+                        height = std::atoi(com_argv[COM_CheckParm((char*)"-height") + 1]);
 
                         for (i = 1, vid_default = 0; i < nummodes; i++)
                         {
@@ -1752,7 +1752,7 @@ void VID_Init(unsigned char * palette)
 
                 if (!vid_default)
                 {
-                    Sys_Error("Specified video mode not available");
+                    Sys_Error((char*)"Specified video mode not available");
                 }
             }
         }
@@ -1760,7 +1760,7 @@ void VID_Init(unsigned char * palette)
 
     vid_initialized = true;
 
-    if ((i = COM_CheckParm("-conwidth")) != 0)
+    if ((i = COM_CheckParm((char*)"-conwidth")) != 0)
         vid.conwidth = std::atoi(com_argv[i + 1]);
     else
         vid.conwidth = 640;
@@ -1773,7 +1773,7 @@ void VID_Init(unsigned char * palette)
     // pick a conheight that matches with correct aspect
     vid.conheight = vid.conwidth * 3 / 4;
 
-    if ((i = COM_CheckParm("-conheight")) != 0)
+    if ((i = COM_CheckParm((char*)"-conheight")) != 0)
         vid.conheight = std::atoi(com_argv[i + 1]);
     if (vid.conheight < 200)
         vid.conheight = 200;
@@ -1795,9 +1795,9 @@ void VID_Init(unsigned char * palette)
 
     baseRC = wglCreateContext(maindc);
     if (!baseRC)
-        Sys_Error("Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
+        Sys_Error((char*)"Could not initialize GL (wglCreateContext failed).\n\nMake sure you in are 65535 color mode, and try running -window.");
     if (!wglMakeCurrent(maindc, baseRC))
-        Sys_Error("wglMakeCurrent failed");
+        Sys_Error((char*)"wglMakeCurrent failed");
 
     GL_Init();
 
@@ -1815,7 +1815,7 @@ void VID_Init(unsigned char * palette)
     strcpy(badmode.modedesc, "Bad mode");
     vid_canalttab = true;
 
-    if (COM_CheckParm("-fullsbar"))
+    if (COM_CheckParm((char*)"-fullsbar"))
         fullsbardraw = true;
 }
 
@@ -1859,7 +1859,7 @@ void VID_MenuDraw()
     char temp[100];
     vmode_t * pv;
 
-    p = Draw_CachePic("gfx/vidmodes.lmp");
+    p = Draw_CachePic((char*)"gfx/vidmodes.lmp");
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     vid_wmodes = 0;
@@ -1885,7 +1885,7 @@ void VID_MenuDraw()
 
     if (vid_wmodes > 0)
     {
-        M_Print(2 * 8, 36 + 0 * 8, "Fullscreen Modes (WIDTHxHEIGHTxBPP)");
+        M_Print(2 * 8, 36 + 0 * 8, (char*)"Fullscreen Modes (WIDTHxHEIGHTxBPP)");
 
         column = 8;
         row = 36 + 2 * 8;
@@ -1908,13 +1908,13 @@ void VID_MenuDraw()
     }
 
     M_Print(3 * 8, 36 + MODE_AREA_HEIGHT * 8 + 8 * 2,
-            "Video modes must be set from the");
+        (char*)"Video modes must be set from the");
     M_Print(3 * 8, 36 + MODE_AREA_HEIGHT * 8 + 8 * 3,
-            "command line with -width <width>");
+        (char*)"command line with -width <width>");
     M_Print(3 * 8, 36 + MODE_AREA_HEIGHT * 8 + 8 * 4,
-            "and -bpp <bits-per-pixel>");
+        (char*)"and -bpp <bits-per-pixel>");
     M_Print(3 * 8, 36 + MODE_AREA_HEIGHT * 8 + 8 * 6,
-            "Select windowed mode with -window");
+        (char*)"Select windowed mode with -window");
 }
 
 
@@ -1928,7 +1928,7 @@ void VID_MenuKey(int key)
     switch (key)
     {
     case K_ESCAPE:
-        S_LocalSound("misc/menu1.wav");
+        S_LocalSound((char*)"misc/menu1.wav");
         M_Menu_Options_f();
         break;
 

@@ -6,13 +6,13 @@
 #define NUM_SAFE_ARGVS 7
 
 static char * largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
-static char * argvdummy = " ";
+static char * argvdummy = (char*)" ";
 
 static char * safeargvs[NUM_SAFE_ARGVS] =
-{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
+{ (char*)"-stdvid", (char*)"-nolan", (char*)"-nosound", (char*)"-nocdaudio", (char*)"-nojoy", (char*)"-nomouse", (char*)"-dibonly"};
 
-cvar_t registered = {"registered", "0"};
-cvar_t cmdline = {"cmdline", "0", false, true};
+cvar_t registered = {(char*)"registered", (char*)"0"};
+cvar_t cmdline = {(char*)"cmdline", (char*)"0", false, true};
 
 bool proghack;
 
@@ -211,7 +211,7 @@ void MSG_WriteFloat(sizebuf_t * sb, float f)
 void MSG_WriteString(sizebuf_t * sb, char * s)
 {
     if (!s)
-        SZ_Write(sb, "", 1);
+        SZ_Write(sb, (char*)"", 1);
     else
         SZ_Write(sb, s, std::strlen(s) + 1);
 }
@@ -367,7 +367,7 @@ void SZ_Alloc(sizebuf_t * buf, int startsize)
 {
     if (startsize < 256)
         startsize = 256;
-    buf->data = (byte*)Hunk_AllocName(startsize, "sizebuf");
+    buf->data = (byte*)Hunk_AllocName(startsize, (char*)"sizebuf");
     buf->maxsize = startsize;
     buf->cursize = 0;
 }
@@ -393,13 +393,13 @@ void * SZ_GetSpace(sizebuf_t * buf, int length)
     if (buf->cursize + length > buf->maxsize)
     {
         if (!buf->allowoverflow)
-            Sys_Error("SZ_GetSpace: overflow without allowoverflow set");
+            Sys_Error((char*)"SZ_GetSpace: overflow without allowoverflow set");
 
         if (length > buf->maxsize)
-            Sys_Error("SZ_GetSpace: %i is > full buffer size", length);
+            Sys_Error((char*)"SZ_GetSpace: %i is > full buffer size", length);
 
         buf->overflowed = true;
-        Con_Printf("SZ_GetSpace: overflow");
+        Con_Printf((char*)"SZ_GetSpace: overflow");
         SZ_Clear(buf);
     }
 
@@ -475,7 +475,7 @@ char * COM_FileExtension(char * in)
     while (*in && *in != '.')
         in++;
     if (!*in)
-        return "";
+        return (char*)"";
     in++;
     for (i = 0; i < 7 && *in; i++, in++)
         exten[i] = *in;
@@ -663,12 +663,12 @@ void COM_CheckRegistered()
     unsigned short check[128];
     int i;
 
-    COM_OpenFile("gfx/pop.lmp", &h);
+    COM_OpenFile((char*)"gfx/pop.lmp", &h);
     static_registered = 0;
 
     if (h == -1)
     {
-        Con_Printf("Playing shareware version.\n");
+        Con_Printf((char*)"Playing shareware version.\n");
         return;
     }
 
@@ -677,12 +677,12 @@ void COM_CheckRegistered()
 
     for (i = 0; i < 128; i++)
         if (pop[i] != (unsigned short)ShortSwap(check[i]))
-            Sys_Error("Corrupted data file.");
+            Sys_Error((char*)"Corrupted data file.");
 
-    Cvar_Set("cmdline", com_cmdline);
-    Cvar_Set("registered", "1");
+    Cvar_Set((char*)"cmdline", com_cmdline);
+    Cvar_Set((char*)"registered", (char*)"1");
     static_registered = 1;
-    Con_Printf("Playing registered version.\n");
+    Con_Printf((char*)"Playing registered version.\n");
 }
 
 
@@ -754,7 +754,7 @@ void COM_Init(char * basedir)
 {
     Cvar_RegisterVariable(&registered);
     Cvar_RegisterVariable(&cmdline);
-    Cmd_AddCommand("path", COM_Path_f);
+    Cmd_AddCommand((char*)"path", COM_Path_f);
 
     COM_InitFilesystem();
     COM_CheckRegistered();
@@ -863,15 +863,15 @@ void COM_Path_f()
 {
     searchpath_t * s;
 
-    Con_Printf("Current search path:\n");
+    Con_Printf((char*)"Current search path:\n");
     for (s = com_searchpaths; s; s = s->next)
     {
         if (s->pack)
         {
-            Con_Printf("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
+            Con_Printf((char*)"%s (%i files)\n", s->pack->filename, s->pack->numfiles);
         }
         else
-            Con_Printf("%s\n", s->filename);
+            Con_Printf((char*)"%s\n", s->filename);
     }
 }
 
@@ -892,11 +892,11 @@ void COM_WriteFile(char * filename, void * data, int len)
     handle = Sys_FileOpenWrite(name);
     if (handle == -1)
     {
-        Sys_Printf("COM_WriteFile: failed on %s\n", name);
+        Sys_Printf((char*)"COM_WriteFile: failed on %s\n", name);
         return;
     }
 
-    Sys_Printf("COM_WriteFile: %s\n", name);
+    Sys_Printf((char*)"COM_WriteFile: %s\n", name);
     Sys_FileWrite(handle, data, len);
     Sys_FileClose(handle);
 }
@@ -976,9 +976,9 @@ int COM_FindFile(char * filename, int * handle, FILE ** file)
     int findtime, cachetime;
 
     if (file && handle)
-        Sys_Error("COM_FindFile: both handle and file set");
+        Sys_Error((char*)"COM_FindFile: both handle and file set");
     if (!file && !handle)
-        Sys_Error("COM_FindFile: neither handle or file set");
+        Sys_Error((char*)"COM_FindFile: neither handle or file set");
 
     //
     // search through the path, one element at a time
@@ -1000,7 +1000,7 @@ int COM_FindFile(char * filename, int * handle, FILE ** file)
             for (i = 0; i < pak->numfiles; i++)
                 if (!strcmp(pak->files[i].name, filename))
                 { // found it!
-                    Sys_Printf("PackFile: %s : %s\n", pak->filename, filename);
+                    Sys_Printf((char*)"PackFile: %s : %s\n", pak->filename, filename);
                     if (handle)
                     {
                         *handle = pak->handle;
@@ -1048,7 +1048,7 @@ int COM_FindFile(char * filename, int * handle, FILE ** file)
                 strcpy(netpath, cachepath);
             }
 
-            Sys_Printf("FindFile: %s\n", netpath);
+            Sys_Printf((char*)"FindFile: %s\n", netpath);
             com_filesize = Sys_FileOpenRead(netpath, &i);
             if (handle)
                 *handle = i;
@@ -1062,7 +1062,7 @@ int COM_FindFile(char * filename, int * handle, FILE ** file)
 
     }
 
-    Sys_Printf("FindFile: can't find %s\n", filename);
+    Sys_Printf((char*)"FindFile: can't find %s\n", filename);
 
     if (handle)
         *handle = -1;
@@ -1163,10 +1163,10 @@ byte * COM_LoadFile(char * path, int usehunk)
             buf = loadbuf;
     }
     else
-        Sys_Error("COM_LoadFile: bad usehunk");
+        Sys_Error((char*)"COM_LoadFile: bad usehunk");
 
     if (!buf)
-        Sys_Error("COM_LoadFile: not enough space for %s", path);
+        Sys_Error((char*)"COM_LoadFile: not enough space for %s", path);
 
     ((byte *)buf)[len] = 0;
 
@@ -1235,16 +1235,16 @@ pack_t * COM_LoadPackFile(char * packfile)
     Sys_FileRead(packhandle, (void *)&header, sizeof(header));
     if (header.id[0] != 'P' || header.id[1] != 'A'
         || header.id[2] != 'C' || header.id[3] != 'K')
-        Sys_Error("%s is not a packfile", packfile);
+        Sys_Error((char*)"%s is not a packfile", packfile);
     header.dirofs = header.dirofs;
     header.dirlen = header.dirlen;
 
     numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
     if (numpackfiles > MAX_FILES_IN_PACK)
-        Sys_Error("%s has %i files", packfile, numpackfiles);
+        Sys_Error((char*)"%s has %i files", packfile, numpackfiles);
 
-    newfiles = (packfile_t*)Hunk_AllocName(numpackfiles * sizeof(packfile_t), "packfile");
+    newfiles = (packfile_t*)Hunk_AllocName(numpackfiles * sizeof(packfile_t), (char*)"packfile");
 
     Sys_FileSeek(packhandle, header.dirofs);
     Sys_FileRead(packhandle, (void *)info, header.dirlen);
@@ -1263,7 +1263,7 @@ pack_t * COM_LoadPackFile(char * packfile)
     pack->numfiles = numpackfiles;
     pack->files = newfiles;
 
-    Con_Printf("Added packfile %s (%i files)\n", packfile, numpackfiles);
+    Con_Printf((char*)"Added packfile %s (%i files)\n", packfile, numpackfiles);
     return pack;
 }
 
@@ -1329,7 +1329,7 @@ void COM_InitFilesystem()
     // -basedir <path>
     // Overrides the system supplied base directory (under GAMENAME)
     //
-    i = COM_CheckParm("-basedir");
+    i = COM_CheckParm((char*)"-basedir");
     if (i && i < com_argc - 1)
         strcpy(basedir, com_argv[i + 1]);
     else
@@ -1348,7 +1348,7 @@ void COM_InitFilesystem()
     // Overrides the system supplied cache directory (NULL or /qcache)
     // -cachedir - will disable caching.
     //
-    i = COM_CheckParm("-cachedir");
+    i = COM_CheckParm((char*)"-cachedir");
     if (i && i < com_argc - 1)
     {
         if (com_argv[i + 1][0] == '-')
@@ -1364,28 +1364,28 @@ void COM_InitFilesystem()
     //
     // start up with GAMENAME by default (id1)
     //
-    COM_AddGameDirectory(va("%s/" GAMENAME, basedir));
+    COM_AddGameDirectory(va((char*)"%s/" GAMENAME, basedir));
 
     if constexpr (rogue)
-        COM_AddGameDirectory(va("%s/rogue", basedir));
+        COM_AddGameDirectory(va((char*)"%s/rogue", basedir));
     if constexpr (hipnotic)
-        COM_AddGameDirectory(va("%s/hipnotic", basedir));
+        COM_AddGameDirectory(va((char*)"%s/hipnotic", basedir));
 
     //
     // -game <gamedir>
     // Adds basedir/gamedir as an override game
     //
-    i = COM_CheckParm("-game");
+    i = COM_CheckParm((char*)"-game");
     if (i && i < com_argc - 1)
     {
-        COM_AddGameDirectory(va("%s/%s", basedir, com_argv[i + 1]));
+        COM_AddGameDirectory(va((char*)"%s/%s", basedir, com_argv[i + 1]));
     }
 
     //
     // -path <dir or packfile> [<dir or packfile>] ...
     // Fully specifies the exact serach path, overriding the generated one
     //
-    i = COM_CheckParm("-path");
+    i = COM_CheckParm((char*)"-path");
     if (i)
     {
         com_searchpaths = NULL;
@@ -1399,7 +1399,7 @@ void COM_InitFilesystem()
             {
                 search->pack = COM_LoadPackFile(com_argv[i]);
                 if (!search->pack)
-                    Sys_Error("Couldn't load packfile: %s", com_argv[i]);
+                    Sys_Error((char*)"Couldn't load packfile: %s", com_argv[i]);
             }
             else
                 strcpy(search->filename, com_argv[i]);
@@ -1408,7 +1408,7 @@ void COM_InitFilesystem()
         }
     }
 
-    if (COM_CheckParm("-proghack"))
+    if (COM_CheckParm((char*)"-proghack"))
         proghack = true;
 }
 

@@ -7,20 +7,20 @@
 // references them even when on a unix system.
 
 // these two are not intended to be set directly
-cvar_t cl_name = {"_cl_name", "player", true};
-cvar_t cl_color = {"_cl_color", "0", true};
+cvar_t cl_name = {(char*)"_cl_name", (char*)"player", true};
+cvar_t cl_color = {(char*)"_cl_color", (char*)"0", true};
 
-cvar_t cl_shownet = {"cl_shownet", "0"}; // can be 0, 1, or 2
-cvar_t cl_nolerp = {"cl_nolerp", "0"};
+cvar_t cl_shownet = {(char*)"cl_shownet", (char*)"0"}; // can be 0, 1, or 2
+cvar_t cl_nolerp = {(char*)"cl_nolerp", (char*)"0"};
 
-cvar_t lookspring = {"lookspring", "0", true};
-cvar_t lookstrafe = {"lookstrafe", "0", true};
-cvar_t sensitivity = {"sensitivity", "3", true};
+cvar_t lookspring = {(char*)"lookspring", (char*)"0", true};
+cvar_t lookstrafe = {(char*)"lookstrafe", (char*)"0", true};
+cvar_t sensitivity = {(char*)"sensitivity", (char*)"3", true};
 
-cvar_t m_pitch = {"m_pitch", "0.022", true};
-cvar_t m_yaw = {"m_yaw", "0.022", true};
-cvar_t m_forward = {"m_forward", "1", true};
-cvar_t m_side = {"m_side", "0.8", true};
+cvar_t m_pitch = {(char*)"m_pitch", (char*)"0.022", true};
+cvar_t m_yaw = {(char*)"m_yaw", (char*)"0.022", true};
+cvar_t m_forward = {(char*)"m_forward", (char*)"1", true};
+cvar_t m_side = {(char*)"m_side", (char*)"0.8", true};
 
 
 client_static_t cls;
@@ -94,7 +94,7 @@ void CL_Disconnect()
         if (cls.demorecording)
             CL_Stop_f();
 
-        Con_DPrintf("Sending clc_disconnect\n");
+        Con_DPrintf((char*)"Sending clc_disconnect\n");
         SZ_Clear(&cls.message);
         MSG_WriteByte(&cls.message, clc_disconnect);
         NET_SendUnreliableMessage(cls.netcon, &cls.message);
@@ -139,8 +139,8 @@ void CL_EstablishConnection(char * host)
 
     cls.netcon = NET_Connect(host);
     if (!cls.netcon)
-        Host_Error("CL_Connect: connect failed\n");
-    Con_DPrintf("CL_EstablishConnection: connected to %s\n", host);
+        Host_Error((char*)"CL_Connect: connect failed\n");
+    Con_DPrintf((char*)"CL_EstablishConnection: connected to %s\n", host);
 
     cls.demonum = -1; // not in the demo loop now
     cls.state = ca_connected;
@@ -158,21 +158,21 @@ void CL_SignonReply()
 {
     char str[8192];
 
-    Con_DPrintf("CL_SignonReply: %i\n", cls.signon);
+    Con_DPrintf((char*)"CL_SignonReply: %i\n", cls.signon);
 
     switch (cls.signon)
     {
     case 1:
         MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, "prespawn");
+        MSG_WriteString(&cls.message, (char*)"prespawn");
         break;
 
     case 2:
         MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, va("name \"%s\"\n", cl_name.string));
+        MSG_WriteString(&cls.message, va((char*)"name \"%s\"\n", cl_name.string));
 
         MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, va("color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
+        MSG_WriteString(&cls.message, va((char*)"color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
 
         MSG_WriteByte(&cls.message, clc_stringcmd);
         sprintf(str, "spawn %s", cls.spawnparms);
@@ -181,7 +181,7 @@ void CL_SignonReply()
 
     case 3:
         MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, "begin");
+        MSG_WriteString(&cls.message, (char*)"begin");
         Cache_Report(); // print remaining memory
         break;
 
@@ -212,7 +212,7 @@ void CL_NextDemo()
         cls.demonum = 0;
         if (!cls.demos[cls.demonum][0])
         {
-            Con_Printf("No demos listed with startdemos\n");
+            Con_Printf((char*)"No demos listed with startdemos\n");
             cls.demonum = -1;
             return;
         }
@@ -235,13 +235,13 @@ void CL_PrintEntities_f()
 
     for (i = 0, ent = cl_entities; i < cl.num_entities; i++, ent++)
     {
-        Con_Printf("%3i:", i);
+        Con_Printf((char*)"%3i:", i);
         if (!ent->model)
         {
-            Con_Printf("EMPTY\n");
+            Con_Printf((char*)"EMPTY\n");
             continue;
         }
-        Con_Printf("%s:%2i (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
+        Con_Printf((char*)"%s:%2i (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
                    , ent->model->name, ent->frame, ent->origin[0], ent->origin[1], ent->origin[2], ent->angles[0], ent->angles[1], ent->angles[2]);
     }
 }
@@ -568,7 +568,7 @@ int CL_ReadFromServer()
     {
         ret = CL_GetMessage();
         if (ret == -1)
-            Host_Error("CL_ReadFromServer: lost server connection");
+            Host_Error((char*)"CL_ReadFromServer: lost server connection");
         if (!ret)
             break;
 
@@ -577,7 +577,7 @@ int CL_ReadFromServer()
     } while (ret && cls.state == ca_connected);
 
     if (cl_shownet.value)
-        Con_Printf("\n");
+        Con_Printf((char*)"\n");
 
     CL_RelinkEntities();
     CL_UpdateTEnts();
@@ -625,12 +625,12 @@ void CL_SendCmd()
 
     if (!NET_CanSendMessage(cls.netcon))
     {
-        Con_DPrintf("CL_WriteToServer: can't send\n");
+        Con_DPrintf((char*)"CL_WriteToServer: can't send\n");
         return;
     }
 
     if (NET_SendMessage(cls.netcon, &cls.message) == -1)
-        Host_Error("CL_WriteToServer: lost server connection");
+        Host_Error((char*)"CL_WriteToServer: lost server connection");
 
     SZ_Clear(&cls.message);
 }
@@ -673,11 +673,11 @@ void CL_Init()
 
     // Cvar_RegisterVariable (&cl_autofire);
 
-    Cmd_AddCommand("entities", CL_PrintEntities_f);
-    Cmd_AddCommand("disconnect", CL_Disconnect_f);
-    Cmd_AddCommand("record", CL_Record_f);
-    Cmd_AddCommand("stop", CL_Stop_f);
-    Cmd_AddCommand("playdemo", CL_PlayDemo_f);
-    Cmd_AddCommand("timedemo", CL_TimeDemo_f);
+    Cmd_AddCommand((char*)"entities", CL_PrintEntities_f);
+    Cmd_AddCommand((char*)"disconnect", CL_Disconnect_f);
+    Cmd_AddCommand((char*)"record", CL_Record_f);
+    Cmd_AddCommand((char*)"stop", CL_Stop_f);
+    Cmd_AddCommand((char*)"playdemo", CL_PlayDemo_f);
+    Cmd_AddCommand((char*)"timedemo", CL_TimeDemo_f);
 }
 

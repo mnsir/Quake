@@ -13,7 +13,7 @@ HRESULT(WINAPI * pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
                                      LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
-cvar_t m_filter = {"m_filter", "0"};
+cvar_t m_filter = {(char*)"m_filter", (char*)"0"};
 
 int mouse_buttons;
 int mouse_oldbuttonstate;
@@ -63,25 +63,25 @@ PDWORD pdwRawValue[JOY_MAX_AXES];
 // each time. this avoids any problems with getting back to a default usage
 // or when changing from one controller to another. this way at least something
 // works.
-cvar_t in_joystick = {"joystick", "0", true};
-cvar_t joy_name = {"joyname", "joystick"};
-cvar_t joy_advanced = {"joyadvanced", "0"};
-cvar_t joy_advaxisx = {"joyadvaxisx", "0"};
-cvar_t joy_advaxisy = {"joyadvaxisy", "0"};
-cvar_t joy_advaxisz = {"joyadvaxisz", "0"};
-cvar_t joy_advaxisr = {"joyadvaxisr", "0"};
-cvar_t joy_advaxisu = {"joyadvaxisu", "0"};
-cvar_t joy_advaxisv = {"joyadvaxisv", "0"};
-cvar_t joy_forwardthreshold = {"joyforwardthreshold", "0.15"};
-cvar_t joy_sidethreshold = {"joysidethreshold", "0.15"};
-cvar_t joy_pitchthreshold = {"joypitchthreshold", "0.15"};
-cvar_t joy_yawthreshold = {"joyyawthreshold", "0.15"};
-cvar_t joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0"};
-cvar_t joy_sidesensitivity = {"joysidesensitivity", "-1.0"};
-cvar_t joy_pitchsensitivity = {"joypitchsensitivity", "1.0"};
-cvar_t joy_yawsensitivity = {"joyyawsensitivity", "-1.0"};
-cvar_t joy_wwhack1 = {"joywwhack1", "0.0"};
-cvar_t joy_wwhack2 = {"joywwhack2", "0.0"};
+cvar_t in_joystick = {(char*)"joystick", (char*)"0", true};
+cvar_t joy_name = {(char*)"joyname", (char*)"joystick"};
+cvar_t joy_advanced = {(char*)"joyadvanced", (char*)"0"};
+cvar_t joy_advaxisx = {(char*)"joyadvaxisx", (char*)"0"};
+cvar_t joy_advaxisy = {(char*)"joyadvaxisy", (char*)"0"};
+cvar_t joy_advaxisz = {(char*)"joyadvaxisz", (char*)"0"};
+cvar_t joy_advaxisr = {(char*)"joyadvaxisr", (char*)"0"};
+cvar_t joy_advaxisu = {(char*)"joyadvaxisu", (char*)"0"};
+cvar_t joy_advaxisv = {(char*)"joyadvaxisv", (char*)"0"};
+cvar_t joy_forwardthreshold = {(char*)"joyforwardthreshold", (char*)"0.15"};
+cvar_t joy_sidethreshold = {(char*)"joysidethreshold", (char*)"0.15"};
+cvar_t joy_pitchthreshold = {(char*)"joypitchthreshold", (char*)"0.15"};
+cvar_t joy_yawthreshold = {(char*)"joyyawthreshold", (char*)"0.15"};
+cvar_t joy_forwardsensitivity = {(char*)"joyforwardsensitivity", (char*)"-1.0"};
+cvar_t joy_sidesensitivity = {(char*)"joysidesensitivity", (char*)"-1.0"};
+cvar_t joy_pitchsensitivity = {(char*)"joypitchsensitivity", (char*)"1.0"};
+cvar_t joy_yawsensitivity = {(char*)"joyyawsensitivity", (char*)"-1.0"};
+cvar_t joy_wwhack1 = {(char*)"joywwhack1", (char*)"0.0"};
+cvar_t joy_wwhack2 = {(char*)"joywwhack2", (char*)"0.0"};
 
 bool joy_avail, joy_advancedinit, joy_haspov;
 DWORD joy_oldbuttonstate, joy_oldpovstate;
@@ -330,7 +330,7 @@ bool IN_InitDInput()
 
         if (hInstDI == NULL)
         {
-            Con_SafePrintf("Couldn't load dinput.dll\n");
+            Con_SafePrintf((char*)"Couldn't load dinput.dll\n");
             return false;
         }
     }
@@ -341,7 +341,7 @@ bool IN_InitDInput()
 
         if (!pDirectInputCreate)
         {
-            Con_SafePrintf("Couldn't get DI proc addr\n");
+            Con_SafePrintf((char*)"Couldn't get DI proc addr\n");
             return false;
         }
     }
@@ -359,7 +359,7 @@ bool IN_InitDInput()
 
     if (FAILED(hr))
     {
-        Con_SafePrintf("Couldn't open DI mouse device\n");
+        Con_SafePrintf((char*)"Couldn't open DI mouse device\n");
         return false;
     }
 
@@ -368,7 +368,7 @@ bool IN_InitDInput()
 
     if (FAILED(hr))
     {
-        Con_SafePrintf("Couldn't set DI mouse format\n");
+        Con_SafePrintf((char*)"Couldn't set DI mouse format\n");
         return false;
     }
 
@@ -378,7 +378,7 @@ bool IN_InitDInput()
 
     if (FAILED(hr))
     {
-        Con_SafePrintf("Couldn't set DI coop level\n");
+        Con_SafePrintf((char*)"Couldn't set DI coop level\n");
         return false;
     }
 
@@ -389,7 +389,7 @@ bool IN_InitDInput()
 
     if (FAILED(hr))
     {
-        Con_SafePrintf("Couldn't set DI buffersize\n");
+        Con_SafePrintf((char*)"Couldn't set DI buffersize\n");
         return false;
     }
 
@@ -406,22 +406,22 @@ void IN_StartupMouse()
 {
     HDC hdc;
 
-    if (COM_CheckParm("-nomouse"))
+    if (COM_CheckParm((char*)"-nomouse"))
         return;
 
     mouseinitialized = true;
 
-    if (COM_CheckParm("-dinput"))
+    if (COM_CheckParm((char*)"-dinput"))
     {
         dinput = IN_InitDInput();
 
         if (dinput)
         {
-            Con_SafePrintf("DirectInput initialized\n");
+            Con_SafePrintf((char*)"DirectInput initialized\n");
         }
         else
         {
-            Con_SafePrintf("DirectInput not initialized\n");
+            Con_SafePrintf((char*)"DirectInput not initialized\n");
         }
     }
 
@@ -431,16 +431,16 @@ void IN_StartupMouse()
 
         if (mouseparmsvalid)
         {
-            if (COM_CheckParm("-noforcemspd"))
+            if (COM_CheckParm((char*)"-noforcemspd"))
                 newmouseparms[2] = originalmouseparms[2];
 
-            if (COM_CheckParm("-noforcemaccel"))
+            if (COM_CheckParm((char*)"-noforcemaccel"))
             {
                 newmouseparms[0] = originalmouseparms[0];
                 newmouseparms[1] = originalmouseparms[1];
             }
 
-            if (COM_CheckParm("-noforcemparms"))
+            if (COM_CheckParm((char*)"-noforcemparms"))
             {
                 newmouseparms[0] = originalmouseparms[0];
                 newmouseparms[1] = originalmouseparms[1];
@@ -489,8 +489,8 @@ void IN_Init()
     Cvar_RegisterVariable(&joy_wwhack1);
     Cvar_RegisterVariable(&joy_wwhack2);
 
-    Cmd_AddCommand("force_centerview", Force_CenterView_f);
-    Cmd_AddCommand("joyadvancedupdate", Joy_AdvancedUpdate_f);
+    Cmd_AddCommand((char*)"force_centerview", Force_CenterView_f);
+    Cmd_AddCommand((char*)"joyadvancedupdate", Joy_AdvancedUpdate_f);
 
     uiWheelMessage = RegisterWindowMessage("MSWHEEL_ROLLMSG");
 
@@ -660,7 +660,7 @@ void IN_MouseMove(usercmd_t * cmd)
     }
 
     //if (mx || my)
-    // Con_DPrintf("mx=%d, my=%d\n", mx, my);
+    // Con_DPrintf((char*)"mx=%d, my=%d\n", mx, my);
 
     if (m_filter.value)
     {
@@ -786,13 +786,13 @@ void IN_StartupJoystick()
     joy_avail = false;
 
     // abort startup if user requests no joystick
-    if (COM_CheckParm("-nojoy"))
+    if (COM_CheckParm((char*)"-nojoy"))
         return;
 
     // verify joystick driver is present
     if ((numdevs = joyGetNumDevs()) == 0)
     {
-        Con_Printf("\njoystick not found -- driver not present\n\n");
+        Con_Printf((char*)"\njoystick not found -- driver not present\n\n");
         return;
     }
 
@@ -810,7 +810,7 @@ void IN_StartupJoystick()
     // abort startup if we didn't find a valid joystick
     if (mmr != JOYERR_NOERROR)
     {
-        Con_Printf("\njoystick not found -- no valid joysticks (%x)\n\n", mmr);
+        Con_Printf((char*)"\njoystick not found -- no valid joysticks (%x)\n\n", mmr);
         return;
     }
 
@@ -819,7 +819,7 @@ void IN_StartupJoystick()
     memset(&jc, 0, sizeof(jc));
     if ((mmr = joyGetDevCaps(joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
     {
-        Con_Printf("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
+        Con_Printf((char*)"\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
         return;
     }
 
@@ -836,7 +836,7 @@ void IN_StartupJoystick()
     joy_avail = true;
     joy_advancedinit = false;
 
-    Con_Printf("\njoystick detected\n\n");
+    Con_Printf((char*)"\njoystick detected\n\n");
 }
 
 
@@ -900,7 +900,7 @@ void Joy_AdvancedUpdate_f()
         if (std::strcmp(joy_name.string, "joystick") != 0)
         {
             // notify user of advanced controller
-            Con_Printf("\n%s configured\n\n", joy_name.string);
+            Con_Printf((char*)"\n%s configured\n\n", joy_name.string);
         }
 
         // advanced initialization here

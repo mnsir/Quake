@@ -45,18 +45,18 @@ int messagesReceived = 0;
 int unreliableMessagesSent = 0;
 int unreliableMessagesReceived = 0;
 
-cvar_t net_messagetimeout = {"net_messagetimeout", "300"};
-cvar_t hostname = {"hostname", "UNNAMED"};
+cvar_t net_messagetimeout = {(char*)"net_messagetimeout", (char*)"300"};
+cvar_t hostname = {(char*)"hostname", (char*)"UNNAMED"};
 
 bool configRestored = false;
-cvar_t config_com_port = {"_config_com_port", "0x3f8", true};
-cvar_t config_com_irq = {"_config_com_irq", "4", true};
-cvar_t config_com_baud = {"_config_com_baud", "57600", true};
-cvar_t config_com_modem = {"_config_com_modem", "1", true};
-cvar_t config_modem_dialtype = {"_config_modem_dialtype", "T", true};
-cvar_t config_modem_clear = {"_config_modem_clear", "ATZ", true};
-cvar_t config_modem_init = {"_config_modem_init", "", true};
-cvar_t config_modem_hangup = {"_config_modem_hangup", "AT H", true};
+cvar_t config_com_port = {(char*)"_config_com_port", (char*)"0x3f8", true};
+cvar_t config_com_irq = {(char*)"_config_com_irq", (char*)"4", true};
+cvar_t config_com_baud = {(char*)"_config_com_baud", (char*)"57600", true};
+cvar_t config_com_modem = {(char*)"_config_com_modem", (char*)"1", true};
+cvar_t config_modem_dialtype = {(char*)"_config_modem_dialtype", (char*)"T", true};
+cvar_t config_modem_clear = {(char*)"_config_modem_clear", (char*)"ATZ", true};
+cvar_t config_modem_init = {(char*)"_config_modem_init", (char*)"", true};
+cvar_t config_modem_hangup = {(char*)"_config_modem_hangup", (char*)"AT H", true};
 
 int vcrFile = -1;
 bool recording = false;
@@ -140,7 +140,7 @@ void NET_FreeQSocket(qsocket_t * sock)
                 break;
             }
         if (!s)
-            Sys_Error("NET_FreeQSocket: not active\n");
+            Sys_Error((char*)"NET_FreeQSocket: not active\n");
     }
 
     // add it to free list
@@ -154,7 +154,7 @@ static void NET_Listen_f()
 {
     if (Cmd_Argc() != 2)
     {
-        Con_Printf("\"listen\" is \"%u\"\n", listening ? 1 : 0);
+        Con_Printf((char*)"\"listen\" is \"%u\"\n", listening ? 1 : 0);
         return;
     }
 
@@ -175,13 +175,13 @@ static void MaxPlayers_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf("\"maxplayers\" is \"%u\"\n", svs.maxclients);
+        Con_Printf((char*)"\"maxplayers\" is \"%u\"\n", svs.maxclients);
         return;
     }
 
     if (sv.active)
     {
-        Con_Printf("maxplayers can not be changed while a server is running.\n");
+        Con_Printf((char*)"maxplayers can not be changed while a server is running.\n");
         return;
     }
 
@@ -191,20 +191,20 @@ static void MaxPlayers_f()
     if (n > svs.maxclientslimit)
     {
         n = svs.maxclientslimit;
-        Con_Printf("\"maxplayers\" set to \"%u\"\n", n);
+        Con_Printf((char*)"\"maxplayers\" set to \"%u\"\n", n);
     }
 
     if ((n == 1) && listening)
-        Cbuf_AddText("listen 0\n");
+        Cbuf_AddText((char*)"listen 0\n");
 
     if ((n > 1) && (!listening))
-        Cbuf_AddText("listen 1\n");
+        Cbuf_AddText((char*)"listen 1\n");
 
     svs.maxclients = n;
     if (n == 1)
-        Cvar_Set("deathmatch", "0");
+        Cvar_Set((char*)"deathmatch", (char*)"0");
     else
-        Cvar_Set("deathmatch", "1");
+        Cvar_Set((char*)"deathmatch", (char*)"1");
 }
 
 
@@ -214,14 +214,14 @@ static void NET_Port_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf("\"port\" is \"%u\"\n", net_hostport);
+        Con_Printf((char*)"\"port\" is \"%u\"\n", net_hostport);
         return;
     }
 
     n = std::atoi(Cmd_Argv(1));
     if (n < 1 || n > 65534)
     {
-        Con_Printf("Bad value, must be between 1 and 65534\n");
+        Con_Printf((char*)"Bad value, must be between 1 and 65534\n");
         return;
     }
 
@@ -231,16 +231,16 @@ static void NET_Port_f()
     if (listening)
     {
         // force a change to the new port
-        Cbuf_AddText("listen 0\n");
-        Cbuf_AddText("listen 1\n");
+        Cbuf_AddText((char*)"listen 0\n");
+        Cbuf_AddText((char*)"listen 1\n");
     }
 }
 
 
 static void PrintSlistHeader()
 {
-    Con_Printf("Server Map Users\n");
-    Con_Printf("--------------- --------------- -----\n");
+    Con_Printf((char*)"Server Map Users\n");
+    Con_Printf((char*)"--------------- --------------- -----\n");
     slistLastShown = 0;
 }
 
@@ -252,9 +252,9 @@ static void PrintSlist()
     for (n = slistLastShown; n < hostCacheCount; n++)
     {
         if (hostcache[n].maxusers)
-            Con_Printf("%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+            Con_Printf((char*)"%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
         else
-            Con_Printf("%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
+            Con_Printf((char*)"%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
     }
     slistLastShown = n;
 }
@@ -263,9 +263,9 @@ static void PrintSlist()
 static void PrintSlistTrailer()
 {
     if (hostCacheCount)
-        Con_Printf("== end list ==\n\n");
+        Con_Printf((char*)"== end list ==\n\n");
     else
-        Con_Printf("No Quake servers found.\n\n");
+        Con_Printf((char*)"No Quake servers found.\n\n");
 }
 
 
@@ -276,7 +276,7 @@ void NET_Slist_f()
 
     if (!slistSilent)
     {
-        Con_Printf("Looking for Quake servers...\n");
+        Con_Printf((char*)"Looking for Quake servers...\n");
         PrintSlistHeader();
     }
 
@@ -356,7 +356,7 @@ qsocket_t * NET_Connect(char * host)
 
     if (host)
     {
-        if (Q_strcasecmp(host, "local") == 0)
+        if (Q_strcasecmp(host, (char*)"local") == 0)
         {
             numdrivers = 1;
             goto JustDoIt;
@@ -386,7 +386,7 @@ qsocket_t * NET_Connect(char * host)
         if (hostCacheCount != 1)
             return NULL;
         host = hostcache[0].cname;
-        Con_Printf("Connecting to...\n%s @ %s\n\n", hostcache[0].name, host);
+        Con_Printf((char*)"Connecting to...\n%s @ %s\n\n", hostcache[0].name, host);
     }
 
     if (hostCacheCount)
@@ -409,7 +409,7 @@ JustDoIt:
 
     if (host)
     {
-        Con_Printf("\n");
+        Con_Printf((char*)"\n");
         PrintSlistHeader();
         PrintSlist();
         PrintSlistTrailer();
@@ -524,7 +524,7 @@ int NET_GetMessage(qsocket_t * sock)
 
     if (sock->disconnected)
     {
-        Con_Printf("NET_GetMessage: disconnected socket\n");
+        Con_Printf((char*)"NET_GetMessage: disconnected socket\n");
         return -1;
     }
 
@@ -609,7 +609,7 @@ int NET_SendMessage(qsocket_t * sock, sizebuf_t * data)
 
     if (sock->disconnected)
     {
-        Con_Printf("NET_SendMessage: disconnected socket\n");
+        Con_Printf((char*)"NET_SendMessage: disconnected socket\n");
         return -1;
     }
 
@@ -640,7 +640,7 @@ int NET_SendUnreliableMessage(qsocket_t * sock, sizebuf_t * data)
 
     if (sock->disconnected)
     {
-        Con_Printf("NET_SendMessage: disconnected socket\n");
+        Con_Printf((char*)"NET_SendMessage: disconnected socket\n");
         return -1;
     }
 
@@ -785,31 +785,31 @@ void NET_Init()
     int controlSocket;
     qsocket_t * s;
 
-    if (COM_CheckParm("-playback"))
+    if (COM_CheckParm((char*)"-playback"))
     {
         net_numdrivers = 1;
         net_drivers[0].Init = VCR_Init;
     }
 
-    if (COM_CheckParm("-record"))
+    if (COM_CheckParm((char*)"-record"))
         recording = true;
 
-    i = COM_CheckParm("-port");
+    i = COM_CheckParm((char*)"-port");
     if (!i)
-        i = COM_CheckParm("-udpport");
+        i = COM_CheckParm((char*)"-udpport");
     if (!i)
-        i = COM_CheckParm("-ipxport");
+        i = COM_CheckParm((char*)"-ipxport");
 
     if (i)
     {
         if (i < com_argc - 1)
             DEFAULTnet_hostport = std::atoi(com_argv[i + 1]);
         else
-            Sys_Error("NET_Init: you must specify a number after -port");
+            Sys_Error((char*)"NET_Init: you must specify a number after -port");
     }
     net_hostport = DEFAULTnet_hostport;
 
-    if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
+    if (COM_CheckParm((char*)"-listen") || cls.state == ca_dedicated)
         listening = true;
     net_numsockets = svs.maxclientslimit;
     if (cls.state != ca_dedicated)
@@ -819,7 +819,7 @@ void NET_Init()
 
     for (i = 0; i < net_numsockets; i++)
     {
-        s = (qsocket_t *)Hunk_AllocName(sizeof(qsocket_t), "qsocket");
+        s = (qsocket_t *)Hunk_AllocName(sizeof(qsocket_t), (char*)"qsocket");
         s->next = net_freeSockets;
         net_freeSockets = s;
         s->disconnected = true;
@@ -839,10 +839,10 @@ void NET_Init()
     Cvar_RegisterVariable(&config_modem_init);
     Cvar_RegisterVariable(&config_modem_hangup);
 
-    Cmd_AddCommand("slist", NET_Slist_f);
-    Cmd_AddCommand("listen", NET_Listen_f);
-    Cmd_AddCommand("maxplayers", MaxPlayers_f);
-    Cmd_AddCommand("port", NET_Port_f);
+    Cmd_AddCommand((char*)"slist", NET_Slist_f);
+    Cmd_AddCommand((char*)"listen", NET_Listen_f);
+    Cmd_AddCommand((char*)"maxplayers", MaxPlayers_f);
+    Cmd_AddCommand((char*)"port", NET_Port_f);
 
     // initialize all the drivers
     for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
@@ -857,9 +857,9 @@ void NET_Init()
     }
 
     if (*my_ipx_address)
-        Con_DPrintf("IPX address %s\n", my_ipx_address);
+        Con_DPrintf((char*)"IPX address %s\n", my_ipx_address);
     if (*my_tcpip_address)
-        Con_DPrintf("TCP/IP address %s\n", my_tcpip_address);
+        Con_DPrintf((char*)"TCP/IP address %s\n", my_tcpip_address);
 }
 
 /*
@@ -891,7 +891,7 @@ void NET_Shutdown()
 
     if (vcrFile != -1)
     {
-        Con_Printf("Closing vcrfile.\n");
+        Con_Printf((char*)"Closing vcrfile.\n");
         Sys_FileClose(vcrFile);
     }
 }

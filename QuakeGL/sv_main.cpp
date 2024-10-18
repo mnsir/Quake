@@ -106,13 +106,13 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
     int ent;
 
     if (volume < 0 || volume > 255)
-        Sys_Error("SV_StartSound: volume = %i", volume);
+        Sys_Error((char*)"SV_StartSound: volume = %i", volume);
 
     if (attenuation < 0 || attenuation > 4)
-        Sys_Error("SV_StartSound: attenuation = %f", attenuation);
+        Sys_Error((char*)"SV_StartSound: attenuation = %f", attenuation);
 
     if (channel < 0 || channel > 7)
-        Sys_Error("SV_StartSound: channel = %i", channel);
+        Sys_Error((char*)"SV_StartSound: channel = %i", channel);
 
     if (sv.datagram.cursize > MAX_DATAGRAM - 16)
         return;
@@ -125,7 +125,7 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
 
     if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
     {
-        Con_Printf("SV_StartSound: %s not precacheed\n", sample);
+        Con_Printf((char*)"SV_StartSound: %s not precacheed\n", sample);
         return;
     }
 
@@ -233,7 +233,7 @@ void SV_ConnectClient(int clientnum)
 
     client = svs.clients + clientnum;
 
-    Con_DPrintf("Client %s connected\n", client->netconnection->address);
+    Con_DPrintf((char*)"Client %s connected\n", client->netconnection->address);
 
     edictnum = clientnum + 1;
 
@@ -298,7 +298,7 @@ void SV_CheckForNewClients()
             if (!svs.clients[i].active)
                 break;
         if (i == svs.maxclients)
-            Sys_Error("Host_CheckForNewClients: no free clients");
+            Sys_Error((char*)"Host_CheckForNewClients: no free clients");
 
         svs.clients[i].netconnection = ret;
         SV_ConnectClient(i);
@@ -436,7 +436,7 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
 
         if (msg->maxsize - msg->cursize < 16)
         {
-            Con_Printf("packet overflow\n");
+            Con_Printf((char*)"packet overflow\n");
             return;
         }
 
@@ -593,7 +593,7 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
 
     // stuff the sigil bits into the high bits of items for sbar, or else
     // mix in items2
-    val = GetEdictFieldValue(ent, "items2");
+    val = GetEdictFieldValue(ent, (char*)"items2");
 
     if (val)
         items = (int)ent->v.items | ((int)val->_float << 23);
@@ -878,7 +878,7 @@ int SV_ModelIndex(char * name)
         if (!strcmp(sv.model_precache[i], name))
             return i;
     if (i == MAX_MODELS || !sv.model_precache[i])
-        Sys_Error("SV_ModelIndex: model %s not precached", name);
+        Sys_Error((char*)"SV_ModelIndex: model %s not precached", name);
     return i;
 }
 
@@ -913,7 +913,7 @@ void SV_CreateBaseline()
         if (entnum > 0 && entnum <= svs.maxclients)
         {
             svent->baseline.colormap = entnum;
-            svent->baseline.modelindex = SV_ModelIndex("progs/player.mdl");
+            svent->baseline.modelindex = SV_ModelIndex((char*)"progs/player.mdl");
         }
         else
         {
@@ -958,11 +958,11 @@ void SV_SendReconnect()
     msg.maxsize = sizeof(data);
 
     MSG_WriteChar(&msg, svc_stufftext);
-    MSG_WriteString(&msg, "reconnect\n");
+    MSG_WriteString(&msg, (char*)"reconnect\n");
     NET_SendToAll(&msg, 5);
 
     if (cls.state != ca_dedicated)
-        Cmd_ExecuteString("reconnect\n", src_command);
+        Cmd_ExecuteString((char*)"reconnect\n", src_command);
 }
 
 
@@ -1010,10 +1010,10 @@ void SV_SpawnServer(char * server)
 
     // let's not have any servers with no name
     if (hostname.string[0] == 0)
-        Cvar_Set("hostname", "UNNAMED");
+        Cvar_Set((char*)"hostname", (char*)"UNNAMED");
     scr_centertime_off = 0;
 
-    Con_DPrintf("SpawnServer: %s\n", server);
+    Con_DPrintf((char*)"SpawnServer: %s\n", server);
     svs.changelevel_issued = false; // now safe to issue another
 
     //
@@ -1028,14 +1028,14 @@ void SV_SpawnServer(char * server)
     // make cvars consistant
     //
     if (coop.value)
-        Cvar_SetValue("deathmatch", 0);
+        Cvar_SetValue((char*)"deathmatch", 0);
     current_skill = (int)(skill.value + 0.5);
     if (current_skill < 0)
         current_skill = 0;
     if (current_skill > 3)
         current_skill = 3;
 
-    Cvar_SetValue("skill", (float)current_skill);
+    Cvar_SetValue((char*)"skill", (float)current_skill);
 
     //
     // set up the new server
@@ -1052,7 +1052,7 @@ void SV_SpawnServer(char * server)
     // allocate server memory
     sv.max_edicts = MAX_EDICTS;
 
-    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * pr_edict_size, "edicts");
+    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * pr_edict_size, (char*)"edicts");
 
     sv.datagram.maxsize = sizeof(sv.datagram_buf);
     sv.datagram.cursize = 0;
@@ -1084,7 +1084,7 @@ void SV_SpawnServer(char * server)
     sv.worldmodel = Mod_ForName(sv.modelname, false);
     if (!sv.worldmodel)
     {
-        Con_Printf("Couldn't spawn server %s\n", sv.modelname);
+        Con_Printf((char*)"Couldn't spawn server %s\n", sv.modelname);
         sv.active = false;
         return;
     }
@@ -1146,6 +1146,6 @@ void SV_SpawnServer(char * server)
         if (host_client->active)
             SV_SendServerinfo(host_client);
 
-    Con_DPrintf("Server spawned.\n");
+    Con_DPrintf((char*)"Server spawned.\n");
 }
 

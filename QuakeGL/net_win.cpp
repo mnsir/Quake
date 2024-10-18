@@ -7,7 +7,7 @@
 net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {
     {
-        "Loopback",
+        (char*)"Loopback",
         false,
         Loop_Init,
         Loop_Listen,
@@ -24,7 +24,7 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
     }
     ,
  {
-     "Datagram",
+     (char*)"Datagram",
      false,
      Datagram_Init,
      Datagram_Listen,
@@ -50,7 +50,7 @@ int net_numdrivers = 2;
 net_landriver_t net_landrivers[MAX_NET_DRIVERS] =
 {
     {
-        "Winsock TCPIP",
+        (char*)"Winsock TCPIP",
         false,
         0,
         WINS_Init,
@@ -73,7 +73,7 @@ net_landriver_t net_landrivers[MAX_NET_DRIVERS] =
         WINS_SetSocketPort
     },
  {
-     "Winsock IPX",
+     (char*)"Winsock IPX",
      false,
      0,
      WIPX_Init,

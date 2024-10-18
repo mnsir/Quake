@@ -95,27 +95,27 @@ float se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
 void R_MarkLeaves();
 
-cvar_t r_draworder = {"r_draworder", "0"};
-cvar_t r_speeds = {"r_speeds", "0"};
-cvar_t r_timegraph = {"r_timegraph", "0"};
-cvar_t r_graphheight = {"r_graphheight", "10"};
-cvar_t r_clearcolor = {"r_clearcolor", "2"};
-cvar_t r_waterwarp = {"r_waterwarp", "1"};
-cvar_t r_fullbright = {"r_fullbright", "0"};
-cvar_t r_drawentities = {"r_drawentities", "1"};
-cvar_t r_drawviewmodel = {"r_drawviewmodel", "1"};
-cvar_t r_aliasstats = {"r_polymodelstats", "0"};
-cvar_t r_dspeeds = {"r_dspeeds", "0"};
-cvar_t r_drawflat = {"r_drawflat", "0"};
-cvar_t r_ambient = {"r_ambient", "0"};
-cvar_t r_reportsurfout = {"r_reportsurfout", "0"};
-cvar_t r_maxsurfs = {"r_maxsurfs", "0"};
-cvar_t r_numsurfs = {"r_numsurfs", "0"};
-cvar_t r_reportedgeout = {"r_reportedgeout", "0"};
-cvar_t r_maxedges = {"r_maxedges", "0"};
-cvar_t r_numedges = {"r_numedges", "0"};
-cvar_t r_aliastransbase = {"r_aliastransbase", "200"};
-cvar_t r_aliastransadj = {"r_aliastransadj", "100"};
+cvar_t r_draworder = {(char*)"r_draworder", (char*)"0"};
+cvar_t r_speeds = {(char*)"r_speeds", (char*)"0"};
+cvar_t r_timegraph = {(char*)"r_timegraph", (char*)"0"};
+cvar_t r_graphheight = {(char*)"r_graphheight", (char*)"10"};
+cvar_t r_clearcolor = {(char*)"r_clearcolor", (char*)"2"};
+cvar_t r_waterwarp = {(char*)"r_waterwarp", (char*)"1"};
+cvar_t r_fullbright = {(char*)"r_fullbright", (char*)"0"};
+cvar_t r_drawentities = {(char*)"r_drawentities", (char*)"1"};
+cvar_t r_drawviewmodel = {(char*)"r_drawviewmodel", (char*)"1"};
+cvar_t r_aliasstats = {(char*)"r_polymodelstats", (char*)"0"};
+cvar_t r_dspeeds = {(char*)"r_dspeeds", (char*)"0"};
+cvar_t r_drawflat = {(char*)"r_drawflat", (char*)"0"};
+cvar_t r_ambient = {(char*)"r_ambient", (char*)"0"};
+cvar_t r_reportsurfout = {(char*)"r_reportsurfout", (char*)"0"};
+cvar_t r_maxsurfs = {(char*)"r_maxsurfs", (char*)"0"};
+cvar_t r_numsurfs = {(char*)"r_numsurfs", (char*)"0"};
+cvar_t r_reportedgeout = {(char*)"r_reportedgeout", (char*)"0"};
+cvar_t r_maxedges = {(char*)"r_maxedges", (char*)"0"};
+cvar_t r_numedges = {(char*)"r_numedges", (char*)"0"};
+cvar_t r_aliastransbase = {(char*)"r_aliastransbase", (char*)"200"};
+cvar_t r_aliastransadj = {(char*)"r_aliastransadj", (char*)"100"};
 
 extern cvar_t scr_fov;
 
@@ -133,7 +133,7 @@ void R_InitTextures()
     byte * dest;
 
     // create a simple checkerboard texture for the default
-    r_notexture_mip = (texture_t*)Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, "notexture");
+    r_notexture_mip = (texture_t*)Hunk_AllocName(sizeof(texture_t) + 16 * 16 + 8 * 8 + 4 * 4 + 2 * 2, (char*)"notexture");
 
     r_notexture_mip->width = r_notexture_mip->height = 16;
     r_notexture_mip->offsets[0] = sizeof(texture_t);
@@ -169,8 +169,8 @@ void R_Init()
 
     R_InitTurb();
 
-    Cmd_AddCommand("timerefresh", R_TimeRefresh_f);
-    Cmd_AddCommand("pointfile", R_ReadPointFile_f);
+    Cmd_AddCommand((char*)"timerefresh", R_TimeRefresh_f);
+    Cmd_AddCommand((char*)"pointfile", R_ReadPointFile_f);
 
     Cvar_RegisterVariable(&r_draworder);
     Cvar_RegisterVariable(&r_speeds);
@@ -194,8 +194,8 @@ void R_Init()
     Cvar_RegisterVariable(&r_aliastransbase);
     Cvar_RegisterVariable(&r_aliastransadj);
 
-    Cvar_SetValue("r_maxedges", (float)NUMSTACKEDGES);
-    Cvar_SetValue("r_maxsurfs", (float)NUMSTACKSURFACES);
+    Cvar_SetValue((char*)"r_maxedges", (float)NUMSTACKEDGES);
+    Cvar_SetValue((char*)"r_maxsurfs", (float)NUMSTACKSURFACES);
 
     view_clipplanes[0].leftedge = true;
     view_clipplanes[1].rightedge = true;
@@ -236,7 +236,7 @@ void R_NewMap()
 
     if (r_cnumsurfs > NUMSTACKSURFACES)
     {
-        surfaces = (surf_t*)Hunk_AllocName(r_cnumsurfs * sizeof(surf_t), "surfaces");
+        surfaces = (surf_t*)Hunk_AllocName(r_cnumsurfs * sizeof(surf_t), (char*)"surfaces");
         surface_p = surfaces;
         surf_max = &surfaces[r_cnumsurfs];
         r_surfsonstack = false;
@@ -264,7 +264,7 @@ void R_NewMap()
     else
     {
         auxedges = (edge_t*)Hunk_AllocName(r_numallocatededges * sizeof(edge_t),
-                                  "edges");
+            (char*)"edges");
     }
 
     r_dowarpold = false;
@@ -917,7 +917,7 @@ void R_RenderView_()
     Sys_LowFPPrecision();
 
     if (!cl_entities[0].model || !cl.worldmodel)
-        Sys_Error("R_RenderView: NULL worldmodel");
+        Sys_Error((char*)"R_RenderView: NULL worldmodel");
 
     if (!r_dspeeds.value)
     {
@@ -980,10 +980,10 @@ void R_RenderView_()
         R_PrintDSpeeds();
 
     if (r_reportsurfout.value && r_outofsurfaces)
-        Con_Printf("Short %d surfaces\n", r_outofsurfaces);
+        Con_Printf((char*)"Short %d surfaces\n", r_outofsurfaces);
 
     if (r_reportedgeout.value && r_outofedges)
-        Con_Printf("Short roughly %d edges\n", r_outofedges * 2 / 3);
+        Con_Printf((char*)"Short roughly %d edges\n", r_outofedges * 2 / 3);
 
     // back to high floating-point precision
     Sys_HighFPPrecision();
@@ -996,16 +996,16 @@ void R_RenderView()
 
     delta = (byte *)&dummy - r_stack_start;
     if (delta < -10000 || delta > 10000)
-        Sys_Error("R_RenderView: called without enough stack");
+        Sys_Error((char*)"R_RenderView: called without enough stack");
 
     if (Hunk_LowMark() & 3)
-        Sys_Error("Hunk is missaligned");
+        Sys_Error((char*)"Hunk is missaligned");
 
     if ((long)(&dummy) & 3)
-        Sys_Error("Stack is missaligned");
+        Sys_Error((char*)"Stack is missaligned");
 
     if ((long)(&r_warpbuffer) & 3)
-        Sys_Error("Globals are missaligned");
+        Sys_Error((char*)"Globals are missaligned");
 
     R_RenderView_();
 }

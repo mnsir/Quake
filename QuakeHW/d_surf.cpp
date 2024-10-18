@@ -18,9 +18,9 @@ int D_SurfaceCacheForRes(int width, int height)
 {
     int size, pix;
 
-    if (COM_CheckParm("-surfcachesize"))
+    if (COM_CheckParm((char*)"-surfcachesize"))
     {
-        size = std::atoi(com_argv[COM_CheckParm("-surfcachesize") + 1]) * 1024;
+        size = std::atoi(com_argv[COM_CheckParm((char*)"-surfcachesize") + 1]) * 1024;
         return size;
     }
 
@@ -42,7 +42,7 @@ void D_CheckCacheGuard()
     s = (byte *)sc_base + sc_size;
     for (i = 0; i < GUARDSIZE; i++)
         if (s[i] != (byte)i)
-            Sys_Error("D_CheckCacheGuard: failed");
+            Sys_Error((char*)"D_CheckCacheGuard: failed");
 }
 
 void D_ClearCacheGuard()
@@ -66,7 +66,7 @@ void D_InitCaches(void * buffer, int size)
 {
 
     if (!msg_suppress_1)
-        Con_Printf("%ik surface cache\n", size / 1024);
+        Con_Printf((char*)"%ik surface cache\n", size / 1024);
 
     sc_size = size - GUARDSIZE;
     sc_base = (surfcache_t *)buffer;
@@ -115,15 +115,15 @@ surfcache_t * D_SCAlloc(int width, int size)
     bool wrapped_this_time;
 
     if ((width < 0) || (width > 256))
-        Sys_Error("D_SCAlloc: bad cache width %d\n", width);
+        Sys_Error((char*)"D_SCAlloc: bad cache width %d\n", width);
 
     if ((size <= 0) || (size > 0x10000))
-        Sys_Error("D_SCAlloc: bad cache size %d\n", size);
+        Sys_Error((char*)"D_SCAlloc: bad cache size %d\n", size);
 
     size = (int)&((surfcache_t *)0)->data[size];
     size = (size + 3) & ~3;
     if (size > sc_size)
-        Sys_Error("D_SCAlloc: %i > cache size", size);
+        Sys_Error((char*)"D_SCAlloc: %i > cache size", size);
 
     // if there is not size bytes after the rover, reset to the start
     wrapped_this_time = false;
@@ -147,7 +147,7 @@ surfcache_t * D_SCAlloc(int width, int size)
         // free another
         sc_rover = sc_rover->next;
         if (!sc_rover)
-            Sys_Error("D_SCAlloc: hit the end of memory");
+            Sys_Error((char*)"D_SCAlloc: hit the end of memory");
         if (sc_rover->owner)
             *sc_rover->owner = NULL;
 
@@ -203,7 +203,7 @@ void D_SCDump()
     for (test = sc_base; test; test = test->next)
     {
         if (test == sc_rover)
-            Sys_Printf("ROVER:\n");
+            Sys_Printf((char*)"ROVER:\n");
         printf("%p : %i bytes %i width\n", test, test->size, test->width);
     }
 }

@@ -144,7 +144,7 @@ Split out like this for ASM to call.
 */
 void BOPS_Error()
 {
-    Sys_Error("BoxOnPlaneSide: Bad signbits");
+    Sys_Error((char*)"BoxOnPlaneSide: Bad signbits");
 }
 
 /*
@@ -424,7 +424,7 @@ void FloorDivMod(double numer, double denom, int * quotient,
     double x;
 
     if (denom <= 0.0)
-        Sys_Error("FloorDivMod: bad denominator %d\n", denom);
+        Sys_Error((char*)"FloorDivMod: bad denominator %d\n", denom);
 
     if (numer >= 0.0)
     {

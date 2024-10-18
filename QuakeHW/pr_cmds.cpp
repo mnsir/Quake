@@ -42,12 +42,12 @@ void PF_error()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf("======SERVER ERROR in %s:\n%s\n"
+    Con_Printf((char*)"======SERVER ERROR in %s:\n%s\n"
                , pr_strings + pr_xfunction->s_name, s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
 
-    Host_Error("Program error");
+    Host_Error((char*)"Program error");
 }
 
 /*
@@ -66,13 +66,13 @@ void PF_objerror()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf("======OBJECT ERROR in %s:\n%s\n"
+    Con_Printf((char*)"======OBJECT ERROR in %s:\n%s\n"
                , pr_strings + pr_xfunction->s_name, s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
     ED_Free(ed);
 
-    Host_Error("Program error");
+    Host_Error((char*)"Program error");
 }
 
 
@@ -123,7 +123,7 @@ void SetMinMaxSize(edict_t * e, float * min, float * max, bool rotate)
 
     for (i = 0; i < 3; i++)
         if (min[i] > max[i])
-            PR_RunError("backwards mins/maxs");
+            PR_RunError((char*)"backwards mins/maxs");
 
     rotate = false; // FIXME: implement rotation properly again
 
@@ -229,7 +229,7 @@ void PF_setmodel()
             break;
 
     if (!*check)
-        PR_RunError("no precache: %s\n", m);
+        PR_RunError((char*)"no precache: %s\n", m);
 
 
     e->v.model = m - pr_strings;
@@ -257,7 +257,7 @@ void PF_bprint()
     char * s;
 
     s = PF_VarString(0);
-    SV_BroadcastPrintf("%s", s);
+    SV_BroadcastPrintf((char*)"%s", s);
 }
 
 /*
@@ -280,7 +280,7 @@ void PF_sprint()
 
     if (entnum < 1 || entnum > svs.maxclients)
     {
-        Con_Printf("tried to sprint to a non-client\n");
+        Con_Printf((char*)"tried to sprint to a non-client\n");
         return;
     }
 
@@ -311,7 +311,7 @@ void PF_centerprint()
 
     if (entnum < 1 || entnum > svs.maxclients)
     {
-        Con_Printf("tried to sprint to a non-client\n");
+        Con_Printf((char*)"tried to sprint to a non-client\n");
         return;
     }
 
@@ -505,7 +505,7 @@ void PF_ambientsound()
 
     if (!*check)
     {
-        Con_Printf("no precache: %s\n", samp);
+        Con_Printf((char*)"no precache: %s\n", samp);
         return;
     }
 
@@ -552,13 +552,13 @@ void PF_sound()
     attenuation = G_FLOAT(OFS_PARM4);
 
     if (volume < 0 || volume > 255)
-        Sys_Error("SV_StartSound: volume = %i", volume);
+        Sys_Error((char*)"SV_StartSound: volume = %i", volume);
 
     if (attenuation < 0 || attenuation > 4)
-        Sys_Error("SV_StartSound: attenuation = %f", attenuation);
+        Sys_Error((char*)"SV_StartSound: attenuation = %f", attenuation);
 
     if (channel < 0 || channel > 7)
-        Sys_Error("SV_StartSound: channel = %i", channel);
+        Sys_Error((char*)"SV_StartSound: channel = %i", channel);
 
     SV_StartSound(entity, channel, sample, volume, attenuation);
 }
@@ -572,7 +572,7 @@ break()
 */
 void PF_break()
 {
-    Con_Printf("break statement\n");
+    Con_Printf((char*)"break statement\n");
     *(int *)-4 = 0; // dump to debugger
     // PR_RunError ("break statement");
 }
@@ -760,12 +760,12 @@ void PF_stuffcmd()
 
     entnum = G_EDICTNUM(OFS_PARM0);
     if (entnum < 1 || entnum > svs.maxclients)
-        PR_RunError("Parm 0 not a client");
+        PR_RunError((char*)"Parm 0 not a client");
     str = G_STRING(OFS_PARM1);
 
     old = host_client;
     host_client = &svs.clients[entnum - 1];
-    Host_ClientCommands("%s", str);
+    Host_ClientCommands((char*)"%s", str);
     host_client = old;
 }
 
@@ -868,7 +868,7 @@ PF_dprint
 */
 void PF_dprint()
 {
-    Con_DPrintf("%s", PF_VarString(0));
+    Con_DPrintf((char*)"%s", PF_VarString(0));
 }
 
 char pr_string_temp[128];
@@ -926,7 +926,7 @@ void PF_Find()
     f = G_INT(OFS_PARM1);
     s = G_STRING(OFS_PARM2);
     if (!s)
-        PR_RunError("PF_Find: bad search string");
+        PR_RunError((char*)"PF_Find: bad search string");
 
     for (e++; e < sv.num_edicts; e++)
     {
@@ -949,7 +949,7 @@ void PF_Find()
 void PR_CheckEmptyString(char * s)
 {
     if (s[0] <= ' ')
-        PR_RunError("Bad string");
+        PR_RunError((char*)"Bad string");
 }
 
 void PF_precache_file()
@@ -963,7 +963,7 @@ void PF_precache_sound()
     int i;
 
     if (sv.state != ss_loading)
-        PR_RunError("PF_Precache_*: Precache can only be done in spawn functions");
+        PR_RunError((char*)"PF_Precache_*: Precache can only be done in spawn functions");
 
     s = G_STRING(OFS_PARM0);
     G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -979,7 +979,7 @@ void PF_precache_sound()
         if (!strcmp(sv.sound_precache[i], s))
             return;
     }
-    PR_RunError("PF_precache_sound: overflow");
+    PR_RunError((char*)"PF_precache_sound: overflow");
 }
 
 void PF_precache_model()
@@ -988,7 +988,7 @@ void PF_precache_model()
     int i;
 
     if (sv.state != ss_loading)
-        PR_RunError("PF_Precache_*: Precache can only be done in spawn functions");
+        PR_RunError((char*)"PF_Precache_*: Precache can only be done in spawn functions");
 
     s = G_STRING(OFS_PARM0);
     G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1005,7 +1005,7 @@ void PF_precache_model()
         if (!strcmp(sv.model_precache[i], s))
             return;
     }
-    PR_RunError("PF_precache_model: overflow");
+    PR_RunError((char*)"PF_precache_model: overflow");
 }
 
 
@@ -1222,7 +1222,7 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-cvar_t sv_aim = {"sv_aim", "0.93"};
+cvar_t sv_aim = {(char*)"sv_aim", (char*)"0.93"};
 void PF_aim()
 {
     edict_t * ent, * check, * bestent;
@@ -1368,7 +1368,7 @@ sizebuf_t * WriteDest()
         ent = PROG_TO_EDICT(pr_global_struct->msg_entity);
         entnum = NUM_FOR_EDICT(ent);
         if (entnum < 1 || entnum > svs.maxclients)
-            PR_RunError("WriteDest: not a client");
+            PR_RunError((char*)"WriteDest: not a client");
         return &svs.clients[entnum - 1].message;
 
     case MSG_ALL:
@@ -1378,7 +1378,7 @@ sizebuf_t * WriteDest()
         return &sv.signon;
 
     default:
-        PR_RunError("WriteDest: bad destination");
+        PR_RunError((char*)"WriteDest: bad destination");
         break;
     }
 
@@ -1470,7 +1470,7 @@ void PF_setspawnparms()
     ent = G_EDICT(OFS_PARM0);
     i = NUM_FOR_EDICT(ent);
     if (i < 1 || i > svs.maxclients)
-        PR_RunError("Entity is not a client");
+        PR_RunError((char*)"Entity is not a client");
 
     // copy spawn parms out of the client_t
     client = svs.clients + (i - 1);
@@ -1494,12 +1494,12 @@ void PF_changelevel()
     svs.changelevel_issued = true;
 
     s = G_STRING(OFS_PARM0);
-    Cbuf_AddText(va("changelevel %s\n", s));
+    Cbuf_AddText(va((char*)"changelevel %s\n", s));
 }
 
 void PF_Fixme()
 {
-    PR_RunError("unimplemented bulitin");
+    PR_RunError((char*)"unimplemented bulitin");
 }
 
 

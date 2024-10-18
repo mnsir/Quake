@@ -29,7 +29,7 @@ bool isDedicated;
 static bool sc_return_on_enter = false;
 HANDLE hinput, houtput;
 
-static char * tracking_tag = "Clams & Mooses";
+static char * tracking_tag = (char*)"Clams & Mooses";
 
 static HANDLE tevent;
 static HANDLE hFile;
@@ -60,7 +60,7 @@ int findhandle()
     for (i = 1; i < MAX_HANDLES; i++)
         if (!sys_handles[i])
             return i;
-    Sys_Error("out of handles");
+    Sys_Error((char*)"out of handles");
     return -1;
 }
 
@@ -128,7 +128,7 @@ int Sys_FileOpenWrite(char * path)
 
     f = fopen(path, "wb");
     if (!f)
-        Sys_Error("Error opening %s: %s", path, strerror(errno));
+        Sys_Error((char*)"Error opening %s: %s", path, strerror(errno));
     sys_handles[i] = f;
 
     VID_ForceLockState(t);
@@ -222,7 +222,7 @@ void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length)
     DWORD flOldProtect;
 
     if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-        Sys_Error("Protection change failed\n");
+        Sys_Error((char*)"Protection change failed\n");
 }
 
 
@@ -260,7 +260,7 @@ void Sys_Init()
     Sys_SetFPCW();
 
     if (!QueryPerformanceFrequency(&PerformanceFreq))
-        Sys_Error("No hardware timer available");
+        Sys_Error((char*)"No hardware timer available");
 
     // get 32 out of the 64 time bits such that we have around
     // 1 microsecond resolution
@@ -288,9 +288,9 @@ void Sys_Error(char * error, ...)
 {
     va_list argptr;
     char text[1024], text2[1024];
-    char * text3 = "Press Enter to exit\n";
-    char * text4 = "***********************************\n";
-    char * text5 = "\n";
+    char * text3 = (char*)"Press Enter to exit\n";
+    char * text4 = (char*)"***********************************\n";
+    char * text5 = (char*)"\n";
     DWORD dummy;
     double starttime;
     static int in_sys_error0 = 0;
@@ -478,7 +478,7 @@ void Sys_InitFloatTime()
 
     Sys_FloatTime();
 
-    j = COM_CheckParm("-starttime");
+    j = COM_CheckParm((char*)"-starttime");
 
     if (j)
     {
@@ -512,16 +512,16 @@ char * Sys_ConsoleInput()
     for (;; )
     {
         if (!GetNumberOfConsoleInputEvents(hinput, &numevents))
-            Sys_Error("Error getting # of console events");
+            Sys_Error((char*)"Error getting # of console events");
 
         if (numevents <= 0)
             break;
 
         if (!ReadConsoleInput(hinput, recs, 1, &numread))
-            Sys_Error("Error reading console input");
+            Sys_Error((char*)"Error reading console input");
 
         if (numread != 1)
-            Sys_Error("Couldn't read console input");
+            Sys_Error((char*)"Couldn't read console input");
 
         if (recs[0].EventType == KEY_EVENT)
         {
@@ -629,7 +629,7 @@ WinMain
 HINSTANCE global_hInstance;
 int global_nCmdShow;
 char * argv[MAX_NUM_ARGVS];
-static char * empty_string = "";
+static char * empty_string = (char*)"";
 HWND hwnd_dialog;
 
 
@@ -654,7 +654,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     GlobalMemoryStatus(&lpBuffer);
 
     if (!GetCurrentDirectory(sizeof(cwd), cwd))
-        Sys_Error("Couldn't determine current directory");
+        Sys_Error((char*)"Couldn't determine current directory");
 
     if (cwd[std::strlen(cwd) - 1] == '/')
         cwd[std::strlen(cwd) - 1] = 0;
@@ -694,7 +694,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     parms.argc = com_argc;
     parms.argv = com_argv;
 
-    isDedicated = (COM_CheckParm("-dedicated") != 0);
+    isDedicated = (COM_CheckParm((char*)"-dedicated") != 0);
 
     if (!isDedicated)
     {
@@ -733,15 +733,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (memsize > MAXIMUM_WIN_MEMORY)
         memsize = MAXIMUM_WIN_MEMORY;
 
-    if (COM_CheckParm("-heapsize"))
+    if (COM_CheckParm((char*)"-heapsize"))
     {
-        t = COM_CheckParm("-heapsize") + 1;
+        t = COM_CheckParm((char*)"-heapsize") + 1;
 
         if (t < com_argc)
             memsize = std::atoi(com_argv[t]) * 1024;
     }
 
-    if (COM_CheckParm("-minmemory"))
+    if (COM_CheckParm((char*)"-minmemory"))
         memsize = minimum_memory;
 
     parms.mem = std::vector<byte>(memsize, byte());
@@ -749,32 +749,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
     if (!tevent)
-        Sys_Error("Couldn't create event");
+        Sys_Error((char*)"Couldn't create event");
 
     if (isDedicated)
     {
         if (!AllocConsole())
         {
-            Sys_Error("Couldn't create dedicated server console");
+            Sys_Error((char*)"Couldn't create dedicated server console");
         }
 
         hinput = GetStdHandle(STD_INPUT_HANDLE);
         houtput = GetStdHandle(STD_OUTPUT_HANDLE);
 
         // give QHOST a chance to hook into the console
-        if ((t = COM_CheckParm("-HFILE")) > 0)
+        if ((t = COM_CheckParm((char*)"-HFILE")) > 0)
         {
             if (t < com_argc)
                 hFile = (HANDLE)std::atoi(com_argv[t + 1]);
         }
 
-        if ((t = COM_CheckParm("-HPARENT")) > 0)
+        if ((t = COM_CheckParm((char*)"-HPARENT")) > 0)
         {
             if (t < com_argc)
                 heventParent = (HANDLE)std::atoi(com_argv[t + 1]);
         }
 
-        if ((t = COM_CheckParm("-HCHILD")) > 0)
+        if ((t = COM_CheckParm((char*)"-HCHILD")) > 0)
         {
             if (t < com_argc)
                 heventChild = (HANDLE)std::atoi(com_argv[t + 1]);
@@ -788,7 +788,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // because sound is off until we become active
     S_BlockSound();
 
-    Sys_Printf("Host_Init\n");
+    Sys_Printf((char*)"Host_Init\n");
     Host_Init(parms);
 
     oldtime = Sys_FloatTime();

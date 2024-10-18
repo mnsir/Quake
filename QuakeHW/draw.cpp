@@ -57,7 +57,7 @@ qpic_t * Draw_CachePic(char * path)
     if (i == menu_numcachepics)
     {
         if (menu_numcachepics == MAX_CACHED_PICS)
-            Sys_Error("menu_numcachepics == MAX_CACHED_PICS");
+            Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
         menu_numcachepics++;
         strcpy(pic->name, path);
     }
@@ -75,7 +75,7 @@ qpic_t * Draw_CachePic(char * path)
     dat = (qpic_t *)pic->cache.data;
     if (!dat)
     {
-        Sys_Error("Draw_CachePic: failed to load %s", path);
+        Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
     }
 
     return dat;
@@ -92,9 +92,9 @@ void Draw_Init()
 {
     int i;
 
-    draw_chars = (byte*)W_GetLumpName("conchars");
-    draw_disc = (qpic_t*)W_GetLumpName("disc");
-    draw_backtile = (qpic_t*)W_GetLumpName("backtile");
+    draw_chars = (byte*)W_GetLumpName((char*)"conchars");
+    draw_disc = (qpic_t*)W_GetLumpName((char*)"disc");
+    draw_backtile = (qpic_t*)W_GetLumpName((char*)"backtile");
 
     r_rectdesc.width = draw_backtile->width;
     r_rectdesc.height = draw_backtile->height;
@@ -271,7 +271,7 @@ void Draw_Pic(int x, int y, qpic_t * pic)
         (y < 0) ||
         (y + pic->height > vid.height))
     {
-        Sys_Error("Draw_Pic: bad coordinates");
+        Sys_Error((char*)"Draw_Pic: bad coordinates");
     }
 
     source = pic->data;
@@ -320,7 +320,7 @@ void Draw_TransPic(int x, int y, qpic_t * pic)
     if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
         (unsigned)(y + pic->height) > vid.height)
     {
-        Sys_Error("Draw_TransPic: bad coordinates");
+        Sys_Error((char*)"Draw_TransPic: bad coordinates");
     }
 
     source = pic->data;
@@ -407,7 +407,7 @@ void Draw_TransPicTranslate(int x, int y, qpic_t * pic, byte * translation)
     if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
         (unsigned)(y + pic->height) > vid.height)
     {
-        Sys_Error("Draw_TransPic: bad coordinates");
+        Sys_Error((char*)"Draw_TransPic: bad coordinates");
     }
 
     source = pic->data;
@@ -519,7 +519,7 @@ void Draw_ConsoleBackground(int lines)
     qpic_t * conback;
     char ver[100];
 
-    conback = Draw_CachePic("gfx/conback.lmp");
+    conback = Draw_CachePic((char*)"gfx/conback.lmp");
 
     // hack the version number directly into the pic
     sprintf(ver, "(WinQuake) %4.2f", (float)VERSION);

@@ -12,9 +12,9 @@ bool VID_Is8bit();
 
 extern unsigned char d_15to8table[65536];
 
-cvar_t gl_nobind = {"gl_nobind", "0"};
-cvar_t gl_max_size = {"gl_max_size", "1024"};
-cvar_t gl_picmip = {"gl_picmip", "0"};
+cvar_t gl_nobind = {(char*)"gl_nobind", (char*)"0"};
+cvar_t gl_max_size = {(char*)"gl_max_size", (char*)"1024"};
+cvar_t gl_picmip = {(char*)"gl_picmip", (char*)"0"};
 
 byte * draw_chars; // 8*8 graphic characters
 qpic_t * draw_disc;
@@ -125,7 +125,7 @@ int Scrap_AllocBlock(int w, int h, int * x, int * y)
         return texnum;
     }
 
-    Sys_Error("Scrap_AllocBlock: full");
+    Sys_Error((char*)"Scrap_AllocBlock: full");
 }
 
 int scrap_uploads;
@@ -223,7 +223,7 @@ qpic_t * Draw_CachePic(char * path)
             return &pic->pic;
 
     if (menu_numcachepics == MAX_CACHED_PICS)
-        Sys_Error("menu_numcachepics == MAX_CACHED_PICS");
+        Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
     menu_numcachepics++;
     strcpy(pic->name, path);
 
@@ -232,7 +232,7 @@ qpic_t * Draw_CachePic(char * path)
     //
     dat = (qpic_t *)COM_LoadTempFile(path);
     if (!dat)
-        Sys_Error("Draw_CachePic: failed to load %s", path);
+        Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
 
     // HACK HACK HACK --- we need to keep the bytes for
     // the translatable player picture just for the menu
@@ -285,12 +285,12 @@ typedef struct
 } glmode_t;
 
 glmode_t modes[] = {
-    {"GL_NEAREST", GL_NEAREST, GL_NEAREST},
-    {"GL_LINEAR", GL_LINEAR, GL_LINEAR},
-    {"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
-    {"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
-    {"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
-    {"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
+    {(char*)"GL_NEAREST", GL_NEAREST, GL_NEAREST},
+    {(char*)"GL_LINEAR", GL_LINEAR, GL_LINEAR},
+    {(char*)"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
+    {(char*)"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
+    {(char*)"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
+    {(char*)"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
 };
 
 /*
@@ -308,10 +308,10 @@ void Draw_TextureMode_f()
         for (i = 0; i < 6; i++)
             if (gl_filter_min == modes[i].minimize)
             {
-                Con_Printf("%s\n", modes[i].name);
+                Con_Printf((char*)"%s\n", modes[i].name);
                 return;
             }
-        Con_Printf("current filter is unknown???\n");
+        Con_Printf((char*)"current filter is unknown???\n");
         return;
     }
 
@@ -322,7 +322,7 @@ void Draw_TextureMode_f()
     }
     if (i == 6)
     {
-        Con_Printf("bad filter name\n");
+        Con_Printf((char*)"bad filter name\n");
         return;
     }
 
@@ -364,29 +364,29 @@ void Draw_Init()
     Cvar_RegisterVariable(&gl_picmip);
 
     // 3dfx can only handle 256 wide textures
-    if (!Q_strncasecmp((char *)gl_renderer, "3dfx", 4) ||
+    if (!Q_strncasecmp((char *)gl_renderer, (char*)"3dfx", 4) ||
         strstr((char *)gl_renderer, "Glide"))
-        Cvar_Set("gl_max_size", "256");
+        Cvar_Set((char*)"gl_max_size", (char*)"256");
 
-    Cmd_AddCommand("gl_texturemode", &Draw_TextureMode_f);
+    Cmd_AddCommand((char*)"gl_texturemode", &Draw_TextureMode_f);
 
     // load the console background and the charset
     // by hand, because we need to write the version
     // string into the background before turning
     // it into a texture
-    draw_chars = (byte*)W_GetLumpName("conchars");
+    draw_chars = (byte*)W_GetLumpName((char*)"conchars");
     for (i = 0; i < 256 * 64; i++)
         if (draw_chars[i] == 0)
             draw_chars[i] = 255; // proper transparent color
 
     // now turn them into textures
-    char_texture = GL_LoadTexture("charset", 128, 128, draw_chars, false, true);
+    char_texture = GL_LoadTexture((char*)"charset", 128, 128, draw_chars, false, true);
 
     start = Hunk_LowMark();
 
-    cb = (qpic_t *)COM_LoadTempFile("gfx/conback.lmp");
+    cb = (qpic_t *)COM_LoadTempFile((char*)"gfx/conback.lmp");
     if (!cb)
-        Sys_Error("Couldn't load gfx/conback.lmp");
+        Sys_Error((char*)"Couldn't load gfx/conback.lmp");
 
     sprintf(ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 
@@ -403,7 +403,7 @@ void Draw_Init()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     gl = (glpic_t *)conback->data;
-    gl->texnum = GL_LoadTexture("conback", conback->width, conback->height, ncdata, false, false);
+    gl->texnum = GL_LoadTexture((char*)"conback", conback->width, conback->height, ncdata, false, false);
     gl->sl = 0;
     gl->sh = 1;
     gl->tl = 0;
@@ -424,8 +424,8 @@ void Draw_Init()
     //
     // get the other pics we need
     //
-    draw_disc = Draw_PicFromWad("disc");
-    draw_backtile = Draw_PicFromWad("backtile");
+    draw_disc = Draw_PicFromWad((char*)"disc");
+    draw_backtile = Draw_PicFromWad((char*)"backtile");
 }
 
 
@@ -586,7 +586,7 @@ void Draw_TransPic(int x, int y, qpic_t * pic)
     if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
         (unsigned)(y + pic->height) > vid.height)
     {
-        Sys_Error("Draw_TransPic: bad coordinates");
+        Sys_Error((char*)"Draw_TransPic: bad coordinates");
     }
 
     Draw_Pic(x, y, pic);
@@ -966,7 +966,7 @@ void GL_Upload32(unsigned * data, int width, int height, bool mipmap, bool alpha
         scaled_height = gl_max_size.value;
 
     if (scaled_width * scaled_height > sizeof(scaled) / 4)
-        Sys_Error("GL_LoadTexture: too big");
+        Sys_Error((char*)"GL_LoadTexture: too big");
 
     samples = alpha ? gl_alpha_format : gl_solid_format;
 
@@ -1056,7 +1056,7 @@ void GL_Upload8_EXT(byte * data, int width, int height, bool mipmap, bool alpha)
         scaled_height = gl_max_size.value;
 
     if (scaled_width * scaled_height > sizeof(scaled))
-        Sys_Error("GL_LoadTexture: too big");
+        Sys_Error((char*)"GL_LoadTexture: too big");
 
     samples = 1; // alpha ? gl_alpha_format : gl_solid_format;
 
@@ -1140,7 +1140,7 @@ void GL_Upload8(byte * data, int width, int height, bool mipmap, bool alpha)
     else
     {
         if (s & 3)
-            Sys_Error("GL_Upload8: s&3");
+            Sys_Error((char*)"GL_Upload8: s&3");
         for (i = 0; i < s; i += 4)
         {
             trans[i] = d_8to24table[data[i]];
@@ -1177,7 +1177,7 @@ int GL_LoadTexture(char * identifier, int width, int height, byte * data, bool m
             if (!strcmp(identifier, glt->identifier))
             {
                 if (width != glt->width || height != glt->height)
-                    Sys_Error("GL_LoadTexture: cache mismatch");
+                    Sys_Error((char*)"GL_LoadTexture: cache mismatch");
                 return gltextures[i].texnum;
             }
         }
@@ -1210,7 +1210,7 @@ GL_LoadPicTexture
 */
 int GL_LoadPicTexture(qpic_t * pic)
 {
-    return GL_LoadTexture("", pic->width, pic->height, pic->data, false, true);
+    return GL_LoadTexture((char*)"", pic->width, pic->height, pic->data, false, true);
 }
 
 /****************************************/

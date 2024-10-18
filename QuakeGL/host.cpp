@@ -68,28 +68,28 @@ jmp_buf host_abortserver;
 byte * host_basepal;
 byte * host_colormap;
 
-cvar_t host_framerate = {"host_framerate", "0"}; // set for slow motion
-cvar_t host_speeds = {"host_speeds", "0"}; // set for running times
+cvar_t host_framerate = {(char*)"host_framerate", (char*)"0"}; // set for slow motion
+cvar_t host_speeds = {(char*)"host_speeds", (char*)"0"}; // set for running times
 
-cvar_t sys_ticrate = {"sys_ticrate", "0.05"};
-cvar_t serverprofile = {"serverprofile", "0"};
+cvar_t sys_ticrate = {(char*)"sys_ticrate", (char*)"0.05"};
+cvar_t serverprofile = {(char*)"serverprofile", (char*)"0"};
 
-cvar_t fraglimit = {"fraglimit", "0", false, true};
-cvar_t timelimit = {"timelimit", "0", false, true};
-cvar_t teamplay = {"teamplay", "0", false, true};
+cvar_t fraglimit = {(char*)"fraglimit", (char*)"0", false, true};
+cvar_t timelimit = {(char*)"timelimit", (char*)"0", false, true};
+cvar_t teamplay = {(char*)"teamplay", (char*)"0", false, true};
 
-cvar_t samelevel = {"samelevel", "0"};
-cvar_t noexit = {"noexit", "0", false, true};
+cvar_t samelevel = {(char*)"samelevel", (char*)"0"};
+cvar_t noexit = {(char*)"noexit", (char*)"0", false, true};
 
-cvar_t developer = {"developer", "0"};
+cvar_t developer = {(char*)"developer", (char*)"0"};
 
-cvar_t skill = {"skill", "1"}; // 0 - 3
-cvar_t deathmatch = {"deathmatch", "0"}; // 0, 1, or 2
-cvar_t coop = {"coop", "0"}; // 0 or 1
+cvar_t skill = {(char*)"skill", (char*)"1"}; // 0 - 3
+cvar_t deathmatch = {(char*)"deathmatch", (char*)"0"}; // 0, 1, or 2
+cvar_t coop = {(char*)"coop", (char*)"0"}; // 0 or 1
 
-cvar_t pausable = {"pausable", "1"};
+cvar_t pausable = {(char*)"pausable", (char*)"1"};
 
-cvar_t temp1 = {"temp1", "0"};
+cvar_t temp1 = {(char*)"temp1", (char*)"0"};
 
 
 /*
@@ -105,13 +105,13 @@ void Host_EndGame(char * message, ...)
     va_start(argptr, message);
     vsprintf(string, message, argptr);
     va_end(argptr);
-    Con_DPrintf("Host_EndGame: %s\n", string);
+    Con_DPrintf((char*)"Host_EndGame: %s\n", string);
 
     if (sv.active)
         Host_ShutdownServer(false);
 
     if (cls.state == ca_dedicated)
-        Sys_Error("Host_EndGame: %s\n", string); // dedicated servers exit
+        Sys_Error((char*)"Host_EndGame: %s\n", string); // dedicated servers exit
 
     if (cls.demonum != -1)
         CL_NextDemo();
@@ -135,7 +135,7 @@ void Host_Error(char * error, ...)
     static bool inerror = false;
 
     if (inerror)
-        Sys_Error("Host_Error: recursively entered");
+        Sys_Error((char*)"Host_Error: recursively entered");
     inerror = true;
 
     SCR_EndLoadingPlaque(); // reenable screen updates
@@ -143,13 +143,13 @@ void Host_Error(char * error, ...)
     va_start(argptr, error);
     vsprintf(string, error, argptr);
     va_end(argptr);
-    Con_Printf("Host_Error: %s\n", string);
+    Con_Printf((char*)"Host_Error: %s\n", string);
 
     if (sv.active)
         Host_ShutdownServer(false);
 
     if (cls.state == ca_dedicated)
-        Sys_Error("Host_Error: %s\n", string); // dedicated servers exit
+        Sys_Error((char*)"Host_Error: %s\n", string); // dedicated servers exit
 
     CL_Disconnect();
     cls.demonum = -1;
@@ -170,7 +170,7 @@ void Host_FindMaxClients()
 
     svs.maxclients = 1;
 
-    i = COM_CheckParm("-dedicated");
+    i = COM_CheckParm((char*)"-dedicated");
     if (i)
     {
         cls.state = ca_dedicated;
@@ -184,11 +184,11 @@ void Host_FindMaxClients()
     else
         cls.state = ca_disconnected;
 
-    i = COM_CheckParm("-listen");
+    i = COM_CheckParm((char*)"-listen");
     if (i)
     {
         if (cls.state == ca_dedicated)
-            Sys_Error("Only one of -dedicated or -listen can be specified");
+            Sys_Error((char*)"Only one of -dedicated or -listen can be specified");
         if (i != (com_argc - 1))
             svs.maxclients = std::atoi(com_argv[i + 1]);
         else
@@ -202,12 +202,12 @@ void Host_FindMaxClients()
     svs.maxclientslimit = svs.maxclients;
     if (svs.maxclientslimit < 4)
         svs.maxclientslimit = 4;
-    svs.clients = (client_t*)Hunk_AllocName(svs.maxclientslimit * sizeof(client_t), "clients");
+    svs.clients = (client_t*)Hunk_AllocName(svs.maxclientslimit * sizeof(client_t), (char*)"clients");
 
     if (svs.maxclients > 1)
-        Cvar_SetValue("deathmatch", 1.0);
+        Cvar_SetValue((char*)"deathmatch", 1.0);
     else
-        Cvar_SetValue("deathmatch", 0.0);
+        Cvar_SetValue((char*)"deathmatch", 0.0);
 }
 
 
@@ -261,10 +261,10 @@ void Host_WriteConfiguration()
     // config.cfg cvars
     if (host_initialized & !isDedicated)
     {
-        f = fopen(va("%s/config.cfg", com_gamedir), "w");
+        f = fopen(va((char*)"%s/config.cfg", com_gamedir), "w");
         if (!f)
         {
-            Con_Printf("Couldn't write config.cfg.\n");
+            Con_Printf((char*)"Couldn't write config.cfg.\n");
             return;
         }
 
@@ -375,7 +375,7 @@ void SV_DropClient(bool crash)
             pr_global_struct->self = saveSelf;
         }
 
-        Sys_Printf("Client %s removed\n", host_client->name);
+        Sys_Printf((char*)"Client %s removed\n", host_client->name);
     }
 
     // break the net connection
@@ -395,7 +395,7 @@ void SV_DropClient(bool crash)
             continue;
         MSG_WriteByte(&client->message, svc_updatename);
         MSG_WriteByte(&client->message, host_client - svs.clients);
-        MSG_WriteString(&client->message, "");
+        MSG_WriteString(&client->message, (char*)"");
         MSG_WriteByte(&client->message, svc_updatefrags);
         MSG_WriteByte(&client->message, host_client - svs.clients);
         MSG_WriteShort(&client->message, 0);
@@ -461,7 +461,7 @@ void Host_ShutdownServer(bool crash)
     MSG_WriteByte(&buf, svc_disconnect);
     count = NET_SendToAll(&buf, 5);
     if (count)
-        Con_Printf("Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
+        Con_Printf((char*)"Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
 
     for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
         if (host_client->active)
@@ -485,7 +485,7 @@ not reinitialize anything.
 */
 void Host_ClearMemory()
 {
-    Con_DPrintf("Clearing memory\n");
+    Con_DPrintf((char*)"Clearing memory\n");
     D_FlushCaches();
     Mod_ClearAll();
     if (host_hunklevel)
@@ -670,7 +670,7 @@ void _Host_Frame(float time)
         time3 = Sys_FloatTime();
         pass2 = (time2 - time1) * 1000;
         pass3 = (time3 - time2) * 1000;
-        Con_Printf("%3i tot %3i server %3i gfx %3i snd\n",
+        Con_Printf((char*)"%3i tot %3i server %3i gfx %3i snd\n",
                    pass1 + pass2 + pass3, pass1, pass2, pass3);
     }
 
@@ -710,7 +710,7 @@ void Host_Frame(float time)
             c++;
     }
 
-    Con_Printf("serverprofile: %2i clients %2i msec\n", c, m);
+    Con_Printf((char*)"serverprofile: %2i clients %2i msec\n", c, m);
 }
 
 //============================================================================
@@ -725,18 +725,18 @@ void Host_InitVCR(char* arg0)
     int i, len, n;
     char * p;
 
-    if (COM_CheckParm("-playback"))
+    if (COM_CheckParm((char*)"-playback"))
     {
         if (com_argc != 2)
-            Sys_Error("No other parameters allowed with -playback\n");
+            Sys_Error((char*)"No other parameters allowed with -playback\n");
 
-        Sys_FileOpenRead("quake.vcr", &vcrFile);
+        Sys_FileOpenRead((char*)"quake.vcr", &vcrFile);
         if (vcrFile == -1)
-            Sys_Error("playback file not found\n");
+            Sys_Error((char*)"playback file not found\n");
 
         Sys_FileRead(vcrFile, &i, sizeof(int));
         if (i != VCR_SIGNATURE)
-            Sys_Error("Invalid signature in vcr file\n");
+            Sys_Error((char*)"Invalid signature in vcr file\n");
 
         Sys_FileRead(vcrFile, &com_argc, sizeof(int));
         com_argv = (char**)malloc(com_argc * sizeof(char *));
@@ -753,9 +753,9 @@ void Host_InitVCR(char* arg0)
         host_parms.argv = com_argv;
     }
 
-    if ((n = COM_CheckParm("-record")) != 0)
+    if ((n = COM_CheckParm((char*)"-record")) != 0)
     {
-        vcrFile = Sys_FileOpenWrite("quake.vcr");
+        vcrFile = Sys_FileOpenWrite((char*)"quake.vcr");
 
         i = VCR_SIGNATURE;
         Sys_FileWrite(vcrFile, &i, sizeof(int));
@@ -767,7 +767,7 @@ void Host_InitVCR(char* arg0)
             {
                 len = 10;
                 Sys_FileWrite(vcrFile, &len, sizeof(int));
-                Sys_FileWrite(vcrFile, "-playback", len);
+                Sys_FileWrite(vcrFile, (char*)"-playback", len);
                 continue;
             }
             len = std::strlen(com_argv[i]) + 1;
@@ -788,7 +788,7 @@ void Host_Init(const quakeparms_t& parms)
     host_parms = std::move(parms);
 
     if (host_parms.mem.size() < minimum_memory)
-        Sys_Error("Only %4.1f megs of memory available, can't execute game", host_parms.mem.size() / (float)0x100000);
+        Sys_Error((char*)"Only %4.1f megs of memory available, can't execute game", host_parms.mem.size() / (float)0x100000);
 
     com_argc = host_parms.argc;
     com_argv = host_parms.argv;
@@ -801,7 +801,7 @@ void Host_Init(const quakeparms_t& parms)
     Host_InitVCR(host_parms.argv[0]);
     COM_Init(host_parms.basedir);
     Host_InitLocal();
-    W_LoadWadFile("gfx.wad");
+    W_LoadWadFile((char*)"gfx.wad");
     Key_Init();
     Con_Init();
     M_Init();
@@ -810,17 +810,17 @@ void Host_Init(const quakeparms_t& parms)
     NET_Init();
     SV_Init();
 
-    Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
-    Con_Printf("%4.1f megabyte heap\n", host_parms.mem.size() / (1024 * 1024.0));
+    Con_Printf((char*)"Exe: " __TIME__ " " __DATE__ "\n");
+    Con_Printf((char*)"%4.1f megabyte heap\n", host_parms.mem.size() / (1024 * 1024.0));
 
     R_InitTextures(); // needed even for dedicated servers
 
     if (cls.state != ca_dedicated)
     {
         host_basepal = palette;
-        host_colormap = (byte *)COM_LoadHunkFile("gfx/colormap.lmp");
+        host_colormap = (byte *)COM_LoadHunkFile((char*)"gfx/colormap.lmp");
         if (!host_colormap)
-            Sys_Error("Couldn't load gfx/colormap.lmp");
+            Sys_Error((char*)"Couldn't load gfx/colormap.lmp");
 
         VID_Init(host_basepal);
 
@@ -839,14 +839,14 @@ void Host_Init(const quakeparms_t& parms)
         IN_Init();
     }
 
-    Cbuf_InsertText("exec quake.rc\n");
+    Cbuf_InsertText((char*)"exec quake.rc\n");
 
-    Hunk_AllocName(0, "-HOST_HUNKLEVEL-");
+    Hunk_AllocName(0, (char*)"-HOST_HUNKLEVEL-");
     host_hunklevel = Hunk_LowMark();
 
     host_initialized = true;
 
-    Sys_Printf("========Quake Initialized=========\n");
+    Sys_Printf((char*)"========Quake Initialized=========\n");
 }
 
 

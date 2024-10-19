@@ -32,8 +32,6 @@ extern modestate_t modestate;
 extern HWND mainwindow;
 extern bool ActiveApp, Minimized;
 
-extern bool WinNT;
-
 int VID_ForceUnlockedAndReturnState();
 void VID_ForceLockState(int lk);
 

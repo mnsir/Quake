@@ -4,6 +4,8 @@
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <common/time.h>
+
 /*
 
 A server can allways be started, even if the system started out as a client

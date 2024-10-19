@@ -3,6 +3,8 @@
 
 #include "quakedef.h"
 
+#include <common/time.h>
+
 int R_LightPoint(vec3_t p);
 void R_DrawBrushModel(entity_t* e);
 void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees);

@@ -3,6 +3,8 @@
 
 #include "quakedef.h"
 
+#include <common/time.h>
+
 char * svc_strings[] =
 {
     (char*)"svc_bad",

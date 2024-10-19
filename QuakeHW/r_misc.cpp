@@ -4,6 +4,7 @@
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <common/time.h>
 
 /*
 ===============

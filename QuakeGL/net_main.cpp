@@ -4,6 +4,8 @@
 #include "quakedef.h"
 #include "net_vcr.h"
 
+#include <common/time.h>
+
 qsocket_t * net_activeSockets = NULL;
 qsocket_t * net_freeSockets = NULL;
 int net_numsockets = 0;

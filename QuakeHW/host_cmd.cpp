@@ -2,6 +2,8 @@
 
 #include "quakedef.h"
 
+#include <common/time.h>
+
 extern cvar_t pausable;
 
 int current_skill;

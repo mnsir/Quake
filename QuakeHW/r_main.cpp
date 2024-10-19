@@ -4,6 +4,8 @@
 #include "quakedef.h"
 #include "r_local.h"
 
+#include <common/time.h>
+
 void * colormap;
 vec3_t viewlightvec;
 alight_t r_viewlighting = {128, 192, viewlightvec};
@@ -910,12 +912,6 @@ void R_RenderView_()
 
     R_MarkLeaves(); // done here so we know if we're in water
 
-    // make FDIV fast. This reduces timing precision after we've been running for a
-    // while, so we don't do it globally. This also sets chop mode, and we do it
-    // here so that setup stuff like the refresh area calculations match what's
-    // done in screen.c
-    Sys_LowFPPrecision();
-
     if (!cl_entities[0].model || !cl.worldmodel)
         Sys_Error((char*)"R_RenderView: NULL worldmodel");
 
@@ -984,9 +980,6 @@ void R_RenderView_()
 
     if (r_reportedgeout.value && r_outofedges)
         Con_Printf((char*)"Short roughly %d edges\n", r_outofedges * 2 / 3);
-
-    // back to high floating-point precision
-    Sys_HighFPPrecision();
 }
 
 void R_RenderView()

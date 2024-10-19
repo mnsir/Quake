@@ -3,6 +3,8 @@
 
 #include "quakedef.h"
 
+#include <common/time.h>
+
 void R_InitParticles();
 void R_ClearParticles();
 void GL_BuildLightmaps();

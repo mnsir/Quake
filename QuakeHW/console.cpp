@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include "quakedef.h"
 
+#include <common/time.h>
+
 int con_linewidth;
 
 float con_cursorspeed = 4;

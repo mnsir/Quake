@@ -2,6 +2,7 @@
 // cl_parse.c -- parse a message received from the server
 
 #include "quakedef.h"
+#include <common/time.h>
 
 char * svc_strings[] =
 {

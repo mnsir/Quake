@@ -1,71 +1,31 @@
-cmake_minimum_required(VERSION 3.26.0 FATAL_ERROR)
-
-set(this_target "QuakeGL")
-
-project(${this_target})
-
-set(${this_target}_sources
-  #"pch.h"
-  
+add_executable(QuakeGL WIN32
   "bspfile.h"
-  "cdaudio.h"
-  "client.h"
-  "cmd.h"
-  "common.h"
-  "conproc.h"
-  "console.h"
-  "crc.h"
-  "cvar.h"
-  "draw.h"
-  "gl_model.h"
-  "glquake.h"
-  "input.h"
-  "keys.h"
-  "mathlib.h"
-  "menu.h"
-  "model.h"
-  "modelgen.h"
-  "net_dgrm.h"
-  "net_loop.h"
-  "net_vcr.h"
-  "net_wins.h"
-  "net_wipx.h"
-  "net.h"
-  "pr_comp.h"
-  "progs.h"
-  "protocol.h"
-  "quakedef.h"
-  "render.h"
-  "resource.h"
-  "sbar.h"
-  "screen.h"
-  "server.h"
-  "sound.h"
-  "spritegn.h"
-  "sys.h"
-  "vid.h"
-  "view.h"
-  "wad.h"
-  "winquake.h"
-  "world.h"
-  "zone.h"
-
   "cd_win.cpp"
+  "cdaudio.h"
   "chase.cpp"
   "cl_demo.cpp"
   "cl_input.cpp"
   "cl_main.cpp"
   "cl_parse.cpp"
   "cl_tent.cpp"
+  "client.h"
   "cmd.cpp"
+  "cmd.h"
   "common.cpp"
+  "common.h"
   "conproc.cpp"
+  "conproc.h"
   "console.cpp"
+  "console.h"
   "crc.cpp"
+  "crc.h"
   "cvar.cpp"
+  "cvar.h"
+  "draw.h"
   "gl_draw.cpp"
   "gl_mesh.cpp"
   "gl_model.cpp"
+  "gl_model.h"
   "gl_refrag.cpp"
   "gl_rlight.cpp"
   "gl_rmain.cpp"
@@ -74,58 +34,77 @@ set(${this_target}_sources
   "gl_screen.cpp"
   "gl_vidnt.cpp"
   "gl_warp.cpp"
-  "host_cmd.cpp"
+  "glquake.h"
   "host.cpp"
+  "host_cmd.cpp"
   "in_win.cpp"
+  "input.h"
   "keys.cpp"
+  "keys.h"
   "mathlib.cpp"
+  "mathlib.h"
   "menu.cpp"
+  "menu.h"
+  "model.h"
+  "modelgen.h"
+  "net.h"
   "net_dgrm.cpp"
+  "net_dgrm.h"
   "net_loop.cpp"
+  "net_loop.h"
   "net_main.cpp"
   "net_vcr.cpp"
+  "net_vcr.h"
   "net_win.cpp"
   "net_wins.cpp"
+  "net_wins.h"
   "net_wipx.cpp"
+  "net_wipx.h"
   "pr_cmds.cpp"
+  "pr_comp.h"
   "pr_edict.cpp"
   "pr_exec.cpp"
+  "progs.h"
+  "protocol.h"
+  "quakedef.h"
   "r_part.cpp"
+  "render.h"
+  "resource.h"
   "sbar.cpp"
+  "sbar.h"
+  "screen.h"
+  "server.h"
   "snd_dma.cpp"
   "snd_mem.cpp"
   "snd_mix.cpp"
   "snd_win.cpp"
+  "sound.h"
+  "spritegn.h"
   "sv_main.cpp"
   "sv_move.cpp"
   "sv_phys.cpp"
   "sv_user.cpp"
+  "sys.h"
   "sys_win.cpp"
+  "vid.h"
   "view.cpp"
+  "view.h"
   "wad.cpp"
+  "wad.h"
+  "winquake.h"
   "world.cpp"
+  "world.h"
   "zone.cpp"
+  "zone.h"
 )
 
-add_executable(${this_target} WIN32
-  ${${this_target}_sources}
-)
-# "-startwindowed",
-#    //"-playback",
-#    //"-startwindowed -record",
-#    "-cachedir -width 800 -height 600 -bpp 32 -window -no8bit"
+add_compile_definitions(QuakeGL PRIVATE GLQUAKE)
 
-add_compile_definitions(${this_target} PRIVATE GLQUAKE)
-#dxguid.lib;winmm.lib;wsock32.lib;opengl32.lib;comctl32.
-target_link_libraries(${this_target}
-  PRIVATE
+target_link_libraries(QuakeGL PRIVATE
   OpenGL::GL
   dxguid
   winmm
   wsock32
   comctl32
+  quake::common
 )
-
-#add_library(quake::gl ALIAS ${this_target})
-
-#target_precompile_headers(${this_target} PRIVATE pch.h)

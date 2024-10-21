@@ -109,7 +109,7 @@ void InsertLinkAfter(link_t * l, link_t * after)
 ============================================================================
 */
 
-int Q_strncasecmp(char * s1, char * s2, int n)
+int Q_strncasecmp(const char * s1, const char * s2, int n)
 {
     int c1, c2;
 
@@ -139,61 +139,48 @@ int Q_strncasecmp(char * s1, char * s2, int n)
     return -1;
 }
 
-int Q_strcasecmp(char * s1, char * s2)
+int Q_strcasecmp(const char * s1, const char * s2)
 {
     return Q_strncasecmp(s1, s2, 99999);
 }
 
-/*
-==============================================================================
-
- MESSAGE IO FUNCTIONS
-
-Handles byte ordering and avoids alignment errors
-==============================================================================
-*/
-
-//
-// writing functions
-//
-
-void MSG_WriteChar(sizebuf_t * sb, int c)
+void sizebuf_t::MSG_WriteChar(int c)
 {
-    byte * buf;
+    byte* buf;
 
-    buf = (byte*)SZ_GetSpace(sb, 1);
+    buf = (byte*)SZ_GetSpace(1);
     buf[0] = c;
 }
 
-void MSG_WriteByte(sizebuf_t * sb, int c)
+void sizebuf_t::MSG_WriteByte(int c)
 {
-    byte * buf;
+    byte* buf;
 
-    buf = (byte*)SZ_GetSpace(sb, 1);
+    buf = (byte*)SZ_GetSpace(1);
     buf[0] = c;
 }
 
-void MSG_WriteShort(sizebuf_t * sb, int c)
+void sizebuf_t::MSG_WriteShort(int c)
 {
-    byte * buf;
+    byte* buf;
 
-    buf = (byte*)SZ_GetSpace(sb, 2);
+    buf = (byte*)SZ_GetSpace(2);
     buf[0] = c & 0xff;
     buf[1] = c >> 8;
 }
 
-void MSG_WriteLong(sizebuf_t * sb, int c)
+void sizebuf_t::MSG_WriteLong(int c)
 {
-    byte * buf;
+    byte* buf;
 
-    buf = (byte*)SZ_GetSpace(sb, 4);
+    buf = (byte*)SZ_GetSpace(4);
     buf[0] = c & 0xff;
     buf[1] = (c >> 8) & 0xff;
     buf[2] = (c >> 16) & 0xff;
     buf[3] = c >> 24;
 }
 
-void MSG_WriteFloat(sizebuf_t * sb, float f)
+void sizebuf_t::MSG_WriteFloat(float f)
 {
     union
     {
@@ -205,25 +192,25 @@ void MSG_WriteFloat(sizebuf_t * sb, float f)
     dat.f = f;
     dat.l = dat.l;
 
-    SZ_Write(sb, &dat.l, 4);
+    SZ_Write(&dat.l, 4);
 }
 
-void MSG_WriteString(sizebuf_t * sb, char * s)
+void sizebuf_t::MSG_WriteString(const char* s)
 {
     if (!s)
-        SZ_Write(sb, (char*)"", 1);
+        SZ_Write("", 1);
     else
-        SZ_Write(sb, s, std::strlen(s) + 1);
+        SZ_Write(s, std::strlen(s) + 1);
 }
 
-void MSG_WriteCoord(sizebuf_t * sb, float f)
+void sizebuf_t::MSG_WriteCoord(float f)
 {
-    MSG_WriteShort(sb, (int)(f * 8));
+    MSG_WriteShort((int)(f * 8));
 }
 
-void MSG_WriteAngle(sizebuf_t * sb, float f)
+void sizebuf_t::MSG_WriteAngle(float f)
 {
-    MSG_WriteByte(sb, ((int)f * 256 / 360) & 255);
+    MSG_WriteByte(((int)f * 256 / 360) & 255);
 }
 
 //
@@ -363,68 +350,60 @@ float MSG_ReadAngle()
 
 //===========================================================================
 
-void SZ_Alloc(sizebuf_t * buf, int startsize)
+void sizebuf_t::SZ_Alloc(int startsize)
 {
-    if (startsize < 256)
-        startsize = 256;
-    buf->data = (byte*)Hunk_AllocName(startsize, (char*)"sizebuf");
-    buf->maxsize = startsize;
-    buf->cursize = 0;
+    startsize = std::max(startsize, 256);
+    data = (byte*)Hunk_AllocName(startsize, (char*)"sizebuf");
+    maxsize = startsize;
+    cursize = 0;
 }
 
 
-void SZ_Free(sizebuf_t * buf)
+void sizebuf_t::SZ_Free()
 {
-    // Z_Free (buf->data);
-    // buf->data = NULL;
-    // buf->maxsize = 0;
-    buf->cursize = 0;
+    cursize = 0;
 }
 
-void SZ_Clear(sizebuf_t * buf)
+void sizebuf_t::SZ_Clear()
 {
-    buf->cursize = 0;
+    cursize = 0;
 }
 
-void * SZ_GetSpace(sizebuf_t * buf, int length)
+void* sizebuf_t::SZ_GetSpace(int length)
 {
-    void * data;
-
-    if (buf->cursize + length > buf->maxsize)
+    if (cursize + length > maxsize)
     {
-        if (!buf->allowoverflow)
+        if (!allowoverflow_)
             Sys_Error((char*)"SZ_GetSpace: overflow without allowoverflow set");
 
-        if (length > buf->maxsize)
+        if (length > maxsize)
             Sys_Error((char*)"SZ_GetSpace: %i is > full buffer size", length);
 
-        buf->overflowed = true;
+        overflowed_ = true;
         Con_Printf((char*)"SZ_GetSpace: overflow");
-        SZ_Clear(buf);
+        SZ_Clear();
     }
 
-    data = buf->data + buf->cursize;
-    buf->cursize += length;
+    void* data1 = data + cursize;
+    cursize += length;
 
-    return data;
+    return data1;
 }
 
-void SZ_Write(sizebuf_t * buf, void * data, int length)
+void sizebuf_t::SZ_Write(const void* data, int length)
 {
-    std::memcpy(SZ_GetSpace(buf, length), data, length);
+    std::memcpy(SZ_GetSpace(length), data, length);
 }
 
-void SZ_Print(sizebuf_t * buf, char * data)
+void sizebuf_t::SZ_Print(const char* data)
 {
-    int len;
-
-    len = std::strlen(data) + 1;
+    int len = std::strlen(data) + 1;
 
     // byte * cast to keep VC++ happy
-    if (buf->data[buf->cursize - 1])
-        std::memcpy((byte *)SZ_GetSpace(buf, len), data, len); // no trailing 0
+    if (data[cursize - 1])
+        std::memcpy((byte*)SZ_GetSpace(len), data, len); // no trailing 0
     else
-        std::memcpy((byte *)SZ_GetSpace(buf, len - 1) - 1, data, len); // write over trailing 0
+        std::memcpy((byte*)SZ_GetSpace(len - 1) - 1, data, len); // write over trailing 0
 }
 
 

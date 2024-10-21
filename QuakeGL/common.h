@@ -11,21 +11,37 @@ typedef unsigned char byte;
 
 //============================================================================
 
-typedef struct sizebuf_s
+struct sizebuf_t
 {
-    bool allowoverflow; // if false, do a Sys_Error
-    bool overflowed; // set to true if the buffer size failed
+    void SZ_Alloc(int startsize);
+    void SZ_Free();
+    void SZ_Clear();
+    void* SZ_GetSpace(int length);
+    void SZ_Write(const void* data, int length);
+    void SZ_Print(const char* data); // strcats onto the sizebuf
+
+    void MSG_WriteChar(int c);
+    void MSG_WriteByte(int c);
+    void MSG_WriteShort(int c);
+    void MSG_WriteLong(int c);
+    void MSG_WriteFloat(float f);
+    void MSG_WriteString(const char* s);
+    void MSG_WriteCoord(float f);
+    void MSG_WriteAngle(float f);
+
+    void AllowOverflow() { allowoverflow_ = true; }
+    bool IsOverflowed() const { return overflowed_; }
+    void ResetOverflowed() { overflowed_ = false; }
+
+private:
+    bool allowoverflow_ = false; // if false, do a Sys_Error
+    bool overflowed_ = false; // set to true if the buffer size failed
+
+public:
     byte * data;
     int maxsize;
     int cursize;
-} sizebuf_t;
-
-void SZ_Alloc(sizebuf_t * buf, int startsize);
-void SZ_Free(sizebuf_t * buf);
-void SZ_Clear(sizebuf_t * buf);
-void * SZ_GetSpace(sizebuf_t * buf, int length);
-void SZ_Write(sizebuf_t * buf, void * data, int length);
-void SZ_Print(sizebuf_t * buf, char * data); // strcats onto the sizebuf
+};
 
 //============================================================================
 
@@ -61,15 +77,6 @@ void InsertLinkAfter(link_t * l, link_t * after);
 
 //============================================================================
 
-void MSG_WriteChar(sizebuf_t * sb, int c);
-void MSG_WriteByte(sizebuf_t * sb, int c);
-void MSG_WriteShort(sizebuf_t * sb, int c);
-void MSG_WriteLong(sizebuf_t * sb, int c);
-void MSG_WriteFloat(sizebuf_t * sb, float f);
-void MSG_WriteString(sizebuf_t * sb, char * s);
-void MSG_WriteCoord(sizebuf_t * sb, float f);
-void MSG_WriteAngle(sizebuf_t * sb, float f);
-
 extern int msg_readcount;
 extern bool msg_badread; // set if a read goes beyond end of message
 
@@ -86,8 +93,8 @@ float MSG_ReadAngle();
 
 //============================================================================
 
-int Q_strcasecmp(char * s1, char * s2);
-int Q_strncasecmp(char * s1, char * s2, int n);
+int Q_strcasecmp(const char * s1, const char * s2);
+int Q_strncasecmp(const char * s1, const char * s2, int n);
 
 //============================================================================
 

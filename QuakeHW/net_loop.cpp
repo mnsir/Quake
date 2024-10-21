@@ -117,8 +117,8 @@ int Loop_GetMessage(qsocket_t * sock)
     ret = sock->receiveMessage[0];
     length = sock->receiveMessage[1] + (sock->receiveMessage[2] << 8);
     // alignment byte skipped here
-    SZ_Clear(&net_message);
-    SZ_Write(&net_message, &sock->receiveMessage[4], length);
+    net_message.SZ_Clear();
+    net_message.SZ_Write(&sock->receiveMessage[4], length);
 
     length = IntAlign(length + 4);
     sock->receiveMessageLength -= length;

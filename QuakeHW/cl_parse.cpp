@@ -175,9 +175,9 @@ void CL_KeepaliveMessage()
     // write out a nop
     Con_Printf((char*)"--> client to server keepalive\n");
 
-    MSG_WriteByte(&cls.message, clc_nop);
+    cls.message.MSG_WriteByte(clc_nop);
     NET_SendMessage(cls.netcon, &cls.message);
-    SZ_Clear(&cls.message);
+    cls.message.SZ_Clear();
 }
 
 /*

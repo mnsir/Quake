@@ -157,8 +157,8 @@ void CL_Stop_f()
     }
 
     // write a disconnect message to the demo file
-    SZ_Clear(&net_message);
-    MSG_WriteByte(&net_message, svc_disconnect);
+    net_message.SZ_Clear();
+    net_message.MSG_WriteByte(svc_disconnect);
     CL_WriteDemoMessage();
 
     // finish up

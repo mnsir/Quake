@@ -286,8 +286,8 @@ void PF_sprint()
 
     client = &svs.clients[entnum - 1];
 
-    MSG_WriteChar(&client->message, svc_print);
-    MSG_WriteString(&client->message, s);
+    client->message.MSG_WriteChar(svc_print);
+    client->message.MSG_WriteString(s);
 }
 
 
@@ -317,8 +317,8 @@ void PF_centerprint()
 
     client = &svs.clients[entnum - 1];
 
-    MSG_WriteChar(&client->message, svc_centerprint);
-    MSG_WriteString(&client->message, s);
+    client->message.MSG_WriteChar(svc_centerprint);
+    client->message.MSG_WriteString(s);
 }
 
 
@@ -511,14 +511,14 @@ void PF_ambientsound()
 
     // add an svc_spawnambient command to the level signon packet
 
-    MSG_WriteByte(&sv.signon, svc_spawnstaticsound);
+    sv.signon.MSG_WriteByte(svc_spawnstaticsound);
     for (i = 0; i < 3; i++)
-        MSG_WriteCoord(&sv.signon, pos[i]);
+        sv.signon.MSG_WriteCoord(pos[i]);
 
-    MSG_WriteByte(&sv.signon, soundnum);
+    sv.signon.MSG_WriteByte(soundnum);
 
-    MSG_WriteByte(&sv.signon, vol * 255);
-    MSG_WriteByte(&sv.signon, attenuation * 64);
+    sv.signon.MSG_WriteByte(vol * 255);
+    sv.signon.MSG_WriteByte(attenuation * 64);
 
 }
 
@@ -1131,9 +1131,9 @@ void PF_lightstyle()
     for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
         if (client->active || client->spawned)
         {
-            MSG_WriteChar(&client->message, svc_lightstyle);
-            MSG_WriteChar(&client->message, style);
-            MSG_WriteString(&client->message, val);
+            sv.signon.MSG_WriteChar(svc_lightstyle);
+            sv.signon.MSG_WriteChar(style);
+            client->message.MSG_WriteString(val);
         }
 }
 
@@ -1387,43 +1387,43 @@ sizebuf_t * WriteDest()
 
 void PF_WriteByte()
 {
-    MSG_WriteByte(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteByte(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteChar()
 {
-    MSG_WriteChar(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteChar(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteShort()
 {
-    MSG_WriteShort(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteShort(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteLong()
 {
-    MSG_WriteLong(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteLong(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteAngle()
 {
-    MSG_WriteAngle(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteAngle(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteCoord()
 {
-    MSG_WriteCoord(WriteDest(), G_FLOAT(OFS_PARM1));
+    WriteDest()->MSG_WriteCoord(G_FLOAT(OFS_PARM1));
 }
 
 void PF_WriteString()
 {
-    MSG_WriteString(WriteDest(), G_STRING(OFS_PARM1));
+    WriteDest()->MSG_WriteString(G_STRING(OFS_PARM1));
 }
 
 
 void PF_WriteEntity()
 {
-    MSG_WriteShort(WriteDest(), G_EDICTNUM(OFS_PARM1));
+    WriteDest()->MSG_WriteShort(G_EDICTNUM(OFS_PARM1));
 }
 
 //=============================================================================
@@ -1437,17 +1437,17 @@ void PF_makestatic()
 
     ent = G_EDICT(OFS_PARM0);
 
-    MSG_WriteByte(&sv.signon, svc_spawnstatic);
+    sv.signon.MSG_WriteByte(svc_spawnstatic);
 
-    MSG_WriteByte(&sv.signon, SV_ModelIndex(pr_strings + ent->v.model));
+    sv.signon.MSG_WriteByte(SV_ModelIndex(pr_strings + ent->v.model));
 
-    MSG_WriteByte(&sv.signon, ent->v.frame);
-    MSG_WriteByte(&sv.signon, ent->v.colormap);
-    MSG_WriteByte(&sv.signon, ent->v.skin);
+    sv.signon.MSG_WriteByte(ent->v.frame);
+    sv.signon.MSG_WriteByte(ent->v.colormap);
+    sv.signon.MSG_WriteByte(ent->v.skin);
     for (i = 0; i < 3; i++)
     {
-        MSG_WriteCoord(&sv.signon, ent->v.origin[i]);
-        MSG_WriteAngle(&sv.signon, ent->v.angles[i]);
+        sv.signon.MSG_WriteCoord(ent->v.origin[i]);
+        sv.signon.MSG_WriteAngle(ent->v.angles[i]);
     }
 
     // throw the entity away now

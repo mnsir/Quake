@@ -681,9 +681,9 @@ void Host_Name_f()
 
     // send notification to all clients
 
-    MSG_WriteByte(&sv.reliable_datagram, svc_updatename);
-    MSG_WriteByte(&sv.reliable_datagram, host_client - svs.clients);
-    MSG_WriteString(&sv.reliable_datagram, host_client->name);
+    sv.reliable_datagram.MSG_WriteByte(svc_updatename);
+    sv.reliable_datagram.MSG_WriteByte(host_client - svs.clients);
+    sv.reliable_datagram.MSG_WriteString(host_client->name);
 }
 
 
@@ -867,9 +867,9 @@ void Host_Color_f()
     host_client->edict->v.team = bottom + 1;
 
     // send notification to all clients
-    MSG_WriteByte(&sv.reliable_datagram, svc_updatecolors);
-    MSG_WriteByte(&sv.reliable_datagram, host_client - svs.clients);
-    MSG_WriteByte(&sv.reliable_datagram, host_client->colors);
+    sv.reliable_datagram.MSG_WriteByte(svc_updatecolors);
+    sv.reliable_datagram.MSG_WriteByte(host_client - svs.clients);
+    sv.reliable_datagram.MSG_WriteByte(host_client->colors);
 }
 
 /*
@@ -926,8 +926,8 @@ void Host_Pause_f()
         }
 
         // send notification to all clients
-        MSG_WriteByte(&sv.reliable_datagram, svc_setpause);
-        MSG_WriteByte(&sv.reliable_datagram, sv.paused);
+        sv.reliable_datagram.MSG_WriteByte(svc_setpause);
+        sv.reliable_datagram.MSG_WriteByte(sv.paused);
     }
 }
 
@@ -953,9 +953,9 @@ void Host_PreSpawn_f()
         return;
     }
 
-    SZ_Write(&host_client->message, sv.signon.data, sv.signon.cursize);
-    MSG_WriteByte(&host_client->message, svc_signonnum);
-    MSG_WriteByte(&host_client->message, 2);
+    host_client->message.SZ_Write(sv.signon.data, sv.signon.cursize);
+    sv.reliable_datagram.MSG_WriteByte(svc_signonnum);
+    sv.reliable_datagram.MSG_WriteByte(2);
     host_client->sendsignon = true;
 }
 
@@ -1017,51 +1017,51 @@ void Host_Spawn_f()
 
 
     // send all current names, colors, and frag counts
-    SZ_Clear(&host_client->message);
+    host_client->message.SZ_Clear();
 
     // send time of update
-    MSG_WriteByte(&host_client->message, svc_time);
-    MSG_WriteFloat(&host_client->message, sv.time);
+    host_client->message.MSG_WriteByte(svc_time);
+    host_client->message.MSG_WriteFloat(sv.time);
 
     for (i = 0, client = svs.clients; i < svs.maxclients; i++, client++)
     {
-        MSG_WriteByte(&host_client->message, svc_updatename);
-        MSG_WriteByte(&host_client->message, i);
-        MSG_WriteString(&host_client->message, client->name);
-        MSG_WriteByte(&host_client->message, svc_updatefrags);
-        MSG_WriteByte(&host_client->message, i);
-        MSG_WriteShort(&host_client->message, client->old_frags);
-        MSG_WriteByte(&host_client->message, svc_updatecolors);
-        MSG_WriteByte(&host_client->message, i);
-        MSG_WriteByte(&host_client->message, client->colors);
+        host_client->message.MSG_WriteByte(svc_updatename);
+        host_client->message.MSG_WriteByte(i);
+        host_client->message.MSG_WriteString(client->name);
+        host_client->message.MSG_WriteByte(svc_updatefrags);
+        host_client->message.MSG_WriteByte(i);
+        host_client->message.MSG_WriteShort(client->old_frags);
+        host_client->message.MSG_WriteByte(svc_updatecolors);
+        host_client->message.MSG_WriteByte(i);
+        host_client->message.MSG_WriteByte(client->colors);
     }
 
     // send all current light styles
     for (i = 0; i < MAX_LIGHTSTYLES; i++)
     {
-        MSG_WriteByte(&host_client->message, svc_lightstyle);
-        MSG_WriteByte(&host_client->message, (char)i);
-        MSG_WriteString(&host_client->message, sv.lightstyles[i]);
+        host_client->message.MSG_WriteByte(svc_lightstyle);
+        host_client->message.MSG_WriteByte((char)i);
+        host_client->message.MSG_WriteString(sv.lightstyles[i]);
     }
 
     //
     // send some stats
     //
-    MSG_WriteByte(&host_client->message, svc_updatestat);
-    MSG_WriteByte(&host_client->message, STAT_TOTALSECRETS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->total_secrets);
+    host_client->message.MSG_WriteByte(svc_updatestat);
+    host_client->message.MSG_WriteByte(STAT_TOTALSECRETS);
+    host_client->message.MSG_WriteLong(pr_global_struct->total_secrets);
 
-    MSG_WriteByte(&host_client->message, svc_updatestat);
-    MSG_WriteByte(&host_client->message, STAT_TOTALMONSTERS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->total_monsters);
+    host_client->message.MSG_WriteByte(svc_updatestat);
+    host_client->message.MSG_WriteByte(STAT_TOTALMONSTERS);
+    host_client->message.MSG_WriteLong(pr_global_struct->total_monsters);
 
-    MSG_WriteByte(&host_client->message, svc_updatestat);
-    MSG_WriteByte(&host_client->message, STAT_SECRETS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->found_secrets);
+    host_client->message.MSG_WriteByte(svc_updatestat);
+    host_client->message.MSG_WriteByte(STAT_SECRETS);
+    host_client->message.MSG_WriteLong(pr_global_struct->found_secrets);
 
-    MSG_WriteByte(&host_client->message, svc_updatestat);
-    MSG_WriteByte(&host_client->message, STAT_MONSTERS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->killed_monsters);
+    host_client->message.MSG_WriteByte(svc_updatestat);
+    host_client->message.MSG_WriteByte(STAT_MONSTERS);
+    host_client->message.MSG_WriteLong(pr_global_struct->killed_monsters);
 
 
     //
@@ -1071,15 +1071,15 @@ void Host_Spawn_f()
     // and it won't happen if the game was just loaded, so you wind up
     // with a permanent head tilt
     ent = EDICT_NUM(1 + (host_client - svs.clients));
-    MSG_WriteByte(&host_client->message, svc_setangle);
+    host_client->message.MSG_WriteByte(svc_setangle);
     for (i = 0; i < 2; i++)
-        MSG_WriteAngle(&host_client->message, ent->v.angles[i]);
-    MSG_WriteAngle(&host_client->message, 0);
+        host_client->message.MSG_WriteAngle(ent->v.angles[i]);
+    host_client->message.MSG_WriteAngle(0);
 
     SV_WriteClientdataToMessage(sv_player, &host_client->message);
 
-    MSG_WriteByte(&host_client->message, svc_signonnum);
-    MSG_WriteByte(&host_client->message, 3);
+    host_client->message.MSG_WriteByte(svc_signonnum);
+    host_client->message.MSG_WriteByte(3);
     host_client->sendsignon = true;
 }
 

@@ -54,7 +54,7 @@ Cbuf_Init
 */
 void Cbuf_Init()
 {
-    SZ_Alloc(&cmd_text, 8192); // space for commands and script files
+    cmd_text.SZ_Alloc(8192); // space for commands and script files
 }
 
 
@@ -77,7 +77,7 @@ void Cbuf_AddText(char * text)
         return;
     }
 
-    SZ_Write(&cmd_text, text, std::strlen(text));
+    cmd_text.SZ_Write(text, std::strlen(text));
 }
 
 
@@ -101,7 +101,7 @@ void Cbuf_InsertText(char * text)
     {
         temp = (char*)Z_Malloc(templen);
         std::memcpy(temp, cmd_text.data, templen);
-        SZ_Clear(&cmd_text);
+        cmd_text.SZ_Clear();
     }
     else
         temp = NULL; // shut up compiler
@@ -112,7 +112,7 @@ void Cbuf_InsertText(char * text)
     // add the copied off data
     if (templen)
     {
-        SZ_Write(&cmd_text, temp, templen);
+        cmd_text.SZ_Write(temp, templen);
         Z_Free(temp);
     }
 }
@@ -650,16 +650,16 @@ void Cmd_ForwardToServer()
     if (cls.demoplayback)
         return; // not really connected
 
-    MSG_WriteByte(&cls.message, clc_stringcmd);
-    if (Q_strcasecmp(Cmd_Argv(0), (char*)"cmd") != 0)
+    cls.message.MSG_WriteByte(clc_stringcmd);
+    if (Q_strcasecmp(Cmd_Argv(0), "cmd") != 0)
     {
-        SZ_Print(&cls.message, Cmd_Argv(0));
-        SZ_Print(&cls.message, (char*)" ");
+        cls.message.SZ_Print(Cmd_Argv(0));
+        cls.message.SZ_Print(" ");
     }
     if (Cmd_Argc() > 1)
-        SZ_Print(&cls.message, Cmd_Args());
+        cls.message.SZ_Print(Cmd_Args());
     else
-        SZ_Print(&cls.message, (char*)"\n");
+        cls.message.SZ_Print("\n");
 }
 
 

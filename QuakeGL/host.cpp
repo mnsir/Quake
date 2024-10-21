@@ -295,8 +295,8 @@ void SV_ClientPrintf(char * fmt, ...)
     vsprintf(string, fmt, argptr);
     va_end(argptr);
 
-    MSG_WriteByte(&host_client->message, svc_print);
-    MSG_WriteString(&host_client->message, string);
+    host_client->message.MSG_WriteByte(svc_print);
+    host_client->message.MSG_WriteString(string);
 }
 
 /*
@@ -319,8 +319,8 @@ void SV_BroadcastPrintf(char * fmt, ...)
     for (i = 0; i < svs.maxclients; i++)
         if (svs.clients[i].active && svs.clients[i].spawned)
         {
-            MSG_WriteByte(&svs.clients[i].message, svc_print);
-            MSG_WriteString(&svs.clients[i].message, string);
+            svs.clients[i].message.MSG_WriteByte(svc_print);
+            svs.clients[i].message.MSG_WriteString(string);
         }
 }
 
@@ -340,8 +340,8 @@ void Host_ClientCommands(char * fmt, ...)
     vsprintf(string, fmt, argptr);
     va_end(argptr);
 
-    MSG_WriteByte(&host_client->message, svc_stufftext);
-    MSG_WriteString(&host_client->message, string);
+    host_client->message.MSG_WriteByte(svc_stufftext);
+    host_client->message.MSG_WriteString(string);
 }
 
 /*
@@ -363,7 +363,7 @@ void SV_DropClient(bool crash)
         // send any final messages (don't check for errors)
         if (NET_CanSendMessage(host_client->netconnection))
         {
-            MSG_WriteByte(&host_client->message, svc_disconnect);
+            host_client->message.MSG_WriteByte(svc_disconnect);
             NET_SendMessage(host_client->netconnection, &host_client->message);
         }
 
@@ -395,15 +395,15 @@ void SV_DropClient(bool crash)
     {
         if (!client->active)
             continue;
-        MSG_WriteByte(&client->message, svc_updatename);
-        MSG_WriteByte(&client->message, host_client - svs.clients);
-        MSG_WriteString(&client->message, (char*)"");
-        MSG_WriteByte(&client->message, svc_updatefrags);
-        MSG_WriteByte(&client->message, host_client - svs.clients);
-        MSG_WriteShort(&client->message, 0);
-        MSG_WriteByte(&client->message, svc_updatecolors);
-        MSG_WriteByte(&client->message, host_client - svs.clients);
-        MSG_WriteByte(&client->message, 0);
+        client->message.MSG_WriteByte(svc_updatename);
+        client->message.MSG_WriteByte(host_client - svs.clients);
+        client->message.MSG_WriteString((char*)"");
+        client->message.MSG_WriteByte(svc_updatefrags);
+        client->message.MSG_WriteByte(host_client - svs.clients);
+        client->message.MSG_WriteShort(0);
+        client->message.MSG_WriteByte(svc_updatecolors);
+        client->message.MSG_WriteByte(host_client - svs.clients);
+        client->message.MSG_WriteByte(0);
     }
 }
 
@@ -443,7 +443,7 @@ void Host_ShutdownServer(bool crash)
                 if (NET_CanSendMessage(host_client->netconnection))
                 {
                     NET_SendMessage(host_client->netconnection, &host_client->message);
-                    SZ_Clear(&host_client->message);
+                    host_client->message.SZ_Clear();
                 }
                 else
                 {
@@ -460,7 +460,7 @@ void Host_ShutdownServer(bool crash)
     buf.data = (byte*)message;
     buf.maxsize = 4;
     buf.cursize = 0;
-    MSG_WriteByte(&buf, svc_disconnect);
+    buf.MSG_WriteByte(svc_disconnect);
     count = NET_SendToAll(&buf, 5);
     if (count)
         Con_Printf((char*)"Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);

@@ -358,7 +358,7 @@ qsocket_t * NET_Connect(char * host)
 
     if (host)
     {
-        if (Q_strcasecmp(host, (char*)"local") == 0)
+        if (Q_strcasecmp(host, "local") == 0)
         {
             numdrivers = 1;
             goto JustDoIt;
@@ -828,7 +828,7 @@ void NET_Init()
     }
 
     // allocate space for network message buffer
-    SZ_Alloc(&net_message, NET_MAXMESSAGE);
+    net_message.SZ_Alloc(NET_MAXMESSAGE);
 
     Cvar_RegisterVariable(&net_messagetimeout);
     Cvar_RegisterVariable(&hostname);

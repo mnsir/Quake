@@ -51,7 +51,7 @@ void CL_ClearState()
     // wipe the entire cl structure
     memset(&cl, 0, sizeof(cl));
 
-    SZ_Clear(&cls.message);
+    cls.message.SZ_Clear();
 
     // clear other arrays 
     memset(cl_efrags, 0, sizeof(cl_efrags));
@@ -95,10 +95,10 @@ void CL_Disconnect()
             CL_Stop_f();
 
         Con_DPrintf((char*)"Sending clc_disconnect\n");
-        SZ_Clear(&cls.message);
-        MSG_WriteByte(&cls.message, clc_disconnect);
+        cls.message.SZ_Clear();
+        cls.message.MSG_WriteByte(clc_disconnect);
         NET_SendUnreliableMessage(cls.netcon, &cls.message);
-        SZ_Clear(&cls.message);
+        cls.message.SZ_Clear();
         NET_Close(cls.netcon);
 
         cls.state = ca_disconnected;
@@ -163,25 +163,25 @@ void CL_SignonReply()
     switch (cls.signon)
     {
     case 1:
-        MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, (char*)"prespawn");
+        cls.message.MSG_WriteByte(clc_stringcmd);
+        cls.message.MSG_WriteString((char*)"prespawn");
         break;
 
     case 2:
-        MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, va((char*)"name \"%s\"\n", cl_name.string));
+        cls.message.MSG_WriteByte(clc_stringcmd);
+        cls.message.MSG_WriteString(va((char*)"name \"%s\"\n", cl_name.string));
 
-        MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, va((char*)"color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
+        cls.message.MSG_WriteByte(clc_stringcmd);
+        cls.message.MSG_WriteString(va((char*)"color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
 
-        MSG_WriteByte(&cls.message, clc_stringcmd);
+        cls.message.MSG_WriteByte(clc_stringcmd);
         sprintf(str, "spawn %s", cls.spawnparms);
-        MSG_WriteString(&cls.message, str);
+        cls.message.MSG_WriteString(str);
         break;
 
     case 3:
-        MSG_WriteByte(&cls.message, clc_stringcmd);
-        MSG_WriteString(&cls.message, (char*)"begin");
+        cls.message.MSG_WriteByte(clc_stringcmd);
+        cls.message.MSG_WriteString((char*)"begin");
         Cache_Report(); // print remaining memory
         break;
 
@@ -615,7 +615,7 @@ void CL_SendCmd()
 
     if (cls.demoplayback)
     {
-        SZ_Clear(&cls.message);
+        cls.message.SZ_Clear();
         return;
     }
 
@@ -632,7 +632,7 @@ void CL_SendCmd()
     if (NET_SendMessage(cls.netcon, &cls.message) == -1)
         Host_Error((char*)"CL_WriteToServer: lost server connection");
 
-    SZ_Clear(&cls.message);
+    cls.message.SZ_Clear();
 }
 
 /*
@@ -642,7 +642,7 @@ CL_Init
 */
 void CL_Init()
 {
-    SZ_Alloc(&cls.message, 1024);
+    cls.message.SZ_Alloc(1024);
 
     CL_InitInput();
     CL_InitTEnts();

@@ -145,7 +145,7 @@ void Host_Error(char * error, ...)
     va_start(argptr, error);
     vsprintf(string, error, argptr);
     va_end(argptr);
-    Con_Printf((char*)"Host_Error: %s\n", string);
+    Con_Printf("Host_Error: %s\n", string);
 
     if (sv.active)
         Host_ShutdownServer(false);
@@ -263,10 +263,10 @@ void Host_WriteConfiguration()
     // config.cfg cvars
     if (host_initialized & !isDedicated)
     {
-        f = fopen(va((char*)"%s/config.cfg", com_gamedir), "w");
+        f = fopen(va("%s/config.cfg", com_gamedir), "w");
         if (!f)
         {
-            Con_Printf((char*)"Couldn't write config.cfg.\n");
+            Con_Printf("Couldn't write config.cfg.\n");
             return;
         }
 
@@ -286,7 +286,7 @@ Sends text across to be displayed
 FIXME: make this just a stuffed echo?
 =================
 */
-void SV_ClientPrintf(char * fmt, ...)
+void SV_ClientPrintf(const char * fmt, ...)
 {
     va_list argptr;
     char string[1024];
@@ -463,7 +463,7 @@ void Host_ShutdownServer(bool crash)
     buf.MSG_WriteByte(svc_disconnect);
     count = NET_SendToAll(&buf, 5);
     if (count)
-        Con_Printf((char*)"Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
+        Con_Printf("Host_ShutdownServer: NET_SendToAll failed for %u clients\n", count);
 
     for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
         if (host_client->active)
@@ -672,7 +672,7 @@ void _Host_Frame(float time)
         time3 = Sys_FloatTime();
         pass2 = (time2 - time1) * 1000;
         pass3 = (time3 - time2) * 1000;
-        Con_Printf((char*)"%3i tot %3i server %3i gfx %3i snd\n",
+        Con_Printf("%3i tot %3i server %3i gfx %3i snd\n",
                    pass1 + pass2 + pass3, pass1, pass2, pass3);
     }
 
@@ -712,7 +712,7 @@ void Host_Frame(float time)
             c++;
     }
 
-    Con_Printf((char*)"serverprofile: %2i clients %2i msec\n", c, m);
+    Con_Printf("serverprofile: %2i clients %2i msec\n", c, m);
 }
 
 //============================================================================
@@ -812,8 +812,8 @@ void Host_Init(const quakeparms_t& parms)
     NET_Init();
     SV_Init();
 
-    Con_Printf((char*)"Exe: " __TIME__ " " __DATE__ "\n");
-    Con_Printf((char*)"%4.1f megabyte heap\n", host_parms.mem.size() / (1024 * 1024.0));
+    Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
+    Con_Printf("%4.1f megabyte heap\n", host_parms.mem.size() / (1024 * 1024.0));
 
     R_InitTextures(); // needed even for dedicated servers
 
@@ -841,7 +841,7 @@ void Host_Init(const quakeparms_t& parms)
         IN_Init();
     }
 
-    Cbuf_InsertText((char*)"exec quake.rc\n");
+    Cbuf_InsertText("exec quake.rc\n");
 
     Hunk_AllocName(0, (char*)"-HOST_HUNKLEVEL-");
     host_hunklevel = Hunk_LowMark();

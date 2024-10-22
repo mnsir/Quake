@@ -308,10 +308,10 @@ void Draw_TextureMode_f()
         for (i = 0; i < 6; i++)
             if (gl_filter_min == modes[i].minimize)
             {
-                Con_Printf((char*)"%s\n", modes[i].name);
+                Con_Printf("%s\n", modes[i].name);
                 return;
             }
-        Con_Printf((char*)"current filter is unknown???\n");
+        Con_Printf("current filter is unknown???\n");
         return;
     }
 
@@ -322,7 +322,7 @@ void Draw_TextureMode_f()
     }
     if (i == 6)
     {
-        Con_Printf((char*)"bad filter name\n");
+        Con_Printf("bad filter name\n");
         return;
     }
 
@@ -364,7 +364,7 @@ void Draw_Init()
     Cvar_RegisterVariable(&gl_picmip);
 
     // 3dfx can only handle 256 wide textures
-    if (!Q_strncasecmp((char *)gl_renderer, (char*)"3dfx", 4) ||
+    if (!Q_strncasecmp(gl_renderer, "3dfx", 4) ||
         strstr((char *)gl_renderer, "Glide"))
         Cvar_Set((char*)"gl_max_size", (char*)"256");
 
@@ -514,7 +514,7 @@ void Draw_AlphaPic(int x, int y, qpic_t * pic, float alpha)
 {
     byte * dest, * source;
     unsigned short * pusdest;
-    int v, u;
+    int v;
     glpic_t * gl;
 
     if (scrap_dirty)

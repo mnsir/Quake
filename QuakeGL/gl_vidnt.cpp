@@ -564,7 +564,7 @@ void CheckMultiTextureExtensions()
 {
     if (strstr(gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm((char*)"-nomtex"))
     {
-        Con_Printf((char*)"Multitexture extensions found.\n");
+        Con_Printf("Multitexture extensions found.\n");
         qglMTexCoord2fSGIS = (decltype(qglMTexCoord2fSGIS))wglGetProcAddress("glMTexCoord2fSGIS");
         qglSelectTextureSGIS = (decltype(qglSelectTextureSGIS))wglGetProcAddress("glSelectTextureSGIS");
         gl_mtexable = true;
@@ -579,14 +579,14 @@ GL_Init
 void GL_Init()
 {
     gl_vendor = (char*)glGetString(GL_VENDOR);
-    Con_Printf((char*)"GL_VENDOR: %s\n", gl_vendor);
+    Con_Printf("GL_VENDOR: %s\n", gl_vendor);
     gl_renderer = (char*)glGetString(GL_RENDERER);
-    Con_Printf((char*)"GL_RENDERER: %s\n", gl_renderer);
+    Con_Printf("GL_RENDERER: %s\n", gl_renderer);
 
     gl_version = (char*)glGetString(GL_VERSION);
-    Con_Printf((char*)"GL_VERSION: %s\n", gl_version);
+    Con_Printf("GL_VERSION: %s\n", gl_version);
     gl_extensions = (char*)glGetString(GL_EXTENSIONS);
-    Con_Printf((char*)"GL_EXTENSIONS: %s\n", gl_extensions);
+    Con_Printf("GL_EXTENSIONS: %s\n", gl_extensions);
 
     // Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
@@ -1224,7 +1224,7 @@ VID_DescribeCurrentMode_f
 */
 void VID_DescribeCurrentMode_f()
 {
-    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(vid_modenum));
+    Con_Printf("%s\n", VID_GetExtModeDescription(vid_modenum));
 }
 
 
@@ -1237,9 +1237,9 @@ void VID_NumModes_f()
 {
 
     if (nummodes == 1)
-        Con_Printf((char*)"%d video mode is available\n", nummodes);
+        Con_Printf("%d video mode is available\n", nummodes);
     else
-        Con_Printf((char*)"%d video modes are available\n", nummodes);
+        Con_Printf("%d video modes are available\n", nummodes);
 }
 
 
@@ -1257,7 +1257,7 @@ void VID_DescribeMode_f()
     t = leavecurrentmode;
     leavecurrentmode = 0;
 
-    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(modenum));
+    Con_Printf("%s\n", VID_GetExtModeDescription(modenum));
 
     leavecurrentmode = t;
 }
@@ -1283,7 +1283,7 @@ void VID_DescribeModes_f()
     {
         pv = VID_GetModePtr(i);
         pinfo = VID_GetExtModeDescription(i);
-        Con_Printf((char*)"%2d: %s\n", i, pinfo);
+        Con_Printf("%2d: %s\n", i, pinfo);
     }
 
     leavecurrentmode = t;

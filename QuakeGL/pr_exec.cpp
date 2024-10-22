@@ -135,33 +135,33 @@ void PR_PrintStatement(dstatement_t * s)
 
     if ((unsigned)s->op < sizeof(pr_opnames) / sizeof(pr_opnames[0]))
     {
-        Con_Printf((char*)"%s ", pr_opnames[s->op]);
+        Con_Printf("%s ", pr_opnames[s->op]);
         i = strlen(pr_opnames[s->op]);
         for (; i < 10; i++)
-            Con_Printf((char*)" ");
+            Con_Printf(" ");
     }
 
     if (s->op == OP_IF || s->op == OP_IFNOT)
-        Con_Printf((char*)"%sbranch %i", PR_GlobalString(s->a), s->b);
+        Con_Printf("%sbranch %i", PR_GlobalString(s->a), s->b);
     else if (s->op == OP_GOTO)
     {
-        Con_Printf((char*)"branch %i", s->a);
+        Con_Printf("branch %i", s->a);
     }
     else if ((unsigned)(s->op - OP_STORE_F) < 6)
     {
-        Con_Printf((char*)"%s", PR_GlobalString(s->a));
-        Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->b));
+        Con_Printf("%s", PR_GlobalString(s->a));
+        Con_Printf("%s", PR_GlobalStringNoContents(s->b));
     }
     else
     {
         if (s->a)
-            Con_Printf((char*)"%s", PR_GlobalString(s->a));
+            Con_Printf("%s", PR_GlobalString(s->a));
         if (s->b)
-            Con_Printf((char*)"%s", PR_GlobalString(s->b));
+            Con_Printf("%s", PR_GlobalString(s->b));
         if (s->c)
-            Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->c));
+            Con_Printf("%s", PR_GlobalStringNoContents(s->c));
     }
-    Con_Printf((char*)"\n");
+    Con_Printf("\n");
 }
 
 /*
@@ -176,7 +176,7 @@ void PR_StackTrace()
 
     if (pr_depth == 0)
     {
-        Con_Printf((char*)"<NO STACK>\n");
+        Con_Printf("<NO STACK>\n");
         return;
     }
 
@@ -187,10 +187,10 @@ void PR_StackTrace()
 
         if (!f)
         {
-            Con_Printf((char*)"<NO FUNCTION>\n");
+            Con_Printf("<NO FUNCTION>\n");
         }
         else
-            Con_Printf((char*)"%12s : %s\n", pr_strings + f->s_file, pr_strings + f->s_name);
+            Con_Printf("%12s : %s\n", pr_strings + f->s_file, pr_strings + f->s_name);
     }
 }
 
@@ -225,7 +225,7 @@ void PR_Profile_f()
         if (best)
         {
             if (num < 10)
-                Con_Printf((char*)"%7i %s\n", best->profile, pr_strings + best->s_name);
+                Con_Printf("%7i %s\n", best->profile, pr_strings + best->s_name);
             num++;
             best->profile = 0;
         }
@@ -251,7 +251,7 @@ void PR_RunError(char * error, ...)
 
     PR_PrintStatement(pr_statements + pr_xstatement);
     PR_StackTrace();
-    Con_Printf((char*)"%s\n", string);
+    Con_Printf("%s\n", string);
 
     pr_depth = 0; // dump the stack so host_error can shutdown functions
 

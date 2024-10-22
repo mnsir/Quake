@@ -57,7 +57,7 @@ void KeyDown(kbutton_t * b)
         b->down[1] = k;
     else
     {
-        Con_Printf((char*)"Three keys down for a button!\n");
+        Con_Printf("Three keys down for a button!\n");
         return;
     }
 
@@ -368,7 +368,7 @@ void CL_SendMove(usercmd_t * cmd)
 
     if (NET_SendUnreliableMessage(cls.netcon, &buf) == -1)
     {
-        Con_Printf((char*)"CL_SendMove: lost server connection\n");
+        Con_Printf("CL_SendMove: lost server connection\n");
         CL_Disconnect();
     }
 }

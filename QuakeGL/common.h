@@ -77,19 +77,22 @@ void InsertLinkAfter(link_t * l, link_t * after);
 
 //============================================================================
 
-extern int msg_readcount;
-extern bool msg_badread; // set if a read goes beyond end of message
+struct Msg
+{
+    static inline int readcount = 0;
+    static inline bool badread = false; // set if a read goes beyond end of message
 
-void MSG_BeginReading();
-int MSG_ReadChar();
-int MSG_ReadByte();
-int MSG_ReadShort();
-int MSG_ReadLong();
-float MSG_ReadFloat();
-char * MSG_ReadString();
+    static void BeginReading();
+    static int ReadChar(const sizebuf_t& buf);
+    static int ReadByte(const sizebuf_t& buf);
+    static int ReadShort(const sizebuf_t& buf);
+    static int ReadLong(const sizebuf_t& buf);
+    static float ReadFloat(const sizebuf_t& buf);
+    static const char* ReadString(const sizebuf_t& buf);
 
-float MSG_ReadCoord();
-float MSG_ReadAngle();
+    static float ReadCoord(const sizebuf_t& buf);
+    static float ReadAngle(const sizebuf_t& buf);
+};
 
 //============================================================================
 
@@ -101,7 +104,7 @@ int Q_strncasecmp(const char * s1, const char * s2, int n);
 extern char com_token[1024];
 extern bool com_eof;
 
-char * COM_Parse(char * data);
+const char * COM_Parse(const char * data);
 
 
 extern int com_argc;
@@ -116,7 +119,7 @@ void COM_StripExtension(char * in, char * out);
 void COM_FileBase(char * in, char * out);
 void COM_DefaultExtension(char * path, char * extension);
 
-char * va(char * format, ...);
+char * va(const char * format, ...);
 // does a varargs printf into a temp buffer
 
 

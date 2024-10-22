@@ -156,7 +156,7 @@ static void NET_Listen_f()
 {
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"\"listen\" is \"%u\"\n", listening ? 1 : 0);
+        Con_Printf("\"listen\" is \"%u\"\n", listening ? 1 : 0);
         return;
     }
 
@@ -177,13 +177,13 @@ static void MaxPlayers_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"\"maxplayers\" is \"%u\"\n", svs.maxclients);
+        Con_Printf("\"maxplayers\" is \"%u\"\n", svs.maxclients);
         return;
     }
 
     if (sv.active)
     {
-        Con_Printf((char*)"maxplayers can not be changed while a server is running.\n");
+        Con_Printf("maxplayers can not be changed while a server is running.\n");
         return;
     }
 
@@ -193,14 +193,14 @@ static void MaxPlayers_f()
     if (n > svs.maxclientslimit)
     {
         n = svs.maxclientslimit;
-        Con_Printf((char*)"\"maxplayers\" set to \"%u\"\n", n);
+        Con_Printf("\"maxplayers\" set to \"%u\"\n", n);
     }
 
     if ((n == 1) && listening)
-        Cbuf_AddText((char*)"listen 0\n");
+        Cbuf_AddText("listen 0\n");
 
     if ((n > 1) && (!listening))
-        Cbuf_AddText((char*)"listen 1\n");
+        Cbuf_AddText("listen 1\n");
 
     svs.maxclients = n;
     if (n == 1)
@@ -216,14 +216,14 @@ static void NET_Port_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"\"port\" is \"%u\"\n", net_hostport);
+        Con_Printf("\"port\" is \"%u\"\n", net_hostport);
         return;
     }
 
     n = std::atoi(Cmd_Argv(1));
     if (n < 1 || n > 65534)
     {
-        Con_Printf((char*)"Bad value, must be between 1 and 65534\n");
+        Con_Printf("Bad value, must be between 1 and 65534\n");
         return;
     }
 
@@ -233,16 +233,16 @@ static void NET_Port_f()
     if (listening)
     {
         // force a change to the new port
-        Cbuf_AddText((char*)"listen 0\n");
-        Cbuf_AddText((char*)"listen 1\n");
+        Cbuf_AddText("listen 0\n");
+        Cbuf_AddText("listen 1\n");
     }
 }
 
 
 static void PrintSlistHeader()
 {
-    Con_Printf((char*)"Server Map Users\n");
-    Con_Printf((char*)"--------------- --------------- -----\n");
+    Con_Printf("Server Map Users\n");
+    Con_Printf("--------------- --------------- -----\n");
     slistLastShown = 0;
 }
 
@@ -254,9 +254,9 @@ static void PrintSlist()
     for (n = slistLastShown; n < hostCacheCount; n++)
     {
         if (hostcache[n].maxusers)
-            Con_Printf((char*)"%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+            Con_Printf("%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
         else
-            Con_Printf((char*)"%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
+            Con_Printf("%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
     }
     slistLastShown = n;
 }
@@ -265,9 +265,9 @@ static void PrintSlist()
 static void PrintSlistTrailer()
 {
     if (hostCacheCount)
-        Con_Printf((char*)"== end list ==\n\n");
+        Con_Printf("== end list ==\n\n");
     else
-        Con_Printf((char*)"No Quake servers found.\n\n");
+        Con_Printf("No Quake servers found.\n\n");
 }
 
 
@@ -278,7 +278,7 @@ void NET_Slist_f()
 
     if (!slistSilent)
     {
-        Con_Printf((char*)"Looking for Quake servers...\n");
+        Con_Printf("Looking for Quake servers...\n");
         PrintSlistHeader();
     }
 
@@ -388,7 +388,7 @@ qsocket_t * NET_Connect(char * host)
         if (hostCacheCount != 1)
             return NULL;
         host = hostcache[0].cname;
-        Con_Printf((char*)"Connecting to...\n%s @ %s\n\n", hostcache[0].name, host);
+        Con_Printf("Connecting to...\n%s @ %s\n\n", hostcache[0].name, host);
     }
 
     if (hostCacheCount)
@@ -411,7 +411,7 @@ JustDoIt:
 
     if (host)
     {
-        Con_Printf((char*)"\n");
+        Con_Printf("\n");
         PrintSlistHeader();
         PrintSlist();
         PrintSlistTrailer();
@@ -526,7 +526,7 @@ int NET_GetMessage(qsocket_t * sock)
 
     if (sock->disconnected)
     {
-        Con_Printf((char*)"NET_GetMessage: disconnected socket\n");
+        Con_Printf("NET_GetMessage: disconnected socket\n");
         return -1;
     }
 
@@ -611,7 +611,7 @@ int NET_SendMessage(qsocket_t * sock, sizebuf_t * data)
 
     if (sock->disconnected)
     {
-        Con_Printf((char*)"NET_SendMessage: disconnected socket\n");
+        Con_Printf("NET_SendMessage: disconnected socket\n");
         return -1;
     }
 
@@ -642,7 +642,7 @@ int NET_SendUnreliableMessage(qsocket_t * sock, sizebuf_t * data)
 
     if (sock->disconnected)
     {
-        Con_Printf((char*)"NET_SendMessage: disconnected socket\n");
+        Con_Printf("NET_SendMessage: disconnected socket\n");
         return -1;
     }
 
@@ -893,7 +893,7 @@ void NET_Shutdown()
 
     if (vcrFile != -1)
     {
-        Con_Printf((char*)"Closing vcrfile.\n");
+        Con_Printf("Closing vcrfile.\n");
         Sys_FileClose(vcrFile);
     }
 }

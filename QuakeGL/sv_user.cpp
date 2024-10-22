@@ -405,26 +405,26 @@ void SV_ReadClientMove(usercmd_t * move)
 
     // read ping time
     host_client->ping_times[host_client->num_pings % NUM_PING_TIMES]
-        = sv.time - MSG_ReadFloat();
+        = sv.time - Msg::ReadFloat(net_message);
     host_client->num_pings++;
 
     // read current angles 
     for (i = 0; i < 3; i++)
-        angle[i] = MSG_ReadAngle();
+        angle[i] = Msg::ReadAngle(net_message);
 
     VectorCopy(angle, host_client->edict->v.v_angle);
 
     // read movement
-    move->forwardmove = MSG_ReadShort();
-    move->sidemove = MSG_ReadShort();
-    move->upmove = MSG_ReadShort();
+    move->forwardmove = Msg::ReadShort(net_message);
+    move->sidemove = Msg::ReadShort(net_message);
+    move->upmove = Msg::ReadShort(net_message);
 
     // read buttons
-    bits = MSG_ReadByte();
+    bits = Msg::ReadByte(net_message);
     host_client->edict->v.button0 = bits & 1;
     host_client->edict->v.button2 = (bits & 2) >> 1;
 
-    i = MSG_ReadByte();
+    i = Msg::ReadByte(net_message);
     if (i)
         host_client->edict->v.impulse = i;
 }
@@ -440,7 +440,7 @@ bool SV_ReadClientMessage()
 {
     int ret;
     int cmd;
-    char * s;
+    const char * s;
 
     do
     {
@@ -454,20 +454,20 @@ nextmsg:
         if (!ret)
             return true;
 
-        MSG_BeginReading();
+        Msg::BeginReading();
 
         while (1)
         {
             if (!host_client->active)
                 return false; // a command caused an error
 
-            if (msg_badread)
+            if (Msg::badread)
             {
                 Sys_Printf((char*)"SV_ReadClientMessage: badread\n");
                 return false;
             }
 
-            cmd = MSG_ReadChar();
+            cmd = Msg::ReadChar(net_message);
 
             switch (cmd)
             {
@@ -483,48 +483,48 @@ nextmsg:
                 break;
 
             case clc_stringcmd:
-                s = MSG_ReadString();
+                s = Msg::ReadString(net_message);
                 if (host_client->privileged)
                     ret = 2;
                 else
                     ret = 0;
-                if (Q_strncasecmp(s, (char*)"status", 6) == 0)
+                if (Q_strncasecmp(s, "status", 6) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"god", 3) == 0)
+                else if (Q_strncasecmp(s, "god", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"notarget", 8) == 0)
+                else if (Q_strncasecmp(s, "notarget", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"fly", 3) == 0)
+                else if (Q_strncasecmp(s, "fly", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"name", 4) == 0)
+                else if (Q_strncasecmp(s, "name", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"noclip", 6) == 0)
+                else if (Q_strncasecmp(s, "noclip", 6) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"say", 3) == 0)
+                else if (Q_strncasecmp(s, "say", 3) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"say_team", 8) == 0)
+                else if (Q_strncasecmp(s, "say_team", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"tell", 4) == 0)
+                else if (Q_strncasecmp(s, "tell", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"color", 5) == 0)
+                else if (Q_strncasecmp(s, "color", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"kill", 4) == 0)
+                else if (Q_strncasecmp(s, "kill", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"pause", 5) == 0)
+                else if (Q_strncasecmp(s, "pause", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"spawn", 5) == 0)
+                else if (Q_strncasecmp(s, "spawn", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"begin", 5) == 0)
+                else if (Q_strncasecmp(s, "begin", 5) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"prespawn", 8) == 0)
+                else if (Q_strncasecmp(s, "prespawn", 8) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"kick", 4) == 0)
+                else if (Q_strncasecmp(s, "kick", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"ping", 4) == 0)
+                else if (Q_strncasecmp(s, "ping", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"give", 4) == 0)
+                else if (Q_strncasecmp(s, "give", 4) == 0)
                     ret = 1;
-                else if (Q_strncasecmp(s, (char*)"ban", 3) == 0)
+                else if (Q_strncasecmp(s, "ban", 3) == 0)
                     ret = 1;
                 if (ret == 2)
                     Cbuf_InsertText(s);

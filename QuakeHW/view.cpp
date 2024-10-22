@@ -303,10 +303,10 @@ void V_ParseDamage()
     float side;
     float count;
 
-    armor = MSG_ReadByte();
-    blood = MSG_ReadByte();
+    armor = Msg::ReadByte(net_message);
+    blood = Msg::ReadByte(net_message);
     for (i = 0; i < 3; i++)
-        from[i] = MSG_ReadCoord();
+        from[i] = Msg::ReadCoord(net_message);
 
     count = blood * 0.5 + armor * 0.5;
     if (count < 10)

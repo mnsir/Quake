@@ -125,7 +125,7 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
 
     if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
     {
-        Con_Printf((char*)"SV_StartSound: %s not precacheed\n", sample);
+        Con_Printf("SV_StartSound: %s not precacheed\n", sample);
         return;
     }
 
@@ -436,7 +436,7 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
 
         if (msg->maxsize - msg->cursize < 16)
         {
-            Con_Printf((char*)"packet overflow\n");
+            Con_Printf("packet overflow\n");
             return;
         }
 
@@ -962,7 +962,7 @@ void SV_SendReconnect()
     NET_SendToAll(&msg, 5);
 
     if (cls.state != ca_dedicated)
-        Cmd_ExecuteString((char*)"reconnect\n", src_command);
+        Cmd_ExecuteString("reconnect\n", src_command);
 }
 
 
@@ -1084,7 +1084,7 @@ void SV_SpawnServer(char * server)
     sv.worldmodel = Mod_ForName(sv.modelname, false);
     if (!sv.worldmodel)
     {
-        Con_Printf((char*)"Couldn't spawn server %s\n", sv.modelname);
+        Con_Printf("Couldn't spawn server %s\n", sv.modelname);
         sv.active = false;
         return;
     }

@@ -280,7 +280,7 @@ void M_Main_Draw()
 
     f = (int)(host_time * 10) % 6;
 
-    M_DrawTransPic(54, 32 + m_main_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_main_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
 }
 
 
@@ -363,7 +363,7 @@ void M_SinglePlayer_Draw()
 
     f = (int)(host_time * 10) % 6;
 
-    M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
 }
 
 
@@ -398,9 +398,9 @@ void M_SinglePlayer_Key(int key)
                     break;
             key_dest = key_game;
             if (sv.active)
-                Cbuf_AddText((char*)"disconnect\n");
-            Cbuf_AddText((char*)"maxplayers 1\n");
-            Cbuf_AddText((char*)"map start\n");
+                Cbuf_AddText("disconnect\n");
+            Cbuf_AddText("maxplayers 1\n");
+            Cbuf_AddText("map start\n");
             break;
 
         case 1:
@@ -527,7 +527,7 @@ void M_Load_Key(int k)
         SCR_BeginLoadingPlaque();
 
         // issue the load command
-        Cbuf_AddText(va((char*)"load s%i\n", load_cursor));
+        Cbuf_AddText(va("load s%i\n", load_cursor));
         return;
 
     case K_UPARROW:
@@ -560,7 +560,7 @@ void M_Save_Key(int k)
     case K_ENTER:
         m_state = m_none;
         key_dest = key_game;
-        Cbuf_AddText(va((char*)"save s%i\n", load_cursor));
+        Cbuf_AddText(va("save s%i\n", load_cursor));
         return;
 
     case K_UPARROW:
@@ -608,7 +608,7 @@ void M_MultiPlayer_Draw()
 
     f = (int)(host_time * 10) % 6;
 
-    M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
 
     if (serialAvailable || ipxAvailable || tcpipAvailable)
         return;
@@ -775,11 +775,11 @@ forward:
 
         // setup_cursor == 4 (OK)
         if (std::strcmp(cl_name.string, setup_myname) != 0)
-            Cbuf_AddText(va((char*)"name \"%s\"\n", setup_myname));
+            Cbuf_AddText(va("name \"%s\"\n", setup_myname));
         if (std::strcmp(hostname.string, setup_hostname) != 0)
             Cvar_Set((char*)"hostname", setup_hostname);
         if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
-            Cbuf_AddText(va((char*)"color %i %i\n", setup_top, setup_bottom));
+            Cbuf_AddText(va("color %i %i\n", setup_top, setup_bottom));
         m_entersound = true;
         M_Menu_MultiPlayer_f();
         break;
@@ -943,7 +943,7 @@ void M_Net_Draw()
     M_Print(f, 166, net_helpMessage[m_net_cursor * 4 + 3]);
 
     f = (int)(host_time * 10) % 6;
-    M_DrawTransPic(54, 32 + m_net_cursor * 20, Draw_CachePic(va((char*)"gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_net_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
 }
 
 
@@ -1208,7 +1208,7 @@ void M_Options_Key(int k)
             Con_ToggleConsole_f();
             break;
         case 2:
-            Cbuf_AddText((char*)"exec default.cfg\n");
+            Cbuf_AddText("exec default.cfg\n");
             break;
         case 12:
             M_Menu_Video_f();
@@ -1494,7 +1494,7 @@ void M_Menu_Help_f()
 
 void M_Help_Draw()
 {
-    M_DrawPic(0, 0, Draw_CachePic(va((char*)"gfx/help%i.lmp", help_page)));
+    M_DrawPic(0, 0, Draw_CachePic(va("gfx/help%i.lmp", help_page)));
 }
 
 
@@ -1687,20 +1687,20 @@ void M_SerialConfig_Draw()
         directModem = (char*)"Modem";
     else
         directModem = (char*)"Direct Connect";
-    M_Print(basex, 32, va((char*)"%s - %s", startJoin, directModem));
+    M_Print(basex, 32, va("%s - %s", startJoin, directModem));
     basex += 8;
 
     M_Print(basex, serialConfig_cursor_table[0], (char*)"Port");
     M_DrawTextBox(160, 40, 4, 1);
-    M_Print(168, serialConfig_cursor_table[0], va((char*)"COM%u", serialConfig_comport));
+    M_Print(168, serialConfig_cursor_table[0], va("COM%u", serialConfig_comport));
 
     M_Print(basex, serialConfig_cursor_table[1], (char*)"IRQ");
     M_DrawTextBox(160, serialConfig_cursor_table[1] - 8, 1, 1);
-    M_Print(168, serialConfig_cursor_table[1], va((char*)"%u", serialConfig_irq));
+    M_Print(168, serialConfig_cursor_table[1], va("%u", serialConfig_irq));
 
     M_Print(basex, serialConfig_cursor_table[2], (char*)"Baud");
     M_DrawTextBox(160, serialConfig_cursor_table[2] - 8, 5, 1);
-    M_Print(168, serialConfig_cursor_table[2], va((char*)"%u", serialConfig_baudrate[serialConfig_baud]));
+    M_Print(168, serialConfig_cursor_table[2], va("%u", serialConfig_baudrate[serialConfig_baud]));
 
     if (SerialConfig)
     {
@@ -1858,9 +1858,9 @@ forward:
         m_state = m_none;
 
         if (SerialConfig)
-            Cbuf_AddText(va((char*)"connect \"%s\"\n", serialConfig_phone));
+            Cbuf_AddText(va("connect \"%s\"\n", serialConfig_phone));
         else
-            Cbuf_AddText((char*)"connect\n");
+            Cbuf_AddText("connect\n");
         break;
 
     case K_BACKSPACE:
@@ -2008,7 +2008,7 @@ void M_ModemConfig_Key(int key)
 
         if (modemConfig_cursor == 4)
         {
-            (*SetModemConfig) (0, va((char*)"%c", modemConfig_dialing), modemConfig_clear, modemConfig_init, modemConfig_hangup);
+            (*SetModemConfig) (0, va("%c", modemConfig_dialing), modemConfig_clear, modemConfig_init, modemConfig_hangup);
             m_entersound = true;
             M_Menu_SerialConfig_f();
         }
@@ -2123,7 +2123,7 @@ void M_LanConfig_Draw()
         protocol = (char*)"IPX";
     else
         protocol = (char*)"TCP/IP";
-    M_Print(basex, 32, va((char*)"%s - %s", startJoin, protocol));
+    M_Print(basex, 32, va("%s - %s", startJoin, protocol));
     basex += 8;
 
     M_Print(basex, 52, (char*)"Address:");
@@ -2211,7 +2211,7 @@ void M_LanConfig_Key(int key)
             m_return_onerror = true;
             key_dest = key_game;
             m_state = m_none;
-            Cbuf_AddText(va((char*)"connect \"%s\"\n", lanConfig_joinname));
+            Cbuf_AddText(va("connect \"%s\"\n", lanConfig_joinname));
             break;
         }
 
@@ -2454,7 +2454,7 @@ void M_GameOptions_Draw()
     M_Print(160, 40, (char*)"begin game");
 
     M_Print(0, 56, (char*)" Max players");
-    M_Print(160, 56, va((char*)"%i", maxplayers));
+    M_Print(160, 56, va("%i", maxplayers));
 
     M_Print(0, 64, (char*)" Game Type");
     if (coop.value)
@@ -2506,13 +2506,13 @@ void M_GameOptions_Draw()
     if (fraglimit.value == 0)
         M_Print(160, 88, (char*)"none");
     else
-        M_Print(160, 88, va((char*)"%i frags", (int)fraglimit.value));
+        M_Print(160, 88, va("%i frags", (int)fraglimit.value));
 
     M_Print(0, 96, (char*)" Time Limit");
     if (timelimit.value == 0)
         M_Print(160, 96, (char*)"none");
     else
-        M_Print(160, 96, va((char*)"%i minutes", (int)timelimit.value));
+        M_Print(160, 96, va("%i minutes", (int)timelimit.value));
 
     M_Print(0, 112, (char*)" Episode");
     //MED 01/06/97 added hipnotic episodes
@@ -2709,17 +2709,17 @@ void M_GameOptions_Key(int key)
         if (gameoptions_cursor == 0)
         {
             if (sv.active)
-                Cbuf_AddText((char*)"disconnect\n");
-            Cbuf_AddText((char*)"listen 0\n"); // so host_netport will be re-examined
-            Cbuf_AddText(va((char*)"maxplayers %u\n", maxplayers));
+                Cbuf_AddText("disconnect\n");
+            Cbuf_AddText("listen 0\n"); // so host_netport will be re-examined
+            Cbuf_AddText(va("maxplayers %u\n", maxplayers));
             SCR_BeginLoadingPlaque();
 
             if constexpr (hipnotic)
-                Cbuf_AddText(va((char*)"map %s\n", hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name));
+                Cbuf_AddText(va("map %s\n", hipnoticlevels[hipnoticepisodes[startepisode].firstLevel + startlevel].name));
             else if constexpr (rogue)
-                Cbuf_AddText(va((char*)"map %s\n", roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].name));
+                Cbuf_AddText(va("map %s\n", roguelevels[rogueepisodes[startepisode].firstLevel + startlevel].name));
             else
-                Cbuf_AddText(va((char*)"map %s\n", levels[episodes[startepisode].firstLevel + startlevel].name));
+                Cbuf_AddText(va("map %s\n", levels[episodes[startepisode].firstLevel + startlevel].name));
 
             return;
         }
@@ -2883,7 +2883,7 @@ void M_ServerList_Key(int k)
         slist_sorted = false;
         key_dest = key_game;
         m_state = m_none;
-        Cbuf_AddText(va((char*)"connect \"%s\"\n", hostcache[slist_cursor].cname));
+        Cbuf_AddText(va("connect \"%s\"\n", hostcache[slist_cursor].cname));
         break;
 
     default:
@@ -3116,10 +3116,10 @@ void M_ConfigureNetSubsystem()
 {
     // enable/disable net systems to match desired config
 
-    Cbuf_AddText((char*)"stopdemo\n");
+    Cbuf_AddText("stopdemo\n");
     if (SerialConfig || DirectConfig)
     {
-        Cbuf_AddText((char*)"com1 enable\n");
+        Cbuf_AddText("com1 enable\n");
     }
 
     if (IPXConfig || TCPIPConfig)

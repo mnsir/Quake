@@ -102,14 +102,14 @@ sfxcache_t * S_LoadSound(sfx_t * s)
 
     if (!data)
     {
-        Con_Printf((char*)"Couldn't load %s\n", namebuffer);
+        Con_Printf("Couldn't load %s\n", namebuffer);
         return NULL;
     }
 
     info = GetWavinfo(s->name, data, com_filesize);
     if (info.channels != 1)
     {
-        Con_Printf((char*)"%s is a stereo sample\n", s->name);
+        Con_Printf("%s is a stereo sample\n", s->name);
         return NULL;
     }
 
@@ -217,7 +217,7 @@ void DumpChunks()
         memcpy(str, data_p, 4);
         data_p += 4;
         iff_chunk_len = GetLittleLong();
-        Con_Printf((char*)"0x%x : %s (%d)\n", (int)(data_p - 4), str, iff_chunk_len);
+        Con_Printf("0x%x : %s (%d)\n", (int)(data_p - 4), str, iff_chunk_len);
         data_p += (iff_chunk_len + 1) & ~1;
     } while (data_p < iff_end);
 }
@@ -246,7 +246,7 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
     FindChunk((char*)"RIFF");
     if (!(data_p && !std::strncmp((char*)data_p + 8, "WAVE", 4)))
     {
-        Con_Printf((char*)"Missing RIFF/WAVE chunks\n");
+        Con_Printf("Missing RIFF/WAVE chunks\n");
         return info;
     }
 
@@ -257,14 +257,14 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
     FindChunk((char*)"fmt ");
     if (!data_p)
     {
-        Con_Printf((char*)"Missing fmt chunk\n");
+        Con_Printf("Missing fmt chunk\n");
         return info;
     }
     data_p += 8;
     format = GetLittleShort();
     if (format != 1)
     {
-        Con_Printf((char*)"Microsoft PCM format only\n");
+        Con_Printf("Microsoft PCM format only\n");
         return info;
     }
 
@@ -279,7 +279,7 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
     {
         data_p += 32;
         info.loopstart = GetLittleLong();
-        // Con_Printf((char*)"loopstart=%d\n", sfx->loopstart);
+        // Con_Printf("loopstart=%d\n", sfx->loopstart);
 
          // if the next chunk is a LIST chunk, look for a cue length marker
         FindNextChunk((char*)"LIST");
@@ -290,7 +290,7 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
                 data_p += 24;
                 i = GetLittleLong(); // samples in loop
                 info.samples = info.loopstart + i;
-                // Con_Printf((char*)"looped length: %i\n", i);
+                // Con_Printf("looped length: %i\n", i);
             }
         }
     }
@@ -301,7 +301,7 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
     FindChunk((char*)"data");
     if (!data_p)
     {
-        Con_Printf((char*)"Missing data chunk\n");
+        Con_Printf("Missing data chunk\n");
         return info;
     }
 

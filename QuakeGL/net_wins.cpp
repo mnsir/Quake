@@ -213,7 +213,7 @@ int WINS_Init()
 
     if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
     {
-        Con_Printf((char*)"WINS_Init: Unable to open control socket\n");
+        Con_Printf("WINS_Init: Unable to open control socket\n");
         if (--winsock_initialized == 0)
             pWSACleanup();
         return -1;
@@ -223,7 +223,7 @@ int WINS_Init()
     ((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
     ((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
-    Con_Printf((char*)"Winsock TCP/IP Initialized\n");
+    Con_Printf("Winsock TCP/IP Initialized\n");
     tcpipAvailable = true;
 
     return net_controlsocket;
@@ -306,7 +306,7 @@ this lets you type only as much of the net address as required, using
 the local network components to fill in the rest
 ============
 */
-static int PartialIPAddress(char * in, struct qsockaddr * hostaddr)
+static int PartialIPAddress(const char * in, struct qsockaddr * hostaddr)
 {
     char buff[256];
     char * b;
@@ -424,7 +424,7 @@ int WINS_Broadcast(int socket, byte * buf, int len)
         ret = WINS_MakeSocketBroadcastCapable(socket);
         if (ret == -1)
         {
-            Con_Printf((char*)"Unable to make socket broadcast capable\n");
+            Con_Printf("Unable to make socket broadcast capable\n");
             return ret;
         }
     }
@@ -460,7 +460,7 @@ char * WINS_AddrToString(struct qsockaddr * addr)
 
 //=============================================================================
 
-int WINS_StringToAddr(char * string, struct qsockaddr * addr)
+int WINS_StringToAddr(const char * string, struct qsockaddr * addr)
 {
     int ha1, ha2, ha3, ha4, hp;
     int ipaddr;
@@ -509,7 +509,7 @@ int WINS_GetNameFromAddr(struct qsockaddr * addr, char * name)
 
 //=============================================================================
 
-int WINS_GetAddrFromName(char * name, struct qsockaddr * addr)
+int WINS_GetAddrFromName(const char * name, struct qsockaddr * addr)
 {
     struct hostent * hostentry;
 

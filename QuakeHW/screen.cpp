@@ -69,7 +69,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void SCR_CenterPrint(char * str)
+void SCR_CenterPrint(const char * str)
 {
     strncpy(scr_centerstring, str, sizeof(scr_centerstring) - 1);
     scr_centertime_off = scr_centertime.value;
@@ -536,7 +536,7 @@ void WritePCXfile(char * filename, byte * data, int width, int height,
     pcx = (pcx_t*)Hunk_TempAlloc(width * height * 2 + 1000);
     if (pcx == NULL)
     {
-        Con_Printf((char*)"SCR_ScreenShot_f: not enough memory\n");
+        Con_Printf("SCR_ScreenShot_f: not enough memory\n");
         return;
     }
 
@@ -613,7 +613,7 @@ void SCR_ScreenShot_f()
     }
     if (i == 100)
     {
-        Con_Printf((char*)"SCR_ScreenShot_f: Couldn't create a PCX file\n");
+        Con_Printf("SCR_ScreenShot_f: Couldn't create a PCX file\n");
         return;
     }
 
@@ -629,7 +629,7 @@ void SCR_ScreenShot_f()
     D_DisableBackBufferAccess(); // for adapters that can't stay mapped in
     // for linear writes all the time
 
-    Con_Printf((char*)"Wrote %s\n", pcxname);
+    Con_Printf("Wrote %s\n", pcxname);
 }
 
 
@@ -804,7 +804,7 @@ void SCR_UpdateScreen()
         if (realtime - scr_disabled_time > 60)
         {
             scr_disabled_for_loading = false;
-            Con_Printf((char*)"load failed.\n");
+            Con_Printf("load failed.\n");
         }
         else
             return;

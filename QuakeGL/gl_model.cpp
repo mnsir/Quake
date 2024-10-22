@@ -160,7 +160,7 @@ Mod_FindName
 
 ==================
 */
-model_t * Mod_FindName(char * name)
+model_t * Mod_FindName(const char * name)
 {
     int i;
     model_t * mod;
@@ -193,7 +193,7 @@ Mod_TouchModel
 
 ==================
 */
-void Mod_TouchModel(char * name)
+void Mod_TouchModel(const char * name)
 {
     model_t * mod;
 
@@ -1222,7 +1222,7 @@ Mod_LoadAliasFrame
 */
 void * Mod_LoadAliasFrame(void * pin, maliasframedesc_t * frame)
 {
-    trivertx_t * pframe, * pinframe;
+    trivertx_t * pinframe;
     int i, j;
     daliasframe_t * pdaliasframe;
 
@@ -1805,10 +1805,10 @@ void Mod_Print()
     int i;
     model_t * mod;
 
-    Con_Printf((char*)"Cached models:\n");
+    Con_Printf("Cached models:\n");
     for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
     {
-        Con_Printf((char*)"%8p : %s\n", mod->cache.data, mod->name);
+        Con_Printf("%8p : %s\n", mod->cache.data, mod->name);
     }
 }
 

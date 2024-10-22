@@ -426,11 +426,11 @@ void ED_Print(edict_t * ed)
 
     if (ed->free)
     {
-        Con_Printf((char*)"FREE\n");
+        Con_Printf("FREE\n");
         return;
     }
 
-    Con_Printf((char*)"\nEDICT %i:\n", NUM_FOR_EDICT(ed));
+    Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
     for (i = 1; i < progs->numfielddefs; i++)
     {
         d = &pr_fielddefs[i];
@@ -449,12 +449,12 @@ void ED_Print(edict_t * ed)
         if (j == type_size[type])
             continue;
 
-        Con_Printf((char*)"%s", name);
+        Con_Printf("%s", name);
         l = strlen(name);
         while (l++ < 15)
-            Con_Printf((char*)" ");
+            Con_Printf(" ");
 
-        Con_Printf((char*)"%s\n", PR_ValueString((etype_t)d->type, (eval_t *)v));
+        Con_Printf("%s\n", PR_ValueString((etype_t)d->type, (eval_t *)v));
     }
 }
 
@@ -521,7 +521,7 @@ void ED_PrintEdicts()
 {
     int i;
 
-    Con_Printf((char*)"%i entities\n", sv.num_edicts);
+    Con_Printf("%i entities\n", sv.num_edicts);
     for (i = 0; i < sv.num_edicts; i++)
         ED_PrintNum(i);
 }
@@ -540,7 +540,7 @@ void ED_PrintEdict_f()
     i = std::atoi(Cmd_Argv(1));
     if (i >= sv.num_edicts)
     {
-        Con_Printf((char*)"Bad edict number\n");
+        Con_Printf("Bad edict number\n");
         return;
     }
     ED_PrintNum(i);
@@ -574,11 +574,11 @@ void ED_Count()
             step++;
     }
 
-    Con_Printf((char*)"num_edicts:%3i\n", sv.num_edicts);
-    Con_Printf((char*)"active :%3i\n", active);
-    Con_Printf((char*)"view :%3i\n", models);
-    Con_Printf((char*)"touch :%3i\n", solid);
-    Con_Printf((char*)"step :%3i\n", step);
+    Con_Printf("num_edicts:%3i\n", sv.num_edicts);
+    Con_Printf("active :%3i\n", active);
+    Con_Printf("view :%3i\n", models);
+    Con_Printf("touch :%3i\n", solid);
+    Con_Printf("step :%3i\n", step);
 
 }
 
@@ -629,7 +629,7 @@ void ED_WriteGlobals(FILE * f)
 ED_ParseGlobals
 =============
 */
-void ED_ParseGlobals(char * data)
+void ED_ParseGlobals(const char * data)
 {
     char keyname[64];
     ddef_t * key;
@@ -656,7 +656,7 @@ void ED_ParseGlobals(char * data)
         key = ED_FindGlobal(keyname);
         if (!key)
         {
-            Con_Printf((char*)"'%s' is not a global\n", keyname);
+            Con_Printf("'%s' is not a global\n", keyname);
             continue;
         }
 
@@ -751,7 +751,7 @@ bool ED_ParseEpair(void * base, ddef_t * key, char * s)
         def = ED_FindField(s);
         if (!def)
         {
-            Con_Printf((char*)"Can't find field %s\n", s);
+            Con_Printf("Can't find field %s\n", s);
             return false;
         }
         *(int *)d = G_INT(def->ofs);
@@ -761,7 +761,7 @@ bool ED_ParseEpair(void * base, ddef_t * key, char * s)
         func = ED_FindFunction(s);
         if (!func)
         {
-            Con_Printf((char*)"Can't find function %s\n", s);
+            Con_Printf("Can't find function %s\n", s);
             return false;
         }
         *(func_t *)d = func - pr_functions;
@@ -800,7 +800,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
     while (1)
     {
         // parse key
-        data = COM_Parse(data);
+        data = (char*)COM_Parse(data);
         if (com_token[0] == '}')
             break;
         if (!data)
@@ -831,7 +831,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
         }
 
         // parse value 
-        data = COM_Parse(data);
+        data = (char*)COM_Parse(data);
         if (!data)
             Sys_Error((char*)"ED_ParseEntity: EOF without closing brace");
 
@@ -848,7 +848,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
         key = ED_FindField(keyname);
         if (!key)
         {
-            Con_Printf((char*)"'%s' is not a field\n", keyname);
+            Con_Printf("'%s' is not a field\n", keyname);
             continue;
         }
 
@@ -899,7 +899,7 @@ void ED_LoadFromFile(char * data)
     while (1)
     {
         // parse the opening brace 
-        data = COM_Parse(data);
+        data = (char*)COM_Parse(data);
         if (!data)
             break;
         if (com_token[0] != '{')
@@ -935,7 +935,7 @@ void ED_LoadFromFile(char * data)
         //
         if (!ent->v.classname)
         {
-            Con_Printf((char*)"No classname for:\n");
+            Con_Printf("No classname for:\n");
             ED_Print(ent);
             ED_Free(ent);
             continue;
@@ -946,7 +946,7 @@ void ED_LoadFromFile(char * data)
 
         if (!func)
         {
-            Con_Printf((char*)"No spawn function for:\n");
+            Con_Printf("No spawn function for:\n");
             ED_Print(ent);
             ED_Free(ent);
             continue;

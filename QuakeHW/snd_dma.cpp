@@ -93,18 +93,18 @@ void S_SoundInfo_f()
 {
     if (!sound_started || !shm)
     {
-        Con_Printf((char*)"sound system not started\n");
+        Con_Printf("sound system not started\n");
         return;
     }
 
-    Con_Printf((char*)"%5d stereo\n", shm->channels - 1);
-    Con_Printf((char*)"%5d samples\n", shm->samples);
-    Con_Printf((char*)"%5d samplepos\n", shm->samplepos);
-    Con_Printf((char*)"%5d samplebits\n", shm->samplebits);
-    Con_Printf((char*)"%5d submission_chunk\n", shm->submission_chunk);
-    Con_Printf((char*)"%5d speed\n", shm->speed);
-    Con_Printf((char*)"0x%x dma buffer\n", shm->buffer);
-    Con_Printf((char*)"%5d total_channels\n", total_channels);
+    Con_Printf("%5d stereo\n", shm->channels - 1);
+    Con_Printf("%5d samples\n", shm->samples);
+    Con_Printf("%5d samplepos\n", shm->samplepos);
+    Con_Printf("%5d samplebits\n", shm->samplebits);
+    Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
+    Con_Printf("%5d speed\n", shm->speed);
+    Con_Printf("0x%x dma buffer\n", shm->buffer);
+    Con_Printf("%5d total_channels\n", total_channels);
 }
 
 
@@ -144,7 +144,7 @@ S_Init
 void S_Init()
 {
 
-    Con_Printf((char*)"\nSound Initialization\n");
+    Con_Printf("\nSound Initialization\n");
 
     if (COM_CheckParm((char*)"-nosound"))
         return;
@@ -173,7 +173,7 @@ void S_Init()
     if (host_parms.mem.size() < 0x800000)
     {
         Cvar_Set((char*)"loadas8bit", (char*)"1");
-        Con_Printf((char*)"loading all sounds as 8bit\n");
+        Con_Printf("loading all sounds as 8bit\n");
     }
 
 
@@ -204,7 +204,7 @@ void S_Init()
         shm->buffer = (unsigned char*)Hunk_AllocName(1 << 16, (char*)"shmbuf");
     }
 
-    Con_Printf((char*)"Sound sampling rate: %i\n", shm->speed);
+    Con_Printf("Sound sampling rate: %i\n", shm->speed);
 
     // provides a tick sound until washed clean
 
@@ -251,7 +251,7 @@ S_FindName
 
 ==================
 */
-sfx_t * S_FindName(char * name)
+sfx_t * S_FindName(const char * name)
 {
     int i;
     sfx_t * sfx;
@@ -287,7 +287,7 @@ S_TouchSound
 
 ==================
 */
-void S_TouchSound(char * name)
+void S_TouchSound(const char * name)
 {
     sfx_t * sfx;
 
@@ -558,14 +558,14 @@ void S_ClearBuffer()
         {
             if (hresult != DSERR_BUFFERLOST)
             {
-                Con_Printf((char*)"S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
+                Con_Printf("S_ClearBuffer: DS::Lock Sound Buffer Failed\n");
                 S_Shutdown();
                 return;
             }
 
             if (++reps > 10000)
             {
-                Con_Printf((char*)"S_ClearBuffer: DS: couldn't restore buffer\n");
+                Con_Printf("S_ClearBuffer: DS: couldn't restore buffer\n");
                 S_Shutdown();
                 return;
             }
@@ -598,7 +598,7 @@ void S_StaticSound(sfx_t * sfx, vec3_t origin, float vol, float attenuation)
 
     if (total_channels == MAX_CHANNELS)
     {
-        Con_Printf((char*)"total_channels == MAX_CHANNELS\n");
+        Con_Printf("total_channels == MAX_CHANNELS\n");
         return;
     }
 
@@ -611,7 +611,7 @@ void S_StaticSound(sfx_t * sfx, vec3_t origin, float vol, float attenuation)
 
     if (sc->loopstart == -1)
     {
-        Con_Printf((char*)"Sound %s not looped\n", sfx->name);
+        Con_Printf("Sound %s not looped\n", sfx->name);
         return;
     }
 
@@ -771,7 +771,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
                 total++;
             }
 
-        Con_Printf((char*)"----(%i)----\n", total);
+        Con_Printf("----(%i)----\n", total);
     }
 
     // mix some sound
@@ -845,7 +845,7 @@ void S_Update_()
         if (pDSBuf)
         {
             if (pDSBuf->GetStatus(&dwStatus) != DD_OK)
-                Con_Printf((char*)"Couldn't get sound buffer status\n");
+                Con_Printf("Couldn't get sound buffer status\n");
 
             if (dwStatus & DSBSTATUS_BUFFERLOST)
                 pDSBuf->Restore();
@@ -932,12 +932,12 @@ void S_SoundList()
         size = sc->length * sc->width * (sc->stereo + 1);
         total += size;
         if (sc->loopstart >= 0)
-            Con_Printf((char*)"L");
+            Con_Printf("L");
         else
-            Con_Printf((char*)" ");
-        Con_Printf((char*)"(%2db) %6i : %s\n", sc->width * 8, size, sfx->name);
+            Con_Printf(" ");
+        Con_Printf("(%2db) %6i : %s\n", sc->width * 8, size, sfx->name);
     }
-    Con_Printf((char*)"Total resident: %i\n", total);
+    Con_Printf("Total resident: %i\n", total);
 }
 
 
@@ -953,7 +953,7 @@ void S_LocalSound(char * sound)
     sfx = S_PrecacheSound(sound);
     if (!sfx)
     {
-        Con_Printf((char*)"S_LocalSound: can't cache %s\n", sound);
+        Con_Printf("S_LocalSound: can't cache %s\n", sound);
         return;
     }
     S_StartSound(cl.viewentity, -1, sfx, vec3_origin, 1, 1);

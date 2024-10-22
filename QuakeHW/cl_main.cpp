@@ -169,10 +169,10 @@ void CL_SignonReply()
 
     case 2:
         cls.message.MSG_WriteByte(clc_stringcmd);
-        cls.message.MSG_WriteString(va((char*)"name \"%s\"\n", cl_name.string));
+        cls.message.MSG_WriteString(va("name \"%s\"\n", cl_name.string));
 
         cls.message.MSG_WriteByte(clc_stringcmd);
-        cls.message.MSG_WriteString(va((char*)"color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
+        cls.message.MSG_WriteString(va("color %i %i\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 15));
 
         cls.message.MSG_WriteByte(clc_stringcmd);
         sprintf(str, "spawn %s", cls.spawnparms);
@@ -212,7 +212,7 @@ void CL_NextDemo()
         cls.demonum = 0;
         if (!cls.demos[cls.demonum][0])
         {
-            Con_Printf((char*)"No demos listed with startdemos\n");
+            Con_Printf("No demos listed with startdemos\n");
             cls.demonum = -1;
             return;
         }
@@ -235,13 +235,13 @@ void CL_PrintEntities_f()
 
     for (i = 0, ent = cl_entities; i < cl.num_entities; i++, ent++)
     {
-        Con_Printf((char*)"%3i:", i);
+        Con_Printf("%3i:", i);
         if (!ent->model)
         {
-            Con_Printf((char*)"EMPTY\n");
+            Con_Printf("EMPTY\n");
             continue;
         }
-        Con_Printf((char*)"%s:%2i (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
+        Con_Printf("%s:%2i (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n"
                    , ent->model->name, ent->frame, ent->origin[0], ent->origin[1], ent->origin[2], ent->angles[0], ent->angles[1], ent->angles[2]);
     }
 }
@@ -576,7 +576,7 @@ int CL_ReadFromServer()
     } while (ret && cls.state == ca_connected);
 
     if (cl_shownet.value)
-        Con_Printf((char*)"\n");
+        Con_Printf("\n");
 
     CL_RelinkEntities();
     CL_UpdateTEnts();

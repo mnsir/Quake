@@ -214,90 +214,75 @@ void sizebuf_t::MSG_WriteAngle(float f)
     MSG_WriteByte(((int)f * 256 / 360) & 255);
 }
 
-//
-// reading functions
-//
-int msg_readcount;
-bool msg_badread;
-
-void MSG_BeginReading()
+void Msg::BeginReading()
 {
-    msg_readcount = 0;
-    msg_badread = false;
+    Msg::readcount = 0;
+    Msg::badread = false;
 }
 
-// returns -1 and sets msg_badread if no more characters are available
-int MSG_ReadChar()
+// returns -1 and sets Msg::badread if no more characters are available
+int Msg::ReadChar(const sizebuf_t& buf)
 {
-    int c;
-
-    if (msg_readcount + 1 > net_message.cursize)
+    if (Msg::readcount + 1 > buf.cursize)
     {
-        msg_badread = true;
+        Msg::badread = true;
         return -1;
     }
 
-    c = (signed char)net_message.data[msg_readcount];
-    msg_readcount++;
+    int c = (signed char)buf.data[Msg::readcount];
+    Msg::readcount++;
 
     return c;
 }
 
-int MSG_ReadByte()
+int Msg::ReadByte(const sizebuf_t& buf)
 {
-    int c;
-
-    if (msg_readcount + 1 > net_message.cursize)
+    if (Msg::readcount + 1 > buf.cursize)
     {
-        msg_badread = true;
+        Msg::badread = true;
         return -1;
     }
 
-    c = (unsigned char)net_message.data[msg_readcount];
-    msg_readcount++;
+    int c = (unsigned char)buf.data[Msg::readcount];
+    Msg::readcount++;
 
     return c;
 }
 
-int MSG_ReadShort()
+int Msg::ReadShort(const sizebuf_t& buf)
 {
-    int c;
-
-    if (msg_readcount + 2 > net_message.cursize)
+    if (Msg::readcount + 2 > buf.cursize)
     {
-        msg_badread = true;
+        Msg::badread = true;
         return -1;
     }
 
-    c = (short)(net_message.data[msg_readcount]
-                + (net_message.data[msg_readcount + 1] << 8));
+    int c = (short)(buf.data[Msg::readcount] + (buf.data[Msg::readcount + 1] << 8));
 
-    msg_readcount += 2;
+    Msg::readcount += 2;
 
     return c;
 }
 
-int MSG_ReadLong()
+int Msg::ReadLong(const sizebuf_t& buf)
 {
-    int c;
-
-    if (msg_readcount + 4 > net_message.cursize)
+    if (Msg::readcount + 4 > buf.cursize)
     {
-        msg_badread = true;
+        Msg::badread = true;
         return -1;
     }
 
-    c = net_message.data[msg_readcount]
-        + (net_message.data[msg_readcount + 1] << 8)
-        + (net_message.data[msg_readcount + 2] << 16)
-        + (net_message.data[msg_readcount + 3] << 24);
+    int c = buf.data[Msg::readcount]
+        + (buf.data[Msg::readcount + 1] << 8)
+        + (buf.data[Msg::readcount + 2] << 16)
+        + (buf.data[Msg::readcount + 3] << 24);
 
-    msg_readcount += 4;
+    Msg::readcount += 4;
 
     return c;
 }
 
-float MSG_ReadFloat()
+float Msg::ReadFloat(const sizebuf_t& buf)
 {
     union
     {
@@ -306,26 +291,22 @@ float MSG_ReadFloat()
         int l;
     } dat;
 
-    dat.b[0] = net_message.data[msg_readcount];
-    dat.b[1] = net_message.data[msg_readcount + 1];
-    dat.b[2] = net_message.data[msg_readcount + 2];
-    dat.b[3] = net_message.data[msg_readcount + 3];
-    msg_readcount += 4;
-
-    dat.l = dat.l;
+    dat.b[0] = buf.data[Msg::readcount];
+    dat.b[1] = buf.data[Msg::readcount + 1];
+    dat.b[2] = buf.data[Msg::readcount + 2];
+    dat.b[3] = buf.data[Msg::readcount + 3];
+    Msg::readcount += 4;
 
     return dat.f;
 }
 
-char * MSG_ReadString()
+const char* Msg::ReadString(const sizebuf_t& buf)
 {
     static char string[2048];
-    int l, c;
-
-    l = 0;
+    int l = 0;
     do
     {
-        c = MSG_ReadChar();
+        int c = Msg::ReadChar(buf);
         if (c == -1 || c == 0)
             break;
         string[l] = c;
@@ -337,17 +318,15 @@ char * MSG_ReadString()
     return string;
 }
 
-float MSG_ReadCoord()
+float Msg::ReadCoord(const sizebuf_t& buf)
 {
-    return MSG_ReadShort() * (1.0 / 8);
+    return Msg::ReadShort(buf) * (1.0 / 8);
 }
 
-float MSG_ReadAngle()
+float Msg::ReadAngle(const sizebuf_t& buf)
 {
-    return MSG_ReadChar() * (360.0 / 256);
+    return Msg::ReadChar(buf) * (360.0 / 256);
 }
-
-
 
 //===========================================================================
 
@@ -381,7 +360,7 @@ void * sizebuf_t::SZ_GetSpace(int length)
             Sys_Error((char*)"SZ_GetSpace: %i is > full buffer size", length);
 
         overflowed_ = true;
-        Con_Printf((char*)"SZ_GetSpace: overflow");
+        Con_Printf("SZ_GetSpace: overflow");
         SZ_Clear();
     }
 
@@ -523,7 +502,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char * COM_Parse(char * data)
+const char * COM_Parse(const char * data)
 {
     int c;
     int len;
@@ -648,7 +627,7 @@ void COM_CheckRegistered()
 
     if (h == -1)
     {
-        Con_Printf((char*)"Playing shareware version.\n");
+        Con_Printf("Playing shareware version.\n");
         return;
     }
 
@@ -662,7 +641,7 @@ void COM_CheckRegistered()
     Cvar_Set((char*)"cmdline", com_cmdline);
     Cvar_Set((char*)"registered", (char*)"1");
     static_registered = 1;
-    Con_Printf((char*)"Playing registered version.\n");
+    Con_Printf("Playing registered version.\n");
 }
 
 
@@ -750,7 +729,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char * va(char * format, ...)
+char * va(const char * format, ...)
 {
     va_list argptr;
     static char string[1024];
@@ -843,15 +822,15 @@ void COM_Path_f()
 {
     searchpath_t * s;
 
-    Con_Printf((char*)"Current search path:\n");
+    Con_Printf("Current search path:\n");
     for (s = com_searchpaths; s; s = s->next)
     {
         if (s->pack)
         {
-            Con_Printf((char*)"%s (%i files)\n", s->pack->filename, s->pack->numfiles);
+            Con_Printf("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
         }
         else
-            Con_Printf((char*)"%s\n", s->filename);
+            Con_Printf("%s\n", s->filename);
     }
 }
 
@@ -1243,7 +1222,7 @@ pack_t * COM_LoadPackFile(char * packfile)
     pack->numfiles = numpackfiles;
     pack->files = newfiles;
 
-    Con_Printf((char*)"Added packfile %s (%i files)\n", packfile, numpackfiles);
+    Con_Printf("Added packfile %s (%i files)\n", packfile, numpackfiles);
     return pack;
 }
 
@@ -1344,12 +1323,12 @@ void COM_InitFilesystem()
     //
     // start up with GAMENAME by default (id1)
     //
-    COM_AddGameDirectory(va((char*)"%s/" GAMENAME, basedir));
+    COM_AddGameDirectory(va("%s/" GAMENAME, basedir));
 
     if constexpr (rogue)
-        COM_AddGameDirectory(va((char*)"%s/rogue", basedir));
+        COM_AddGameDirectory(va("%s/rogue", basedir));
     if constexpr (hipnotic)
-        COM_AddGameDirectory(va((char*)"%s/hipnotic", basedir));
+        COM_AddGameDirectory(va("%s/hipnotic", basedir));
 
     //
     // -game <gamedir>
@@ -1358,7 +1337,7 @@ void COM_InitFilesystem()
     i = COM_CheckParm((char*)"-game");
     if (i && i < com_argc - 1)
     {
-        COM_AddGameDirectory(va((char*)"%s/%s", basedir, com_argv[i + 1]));
+        COM_AddGameDirectory(va("%s/%s", basedir, com_argv[i + 1]));
     }
 
     //

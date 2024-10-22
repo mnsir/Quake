@@ -146,11 +146,11 @@ void R_ReadPointFile_f()
     COM_FOpenFile(name, &f);
     if (!f)
     {
-        Con_Printf((char*)"couldn't open %s\n", name);
+        Con_Printf("couldn't open %s\n", name);
         return;
     }
 
-    Con_Printf((char*)"Reading %s...\n", name);
+    Con_Printf("Reading %s...\n", name);
     c = 0;
     for (;; )
     {
@@ -161,7 +161,7 @@ void R_ReadPointFile_f()
 
         if (!free_particles)
         {
-            Con_Printf((char*)"Not enough free particles\n");
+            Con_Printf("Not enough free particles\n");
             break;
         }
         p = free_particles;
@@ -177,7 +177,7 @@ void R_ReadPointFile_f()
     }
 
     fclose(f);
-    Con_Printf((char*)"%i points read\n", c);
+    Con_Printf("%i points read\n", c);
 }
 
 /*
@@ -193,11 +193,11 @@ void R_ParseParticleEffect()
     int i, count, msgcount, color;
 
     for (i = 0; i < 3; i++)
-        org[i] = MSG_ReadCoord();
+        org[i] = Msg::ReadCoord(net_message);
     for (i = 0; i < 3; i++)
-        dir[i] = MSG_ReadChar() * (1.0 / 16);
-    msgcount = MSG_ReadByte();
-    color = MSG_ReadByte();
+        dir[i] = Msg::ReadChar(net_message) * (1.0 / 16);
+    msgcount = Msg::ReadByte(net_message);
+    color = Msg::ReadByte(net_message);
 
     if (msgcount == 255)
         count = 1024;

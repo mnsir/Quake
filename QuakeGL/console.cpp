@@ -209,7 +209,7 @@ void Con_Init()
     con_linewidth = -1;
     Con_CheckResize();
 
-    Con_Printf((char*)"Console initialized.\n");
+    Con_Printf("Console initialized.\n");
 
     //
     // register our commands
@@ -352,7 +352,7 @@ Handles cursor positioning, line wrapping, etc
 */
 #define MAXPRINTMSG 4096
 // FIXME: make a buffer size safe vsprintf?
-void Con_Printf(char * fmt, ...)
+void Con_Printf(const char * fmt, ...)
 {
     va_list argptr;
     char msg[MAXPRINTMSG];
@@ -367,7 +367,7 @@ void Con_Printf(char * fmt, ...)
 
     // log all messages to file
     if (con_debuglog)
-        Con_DebugLog(va((char*)"%s/qconsole.log", com_gamedir), (char*)"%s", msg);
+        Con_DebugLog(va("%s/qconsole.log", com_gamedir), (char*)"%s", msg);
 
     if (!con_initialized)
         return;
@@ -411,7 +411,7 @@ void Con_DPrintf(char * fmt, ...)
     vsnprintf(msg, MAXPRINTMSG, fmt, argptr);
     va_end(argptr);
 
-    Con_Printf((char*)"%s", msg);
+    Con_Printf("%s", msg);
 }
 
 
@@ -434,7 +434,7 @@ void Con_SafePrintf(char * fmt, ...)
 
     temp = scr_disabled_for_loading;
     scr_disabled_for_loading = true;
-    Con_Printf((char*)"%s", msg);
+    Con_Printf("%s", msg);
     scr_disabled_for_loading = temp;
 }
 
@@ -601,12 +601,12 @@ void Con_NotifyBox(char * text)
     double t1, t2;
 
     // during startup for sound / cd warnings
-    Con_Printf((char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
+    Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
     Con_Printf(text);
 
-    Con_Printf((char*)"Press a key.\n");
-    Con_Printf((char*)"\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
+    Con_Printf("Press a key.\n");
+    Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
     key_count = -2; // wait for a key down and up
     key_dest = key_console;
@@ -620,7 +620,7 @@ void Con_NotifyBox(char * text)
         realtime += t2 - t1; // make the cursor blink
     } while (key_count < 0);
 
-    Con_Printf((char*)"\n");
+    Con_Printf("\n");
     key_dest = key_game;
     realtime = 0; // put the cursor back to invisible
 }

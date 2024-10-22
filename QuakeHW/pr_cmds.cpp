@@ -42,7 +42,7 @@ void PF_error()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf((char*)"======SERVER ERROR in %s:\n%s\n"
+    Con_Printf("======SERVER ERROR in %s:\n%s\n"
                , pr_strings + pr_xfunction->s_name, s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
@@ -66,7 +66,7 @@ void PF_objerror()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf((char*)"======OBJECT ERROR in %s:\n%s\n"
+    Con_Printf("======OBJECT ERROR in %s:\n%s\n"
                , pr_strings + pr_xfunction->s_name, s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
@@ -280,7 +280,7 @@ void PF_sprint()
 
     if (entnum < 1 || entnum > svs.maxclients)
     {
-        Con_Printf((char*)"tried to sprint to a non-client\n");
+        Con_Printf("tried to sprint to a non-client\n");
         return;
     }
 
@@ -311,7 +311,7 @@ void PF_centerprint()
 
     if (entnum < 1 || entnum > svs.maxclients)
     {
-        Con_Printf((char*)"tried to sprint to a non-client\n");
+        Con_Printf("tried to sprint to a non-client\n");
         return;
     }
 
@@ -505,7 +505,7 @@ void PF_ambientsound()
 
     if (!*check)
     {
-        Con_Printf((char*)"no precache: %s\n", samp);
+        Con_Printf("no precache: %s\n", samp);
         return;
     }
 
@@ -572,7 +572,7 @@ break()
 */
 void PF_break()
 {
-    Con_Printf((char*)"break statement\n");
+    Con_Printf("break statement\n");
     *(int *)-4 = 0; // dump to debugger
     // PR_RunError ("break statement");
 }
@@ -1494,7 +1494,7 @@ void PF_changelevel()
     svs.changelevel_issued = true;
 
     s = G_STRING(OFS_PARM0);
-    Cbuf_AddText(va((char*)"changelevel %s\n", s));
+    Cbuf_AddText(va("changelevel %s\n", s));
 }
 
 void PF_Fixme()

@@ -786,7 +786,7 @@ void Host_InitVCR(char* arg0)
 Host_Init
 ====================
 */
-void Host_Init(const quakeparms_t& parms)
+void Host_Init(quakeparms_t&& parms)
 {
     host_parms = std::move(parms);
     

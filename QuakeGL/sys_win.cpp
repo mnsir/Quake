@@ -622,7 +622,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     S_BlockSound();
 
     Sys_Printf((char*)"Host_Init\n");
-    Host_Init(parms);
+    Host_Init(std::move(parms));
 
     oldtime = Sys_FloatTime();
 

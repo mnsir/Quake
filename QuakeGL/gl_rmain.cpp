@@ -259,7 +259,7 @@ void R_DrawSpriteModel(entity_t * e)
 
 #define NUMVERTEXNORMALS 162
 
-float r_avertexnormals[NUMVERTEXNORMALS][3] = {
+double r_avertexnormals[NUMVERTEXNORMALS][3] = {
     {-0.525731, 0.000000, 0.850651},
     {-0.442863, 0.238856, 0.864188},
     {-0.295242, 0.000000, 0.955423},

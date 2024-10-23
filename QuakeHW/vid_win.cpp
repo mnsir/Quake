@@ -179,7 +179,7 @@ void CreateDIB()
         bmi.bmiColors[i].rgbReserved = 0;
     }
 
-    // Создайте DIB section
+    // РЎРѕР·РґР°Р№С‚Рµ DIB section
     void* pBits = NULL;
     HDC hdc = GetDC(mainwindow);
     hbmDib = CreateDIBSection(hdc, (BITMAPINFO*)&bmi, DIB_RGB_COLORS, &pBits, NULL, 0);
@@ -203,10 +203,10 @@ void DeleteDIBDC()
 {
     if (hdcDib)
     {
-        // Восстанавливаем старый битмап
+        // Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚Р°СЂС‹Р№ Р±РёС‚РјР°Рї
         SelectObject(hdcDib, hbmOld);
 
-        // Удаляем битмап и контекст устройства
+        // РЈРґР°Р»СЏРµРј Р±РёС‚РјР°Рї Рё РєРѕРЅС‚РµРєСЃС‚ СѓСЃС‚СЂРѕР№СЃС‚РІР°
         DeleteObject(hbmDib);
         DeleteDC(hdcDib);
         hdcDib = NULL;
@@ -686,7 +686,6 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
 {
     WNDCLASS wc;
     HDC hdc;
-    int i;
 
     hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON2));
 
@@ -777,7 +776,7 @@ VID_InitFullDIB
 void VID_InitFullDIB(HINSTANCE hInstance)
 {
     DEVMODE devmode;
-    int i, j, modenum, cmodes, existingmode, originalnummodes, lowestres;
+    int i, j, modenum, existingmode, originalnummodes, lowestres;
     int numlowresmodes, bpp, done;
     int cstretch, istretch, mstretch;
     BOOL stat;
@@ -1275,10 +1274,8 @@ void DestroyFullDIBWindow()
 bool VID_SetWindowedMode(int modenum)
 {
     HDC hdc;
-    //pixel_format_t pf;
     bool stretched;
     int lastmodestate;
-    LONG wlong;
 
     if (!windowed_mode_set)
     {
@@ -1602,7 +1599,7 @@ void VID_SetDefaultMode()
 
 int VID_SetMode(int modenum, unsigned char * palette)
 {
-    int original_mode, temp, dummy;
+    int original_mode, temp;
     bool stat;
     MSG msg;
     HDC hdc;
@@ -2082,7 +2079,6 @@ VID_ForceMode_f
 void VID_ForceMode_f()
 {
     int modenum;
-    double testduration;
 
     if (!vid_testingmode)
     {
@@ -2220,9 +2216,6 @@ void VID_Init(unsigned char * palette)
 
 void VID_Shutdown()
 {
-    HDC hdc;
-    int dummy;
-
     if (vid_initialized)
     {
         if (modestate == MS_FULLDIB)
@@ -2257,8 +2250,6 @@ FlipScreen
 */
 void FlipScreen(vrect_t * rects)
 {
-    HRESULT ddrval;
-
     // Flip the surfaces
 
     if (DDActive)
@@ -2847,7 +2838,7 @@ LONG WINAPI MainWndProc(
     LPARAM lParam)
 {
     LONG lRet = 0;
-    int fwKeys, xPos, yPos, fActive, fMinimized, temp;
+    int fActive, fMinimized, temp;
     HDC hdc;
     PAINTSTRUCT ps;
     static int recursiveflag;

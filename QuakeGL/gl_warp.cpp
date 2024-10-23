@@ -132,7 +132,6 @@ void GL_SubdivideSurface(msurface_t * fa)
     int i;
     int lindex;
     float * vec;
-    texture_t * t;
 
     warpface = fa;
 
@@ -286,10 +285,6 @@ will have them chained together.
 */
 void EmitBothSkyLayers(msurface_t * fa)
 {
-    int i;
-    int lindex;
-    float * vec;
-
     GL_DisableMultitexture();
 
     GL_Bind(solidskytexture);

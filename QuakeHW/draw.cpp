@@ -90,8 +90,6 @@ Draw_Init
 */
 void Draw_Init()
 {
-    int i;
-
     draw_chars = (byte*)W_GetLumpName((char*)"conchars");
     draw_disc = (qpic_t*)W_GetLumpName((char*)"disc");
     draw_backtile = (qpic_t*)W_GetLumpName((char*)"backtile");

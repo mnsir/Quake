@@ -569,7 +569,7 @@ void R_AliasTransformFinalVert(finalvert_t * fv, auxvert_t * av, trivertx_t * pv
 
     // lighting
     double* plightnormal = r_avertexnormals[pverts->lightnormalindex];
-    float lightcos = DotProduct(plightnormal, r_plightvec);
+    double lightcos = DotProduct(plightnormal, r_plightvec);
     int temp = r_ambientlight;
 
     if (lightcos < 0)
@@ -597,7 +597,7 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t * fv, stvert_t * pstverts)
     for (int i = 0; i < r_anumverts; i++, fv++, pverts++, pstverts++)
     {
         // transform and project
-        float zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) + aliastransform[2][3]);
+        double zi = 1.0 / (DotProduct(pverts->v, aliastransform[2]) + aliastransform[2][3]);
 
         // x, y, and z are scaled down by 1/2**31 in the transform, so 1/z is
         // scaled up by 1/2**31, and the scaling cancels out for x and y in the
@@ -613,7 +613,7 @@ void R_AliasTransformAndProjectFinalVerts(finalvert_t * fv, stvert_t * pstverts)
 
         // lighting
         double* plightnormal = r_avertexnormals[pverts->lightnormalindex];
-        float lightcos = DotProduct(plightnormal, r_plightvec);
+        double lightcos = DotProduct(plightnormal, r_plightvec);
         int temp = r_ambientlight;
 
         if (lightcos < 0)

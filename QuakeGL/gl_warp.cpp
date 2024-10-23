@@ -159,7 +159,7 @@ void GL_SubdivideSurface(msurface_t * fa)
 
 
 // speed up sin calculations - Ed
-float turbsin[] =
+double turbsin[] =
 {
     0, 0.19633, 0.392541, 0.588517, 0.784137, 0.979285, 1.17384, 1.3677,
     1.56072, 1.75281, 1.94384, 2.1337, 2.32228, 2.50945, 2.69512, 2.87916,
@@ -205,24 +205,19 @@ Does a water warp on the pre-fragmented glpoly_t chain
 */
 void EmitWaterPolys(msurface_t * fa)
 {
-    glpoly_t * p;
-    float * v;
-    int i;
-    float s, t, os, ot;
-
-
-    for (p = fa->polys; p; p = p->next)
+    for (glpoly_t* p = fa->polys; p; p = p->next)
     {
         glBegin(GL_POLYGON);
-        for (i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE)
+        float* v = p->verts[0];
+        for (int i = 0; i < p->numverts; i++, v += VERTEXSIZE)
         {
-            os = v[3];
-            ot = v[4];
+            double os = v[3];
+            double ot = v[4];
 
-            s = os + turbsin[(int)((ot * 0.125 + realtime) * TURBSCALE) & 255];
+            double s = os + turbsin[(int)((ot * 0.125 + realtime) * TURBSCALE) & 255];
             s *= (1.0 / 64);
 
-            t = ot + turbsin[(int)((os * 0.125 + realtime) * TURBSCALE) & 255];
+            double t = ot + turbsin[(int)((os * 0.125 + realtime) * TURBSCALE) & 255];
             t *= (1.0 / 64);
 
             glTexCoord2f(s, t);

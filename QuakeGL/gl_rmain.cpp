@@ -676,7 +676,7 @@ void R_DrawAliasModel(entity_t * e)
     shadedots = r_avertexnormal_dots[((int)(e->angles[1] * (SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
     shadelight = shadelight / 200.0;
 
-    an = e->angles[1] / 180 * M_PI;
+    an = e->angles[1] / 180 * std::numbers::pi;
     shadevector[0] = cos(-an);
     shadevector[1] = sin(-an);
     shadevector[2] = 1;
@@ -1005,7 +1005,7 @@ void MYgluPerspective(GLdouble fovy, GLdouble aspect,
 {
     GLdouble xmin, xmax, ymin, ymax;
 
-    ymax = zNear * tan(fovy * M_PI / 360.0);
+    ymax = zNear * tan(fovy * std::numbers::pi / 360.0);
     ymin = -ymax;
 
     xmin = ymin * aspect;
@@ -1057,7 +1057,7 @@ void R_SetupGL()
 
     glViewport(glx + x, gly + y2, w, h);
     screenaspect = (float)r_refdef.vrect.width / r_refdef.vrect.height;
-    // yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
+    // yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/std::numbers::pi;
     MYgluPerspective(r_refdef.fov_y, screenaspect, 4, 4096);
 
     if (mirror)
@@ -1201,8 +1201,8 @@ void R_Mirror()
     d = DotProduct(vpn, mirror_plane->normal);
     VectorMA(vpn, -2 * d, mirror_plane->normal, vpn);
 
-    r_refdef.viewangles[0] = -asin(vpn[2]) / M_PI * 180;
-    r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / M_PI * 180;
+    r_refdef.viewangles[0] = -asin(vpn[2]) / std::numbers::pi * 180;
+    r_refdef.viewangles[1] = atan2(vpn[1], vpn[0]) / std::numbers::pi * 180;
     r_refdef.viewangles[2] = -r_refdef.viewangles[2];
 
     ent = &cl_entities[cl.viewentity];

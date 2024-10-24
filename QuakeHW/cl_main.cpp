@@ -313,9 +313,7 @@ void CL_DecayLights()
 {
     int i;
     dlight_t * dl;
-    float time;
-
-    time = cl.time - cl.oldtime;
+    auto time = cl.time - cl.oldtime;
 
     dl = cl_dlights;
     for (i = 0; i < MAX_DLIGHTS; i++, dl++)
@@ -340,9 +338,7 @@ should be put at.
 */
 float CL_LerpPoint()
 {
-    float f, frac;
-
-    f = cl.mtime[0] - cl.mtime[1];
+    auto f = cl.mtime[0] - cl.mtime[1];
 
     if (!f || cl_nolerp.value || cls.timedemo || sv.active)
     {
@@ -355,7 +351,7 @@ float CL_LerpPoint()
         cl.mtime[1] = cl.mtime[0] - 0.1;
         f = 0.1;
     }
-    frac = (cl.time - cl.mtime[1]) / f;
+    auto frac = (cl.time - cl.mtime[1]) / f;
     //Con_Printf ("frac: %f\n",frac);
     if (frac < 0)
     {

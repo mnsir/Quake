@@ -218,11 +218,11 @@ float CalcFov(float fov_x, float width, float height)
     if (fov_x < 1 || fov_x > 179)
         Sys_Error((char*)"Bad fov: %f", fov_x);
 
-    x = width / tan(fov_x / 360 * M_PI);
+    x = width / tan(fov_x / 360 * std::numbers::pi);
 
     a = atan(height / x);
 
-    a = a * 360 / M_PI;
+    a = a * 360 / std::numbers::pi;
 
     return a;
 }

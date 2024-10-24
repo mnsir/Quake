@@ -38,9 +38,9 @@ private:
     bool overflowed_ = false; // set to true if the buffer size failed
 
 public:
-    byte* data;
-    int maxsize;
-    int cursize;
+    byte* data = nullptr;
+    int maxsize = 0;
+    int cursize = 0;
 };
 
 //============================================================================

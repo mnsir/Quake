@@ -118,6 +118,10 @@ add_executable(QuakeHW WIN32
   "zone.h"
 )
 
+add_compile_definitions(QuakeHW PRIVATE
+    _CRT_SECURE_NO_WARNINGS
+)
+
 target_link_libraries(QuakeHW
   PRIVATE
   dxguid

@@ -98,7 +98,10 @@ add_executable(QuakeGL WIN32
   "zone.h"
 )
 
-add_compile_definitions(QuakeGL PRIVATE GLQUAKE)
+add_compile_definitions(QuakeGL PRIVATE
+    GLQUAKE
+    _CRT_SECURE_NO_WARNINGS
+)
 
 target_link_libraries(QuakeGL PRIVATE
   OpenGL::GL

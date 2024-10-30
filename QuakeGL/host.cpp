@@ -786,10 +786,8 @@ void Host_Init(quakeparms_t&& parms)
     if (cls.state != ca_dedicated)
     {
         host_basepal = pak::gfx::palette_lmp();
-        host_colormap = (byte *)COM_LoadHunkFile((char*)"gfx/colormap.lmp");
-        if (!host_colormap)
-            Sys_Error((char*)"Couldn't load gfx/colormap.lmp");
-
+        host_colormap = pak::gfx::colormap_lmp();
+        
         VID_Init(host_basepal);
 
         Draw_Init();

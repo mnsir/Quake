@@ -2,6 +2,7 @@
 #include "quakedef.h"
 
 #include "winquake.h"
+#include <common/pak.h>
 
 void (*vid_menudrawfn)();
 void (*vid_menukeyfn)(int key);
@@ -81,6 +82,37 @@ char m_return_reason[32];
 #define TCPIPConfig (m_net_cursor == 3)
 
 void M_ConfigureNetSubsystem();
+
+namespace
+{
+    qpic_t* TimeToCursor(double time)
+    {
+        int f = (int)(time * 10) % 6;
+
+        switch (f) {
+        case 0: return (qpic_t*)pak::gfx::menudot1_lmp();
+        case 1: return (qpic_t*)pak::gfx::menudot2_lmp();
+        case 2: return (qpic_t*)pak::gfx::menudot3_lmp();
+        case 3: return (qpic_t*)pak::gfx::menudot4_lmp();
+        case 4: return (qpic_t*)pak::gfx::menudot5_lmp();
+        case 5: return (qpic_t*)pak::gfx::menudot6_lmp();
+        }
+        return nullptr;
+    }
+
+    qpic_t* HelpPageToPic(int page)
+    {
+        switch (page) {
+        case 0: return (qpic_t*)pak::gfx::help0_lmp();
+        case 1: return (qpic_t*)pak::gfx::help1_lmp();
+        case 2: return (qpic_t*)pak::gfx::help2_lmp();
+        case 3: return (qpic_t*)pak::gfx::help3_lmp();
+        case 4: return (qpic_t*)pak::gfx::help4_lmp();
+        case 5: return (qpic_t*)pak::gfx::help5_lmp();
+        }
+        return nullptr;
+    }
+}
 
 /*
 ================
@@ -167,15 +199,15 @@ void M_DrawTextBox(int x, int y, int width, int lines)
     // draw left side
     cx = x;
     cy = y;
-    p = Draw_CachePic((char*)"gfx/box_tl.lmp");
+    p = (qpic_t*)pak::gfx::box_tl_lmp();
     M_DrawTransPic(cx, cy, p);
-    p = Draw_CachePic((char*)"gfx/box_ml.lmp");
+    p = (qpic_t*)pak::gfx::box_ml_lmp();
     for (n = 0; n < lines; n++)
     {
         cy += 8;
         M_DrawTransPic(cx, cy, p);
     }
-    p = Draw_CachePic((char*)"gfx/box_bl.lmp");
+    p = (qpic_t*)pak::gfx::box_bl_lmp();
     M_DrawTransPic(cx, cy + 8, p);
 
     // draw middle
@@ -183,17 +215,17 @@ void M_DrawTextBox(int x, int y, int width, int lines)
     while (width > 0)
     {
         cy = y;
-        p = Draw_CachePic((char*)"gfx/box_tm.lmp");
+        p = (qpic_t*)pak::gfx::box_tm_lmp();
         M_DrawTransPic(cx, cy, p);
-        p = Draw_CachePic((char*)"gfx/box_mm.lmp");
+        p = (qpic_t*)pak::gfx::box_mm_lmp();
         for (n = 0; n < lines; n++)
         {
             cy += 8;
             if (n == 1)
-                p = Draw_CachePic((char*)"gfx/box_mm2.lmp");
+                p = (qpic_t*)pak::gfx::box_mm2_lmp();
             M_DrawTransPic(cx, cy, p);
         }
-        p = Draw_CachePic((char*)"gfx/box_bm.lmp");
+        p = (qpic_t*)pak::gfx::box_bm_lmp();
         M_DrawTransPic(cx, cy + 8, p);
         width -= 2;
         cx += 16;
@@ -201,15 +233,15 @@ void M_DrawTextBox(int x, int y, int width, int lines)
 
     // draw right side
     cy = y;
-    p = Draw_CachePic((char*)"gfx/box_tr.lmp");
+    p = (qpic_t*)pak::gfx::box_tr_lmp();
     M_DrawTransPic(cx, cy, p);
-    p = Draw_CachePic((char*)"gfx/box_mr.lmp");
+    p = (qpic_t*)pak::gfx::box_mr_lmp();
     for (n = 0; n < lines; n++)
     {
         cy += 8;
         M_DrawTransPic(cx, cy, p);
     }
-    p = Draw_CachePic((char*)"gfx/box_br.lmp");
+    p = (qpic_t*)pak::gfx::box_br_lmp();
     M_DrawTransPic(cx, cy + 8, p);
 }
 
@@ -270,17 +302,16 @@ void M_Menu_Main_f()
 
 void M_Main_Draw()
 {
-    int f;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/ttl_main.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::ttl_main_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
-    M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/mainmenu.lmp"));
 
-    f = (int)(host_time * 10) % 6;
+    p = (qpic_t*)pak::gfx::mainmenu_lmp();
+    M_DrawTransPic(72, 32, p);
 
-    M_DrawTransPic(54, 32 + m_main_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_main_cursor * 20, TimeToCursor(host_time));
 }
 
 
@@ -353,17 +384,14 @@ void M_Menu_SinglePlayer_f()
 
 void M_SinglePlayer_Draw()
 {
-    int f;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/ttl_sgl.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::ttl_sgl_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
-    M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/sp_menu.lmp"));
+    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::sp_menu_lmp());
 
-    f = (int)(host_time * 10) % 6;
-
-    M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, TimeToCursor(host_time));
 }
 
 
@@ -480,7 +508,7 @@ void M_Load_Draw()
     int i;
     qpic_t * p;
 
-    p = Draw_CachePic((char*)"gfx/p_load.lmp");
+    p = (qpic_t*)pak::gfx::p_load_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < MAX_SAVEGAMES; i++)
@@ -496,7 +524,7 @@ void M_Save_Draw()
     int i;
     qpic_t * p;
 
-    p = Draw_CachePic((char*)"gfx/p_save.lmp");
+    p = (qpic_t*)pak::gfx::p_save_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < MAX_SAVEGAMES; i++)
@@ -598,17 +626,14 @@ void M_Menu_MultiPlayer_f()
 
 void M_MultiPlayer_Draw()
 {
-    int f;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
-    M_DrawTransPic(72, 32, Draw_CachePic((char*)"gfx/mp_menu.lmp"));
+    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::mp_menu_lmp());
 
-    f = (int)(host_time * 10) % 6;
-
-    M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, TimeToCursor(host_time));
 
     if (serialAvailable || ipxAvailable || tcpipAvailable)
         return;
@@ -688,8 +713,8 @@ void M_Setup_Draw()
 {
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_Print(64, 40, (char*)"Hostname");
@@ -706,9 +731,9 @@ void M_Setup_Draw()
     M_DrawTextBox(64, 140 - 8, 14, 1);
     M_Print(72, 140, (char*)"Accept Changes");
 
-    p = Draw_CachePic((char*)"gfx/bigbox.lmp");
+    p = (qpic_t*)pak::gfx::bigbox_lmp();
     M_DrawTransPic(160, 64, p);
-    p = Draw_CachePic((char*)"gfx/menuplyr.lmp");
+    p = (qpic_t*)pak::gfx::menuplyr_lmp();
     M_BuildTranslationTable(setup_top * 16, setup_bottom * 16);
     M_DrawTransPicTranslate(172, 72, p);
 
@@ -881,15 +906,15 @@ void M_Net_Draw()
     int f;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     f = 32;
 
     if (serialAvailable)
     {
-        p = Draw_CachePic((char*)"gfx/netmen1.lmp");
+        p = (qpic_t*)pak::gfx::netmen1_lmp();
     }
     else
     {
@@ -903,7 +928,7 @@ void M_Net_Draw()
 
     if (serialAvailable)
     {
-        p = Draw_CachePic((char*)"gfx/netmen2.lmp");
+        p = (qpic_t*)pak::gfx::netmen2_lmp();
     }
     else
     {
@@ -915,22 +940,22 @@ void M_Net_Draw()
 
     f += 19;
     if (ipxAvailable)
-        p = Draw_CachePic((char*)"gfx/netmen3.lmp");
+        p = (qpic_t*)pak::gfx::netmen3_lmp();
     else
-        p = Draw_CachePic((char*)"gfx/dim_ipx.lmp");
+        p = (qpic_t*)pak::gfx::dim_ipx_lmp();
     M_DrawTransPic(72, f, p);
 
     f += 19;
     if (tcpipAvailable)
-        p = Draw_CachePic((char*)"gfx/netmen4.lmp");
+        p = (qpic_t*)pak::gfx::netmen4_lmp();
     else
-        p = Draw_CachePic((char*)"gfx/dim_tcp.lmp");
+        p = (qpic_t*)pak::gfx::dim_tcp_lmp();
     M_DrawTransPic(72, f, p);
 
     if (m_net_items == 5) // JDC, could just be removed
     {
         f += 19;
-        p = Draw_CachePic((char*)"gfx/netmen5.lmp");
+        p = (qpic_t*)pak::gfx::netmen5_lmp();
         M_DrawTransPic(72, f, p);
     }
 
@@ -942,8 +967,7 @@ void M_Net_Draw()
     M_Print(f, 158, net_helpMessage[m_net_cursor * 4 + 2]);
     M_Print(f, 166, net_helpMessage[m_net_cursor * 4 + 3]);
 
-    f = (int)(host_time * 10) % 6;
-    M_DrawTransPic(54, 32 + m_net_cursor * 20, Draw_CachePic(va("gfx/menudot%i.lmp", f + 1)));
+    M_DrawTransPic(54, 32 + m_net_cursor * 20, TimeToCursor(host_time));
 }
 
 
@@ -1134,8 +1158,8 @@ void M_Options_Draw()
     float r;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_option.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_option_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_Print(16, 32, (char*)" Customize controls");
@@ -1350,7 +1374,7 @@ void M_Keys_Draw()
     int x, y;
     qpic_t * p;
 
-    p = Draw_CachePic((char*)"gfx/ttl_cstm.lmp");
+    p = (qpic_t*)pak::gfx::ttl_cstm_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     if (bind_grab)
@@ -1494,7 +1518,7 @@ void M_Menu_Help_f()
 
 void M_Help_Draw()
 {
-    M_DrawPic(0, 0, Draw_CachePic(va("gfx/help%i.lmp", help_page)));
+    M_DrawPic(0, 0, HelpPageToPic(help_page));
 }
 
 
@@ -1674,8 +1698,8 @@ void M_SerialConfig_Draw()
     char * startJoin;
     char * directModem;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
 
@@ -1924,8 +1948,8 @@ void M_ModemConfig_Draw()
     qpic_t * p;
     int basex;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
     basex += 8;
@@ -2110,8 +2134,8 @@ void M_LanConfig_Draw()
     char * startJoin;
     char * protocol;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
 
@@ -2446,8 +2470,8 @@ void M_GameOptions_Draw()
     qpic_t * p;
     int x;
 
-    M_DrawTransPic(16, 4, Draw_CachePic((char*)"gfx/qplaque.lmp"));
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_DrawTextBox(152, 32, 10, 1);
@@ -2753,7 +2777,7 @@ void M_Search_Draw()
     qpic_t * p;
     int x;
 
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
     x = (320 / 2) - ((12 * 8) / 2) + 4;
     M_DrawTextBox(x - 8, 32, 12, 1);
@@ -2831,7 +2855,7 @@ void M_ServerList_Draw()
         slist_sorted = true;
     }
 
-    p = Draw_CachePic((char*)"gfx/p_multi.lmp");
+    p = (qpic_t*)pak::gfx::p_multi_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
     for (n = 0; n < hostCacheCount; n++)
     {

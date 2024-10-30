@@ -7,12 +7,9 @@ namespace pak
     unsigned char* demo2_dem();
     unsigned char* demo3_dem();
     unsigned char* end1_bin();
-
     unsigned char* gfx_wad();
-
     unsigned char* progs_dat();
     unsigned char* quake_rc();
-
     namespace gfx
     {
         unsigned char* bigbox_lmp();
@@ -57,12 +54,12 @@ namespace pak
         unsigned char* netmen3_lmp();
         unsigned char* netmen4_lmp();
         unsigned char* netmen5_lmp();
-        unsigned char* palette_lmp();
-        unsigned char* pause_lmp();
         unsigned char* p_load_lmp();
         unsigned char* p_multi_lmp();
         unsigned char* p_option_lmp();
         unsigned char* p_save_lmp();
+        unsigned char* palette_lmp();
+        unsigned char* pause_lmp();
         unsigned char* qplaque_lmp();
         unsigned char* ranking_lmp();
         unsigned char* sell_lmp();
@@ -72,7 +69,6 @@ namespace pak
         unsigned char* ttl_sgl_lmp();
         unsigned char* vidmodes_lmp();
     }
-
     namespace maps
     {
         unsigned char* b_batt0_bsp();
@@ -97,7 +93,6 @@ namespace pak
         unsigned char* e1m8_bsp();
         unsigned char* start_bsp();
     }
-
     namespace progs
     {
         unsigned char* armor_mdl();
@@ -112,16 +107,16 @@ namespace pak
         unsigned char* eyes_mdl();
         unsigned char* flame_mdl();
         unsigned char* flame2_mdl();
-        unsigned char* gib1_mdl();
-        unsigned char* gib2_mdl();
-        unsigned char* gib3_mdl();
-        unsigned char* grenade_mdl();
         unsigned char* g_light_mdl();
         unsigned char* g_nail_mdl();
         unsigned char* g_nail2_mdl();
         unsigned char* g_rock_mdl();
         unsigned char* g_rock2_mdl();
         unsigned char* g_shot_mdl();
+        unsigned char* gib1_mdl();
+        unsigned char* gib2_mdl();
+        unsigned char* gib3_mdl();
+        unsigned char* grenade_mdl();
         unsigned char* h_demon_mdl();
         unsigned char* h_dog_mdl();
         unsigned char* h_guard_mdl();
@@ -135,21 +130,21 @@ namespace pak
         unsigned char* invulner_mdl();
         unsigned char* knight_mdl();
         unsigned char* lavaball_mdl();
-        unsigned char* missile_mdl();
         unsigned char* m_g_key_mdl();
         unsigned char* m_s_key_mdl();
+        unsigned char* missile_mdl();
         unsigned char* ogre_mdl();
         unsigned char* player_mdl();
         unsigned char* quaddama_mdl();
-        unsigned char* shambler_mdl();
-        unsigned char* soldier_mdl();
-        unsigned char* spike_mdl();
-        unsigned char* suit_mdl();
         unsigned char* s_bubble_spr();
         unsigned char* s_explod_spr();
         unsigned char* s_light_mdl();
         unsigned char* s_light_spr();
         unsigned char* s_spike_mdl();
+        unsigned char* shambler_mdl();
+        unsigned char* soldier_mdl();
+        unsigned char* spike_mdl();
+        unsigned char* suit_mdl();
         unsigned char* v_axe_mdl();
         unsigned char* v_light_mdl();
         unsigned char* v_nail_mdl();
@@ -158,14 +153,13 @@ namespace pak
         unsigned char* v_rock2_mdl();
         unsigned char* v_shot_mdl();
         unsigned char* v_shot2_mdl();
-        unsigned char* wizard_mdl();
         unsigned char* w_g_key_mdl();
-        unsigned char* w_spike_mdl();
         unsigned char* w_s_key_mdl();
-        unsigned char* zombie_mdl();
+        unsigned char* w_spike_mdl();
+        unsigned char* wizard_mdl();
         unsigned char* zom_gib_mdl();
+        unsigned char* zombie_mdl();
     }
-
     namespace sound
     {
         namespace ambience
@@ -185,7 +179,6 @@ namespace pak
             unsigned char* wind2_wav();
             unsigned char* windfly_wav();
         }
-
         namespace boss1
         {
             unsigned char* death_wav();
@@ -194,7 +187,6 @@ namespace pak
             unsigned char* sight1_wav();
             unsigned char* throw_wav();
         }
-
         namespace buttons
         {
             unsigned char* airbut1_wav();
@@ -202,7 +194,6 @@ namespace pak
             unsigned char* switch04_wav();
             unsigned char* switch21_wav();
         }
-
         namespace demon
         {
             unsigned char* ddeath_wav();
@@ -213,7 +204,6 @@ namespace pak
             unsigned char* idle1_wav();
             unsigned char* sight2_wav();
         }
-
         namespace dog
         {
             unsigned char* dattack1_wav();
@@ -222,7 +212,6 @@ namespace pak
             unsigned char* dsight_wav();
             unsigned char* idle_wav();
         }
-
         namespace doors
         {
             unsigned char* airdoor1_wav();
@@ -246,12 +235,10 @@ namespace pak
             unsigned char* stndr2_wav();
             unsigned char* winch2_wav();
         }
-
         namespace hknight
         {
             unsigned char* hit_wav();
         }
-
         namespace items
         {
             unsigned char* armor1_wav();
@@ -271,7 +258,6 @@ namespace pak
             unsigned char* suit_wav();
             unsigned char* suit2_wav();
         }
-
         namespace knight
         {
             unsigned char* idle_wav();
@@ -281,7 +267,6 @@ namespace pak
             unsigned char* sword1_wav();
             unsigned char* sword2_wav();
         }
-
         namespace misc
         {
             unsigned char* h2ohit1_wav();
@@ -292,19 +277,18 @@ namespace pak
             unsigned char* null_wav();
             unsigned char* outwater_wav();
             unsigned char* power_wav();
-            unsigned char* runekey_wav();
             unsigned char* r_tele1_wav();
             unsigned char* r_tele2_wav();
             unsigned char* r_tele3_wav();
             unsigned char* r_tele4_wav();
             unsigned char* r_tele5_wav();
+            unsigned char* runekey_wav();
             unsigned char* secret_wav();
             unsigned char* talk_wav();
             unsigned char* trigger1_wav();
             unsigned char* water1_wav();
             unsigned char* water2_wav();
         }
-
         namespace ogre
         {
             unsigned char* ogdrag_wav();
@@ -315,7 +299,6 @@ namespace pak
             unsigned char* ogsawatk_wav();
             unsigned char* ogwake_wav();
         }
-
         namespace plats
         {
             unsigned char* medplat1_wav();
@@ -325,7 +308,6 @@ namespace pak
             unsigned char* train1_wav();
             unsigned char* train2_wav();
         }
-
         namespace player
         {
             unsigned char* axhit1_wav();
@@ -360,7 +342,6 @@ namespace pak
             unsigned char* tornoff2_wav();
             unsigned char* udeath_wav();
         }
-
         namespace shambler
         {
             unsigned char* melee1_wav();
@@ -373,7 +354,6 @@ namespace pak
             unsigned char* smack_wav();
             unsigned char* ssight_wav();
         }
-
         namespace soldier
         {
             unsigned char* death1_wav();
@@ -383,7 +363,6 @@ namespace pak
             unsigned char* sattck1_wav();
             unsigned char* sight1_wav();
         }
-
         namespace weapons
         {
             unsigned char* ax1_wav();
@@ -394,17 +373,16 @@ namespace pak
             unsigned char* lock4_wav();
             unsigned char* lstart_wav();
             unsigned char* pkup_wav();
+            unsigned char* r_exp3_wav();
             unsigned char* ric1_wav();
             unsigned char* ric2_wav();
             unsigned char* ric3_wav();
             unsigned char* rocket1i_wav();
-            unsigned char* r_exp3_wav();
             unsigned char* sgun1_wav();
             unsigned char* shotgn2_wav();
             unsigned char* spike2_wav();
             unsigned char* tink1_wav();
         }
-
         namespace wizard
         {
             unsigned char* hit_wav();
@@ -415,7 +393,6 @@ namespace pak
             unsigned char* wpain_wav();
             unsigned char* wsight_wav();
         }
-
         namespace zombie
         {
             unsigned char* idle_w2_wav();

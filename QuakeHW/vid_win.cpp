@@ -5,6 +5,7 @@
 #include "winquake.h"
 #include "d_local.h"
 #include "resource.h"
+#include <common/pak.h>
 
 //#ifndef GLQUAKE
 //#include <mgraph.h>
@@ -3100,7 +3101,7 @@ void VID_MenuDraw()
     vmode_t * pv;
     modedesc_t tmodedesc;
 
-    p = Draw_CachePic((char*)"gfx/vidmodes.lmp");
+    p = (qpic_t*)pak::gfx::vidmodes_lmp();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < 3; i++)

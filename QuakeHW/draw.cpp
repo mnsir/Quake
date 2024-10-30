@@ -4,6 +4,7 @@
 // vid buffer
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 typedef struct
 {
@@ -38,50 +39,6 @@ qpic_t * Draw_PicFromWad(char * name)
 {
     return (qpic_t*)W_GetLumpName(name);
 }
-
-/*
-================
-Draw_CachePic
-================
-*/
-qpic_t * Draw_CachePic(char * path)
-{
-    cachepic_t * pic;
-    int i;
-    qpic_t * dat;
-
-    for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
-        if (!strcmp(path, pic->name))
-            break;
-
-    if (i == menu_numcachepics)
-    {
-        if (menu_numcachepics == MAX_CACHED_PICS)
-            Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
-        menu_numcachepics++;
-        strcpy(pic->name, path);
-    }
-
-    dat = (qpic_t*)Cache_Check(&pic->cache);
-
-    if (dat)
-        return dat;
-
-    //
-    // load the pic from disk
-    //
-    COM_LoadCacheFile(path, &pic->cache);
-
-    dat = (qpic_t *)pic->cache.data;
-    if (!dat)
-    {
-        Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
-    }
-
-    return dat;
-}
-
-
 
 /*
 ===============
@@ -517,7 +474,7 @@ void Draw_ConsoleBackground(int lines)
     qpic_t * conback;
     char ver[100];
 
-    conback = Draw_CachePic((char*)"gfx/conback.lmp");
+    conback = (qpic_t*)pak::gfx::conback_lmp();
 
     // hack the version number directly into the pic
     sprintf(ver, "(WinQuake) %4.2f", (float)VERSION);

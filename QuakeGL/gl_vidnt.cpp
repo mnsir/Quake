@@ -5,6 +5,7 @@
 #include "winquake.h"
 #include "resource.h"
 #include <commctrl.h>
+#include <common/pak.h>
 
 #define MAX_MODE_LIST 30
 #define VID_ROW_SIZE 3
@@ -1846,7 +1847,7 @@ void VID_MenuDraw()
     int lnummodes, i, k, column, row;
     vmode_t * pv;
 
-    p = Draw_CachePic((char*)"gfx/vidmodes.lmp");
+    p = Draw_CachePic((qpic_t*)pak::gfx::vidmodes_lmp());
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     vid_wmodes = 0;

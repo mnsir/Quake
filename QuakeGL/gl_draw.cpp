@@ -4,6 +4,7 @@
 // vid buffer
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 #define GL_COLOR_INDEX8_EXT 0x80E5
 
@@ -148,7 +149,7 @@ void Scrap_Upload()
 
 typedef struct cachepic_s
 {
-    char name[MAX_QPATH];
+    qpic_t* ptr;
     qpic_t pic;
     byte padding[32]; // for appended glpic
 } cachepic_t;
@@ -210,39 +211,35 @@ qpic_t * Draw_PicFromWad(char * name)
 Draw_CachePic
 ================
 */
-qpic_t * Draw_CachePic(char * path)
+qpic_t * Draw_CachePic(qpic_t* ptr)
 {
     cachepic_t * pic;
     int i;
-    qpic_t * dat;
-    glpic_t * gl;
 
     for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
-        if (!strcmp(path, pic->name))
+        if (ptr == pic->ptr)
             return &pic->pic;
 
     if (menu_numcachepics == MAX_CACHED_PICS)
         Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
     menu_numcachepics++;
-    strcpy(pic->name, path);
+    pic->ptr = ptr;
 
     //
     // load the pic from disk
     //
-    dat = (qpic_t *)COM_LoadTempFile(path);
-    if (!dat)
-        Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
-
+    qpic_t* dat = ptr;
+    
     // HACK HACK HACK --- we need to keep the bytes for
     // the translatable player picture just for the menu
     // configuration dialog
-    if (!strcmp(path, "gfx/menuplyr.lmp"))
+    if (ptr == (qpic_t*)pak::gfx::menuplyr_lmp())
         memcpy(menuplyr_pixels, dat->data, dat->width * dat->height);
 
     pic->pic.width = dat->width;
     pic->pic.height = dat->height;
 
-    gl = (glpic_t *)pic->pic.data;
+    glpic_t* gl = (glpic_t *)pic->pic.data;
     gl->texnum = GL_LoadPicTexture(dat);
     gl->sl = 0;
     gl->sh = 1;
@@ -382,10 +379,8 @@ void Draw_Init()
 
     start = Hunk_LowMark();
 
-    cb = (qpic_t *)COM_LoadTempFile((char*)"gfx/conback.lmp");
-    if (!cb)
-        Sys_Error((char*)"Couldn't load gfx/conback.lmp");
-
+    cb = (qpic_t *)pak::gfx::conback_lmp();
+    
     sprintf(ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 
     dest = cb->data + 320 * 186 + 320 - 11 - 8 * strlen(ver);

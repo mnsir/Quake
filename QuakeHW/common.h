@@ -138,7 +138,6 @@ void COM_CloseFile(int h);
 byte * COM_LoadStackFile(char * path, void * buffer, int bufsize);
 byte * COM_LoadTempFile(char * path);
 byte * COM_LoadHunkFile(char * path);
-void COM_LoadCacheFile(char * path, struct cache_user_s * cu);
 
 
 extern struct cvar_s registered;

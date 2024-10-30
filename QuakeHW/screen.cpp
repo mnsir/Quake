@@ -3,6 +3,7 @@
 
 #include "quakedef.h"
 #include "r_local.h"
+#include <common/pak.h>
 
 // only the refresh window will be updated unless these variables are flagged 
 int scr_copytop;
@@ -391,7 +392,7 @@ void SCR_DrawPause()
     if (!cl.paused)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/pause.lmp");
+    pic = (qpic_t*)pak::gfx::pause_lmp();
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -410,7 +411,7 @@ void SCR_DrawLoading()
     if (!scr_drawloading)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/loading.lmp");
+    pic = (qpic_t*)pak::gfx::loading_lmp();
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }

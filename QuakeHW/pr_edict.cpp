@@ -2,6 +2,7 @@
 // sv_edict.c -- entity dictionary
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 dprograms_t * progs;
 dfunction_t * pr_functions;
@@ -12,8 +13,6 @@ dstatement_t * pr_statements;
 globalvars_t * pr_global_struct;
 float * pr_globals; // same as pr_global_struct
 int pr_edict_size; // in bytes
-
-unsigned short pr_crc;
 
 int type_size[8] = {1, sizeof(string_t) / 4, 1, 3, 1, 1, sizeof(func_t) / 4, sizeof(void *) / 4};
 
@@ -973,15 +972,8 @@ void PR_LoadProgs()
     for (i = 0; i < GEFV_CACHESIZE; i++)
         gefvCache[i].field[0] = 0;
 
-    CRC_Init(&pr_crc);
-
-    progs = (dprograms_t *)COM_LoadHunkFile((char*)"progs.dat");
-    if (!progs)
-        Sys_Error((char*)"PR_LoadProgs: couldn't load progs.dat");
+    progs = (dprograms_t*)pak::progs_dat();
     Con_DPrintf((char*)"Programs occupy %iK.\n", com_filesize / 1024);
-
-    for (i = 0; i < com_filesize; i++)
-        CRC_ProcessByte(&pr_crc, ((byte *)progs)[i]);
 
     // byte swap the header
     for (i = 0; i < sizeof(*progs) / 4; i++)

@@ -17,8 +17,6 @@ add_executable(QuakeGL WIN32
     "conproc.h"
     "console.cpp"
     "console.h"
-    "crc.cpp"
-    "crc.h"
     "cvar.cpp"
     "cvar.h"
     "draw.h"

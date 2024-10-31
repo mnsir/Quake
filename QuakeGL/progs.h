@@ -246,8 +246,6 @@ extern bool pr_trace;
 extern dfunction_t * pr_xfunction;
 extern int pr_xstatement;
 
-extern unsigned short pr_crc;
-
 void PR_RunError(char * error, ...);
 
 void ED_PrintEdicts();

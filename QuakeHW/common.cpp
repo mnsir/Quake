@@ -14,8 +14,6 @@ static char * safeargvs[NUM_SAFE_ARGVS] =
 cvar_t registered = {(char*)"registered", (char*)"0"};
 cvar_t cmdline = {(char*)"cmdline", (char*)"0", false, true};
 
-bool proghack;
-
 int static_registered = 1; // only for startup check, then set
 
 bool msg_suppress_1 = 0;
@@ -901,12 +899,7 @@ int COM_FindFile(char * filename, int * handle, FILE ** file)
     // search through the path, one element at a time
     //
     search = com_searchpaths;
-    if (proghack)
-    { // gross hack to use quake 1 progs with quake 2 maps
-        if (!strcmp(filename, "progs.dat"))
-            search = search->next;
-    }
-
+    
     for (; search; search = search->next)
     {
         // is the element a pak file?
@@ -1315,9 +1308,6 @@ void COM_InitFilesystem()
             com_searchpaths = search;
         }
     }
-
-    if (COM_CheckParm((char*)"-proghack"))
-        proghack = true;
 }
 
 

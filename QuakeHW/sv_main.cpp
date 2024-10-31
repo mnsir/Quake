@@ -174,7 +174,7 @@ void SV_SendServerinfo(client_t * client)
     char message[2048];
 
     client->message.MSG_WriteByte(svc_print);
-    sprintf(message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, VERSION, pr_crc);
+    sprintf(message, "%c\nVERSION %4.2f SERVER", 2, VERSION);
     client->message.MSG_WriteString(message);
 
     client->message.MSG_WriteByte(svc_serverinfo);

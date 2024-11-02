@@ -2,6 +2,9 @@
 // common.c -- misc functions used in client and server
 
 #include "quakedef.h"
+#include <common/pak.h>
+#include <string_view>
+#include <map>
 
 #undef max
 #define NUM_SAFE_ARGVS 7
@@ -601,10 +604,6 @@ void COM_CheckRegistered()
     Con_Printf("Playing registered version.\n");
 }
 
-
-void COM_Path_f();
-
-
 /*
 ================
 COM_InitArgv
@@ -670,7 +669,6 @@ void COM_Init(char * basedir)
 {
     Cvar_RegisterVariable(&registered);
     Cvar_RegisterVariable(&cmdline);
-    Cmd_AddCommand((char*)"path", COM_Path_f);
 
     COM_InitFilesystem();
     COM_CheckRegistered();
@@ -720,76 +718,8 @@ QUAKE FILESYSTEM
 
 int com_filesize;
 
-
-//
-// in memory
-//
-
-typedef struct
-{
-    char name[MAX_QPATH];
-    int filepos, filelen;
-} packfile_t;
-
-typedef struct pack_s
-{
-    char filename[MAX_OSPATH];
-    int handle;
-    int numfiles;
-    packfile_t * files;
-} pack_t;
-
-//
-// on disk
-//
-typedef struct
-{
-    char name[56];
-    int filepos, filelen;
-} dpackfile_t;
-
-typedef struct
-{
-    char id[4];
-    int dirofs;
-    int dirlen;
-} dpackheader_t;
-
-#define MAX_FILES_IN_PACK 2048
-
 char com_cachedir[MAX_OSPATH];
 char com_gamedir[MAX_OSPATH];
-
-typedef struct searchpath_s
-{
-    char filename[MAX_OSPATH];
-    pack_t * pack; // only one of filename / pack will be used
-    struct searchpath_s * next;
-} searchpath_t;
-
-searchpath_t * com_searchpaths;
-
-/*
-============
-COM_Path_f
-
-============
-*/
-void COM_Path_f()
-{
-    searchpath_t * s;
-
-    Con_Printf("Current search path:\n");
-    for (s = com_searchpaths; s; s = s->next)
-    {
-        if (s->pack)
-        {
-            Con_Printf("%s (%i files)\n", s->pack->filename, s->pack->numfiles);
-        }
-        else
-            Con_Printf("%s\n", s->filename);
-    }
-}
 
 /*
 ============
@@ -874,301 +804,325 @@ void COM_CopyFile(char * netpath, char * cachepath)
     Sys_FileClose(out);
 }
 
-/*
-===========
-COM_FindFile
-
-Finds the file in the search path.
-Sets com_filesize and one of handle or file
-===========
-*/
-int COM_FindFile(char * filename, int * handle, FILE ** file)
+std::span<unsigned char> COM_LoadFile(const char * path, int usehunk)
 {
-    searchpath_t * search;
-    char netpath[MAX_OSPATH];
-    char cachepath[MAX_OSPATH];
-    pack_t * pak;
-    int i;
-    int findtime, cachetime;
+    using namespace std::string_view_literals;
+    const static std::map<std::string_view, std::span<unsigned char>> m = {
+    { "gfx.wad"sv, pak::gfx_wad() },
+    { "sound/ambience/buzz1.wav"sv, pak::sound::ambience::buzz1_wav() },
+    { "sound/ambience/comp1.wav"sv, pak::sound::ambience::comp1_wav() },
+    { "sound/ambience/drip1.wav"sv, pak::sound::ambience::drip1_wav() },
+    { "sound/ambience/drone6.wav"sv, pak::sound::ambience::drone6_wav() },
+    { "sound/ambience/fire1.wav"sv, pak::sound::ambience::fire1_wav() },
+    { "sound/ambience/fl_hum1.wav"sv, pak::sound::ambience::fl_hum1_wav() },
+    { "sound/ambience/hum1.wav"sv, pak::sound::ambience::hum1_wav() },
+    { "sound/ambience/suck1.wav"sv, pak::sound::ambience::suck1_wav() },
+    { "sound/ambience/swamp1.wav"sv, pak::sound::ambience::swamp1_wav() },
+    { "sound/ambience/swamp2.wav"sv, pak::sound::ambience::swamp2_wav() },
+    { "sound/ambience/thunder1.wav"sv, pak::sound::ambience::thunder1_wav() },
+    { "sound/ambience/water1.wav"sv, pak::sound::ambience::water1_wav() },
+    { "sound/ambience/wind2.wav"sv, pak::sound::ambience::wind2_wav() },
+    { "sound/ambience/windfly.wav"sv, pak::sound::ambience::windfly_wav() },
+    { "sound/boss1/death.wav"sv, pak::sound::boss1::death_wav() },
+    { "sound/boss1/out1.wav"sv, pak::sound::boss1::out1_wav() },
+    { "sound/boss1/pain.wav"sv, pak::sound::boss1::pain_wav() },
+    { "sound/boss1/sight1.wav"sv, pak::sound::boss1::sight1_wav() },
+    { "sound/boss1/throw.wav"sv, pak::sound::boss1::throw_wav() },
+    { "sound/buttons/airbut1.wav"sv, pak::sound::buttons::airbut1_wav() },
+    { "sound/buttons/switch02.wav"sv, pak::sound::buttons::switch02_wav() },
+    { "sound/buttons/switch04.wav"sv, pak::sound::buttons::switch04_wav() },
+    { "sound/buttons/switch21.wav"sv, pak::sound::buttons::switch21_wav() },
+    { "sound/demon/ddeath.wav"sv, pak::sound::demon::ddeath_wav() },
+    { "sound/demon/dhit2.wav"sv, pak::sound::demon::dhit2_wav() },
+    { "sound/demon/djump.wav"sv, pak::sound::demon::djump_wav() },
+    { "sound/demon/dland2.wav"sv, pak::sound::demon::dland2_wav() },
+    { "sound/demon/dpain1.wav"sv, pak::sound::demon::dpain1_wav() },
+    { "sound/demon/idle1.wav"sv, pak::sound::demon::idle1_wav() },
+    { "sound/demon/sight2.wav"sv, pak::sound::demon::sight2_wav() },
+    { "sound/dog/dattack1.wav"sv, pak::sound::dog::dattack1_wav() },
+    { "sound/dog/ddeath.wav"sv, pak::sound::dog::ddeath_wav() },
+    { "sound/dog/dpain1.wav"sv, pak::sound::dog::dpain1_wav() },
+    { "sound/dog/dsight.wav"sv, pak::sound::dog::dsight_wav() },
+    { "sound/dog/idle.wav"sv, pak::sound::dog::idle_wav() },
+    { "sound/doors/airdoor1.wav"sv, pak::sound::doors::airdoor1_wav() },
+    { "sound/doors/airdoor2.wav"sv, pak::sound::doors::airdoor2_wav() },
+    { "sound/doors/basesec1.wav"sv, pak::sound::doors::basesec1_wav() },
+    { "sound/doors/basesec2.wav"sv, pak::sound::doors::basesec2_wav() },
+    { "sound/doors/basetry.wav"sv, pak::sound::doors::basetry_wav() },
+    { "sound/doors/baseuse.wav"sv, pak::sound::doors::baseuse_wav() },
+    { "sound/doors/ddoor1.wav"sv, pak::sound::doors::ddoor1_wav() },
+    { "sound/doors/ddoor2.wav"sv, pak::sound::doors::ddoor2_wav() },
+    { "sound/doors/doormv1.wav"sv, pak::sound::doors::doormv1_wav() },
+    { "sound/doors/drclos4.wav"sv, pak::sound::doors::drclos4_wav() },
+    { "sound/doors/hydro1.wav"sv, pak::sound::doors::hydro1_wav() },
+    { "sound/doors/hydro2.wav"sv, pak::sound::doors::hydro2_wav() },
+    { "sound/doors/latch2.wav"sv, pak::sound::doors::latch2_wav() },
+    { "sound/doors/medtry.wav"sv, pak::sound::doors::medtry_wav() },
+    { "sound/doors/meduse.wav"sv, pak::sound::doors::meduse_wav() },
+    { "sound/doors/runetry.wav"sv, pak::sound::doors::runetry_wav() },
+    { "sound/doors/runeuse.wav"sv, pak::sound::doors::runeuse_wav() },
+    { "sound/doors/stndr1.wav"sv, pak::sound::doors::stndr1_wav() },
+    { "sound/doors/stndr2.wav"sv, pak::sound::doors::stndr2_wav() },
+    { "sound/doors/winch2.wav"sv, pak::sound::doors::winch2_wav() },
+    { "sound/hknight/hit.wav"sv, pak::sound::hknight::hit_wav() },
+    { "sound/items/armor1.wav"sv, pak::sound::items::armor1_wav() },
+    { "sound/items/damage.wav"sv, pak::sound::items::damage_wav() },
+    { "sound/items/damage2.wav"sv, pak::sound::items::damage2_wav() },
+    { "sound/items/damage3.wav"sv, pak::sound::items::damage3_wav() },
+    { "sound/items/health1.wav"sv, pak::sound::items::health1_wav() },
+    { "sound/items/inv1.wav"sv, pak::sound::items::inv1_wav() },
+    { "sound/items/inv2.wav"sv, pak::sound::items::inv2_wav() },
+    { "sound/items/inv3.wav"sv, pak::sound::items::inv3_wav() },
+    { "sound/items/itembk2.wav"sv, pak::sound::items::itembk2_wav() },
+    { "sound/items/protect.wav"sv, pak::sound::items::protect_wav() },
+    { "sound/items/protect2.wav"sv, pak::sound::items::protect2_wav() },
+    { "sound/items/protect3.wav"sv, pak::sound::items::protect3_wav() },
+    { "sound/items/r_item1.wav"sv, pak::sound::items::r_item1_wav() },
+    { "sound/items/r_item2.wav"sv, pak::sound::items::r_item2_wav() },
+    { "sound/items/suit.wav"sv, pak::sound::items::suit_wav() },
+    { "sound/items/suit2.wav"sv, pak::sound::items::suit2_wav() },
+    { "sound/knight/idle.wav"sv, pak::sound::knight::idle_wav() },
+    { "sound/knight/kdeath.wav"sv, pak::sound::knight::kdeath_wav() },
+    { "sound/knight/khurt.wav"sv, pak::sound::knight::khurt_wav() },
+    { "sound/knight/ksight.wav"sv, pak::sound::knight::ksight_wav() },
+    { "sound/knight/sword1.wav"sv, pak::sound::knight::sword1_wav() },
+    { "sound/knight/sword2.wav"sv, pak::sound::knight::sword2_wav() },
+    { "sound/misc/h2ohit1.wav"sv, pak::sound::misc::h2ohit1_wav() },
+    { "sound/misc/medkey.wav"sv, pak::sound::misc::medkey_wav() },
+    { "sound/misc/menu1.wav"sv, pak::sound::misc::menu1_wav() },
+    { "sound/misc/menu2.wav"sv, pak::sound::misc::menu2_wav() },
+    { "sound/misc/menu3.wav"sv, pak::sound::misc::menu3_wav() },
+    { "sound/misc/null.wav"sv, pak::sound::misc::null_wav() },
+    { "sound/misc/outwater.wav"sv, pak::sound::misc::outwater_wav() },
+    { "sound/misc/power.wav"sv, pak::sound::misc::power_wav() },
+    { "sound/misc/r_tele1.wav"sv, pak::sound::misc::r_tele1_wav() },
+    { "sound/misc/r_tele2.wav"sv, pak::sound::misc::r_tele2_wav() },
+    { "sound/misc/r_tele3.wav"sv, pak::sound::misc::r_tele3_wav() },
+    { "sound/misc/r_tele4.wav"sv, pak::sound::misc::r_tele4_wav() },
+    { "sound/misc/r_tele5.wav"sv, pak::sound::misc::r_tele5_wav() },
+    { "sound/misc/runekey.wav"sv, pak::sound::misc::runekey_wav() },
+    { "sound/misc/secret.wav"sv, pak::sound::misc::secret_wav() },
+    { "sound/misc/talk.wav"sv, pak::sound::misc::talk_wav() },
+    { "sound/misc/trigger1.wav"sv, pak::sound::misc::trigger1_wav() },
+    { "sound/misc/water1.wav"sv, pak::sound::misc::water1_wav() },
+    { "sound/misc/water2.wav"sv, pak::sound::misc::water2_wav() },
+    { "sound/ogre/ogdrag.wav"sv, pak::sound::ogre::ogdrag_wav() },
+    { "sound/ogre/ogdth.wav"sv, pak::sound::ogre::ogdth_wav() },
+    { "sound/ogre/ogidle.wav"sv, pak::sound::ogre::ogidle_wav() },
+    { "sound/ogre/ogidle2.wav"sv, pak::sound::ogre::ogidle2_wav() },
+    { "sound/ogre/ogpain1.wav"sv, pak::sound::ogre::ogpain1_wav() },
+    { "sound/ogre/ogsawatk.wav"sv, pak::sound::ogre::ogsawatk_wav() },
+    { "sound/ogre/ogwake.wav"sv, pak::sound::ogre::ogwake_wav() },
+    { "sound/plats/medplat1.wav"sv, pak::sound::plats::medplat1_wav() },
+    { "sound/plats/medplat2.wav"sv, pak::sound::plats::medplat2_wav() },
+    { "sound/plats/plat1.wav"sv, pak::sound::plats::plat1_wav() },
+    { "sound/plats/plat2.wav"sv, pak::sound::plats::plat2_wav() },
+    { "sound/plats/train1.wav"sv, pak::sound::plats::train1_wav() },
+    { "sound/plats/train2.wav"sv, pak::sound::plats::train2_wav() },
+    { "sound/player/axhit1.wav"sv, pak::sound::player::axhit1_wav() },
+    { "sound/player/axhit2.wav"sv, pak::sound::player::axhit2_wav() },
+    { "sound/player/death1.wav"sv, pak::sound::player::death1_wav() },
+    { "sound/player/death2.wav"sv, pak::sound::player::death2_wav() },
+    { "sound/player/death3.wav"sv, pak::sound::player::death3_wav() },
+    { "sound/player/death4.wav"sv, pak::sound::player::death4_wav() },
+    { "sound/player/death5.wav"sv, pak::sound::player::death5_wav() },
+    { "sound/player/drown1.wav"sv, pak::sound::player::drown1_wav() },
+    { "sound/player/drown2.wav"sv, pak::sound::player::drown2_wav() },
+    { "sound/player/gasp1.wav"sv, pak::sound::player::gasp1_wav() },
+    { "sound/player/gasp2.wav"sv, pak::sound::player::gasp2_wav() },
+    { "sound/player/gib.wav"sv, pak::sound::player::gib_wav() },
+    { "sound/player/h2odeath.wav"sv, pak::sound::player::h2odeath_wav() },
+    { "sound/player/h2ojump.wav"sv, pak::sound::player::h2ojump_wav() },
+    { "sound/player/inh2o.wav"sv, pak::sound::player::inh2o_wav() },
+    { "sound/player/inlava.wav"sv, pak::sound::player::inlava_wav() },
+    { "sound/player/land.wav"sv, pak::sound::player::land_wav() },
+    { "sound/player/land2.wav"sv, pak::sound::player::land2_wav() },
+    { "sound/player/lburn1.wav"sv, pak::sound::player::lburn1_wav() },
+    { "sound/player/lburn2.wav"sv, pak::sound::player::lburn2_wav() },
+    { "sound/player/pain1.wav"sv, pak::sound::player::pain1_wav() },
+    { "sound/player/pain2.wav"sv, pak::sound::player::pain2_wav() },
+    { "sound/player/pain3.wav"sv, pak::sound::player::pain3_wav() },
+    { "sound/player/pain4.wav"sv, pak::sound::player::pain4_wav() },
+    { "sound/player/pain5.wav"sv, pak::sound::player::pain5_wav() },
+    { "sound/player/pain6.wav"sv, pak::sound::player::pain6_wav() },
+    { "sound/player/plyrjmp8.wav"sv, pak::sound::player::plyrjmp8_wav() },
+    { "sound/player/slimbrn2.wav"sv, pak::sound::player::slimbrn2_wav() },
+    { "sound/player/teledth1.wav"sv, pak::sound::player::teledth1_wav() },
+    { "sound/player/tornoff2.wav"sv, pak::sound::player::tornoff2_wav() },
+    { "sound/player/udeath.wav"sv, pak::sound::player::udeath_wav() },
+    { "sound/shambler/melee1.wav"sv, pak::sound::shambler::melee1_wav() },
+    { "sound/shambler/melee2.wav"sv, pak::sound::shambler::melee2_wav() },
+    { "sound/shambler/sattck1.wav"sv, pak::sound::shambler::sattck1_wav() },
+    { "sound/shambler/sboom.wav"sv, pak::sound::shambler::sboom_wav() },
+    { "sound/shambler/sdeath.wav"sv, pak::sound::shambler::sdeath_wav() },
+    { "sound/shambler/shurt2.wav"sv, pak::sound::shambler::shurt2_wav() },
+    { "sound/shambler/sidle.wav"sv, pak::sound::shambler::sidle_wav() },
+    { "sound/shambler/smack.wav"sv, pak::sound::shambler::smack_wav() },
+    { "sound/shambler/ssight.wav"sv, pak::sound::shambler::ssight_wav() },
+    { "sound/soldier/death1.wav"sv, pak::sound::soldier::death1_wav() },
+    { "sound/soldier/idle.wav"sv, pak::sound::soldier::idle_wav() },
+    { "sound/soldier/pain1.wav"sv, pak::sound::soldier::pain1_wav() },
+    { "sound/soldier/pain2.wav"sv, pak::sound::soldier::pain2_wav() },
+    { "sound/soldier/sattck1.wav"sv, pak::sound::soldier::sattck1_wav() },
+    { "sound/soldier/sight1.wav"sv, pak::sound::soldier::sight1_wav() },
+    { "sound/weapons/ax1.wav"sv, pak::sound::weapons::ax1_wav() },
+    { "sound/weapons/bounce.wav"sv, pak::sound::weapons::bounce_wav() },
+    { "sound/weapons/grenade.wav"sv, pak::sound::weapons::grenade_wav() },
+    { "sound/weapons/guncock.wav"sv, pak::sound::weapons::guncock_wav() },
+    { "sound/weapons/lhit.wav"sv, pak::sound::weapons::lhit_wav() },
+    { "sound/weapons/lock4.wav"sv, pak::sound::weapons::lock4_wav() },
+    { "sound/weapons/lstart.wav"sv, pak::sound::weapons::lstart_wav() },
+    { "sound/weapons/pkup.wav"sv, pak::sound::weapons::pkup_wav() },
+    { "sound/weapons/r_exp3.wav"sv, pak::sound::weapons::r_exp3_wav() },
+    { "sound/weapons/ric1.wav"sv, pak::sound::weapons::ric1_wav() },
+    { "sound/weapons/ric2.wav"sv, pak::sound::weapons::ric2_wav() },
+    { "sound/weapons/ric3.wav"sv, pak::sound::weapons::ric3_wav() },
+    { "sound/weapons/rocket1i.wav"sv, pak::sound::weapons::rocket1i_wav() },
+    { "sound/weapons/sgun1.wav"sv, pak::sound::weapons::sgun1_wav() },
+    { "sound/weapons/shotgn2.wav"sv, pak::sound::weapons::shotgn2_wav() },
+    { "sound/weapons/spike2.wav"sv, pak::sound::weapons::spike2_wav() },
+    { "sound/weapons/tink1.wav"sv, pak::sound::weapons::tink1_wav() },
+    { "sound/wizard/hit.wav"sv, pak::sound::wizard::hit_wav() },
+    { "sound/wizard/wattack.wav"sv, pak::sound::wizard::wattack_wav() },
+    { "sound/wizard/wdeath.wav"sv, pak::sound::wizard::wdeath_wav() },
+    { "sound/wizard/widle1.wav"sv, pak::sound::wizard::widle1_wav() },
+    { "sound/wizard/widle2.wav"sv, pak::sound::wizard::widle2_wav() },
+    { "sound/wizard/wpain.wav"sv, pak::sound::wizard::wpain_wav() },
+    { "sound/wizard/wsight.wav"sv, pak::sound::wizard::wsight_wav() },
+    { "sound/zombie/idle_w2.wav"sv, pak::sound::zombie::idle_w2_wav() },
+    { "sound/zombie/z_fall.wav"sv, pak::sound::zombie::z_fall_wav() },
+    { "sound/zombie/z_gib.wav"sv, pak::sound::zombie::z_gib_wav() },
+    { "sound/zombie/z_hit.wav"sv, pak::sound::zombie::z_hit_wav() },
+    { "sound/zombie/z_idle.wav"sv, pak::sound::zombie::z_idle_wav() },
+    { "sound/zombie/z_idle1.wav"sv, pak::sound::zombie::z_idle1_wav() },
+    { "sound/zombie/z_miss.wav"sv, pak::sound::zombie::z_miss_wav() },
+    { "sound/zombie/z_pain.wav"sv, pak::sound::zombie::z_pain_wav() },
+    { "sound/zombie/z_pain1.wav"sv, pak::sound::zombie::z_pain1_wav() },
+    { "sound/zombie/z_shot1.wav"sv, pak::sound::zombie::z_shot1_wav() },
 
-    if (file && handle)
-        Sys_Error((char*)"COM_FindFile: both handle and file set");
-    if (!file && !handle)
-        Sys_Error((char*)"COM_FindFile: neither handle or file set");
+    { "config.cfg"sv, pak::default_cfg() },
+    { "autoexec.cfg"sv, pak::default_cfg() },
 
-    //
-    // search through the path, one element at a time
-    //
-    search = com_searchpaths;
-    
-    for (; search; search = search->next)
-    {
-        // is the element a pak file?
-        if (search->pack)
-        {
-            // look through all the pak file elements
-            pak = search->pack;
-            for (i = 0; i < pak->numfiles; i++)
-                if (!strcmp(pak->files[i].name, filename))
-                { // found it!
-                    Sys_Printf((char*)"PackFile: %s : %s\n", pak->filename, filename);
-                    if (handle)
-                    {
-                        *handle = pak->handle;
-                        Sys_FileSeek(pak->handle, pak->files[i].filepos);
-                    }
-                    else
-                    { // open a new file on the pakfile
-                        *file = fopen(pak->filename, "rb");
-                        if (*file)
-                            fseek(*file, pak->files[i].filepos, SEEK_SET);
-                    }
-                    com_filesize = pak->files[i].filelen;
-                    return com_filesize;
-                }
-        }
-        else
-        {
-            // check a file in the directory tree
-            if (!static_registered)
-            { // if not a registered version, don't ever go beyond base
-                if (strchr(filename, '/') || strchr(filename, '\\'))
-                    continue;
-            }
+    { "default.cfg"sv, pak::default_cfg() },
+    { "demo1.dem"sv, pak::demo1_dem() },
+    { "demo2.dem"sv, pak::demo2_dem() },
+    { "demo3.dem"sv, pak::demo3_dem() },
+    { "end1.bin"sv, pak::end1_bin() },
+    { "gfx.wad"sv, pak::gfx_wad() },
+    { "progs.dat"sv, pak::progs_dat() },
+    { "quake.rc"sv, pak::quake_rc() },
 
-            sprintf(netpath, "%s/%s", search->filename, filename);
+    { "maps/b_batt0.bsp"sv, pak::maps::b_batt0_bsp() },
+    { "maps/b_batt1.bsp"sv, pak::maps::b_batt1_bsp() },
+    { "maps/b_bh10.bsp"sv, pak::maps::b_bh10_bsp() },
+    { "maps/b_bh100.bsp"sv, pak::maps::b_bh100_bsp() },
+    { "maps/b_bh25.bsp"sv, pak::maps::b_bh25_bsp() },
+    { "maps/b_explob.bsp"sv, pak::maps::b_explob_bsp() },
+    { "maps/b_nail0.bsp"sv, pak::maps::b_nail0_bsp() },
+    { "maps/b_nail1.bsp"sv, pak::maps::b_nail1_bsp() },
+    { "maps/b_rock0.bsp"sv, pak::maps::b_rock0_bsp() },
+    { "maps/b_rock1.bsp"sv, pak::maps::b_rock1_bsp() },
+    { "maps/b_shell0.bsp"sv, pak::maps::b_shell0_bsp() },
+    { "maps/b_shell1.bsp"sv, pak::maps::b_shell1_bsp() },
+    { "maps/e1m1.bsp"sv, pak::maps::e1m1_bsp() },
+    { "maps/e1m2.bsp"sv, pak::maps::e1m2_bsp() },
+    { "maps/e1m3.bsp"sv, pak::maps::e1m3_bsp() },
+    { "maps/e1m4.bsp"sv, pak::maps::e1m4_bsp() },
+    { "maps/e1m5.bsp"sv, pak::maps::e1m5_bsp() },
+    { "maps/e1m6.bsp"sv, pak::maps::e1m6_bsp() },
+    { "maps/e1m7.bsp"sv, pak::maps::e1m7_bsp() },
+    { "maps/e1m8.bsp"sv, pak::maps::e1m8_bsp() },
+    { "maps/start.bsp"sv, pak::maps::start_bsp() },
 
-            findtime = Sys_FileTime(netpath);
-            if (findtime == -1)
-                continue;
+    { "progs/armor.mdl"sv, pak::progs::armor_mdl() },
+    { "progs/backpack.mdl"sv, pak::progs::backpack_mdl() },
+    { "progs/bolt.mdl"sv, pak::progs::bolt_mdl() },
+    { "progs/bolt2.mdl"sv, pak::progs::bolt2_mdl() },
+    { "progs/bolt3.mdl"sv, pak::progs::bolt3_mdl() },
+    { "progs/boss.mdl"sv, pak::progs::boss_mdl() },
+    { "progs/demon.mdl"sv, pak::progs::demon_mdl() },
+    { "progs/dog.mdl"sv, pak::progs::dog_mdl() },
+    { "progs/end1.mdl"sv, pak::progs::end1_mdl() },
+    { "progs/eyes.mdl"sv, pak::progs::eyes_mdl() },
+    { "progs/flame.mdl"sv, pak::progs::flame_mdl() },
+    { "progs/flame2.mdl"sv, pak::progs::flame2_mdl() },
+    { "progs/g_light.mdl"sv, pak::progs::g_light_mdl() },
+    { "progs/g_nail.mdl"sv, pak::progs::g_nail_mdl() },
+    { "progs/g_nail2.mdl"sv, pak::progs::g_nail2_mdl() },
+    { "progs/g_rock.mdl"sv, pak::progs::g_rock_mdl() },
+    { "progs/g_rock2.mdl"sv, pak::progs::g_rock2_mdl() },
+    { "progs/g_shot.mdl"sv, pak::progs::g_shot_mdl() },
+    { "progs/gib1.mdl"sv, pak::progs::gib1_mdl() },
+    { "progs/gib2.mdl"sv, pak::progs::gib2_mdl() },
+    { "progs/gib3.mdl"sv, pak::progs::gib3_mdl() },
+    { "progs/grenade.mdl"sv, pak::progs::grenade_mdl() },
+    { "progs/h_demon.mdl"sv, pak::progs::h_demon_mdl() },
+    { "progs/h_dog.mdl"sv, pak::progs::h_dog_mdl() },
+    { "progs/h_guard.mdl"sv, pak::progs::h_guard_mdl() },
+    { "progs/h_knight.mdl"sv, pak::progs::h_knight_mdl() },
+    { "progs/h_ogre.mdl"sv, pak::progs::h_ogre_mdl() },
+    { "progs/h_player.mdl"sv, pak::progs::h_player_mdl() },
+    { "progs/h_shams.mdl"sv, pak::progs::h_shams_mdl() },
+    { "progs/h_wizard.mdl"sv, pak::progs::h_wizard_mdl() },
+    { "progs/h_zombie.mdl"sv, pak::progs::h_zombie_mdl() },
+    { "progs/invisibl.mdl"sv, pak::progs::invisibl_mdl() },
+    { "progs/invulner.mdl"sv, pak::progs::invulner_mdl() },
+    { "progs/knight.mdl"sv, pak::progs::knight_mdl() },
+    { "progs/lavaball.mdl"sv, pak::progs::lavaball_mdl() },
+    { "progs/m_g_key.mdl"sv, pak::progs::m_g_key_mdl() },
+    { "progs/m_s_key.mdl"sv, pak::progs::m_s_key_mdl() },
+    { "progs/missile.mdl"sv, pak::progs::missile_mdl() },
+    { "progs/ogre.mdl"sv, pak::progs::ogre_mdl() },
+    { "progs/player.mdl"sv, pak::progs::player_mdl() },
+    { "progs/quaddama.mdl"sv, pak::progs::quaddama_mdl() },
+    { "progs/s_bubble.spr"sv, pak::progs::s_bubble_spr() },
+    { "progs/s_explod.spr"sv, pak::progs::s_explod_spr() },
+    { "progs/s_light.mdl"sv, pak::progs::s_light_mdl() },
+    { "progs/s_light.spr"sv, pak::progs::s_light_spr() },
+    { "progs/s_spike.mdl"sv, pak::progs::s_spike_mdl() },
+    { "progs/shambler.mdl"sv, pak::progs::shambler_mdl() },
+    { "progs/soldier.mdl"sv, pak::progs::soldier_mdl() },
+    { "progs/spike.mdl"sv, pak::progs::spike_mdl() },
+    { "progs/suit.mdl"sv, pak::progs::suit_mdl() },
+    { "progs/v_axe.mdl"sv, pak::progs::v_axe_mdl() },
+    { "progs/v_light.mdl"sv, pak::progs::v_light_mdl() },
+    { "progs/v_nail.mdl"sv, pak::progs::v_nail_mdl() },
+    { "progs/v_nail2.mdl"sv, pak::progs::v_nail2_mdl() },
+    { "progs/v_rock.mdl"sv, pak::progs::v_rock_mdl() },
+    { "progs/v_rock2.mdl"sv, pak::progs::v_rock2_mdl() },
+    { "progs/v_shot.mdl"sv, pak::progs::v_shot_mdl() },
+    { "progs/v_shot2.mdl"sv, pak::progs::v_shot2_mdl() },
+    { "progs/w_g_key.mdl"sv, pak::progs::w_g_key_mdl() },
+    { "progs/w_s_key.mdl"sv, pak::progs::w_s_key_mdl() },
+    { "progs/w_spike.mdl"sv, pak::progs::w_spike_mdl() },
+    { "progs/wizard.mdl"sv, pak::progs::wizard_mdl() },
+    { "progs/zom_gib.mdl"sv, pak::progs::zom_gib_mdl() },
+    { "progs/zombie.mdl"sv, pak::progs::zombie_mdl() },
 
-            // see if the file needs to be updated in the cache
-            if (!com_cachedir[0])
-                strcpy(cachepath, netpath);
-            else
-            {
-                if ((strlen(netpath) < 2) || (netpath[1] != ':'))
-                    sprintf(cachepath, "%s%s", com_cachedir, netpath);
-                else
-                    sprintf(cachepath, "%s%s", com_cachedir, netpath + 2);
+    };
 
-                cachetime = Sys_FileTime(cachepath);
+    std::span<unsigned char> res;
+    if (auto it = m.find(path); it != m.end())
+        res = it->second;
 
-                if (cachetime < findtime)
-                    COM_CopyFile(netpath, cachepath);
-                strcpy(netpath, cachepath);
-            }
-
-            Sys_Printf((char*)"FindFile: %s\n", netpath);
-            com_filesize = Sys_FileOpenRead(netpath, &i);
-            if (handle)
-                *handle = i;
-            else
-            {
-                Sys_FileClose(i);
-                *file = fopen(netpath, "rb");
-            }
-            return com_filesize;
-        }
-
-    }
-
-    Sys_Printf((char*)"FindFile: can't find %s\n", filename);
-
-    if (handle)
-        *handle = -1;
-    else
-        *file = NULL;
-    com_filesize = -1;
-    return -1;
-}
-
-
-/*
-===========
-COM_OpenFile
-
-filename never has a leading slash, but may contain directory walks
-returns a handle and a length
-it may actually be inside a pak file
-===========
-*/
-int COM_OpenFile(char * filename, int * handle)
-{
-    return COM_FindFile(filename, handle, NULL);
-}
-
-/*
-===========
-COM_FOpenFile
-
-If the requested file is inside a packfile, a new FILE * will be opened
-into the file.
-===========
-*/
-int COM_FOpenFile(char * filename, FILE ** file)
-{
-    return COM_FindFile(filename, NULL, file);
-}
-
-/*
-============
-COM_CloseFile
-
-If it is a pak file handle, don't really close it
-============
-*/
-void COM_CloseFile(int h)
-{
-    searchpath_t * s;
-
-    for (s = com_searchpaths; s; s = s->next)
-        if (s->pack && s->pack->handle == h)
-            return;
-
-    Sys_FileClose(h);
-}
-
-
-/*
-============
-COM_LoadFile
-
-Filename are reletive to the quake directory.
-Allways appends a 0 byte.
-============
-*/
-cache_user_t * loadcache;
-byte * loadbuf;
-int loadsize;
-byte * COM_LoadFile(char * path, int usehunk)
-{
-    int h;
-    byte * buf;
-    char base[32];
-    int len;
-
-    buf = NULL; // quiet compiler warning
-
-    // look for it in the filesystem or pack files
-    len = COM_OpenFile(path, &h);
-    if (h == -1)
-        return NULL;
-
-    // extract the filename base name for hunk tag
-    COM_FileBase(path, base);
-
-    if (usehunk == 1)
-        buf = (byte*)Hunk_AllocName(len + 1, base);
-    else if (usehunk == 2)
-        buf = (byte*)Hunk_TempAlloc(len + 1);
-    else if (usehunk == 0)
-        buf = (byte*)Z_Malloc(len + 1);
-    else if (usehunk == 4)
-    {
-        if (len + 1 > loadsize)
-            buf = (byte*)Hunk_TempAlloc(len + 1);
-        else
-            buf = loadbuf;
-    }
-    else
-        Sys_Error((char*)"COM_LoadFile: bad usehunk");
-
-    if (!buf)
-        Sys_Error((char*)"COM_LoadFile: not enough space for %s", path);
-
-    ((byte *)buf)[len] = 0;
-
-    Draw_BeginDisc();
-    Sys_FileRead(h, buf, len);
-    COM_CloseFile(h);
-    Draw_EndDisc();
-
-    return buf;
+    return res;
 }
 
 byte * COM_LoadHunkFile(char * path)
 {
-    return COM_LoadFile(path, 1);
+    return COM_LoadFile(path, 1).data();
 }
 
 byte * COM_LoadTempFile(char * path)
 {
-    return COM_LoadFile(path, 2);
+    return COM_LoadFile(path, 2).data();
 }
 
 // uses temp hunk if larger than bufsize
-byte * COM_LoadStackFile(char * path, void * buffer, int bufsize)
+std::span<unsigned char> COM_LoadStackFile(const char * path)
 {
-    byte * buf;
-
-    loadbuf = (byte *)buffer;
-    loadsize = bufsize;
-    buf = COM_LoadFile(path, 4);
-
-    return buf;
+    return COM_LoadFile(path, 4);
 }
-
-/*
-=================
-COM_LoadPackFile
-
-Takes an explicit (not game tree related) path to a pak file.
-
-Loads the header and directory, adding the files at the beginning
-of the list so they override previous pack files.
-=================
-*/
-pack_t * COM_LoadPackFile(char * packfile)
-{
-    dpackheader_t header;
-    int i;
-    packfile_t * newfiles;
-    int numpackfiles;
-    pack_t * pack;
-    int packhandle;
-    dpackfile_t info[MAX_FILES_IN_PACK];
-
-    if (Sys_FileOpenRead(packfile, &packhandle) == -1)
-    {
-        // Con_Printf ("Couldn't open %s\n", packfile);
-        return NULL;
-    }
-    Sys_FileRead(packhandle, (void *)&header, sizeof(header));
-    if (header.id[0] != 'P' || header.id[1] != 'A'
-        || header.id[2] != 'C' || header.id[3] != 'K')
-        Sys_Error((char*)"%s is not a packfile", packfile);
-    header.dirofs = header.dirofs;
-    header.dirlen = header.dirlen;
-
-    numpackfiles = header.dirlen / sizeof(dpackfile_t);
-
-    if (numpackfiles > MAX_FILES_IN_PACK)
-        Sys_Error((char*)"%s has %i files", packfile, numpackfiles);
-
-    newfiles = (packfile_t*)Hunk_AllocName(numpackfiles * sizeof(packfile_t), (char*)"packfile");
-
-    Sys_FileSeek(packhandle, header.dirofs);
-    Sys_FileRead(packhandle, (void *)info, header.dirlen);
-
-    // parse the directory
-    for (i = 0; i < numpackfiles; i++)
-    {
-        strcpy(newfiles[i].name, info[i].name);
-        newfiles[i].filepos = info[i].filepos;
-        newfiles[i].filelen = info[i].filelen;
-    }
-
-    pack = (pack_t*)Hunk_Alloc(sizeof(pack_t));
-    strcpy(pack->filename, packfile);
-    pack->handle = packhandle;
-    pack->numfiles = numpackfiles;
-    pack->files = newfiles;
-
-    Con_Printf("Added packfile %s (%i files)\n", packfile, numpackfiles);
-    return pack;
-}
-
 
 /*
 ================
@@ -1180,40 +1134,7 @@ then loads and adds pak1.pak pak2.pak ...
 */
 void COM_AddGameDirectory(char * dir)
 {
-    int i;
-    searchpath_t * search;
-    pack_t * pak;
-    char pakfile[MAX_OSPATH];
-
     strcpy(com_gamedir, dir);
-
-    //
-    // add the directory to the search path
-    //
-    search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
-    strcpy(search->filename, dir);
-    search->next = com_searchpaths;
-    com_searchpaths = search;
-
-    //
-    // add any pak files in the format pak0.pak pak1.pak, ...
-    //
-    for (i = 0; ; i++)
-    {
-        sprintf(pakfile, "%s/pak%i.pak", dir, i);
-        pak = COM_LoadPackFile(pakfile);
-        if (!pak)
-            break;
-        search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
-        search->pack = pak;
-        search->next = com_searchpaths;
-        com_searchpaths = search;
-    }
-
-    //
-    // add the contents of the parms.txt file to the end of the command line
-    //
-
 }
 
 /*
@@ -1225,7 +1146,6 @@ void COM_InitFilesystem()
 {
     int i, j;
     char basedir[MAX_OSPATH];
-    searchpath_t * search;
 
     //
     // -basedir <path>
@@ -1282,33 +1202,4 @@ void COM_InitFilesystem()
     {
         COM_AddGameDirectory(va("%s/%s", basedir, com_argv[i + 1]));
     }
-
-    //
-    // -path <dir or packfile> [<dir or packfile>] ...
-    // Fully specifies the exact serach path, overriding the generated one
-    //
-    i = COM_CheckParm((char*)"-path");
-    if (i)
-    {
-        com_searchpaths = NULL;
-        while (++i < com_argc)
-        {
-            if (!com_argv[i] || com_argv[i][0] == '+' || com_argv[i][0] == '-')
-                break;
-
-            search = (searchpath_t*)Hunk_Alloc(sizeof(searchpath_t));
-            if (!strcmp(COM_FileExtension(com_argv[i]), "pak"))
-            {
-                search->pack = COM_LoadPackFile(com_argv[i]);
-                if (!search->pack)
-                    Sys_Error((char*)"Couldn't load packfile: %s", com_argv[i]);
-            }
-            else
-                strcpy(search->filename, com_argv[i]);
-            search->next = com_searchpaths;
-            com_searchpaths = search;
-        }
-    }
 }
-
-

@@ -3101,7 +3101,7 @@ void VID_MenuDraw()
     vmode_t * pv;
     modedesc_t tmodedesc;
 
-    p = (qpic_t*)pak::gfx::vidmodes_lmp();
+    p = (qpic_t*)pak::gfx::vidmodes_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < 3; i++)

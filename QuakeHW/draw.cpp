@@ -474,7 +474,7 @@ void Draw_ConsoleBackground(int lines)
     qpic_t * conback;
     char ver[100];
 
-    conback = (qpic_t*)pak::gfx::conback_lmp();
+    conback = (qpic_t*)pak::gfx::conback_lmp().data();
 
     // hack the version number directly into the pic
     sprintf(ver, "(WinQuake) %4.2f", (float)VERSION);

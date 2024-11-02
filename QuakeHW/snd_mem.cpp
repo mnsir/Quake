@@ -79,34 +79,22 @@ S_LoadSound
 sfxcache_t * S_LoadSound(sfx_t * s)
 {
     char namebuffer[256];
-    byte * data;
     wavinfo_t info;
     int len;
     float stepscale;
     sfxcache_t * sc;
-    byte stackbuf[1 * 1024]; // avoid dirtying the cache heap
-
     // see if still in memory
     sc = (sfxcache_t*)Cache_Check(&s->cache);
     if (sc)
         return sc;
 
-    //Con_Printf ("S_LoadSound: %x\n", (int)stackbuf);
     // load it in
     std::strcpy(namebuffer, "sound/");
     std::strcat(namebuffer, s->name);
 
-    // Con_Printf ("loading %s\n",namebuffer);
+    auto data = COM_LoadStackFile(namebuffer);
 
-    data = COM_LoadStackFile(namebuffer, stackbuf, sizeof(stackbuf));
-
-    if (!data)
-    {
-        Con_Printf("Couldn't load %s\n", namebuffer);
-        return NULL;
-    }
-
-    info = GetWavinfo(s->name, data, com_filesize);
+    info = GetWavinfo(s->name, data.data(), data.size());
     if (info.channels != 1)
     {
         Con_Printf("%s is a stereo sample\n", s->name);
@@ -128,7 +116,7 @@ sfxcache_t * S_LoadSound(sfx_t * s)
     sc->width = info.width;
     sc->stereo = info.channels;
 
-    ResampleSfx(s, sc->speed, sc->width, data + info.dataofs);
+    ResampleSfx(s, sc->speed, sc->width, data.data() + info.dataofs);
 
     return sc;
 }

@@ -452,7 +452,7 @@ void SCR_DrawPause()
     if (!cl.paused)
         return;
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::pause_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::pause_lmp().data());
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -471,7 +471,7 @@ void SCR_DrawLoading()
     if (!scr_drawloading)
         return;
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::loading_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::loading_lmp().data());
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }

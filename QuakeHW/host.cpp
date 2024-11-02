@@ -786,8 +786,8 @@ void Host_Init(quakeparms_t&& parms)
 
     if (cls.state != ca_dedicated)
     {
-        host_basepal = pak::gfx::palette_lmp();
-        host_colormap = pak::gfx::colormap_lmp();
+        host_basepal = pak::gfx::palette_lmp().data();
+        host_colormap = pak::gfx::colormap_lmp().data();
 
         VID_Init(host_basepal);
 

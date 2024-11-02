@@ -1034,7 +1034,7 @@ void Sbar_DeathmatchOverlay()
     scr_copyeverything = 1;
     scr_fullupdate = 0;
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::ranking_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::ranking_lmp().data());
     M_DrawPic((320 - pic->width) / 2, 8, pic);
 
     // scores
@@ -1184,10 +1184,10 @@ void Sbar_IntermissionOverlay()
         return;
     }
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::complete_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::complete_lmp().data());
     Draw_Pic(64, 24, pic);
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::inter_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::inter_lmp().data());
     Draw_TransPic(0, 56, pic);
 
     // time
@@ -1221,6 +1221,6 @@ void Sbar_FinaleOverlay()
 
     scr_copyeverything = 1;
 
-    pic = Draw_CachePic((qpic_t*)pak::gfx::finale_lmp());
+    pic = Draw_CachePic((qpic_t*)pak::gfx::finale_lmp().data());
     Draw_TransPic((vid.width - pic->width) / 2, 16, pic);
 }

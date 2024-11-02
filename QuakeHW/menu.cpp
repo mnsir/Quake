@@ -90,12 +90,12 @@ namespace
         int f = (int)(time * 10) % 6;
 
         switch (f) {
-        case 0: return (qpic_t*)pak::gfx::menudot1_lmp();
-        case 1: return (qpic_t*)pak::gfx::menudot2_lmp();
-        case 2: return (qpic_t*)pak::gfx::menudot3_lmp();
-        case 3: return (qpic_t*)pak::gfx::menudot4_lmp();
-        case 4: return (qpic_t*)pak::gfx::menudot5_lmp();
-        case 5: return (qpic_t*)pak::gfx::menudot6_lmp();
+        case 0: return (qpic_t*)pak::gfx::menudot1_lmp().data();
+        case 1: return (qpic_t*)pak::gfx::menudot2_lmp().data();
+        case 2: return (qpic_t*)pak::gfx::menudot3_lmp().data();
+        case 3: return (qpic_t*)pak::gfx::menudot4_lmp().data();
+        case 4: return (qpic_t*)pak::gfx::menudot5_lmp().data();
+        case 5: return (qpic_t*)pak::gfx::menudot6_lmp().data();
         }
         return nullptr;
     }
@@ -103,12 +103,12 @@ namespace
     qpic_t* HelpPageToPic(int page)
     {
         switch (page) {
-        case 0: return (qpic_t*)pak::gfx::help0_lmp();
-        case 1: return (qpic_t*)pak::gfx::help1_lmp();
-        case 2: return (qpic_t*)pak::gfx::help2_lmp();
-        case 3: return (qpic_t*)pak::gfx::help3_lmp();
-        case 4: return (qpic_t*)pak::gfx::help4_lmp();
-        case 5: return (qpic_t*)pak::gfx::help5_lmp();
+        case 0: return (qpic_t*)pak::gfx::help0_lmp().data();
+        case 1: return (qpic_t*)pak::gfx::help1_lmp().data();
+        case 2: return (qpic_t*)pak::gfx::help2_lmp().data();
+        case 3: return (qpic_t*)pak::gfx::help3_lmp().data();
+        case 4: return (qpic_t*)pak::gfx::help4_lmp().data();
+        case 5: return (qpic_t*)pak::gfx::help5_lmp().data();
         }
         return nullptr;
     }
@@ -199,15 +199,15 @@ void M_DrawTextBox(int x, int y, int width, int lines)
     // draw left side
     cx = x;
     cy = y;
-    p = (qpic_t*)pak::gfx::box_tl_lmp();
+    p = (qpic_t*)pak::gfx::box_tl_lmp().data();
     M_DrawTransPic(cx, cy, p);
-    p = (qpic_t*)pak::gfx::box_ml_lmp();
+    p = (qpic_t*)pak::gfx::box_ml_lmp().data();
     for (n = 0; n < lines; n++)
     {
         cy += 8;
         M_DrawTransPic(cx, cy, p);
     }
-    p = (qpic_t*)pak::gfx::box_bl_lmp();
+    p = (qpic_t*)pak::gfx::box_bl_lmp().data();
     M_DrawTransPic(cx, cy + 8, p);
 
     // draw middle
@@ -215,17 +215,17 @@ void M_DrawTextBox(int x, int y, int width, int lines)
     while (width > 0)
     {
         cy = y;
-        p = (qpic_t*)pak::gfx::box_tm_lmp();
+        p = (qpic_t*)pak::gfx::box_tm_lmp().data();
         M_DrawTransPic(cx, cy, p);
-        p = (qpic_t*)pak::gfx::box_mm_lmp();
+        p = (qpic_t*)pak::gfx::box_mm_lmp().data();
         for (n = 0; n < lines; n++)
         {
             cy += 8;
             if (n == 1)
-                p = (qpic_t*)pak::gfx::box_mm2_lmp();
+                p = (qpic_t*)pak::gfx::box_mm2_lmp().data();
             M_DrawTransPic(cx, cy, p);
         }
-        p = (qpic_t*)pak::gfx::box_bm_lmp();
+        p = (qpic_t*)pak::gfx::box_bm_lmp().data();
         M_DrawTransPic(cx, cy + 8, p);
         width -= 2;
         cx += 16;
@@ -233,15 +233,15 @@ void M_DrawTextBox(int x, int y, int width, int lines)
 
     // draw right side
     cy = y;
-    p = (qpic_t*)pak::gfx::box_tr_lmp();
+    p = (qpic_t*)pak::gfx::box_tr_lmp().data();
     M_DrawTransPic(cx, cy, p);
-    p = (qpic_t*)pak::gfx::box_mr_lmp();
+    p = (qpic_t*)pak::gfx::box_mr_lmp().data();
     for (n = 0; n < lines; n++)
     {
         cy += 8;
         M_DrawTransPic(cx, cy, p);
     }
-    p = (qpic_t*)pak::gfx::box_br_lmp();
+    p = (qpic_t*)pak::gfx::box_br_lmp().data();
     M_DrawTransPic(cx, cy + 8, p);
 }
 
@@ -304,11 +304,11 @@ void M_Main_Draw()
 {
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::ttl_main_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::ttl_main_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
-    p = (qpic_t*)pak::gfx::mainmenu_lmp();
+    p = (qpic_t*)pak::gfx::mainmenu_lmp().data();
     M_DrawTransPic(72, 32, p);
 
     M_DrawTransPic(54, 32 + m_main_cursor * 20, TimeToCursor(host_time));
@@ -386,10 +386,10 @@ void M_SinglePlayer_Draw()
 {
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::ttl_sgl_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::ttl_sgl_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
-    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::sp_menu_lmp());
+    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::sp_menu_lmp().data());
 
     M_DrawTransPic(54, 32 + m_singleplayer_cursor * 20, TimeToCursor(host_time));
 }
@@ -508,7 +508,7 @@ void M_Load_Draw()
     int i;
     qpic_t * p;
 
-    p = (qpic_t*)pak::gfx::p_load_lmp();
+    p = (qpic_t*)pak::gfx::p_load_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < MAX_SAVEGAMES; i++)
@@ -524,7 +524,7 @@ void M_Save_Draw()
     int i;
     qpic_t * p;
 
-    p = (qpic_t*)pak::gfx::p_save_lmp();
+    p = (qpic_t*)pak::gfx::p_save_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     for (i = 0; i < MAX_SAVEGAMES; i++)
@@ -628,10 +628,10 @@ void M_MultiPlayer_Draw()
 {
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
-    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::mp_menu_lmp());
+    M_DrawTransPic(72, 32, (qpic_t*)pak::gfx::mp_menu_lmp().data());
 
     M_DrawTransPic(54, 32 + m_multiplayer_cursor * 20, TimeToCursor(host_time));
 
@@ -713,8 +713,8 @@ void M_Setup_Draw()
 {
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_Print(64, 40, (char*)"Hostname");
@@ -731,9 +731,9 @@ void M_Setup_Draw()
     M_DrawTextBox(64, 140 - 8, 14, 1);
     M_Print(72, 140, (char*)"Accept Changes");
 
-    p = (qpic_t*)pak::gfx::bigbox_lmp();
+    p = (qpic_t*)pak::gfx::bigbox_lmp().data();
     M_DrawTransPic(160, 64, p);
-    p = (qpic_t*)pak::gfx::menuplyr_lmp();
+    p = (qpic_t*)pak::gfx::menuplyr_lmp().data();
     M_BuildTranslationTable(setup_top * 16, setup_bottom * 16);
     M_DrawTransPicTranslate(172, 72, p);
 
@@ -906,15 +906,15 @@ void M_Net_Draw()
     int f;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     f = 32;
 
     if (serialAvailable)
     {
-        p = (qpic_t*)pak::gfx::netmen1_lmp();
+        p = (qpic_t*)pak::gfx::netmen1_lmp().data();
     }
     else
     {
@@ -928,7 +928,7 @@ void M_Net_Draw()
 
     if (serialAvailable)
     {
-        p = (qpic_t*)pak::gfx::netmen2_lmp();
+        p = (qpic_t*)pak::gfx::netmen2_lmp().data();
     }
     else
     {
@@ -940,22 +940,22 @@ void M_Net_Draw()
 
     f += 19;
     if (ipxAvailable)
-        p = (qpic_t*)pak::gfx::netmen3_lmp();
+        p = (qpic_t*)pak::gfx::netmen3_lmp().data();
     else
-        p = (qpic_t*)pak::gfx::dim_ipx_lmp();
+        p = (qpic_t*)pak::gfx::dim_ipx_lmp().data();
     M_DrawTransPic(72, f, p);
 
     f += 19;
     if (tcpipAvailable)
-        p = (qpic_t*)pak::gfx::netmen4_lmp();
+        p = (qpic_t*)pak::gfx::netmen4_lmp().data();
     else
-        p = (qpic_t*)pak::gfx::dim_tcp_lmp();
+        p = (qpic_t*)pak::gfx::dim_tcp_lmp().data();
     M_DrawTransPic(72, f, p);
 
     if (m_net_items == 5) // JDC, could just be removed
     {
         f += 19;
-        p = (qpic_t*)pak::gfx::netmen5_lmp();
+        p = (qpic_t*)pak::gfx::netmen5_lmp().data();
         M_DrawTransPic(72, f, p);
     }
 
@@ -1158,8 +1158,8 @@ void M_Options_Draw()
     float r;
     qpic_t * p;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_option_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_option_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_Print(16, 32, (char*)" Customize controls");
@@ -1374,7 +1374,7 @@ void M_Keys_Draw()
     int x, y;
     qpic_t * p;
 
-    p = (qpic_t*)pak::gfx::ttl_cstm_lmp();
+    p = (qpic_t*)pak::gfx::ttl_cstm_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     if (bind_grab)
@@ -1698,8 +1698,8 @@ void M_SerialConfig_Draw()
     char * startJoin;
     char * directModem;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
 
@@ -1948,8 +1948,8 @@ void M_ModemConfig_Draw()
     qpic_t * p;
     int basex;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
     basex += 8;
@@ -2134,8 +2134,8 @@ void M_LanConfig_Draw()
     char * startJoin;
     char * protocol;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     basex = (320 - p->width) / 2;
     M_DrawPic(basex, 4, p);
 
@@ -2470,8 +2470,8 @@ void M_GameOptions_Draw()
     qpic_t * p;
     int x;
 
-    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp());
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    M_DrawTransPic(16, 4, (qpic_t*)pak::gfx::qplaque_lmp().data());
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
 
     M_DrawTextBox(152, 32, 10, 1);
@@ -2777,7 +2777,7 @@ void M_Search_Draw()
     qpic_t * p;
     int x;
 
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
     x = (320 / 2) - ((12 * 8) / 2) + 4;
     M_DrawTextBox(x - 8, 32, 12, 1);
@@ -2855,7 +2855,7 @@ void M_ServerList_Draw()
         slist_sorted = true;
     }
 
-    p = (qpic_t*)pak::gfx::p_multi_lmp();
+    p = (qpic_t*)pak::gfx::p_multi_lmp().data();
     M_DrawPic((320 - p->width) / 2, 4, p);
     for (n = 0; n < hostCacheCount; n++)
     {

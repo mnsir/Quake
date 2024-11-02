@@ -972,7 +972,7 @@ void PR_LoadProgs()
     for (i = 0; i < GEFV_CACHESIZE; i++)
         gefvCache[i].field[0] = 0;
 
-    progs = (dprograms_t*)pak::progs_dat();
+    progs = (dprograms_t*)pak::progs_dat().data();
     Con_DPrintf((char*)"Programs occupy %iK.\n", com_filesize / 1024);
 
     // byte swap the header

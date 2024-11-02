@@ -233,7 +233,7 @@ qpic_t * Draw_CachePic(qpic_t* ptr)
     // HACK HACK HACK --- we need to keep the bytes for
     // the translatable player picture just for the menu
     // configuration dialog
-    if (ptr == (qpic_t*)pak::gfx::menuplyr_lmp())
+    if (ptr == (qpic_t*)pak::gfx::menuplyr_lmp().data())
         memcpy(menuplyr_pixels, dat->data, dat->width * dat->height);
 
     pic->pic.width = dat->width;
@@ -379,7 +379,7 @@ void Draw_Init()
 
     start = Hunk_LowMark();
 
-    cb = (qpic_t *)pak::gfx::conback_lmp();
+    cb = (qpic_t *)pak::gfx::conback_lmp().data();
     
     sprintf(ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 

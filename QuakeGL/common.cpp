@@ -716,8 +716,6 @@ QUAKE FILESYSTEM
 =============================================================================
 */
 
-int com_filesize;
-
 char com_cachedir[MAX_OSPATH];
 char com_gamedir[MAX_OSPATH];
 
@@ -804,7 +802,7 @@ void COM_CopyFile(char * netpath, char * cachepath)
     Sys_FileClose(out);
 }
 
-std::span<unsigned char> COM_LoadFile(const char * path, int usehunk)
+std::span<unsigned char> COM_LoadFile(const char * path)
 {
     using namespace std::string_view_literals;
     const static std::map<std::string_view, std::span<unsigned char>> m = {
@@ -1106,22 +1104,6 @@ std::span<unsigned char> COM_LoadFile(const char * path, int usehunk)
         res = it->second;
 
     return res;
-}
-
-byte * COM_LoadHunkFile(char * path)
-{
-    return COM_LoadFile(path, 1).data();
-}
-
-byte * COM_LoadTempFile(char * path)
-{
-    return COM_LoadFile(path, 2).data();
-}
-
-// uses temp hunk if larger than bufsize
-std::span<unsigned char> COM_LoadStackFile(const char * path)
-{
-    return COM_LoadFile(path, 4);
 }
 
 /*

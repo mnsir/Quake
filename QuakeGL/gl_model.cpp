@@ -227,7 +227,7 @@ model_t * Mod_LoadModel(model_t * mod, bool crash)
             return mod; // not cached at all
     }
 
-    unsigned* buf = (unsigned *)COM_LoadStackFile(mod->name).data();
+    unsigned* buf = (unsigned *)COM_LoadFile(mod->name).data();
 
     COM_FileBase(mod->name, loadname);
 

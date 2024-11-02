@@ -973,7 +973,6 @@ void PR_LoadProgs()
         gefvCache[i].field[0] = 0;
 
     progs = (dprograms_t *)pak::progs_dat().data();
-    Con_DPrintf((char*)"Programs occupy %iK.\n", com_filesize / 1024);
 
     if (progs->version != PROG_VERSION)
         Sys_Error((char*)"progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);

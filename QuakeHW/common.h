@@ -125,16 +125,13 @@ char * va(const char * format, ...);
 
 //============================================================================
 
-extern int com_filesize;
 struct cache_user_s;
 
 extern char com_gamedir[MAX_OSPATH];
 
 void COM_WriteFile(char * filename, void * data, int len);
 
-std::span<unsigned char> COM_LoadStackFile(const char* path);
-byte * COM_LoadTempFile(char * path);
-byte * COM_LoadHunkFile(char * path);
+std::span<unsigned char> COM_LoadFile(const char* path);
 
 
 extern struct cvar_s registered;

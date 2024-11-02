@@ -92,7 +92,7 @@ sfxcache_t * S_LoadSound(sfx_t * s)
     std::strcpy(namebuffer, "sound/");
     std::strcat(namebuffer, s->name);
 
-    auto data = COM_LoadStackFile(namebuffer);
+    auto data = COM_LoadFile(namebuffer);
 
     info = GetWavinfo(s->name, data.data(), data.size());
     if (info.channels != 1)

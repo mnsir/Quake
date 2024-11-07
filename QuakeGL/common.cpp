@@ -1007,7 +1007,6 @@ std::span<unsigned char> COM_LoadFile(const char * path)
     { "demo3.dem"sv, pak::demo3_dem() },
     { "end1.bin"sv, pak::end1_bin() },
     { "gfx.wad"sv, pak::gfx_wad() },
-    { "progs.dat"sv, pak::progs_dat() },
     { "quake.rc"sv, pak::quake_rc() },
 
     { "maps/b_batt0.bsp"sv, pak::maps::b_batt0_bsp() },

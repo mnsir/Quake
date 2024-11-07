@@ -132,32 +132,3 @@ typedef struct
     int numparms;
     byte parm_size[MAX_PARMS];
 } dfunction_t;
-
-
-#define PROG_VERSION 6
-typedef struct
-{
-    int version;
-    int crc; // check of header file
-
-    int ofs_statements;
-    int numstatements; // statement 0 is an error
-
-    int ofs_globaldefs;
-    int numglobaldefs;
-
-    int ofs_fielddefs;
-    int numfielddefs;
-
-    int ofs_functions;
-    int numfunctions; // function 0 is an empty
-
-    int ofs_strings;
-    int numstrings; // first string is a null string
-
-    int ofs_globals;
-    int numglobals;
-
-    int entityfields;
-} dprograms_t;
-

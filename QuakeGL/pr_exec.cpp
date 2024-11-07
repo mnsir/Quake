@@ -213,7 +213,7 @@ void PR_Profile_f()
     {
         max = 0;
         best = NULL;
-        for (i = 0; i < progs->numfunctions; i++)
+        for (i = 0; i < Progs::GetFunctions().size(); i++)
         {
             f = &pr_functions[i];
             if (f->profile > max)
@@ -352,7 +352,7 @@ void PR_ExecuteProgram(func_t fnum)
     int exitdepth;
     eval_t * ptr;
 
-    if (!fnum || fnum >= progs->numfunctions)
+    if (!fnum || fnum >= Progs::GetFunctions().size())
     {
         if (pr_global_struct->self)
             ED_Print(PROG_TO_EDICT(pr_global_struct->self));

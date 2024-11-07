@@ -3,6 +3,7 @@
 #include "quakedef.h"
 
 #include <common/time.h>
+#include <common/progs.h>
 
 extern cvar_t pausable;
 
@@ -616,7 +617,7 @@ void Host_Loadgame_f()
         { // parse an edict
 
             ent = EDICT_NUM(entnum);
-            memset(&ent->v, 0, progs->entityfields * 4);
+            memset(&ent->v, 0, Progs::entityfields * 4);
             ent->free = false;
             ED_ParseEdict((char*)start, ent);
 
@@ -995,7 +996,7 @@ void Host_Spawn_f()
         // set up the edict
         ent = host_client->edict;
 
-        memset(&ent->v, 0, progs->entityfields * 4);
+        memset(&ent->v, 0, Progs::entityfields * 4);
         ent->v.colormap = NUM_FOR_EDICT(ent);
         ent->v.team = (host_client->colors & 15) + 1;
         ent->v.netname = host_client->name - pr_strings;

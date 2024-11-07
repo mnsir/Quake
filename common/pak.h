@@ -9,7 +9,6 @@ namespace pak
     std::span<unsigned char> demo3_dem();
     std::span<unsigned char> end1_bin();
     std::span<unsigned char> gfx_wad();
-    std::span<unsigned char> progs_dat();
     std::span<unsigned char> quake_rc();
     namespace gfx
     {

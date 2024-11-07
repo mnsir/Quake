@@ -1052,7 +1052,7 @@ void SV_SpawnServer(char * server)
     // allocate server memory
     sv.max_edicts = MAX_EDICTS;
 
-    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * pr_edict_size, (char*)"edicts");
+    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * Progs::edict_size, (char*)"edicts");
 
     sv.datagram.maxsize = sizeof(sv.datagram_buf);
     sv.datagram.cursize = 0;
@@ -1109,7 +1109,7 @@ void SV_SpawnServer(char * server)
     // load the rest of the entities
     // 
     ent = EDICT_NUM(0);
-    memset(&ent->v, 0, progs->entityfields * 4);
+    memset(&ent->v, 0, Progs::entityfields * 4);
     ent->free = false;
     ent->v.model = sv.worldmodel->name - pr_strings;
     ent->v.modelindex = 1; // world model

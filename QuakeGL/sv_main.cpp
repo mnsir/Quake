@@ -4,6 +4,8 @@
 #include "quakedef.h"
 #include <common/progs.h>
 
+using namespace std::string_view_literals;
+
 server_t sv;
 server_static_t svs;
 
@@ -594,7 +596,7 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
 
     // stuff the sigil bits into the high bits of items for sbar, or else
     // mix in items2
-    val = GetEdictFieldValue(ent, (char*)"items2");
+    val = GetEdictFieldValue(ent, "items2"sv);
 
     if (val)
         items = (int)ent->v.items | ((int)val->_float << 23);

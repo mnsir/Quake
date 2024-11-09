@@ -3,6 +3,8 @@
 
 #include "quakedef.h"
 
+using namespace std::string_view_literals;
+
 /*
 
 
@@ -349,7 +351,7 @@ void SV_AddGravity(edict_t * ent)
 
     eval_t * val;
 
-    val = GetEdictFieldValue(ent, (char*)"gravity");
+    val = GetEdictFieldValue(ent, "gravity"sv);
     if (val && val->_float)
         ent_gravity = val->_float;
     else

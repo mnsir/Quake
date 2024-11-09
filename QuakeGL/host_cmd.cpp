@@ -5,6 +5,8 @@
 #include <common/time.h>
 #include <common/progs.h>
 
+using namespace std::string_view_literals;
+
 extern cvar_t pausable;
 
 int current_skill;
@@ -1261,7 +1263,7 @@ void Host_Give_f()
     case 's':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_shells1");
+            val = GetEdictFieldValue(sv_player, "ammo_shells1"sv);
             if (val)
                 val->_float = v;
         }
@@ -1271,7 +1273,7 @@ void Host_Give_f()
     case 'n':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_nails1");
+            val = GetEdictFieldValue(sv_player, "ammo_nails1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1287,7 +1289,7 @@ void Host_Give_f()
     case 'l':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_lava_nails");
+            val = GetEdictFieldValue(sv_player, "ammo_lava_nails"sv);
             if (val)
             {
                 val->_float = v;
@@ -1299,7 +1301,7 @@ void Host_Give_f()
     case 'r':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_rockets1");
+            val = GetEdictFieldValue(sv_player, "ammo_rockets1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1315,7 +1317,7 @@ void Host_Give_f()
     case 'm':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_multi_rockets");
+            val = GetEdictFieldValue(sv_player, "ammo_multi_rockets"sv);
             if (val)
             {
                 val->_float = v;
@@ -1330,7 +1332,7 @@ void Host_Give_f()
     case 'c':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_cells1");
+            val = GetEdictFieldValue(sv_player, "ammo_cells1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1346,7 +1348,7 @@ void Host_Give_f()
     case 'p':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_plasma");
+            val = GetEdictFieldValue(sv_player, "ammo_plasma"sv);
             if (val)
             {
                 val->_float = v;

@@ -29,20 +29,16 @@ cvar_t saved2 = {(char*)"saved2", (char*)"0", true};
 cvar_t saved3 = {(char*)"saved3", (char*)"0", true};
 cvar_t saved4 = {(char*)"saved4", (char*)"0", true};
 
-#define MAX_FIELD_LEN 64
-
-struct gefv_cache
-{
-    Progs::ddef_t* pcache = nullptr;
-    char field[MAX_FIELD_LEN] = "";
-};
-
-static std::array<gefv_cache, 2> gefvCache = {};
-
 struct StrCmp
 {
     const char* name = nullptr;
     [[nodiscard]] bool operator()(int i) const { return !strcmp(pr_strings + i, name); }
+};
+
+struct SvCmp
+{
+    std::string_view name;
+    [[nodiscard]] bool operator()(int i) const { return pr_strings + i == name; }
 };
 
 /*
@@ -125,38 +121,28 @@ void ED_Free(edict_t * ed)
 
 //===========================================================================
 
-eval_t * GetEdictFieldValue(edict_t * ed, char * field)
+eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
 {
-    Progs::ddef_t* def = nullptr;
+    static std::array<std::pair<std::string_view, Progs::ddef_t*>, 2> cache = {};
     static int rep = 0;
 
-    for (auto&& item : gefvCache)
+    Progs::ddef_t* def = nullptr;
+    if (auto it = std::ranges::find(cache, field, &decltype(cache)::value_type::first); it != cache.end())
     {
-        if (!strcmp(field, item.field))
-        {
-            def = item.pcache;
-            goto Done;
-        }
+        def = it->second;
     }
+    else
     {
         auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find_if(defs, StrCmp(field), &Progs::ddef_t::s_name); it != defs.end())
+        if (auto it = std::ranges::find_if(defs, SvCmp(field), &Progs::ddef_t::s_name); it != defs.end())
         {
             def = &*it;
         }
-    }
-    if (strlen(field) < MAX_FIELD_LEN)
-    {
-        gefvCache[rep].pcache = def;
-        strcpy(gefvCache[rep].field, field);
+        cache[rep] = { field,def };
         rep ^= 1;
     }
 
-Done:
-    if (!def)
-        return NULL;
-
-    return (eval_t *)((char *)&ed->v + def->ofs * 4);
+    return def ? (eval_t*)((char*)&ed->v + def->ofs * 4) : nullptr;
 }
 
 
@@ -863,10 +849,6 @@ PR_LoadProgs
 */
 void PR_LoadProgs()
 {
-    // flush the non-C variable lookup cache
-    for (auto&& item : gefvCache)
-        item.field[0] = '\0';
-
     auto strings = Progs::GetStrings();
     pr_strings = strings.data();
 

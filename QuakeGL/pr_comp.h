@@ -108,20 +108,3 @@ typedef struct statement_s
 } dstatement_t;
 
 #define DEF_SAVEGLOBAL (1<<15)
-
-#define MAX_PARMS 8
-
-typedef struct
-{
-    int first_statement; // negative numbers are builtins
-    int parm_start;
-    int locals; // total ints of parms + locals
-
-    int profile; // runtime
-
-    int s_name;
-    int s_file; // source file defined in
-
-    int numparms;
-    byte parm_size[MAX_PARMS];
-} dfunction_t;

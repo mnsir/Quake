@@ -173,7 +173,6 @@ typedef struct edict_s
 
 //============================================================================
 
-extern dfunction_t * pr_functions;
 extern char * pr_strings;
 extern dstatement_t * pr_statements;
 extern globalvars_t * pr_global_struct;
@@ -240,7 +239,7 @@ extern int pr_numbuiltins;
 extern int pr_argc;
 
 extern bool pr_trace;
-extern dfunction_t * pr_xfunction;
+extern Progs::dfunction_t * pr_xfunction;
 extern int pr_xstatement;
 
 void PR_RunError(char * error, ...);

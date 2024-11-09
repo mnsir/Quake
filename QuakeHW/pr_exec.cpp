@@ -10,7 +10,7 @@
 typedef struct
 {
     int s;
-    dfunction_t * f;
+    Progs::dfunction_t * f;
 } prstack_t;
 
 #define MAX_STACK_DEPTH 32
@@ -23,7 +23,7 @@ int localstack_used;
 
 
 bool pr_trace;
-dfunction_t * pr_xfunction;
+Progs::dfunction_t * pr_xfunction;
 int pr_xstatement;
 
 
@@ -171,9 +171,6 @@ PR_StackTrace
 */
 void PR_StackTrace()
 {
-    dfunction_t * f;
-    int i;
-
     if (pr_depth == 0)
     {
         Con_Printf("<NO STACK>\n");
@@ -181,9 +178,9 @@ void PR_StackTrace()
     }
 
     pr_stack[pr_depth].f = pr_xfunction;
-    for (i = pr_depth; i >= 0; i--)
+    for (int i = pr_depth; i >= 0; i--)
     {
-        f = pr_stack[i].f;
+        auto* f = pr_stack[i].f;
 
         if (!f)
         {
@@ -203,23 +200,19 @@ PR_Profile_f
 */
 void PR_Profile_f()
 {
-    dfunction_t * f, * best;
-    int max;
-    int num;
-    int i;
+    Progs::dfunction_t* best;
 
-    num = 0;
+    int num = 0;
     do
     {
-        max = 0;
-        best = NULL;
-        for (i = 0; i < Progs::GetFunctions().size(); i++)
+        int max = 0;
+        best = nullptr;
+        for (auto&& func : Progs::GetFunctions())
         {
-            f = &pr_functions[i];
-            if (f->profile > max)
+            if (func.profile > max)
             {
-                max = f->profile;
-                best = f;
+                max = func.profile;
+                best = &func;
             }
         }
         if (best)
@@ -266,14 +259,9 @@ The interpretation main loop
 ============================================================================
 */
 
-/*
-====================
-PR_EnterFunction
 
-Returns the new program statement counter
-====================
-*/
-int PR_EnterFunction(dfunction_t * f)
+//Returns the new program statement counter
+int PR_EnterFunction(Progs::dfunction_t& f)
 {
     int i, j, c, o;
 
@@ -284,27 +272,27 @@ int PR_EnterFunction(dfunction_t * f)
         PR_RunError((char*)"stack overflow");
 
     // save off any locals that the new function steps on
-    c = f->locals;
+    c = f.locals;
     if (localstack_used + c > LOCALSTACK_SIZE)
         PR_RunError((char*)"PR_ExecuteProgram: locals stack overflow\n");
 
     for (i = 0; i < c; i++)
-        localstack[localstack_used + i] = ((int *)pr_globals)[f->parm_start + i];
+        localstack[localstack_used + i] = ((int *)pr_globals)[f.parm_start + i];
     localstack_used += c;
 
     // copy parameters
-    o = f->parm_start;
-    for (i = 0; i < f->numparms; i++)
+    o = f.parm_start;
+    for (i = 0; i < f.numparms; i++)
     {
-        for (j = 0; j < f->parm_size[i]; j++)
+        for (j = 0; j < f.parm_size[i]; j++)
         {
             ((int *)pr_globals)[o] = ((int *)pr_globals)[OFS_PARM0 + i * 3 + j];
             o++;
         }
     }
 
-    pr_xfunction = f;
-    return f->first_statement - 1; // offset the s++
+    pr_xfunction = &f;
+    return f.first_statement - 1; // offset the s++
 }
 
 /*
@@ -345,21 +333,21 @@ void PR_ExecuteProgram(func_t fnum)
     eval_t * a, * b, * c;
     int s;
     dstatement_t * st;
-    dfunction_t * f, * newf;
     int runaway;
     int i;
     edict_t * ed;
     int exitdepth;
     eval_t * ptr;
 
-    if (!fnum || fnum >= Progs::GetFunctions().size())
+    auto funcs = Progs::GetFunctions();
+    if (!fnum || fnum >= funcs.size())
     {
         if (pr_global_struct->self)
             ED_Print(PROG_TO_EDICT(pr_global_struct->self));
         Host_Error((char*)"PR_ExecuteProgram: NULL function");
     }
 
-    f = &pr_functions[fnum];
+    auto&& f = funcs[fnum];
 
     runaway = 100000;
     pr_trace = false;
@@ -590,15 +578,16 @@ void PR_ExecuteProgram(func_t fnum)
         case OP_CALL6:
         case OP_CALL7:
         case OP_CALL8:
+        {
             pr_argc = st->op - OP_CALL0;
             if (!a->function)
                 PR_RunError((char*)"NULL function");
 
-            newf = &pr_functions[a->function];
+            auto&& newf = Progs::GetFunctions()[a->function];
 
-            if (newf->first_statement < 0)
+            if (newf.first_statement < 0)
             { // negative statements are built in functions
-                i = -newf->first_statement;
+                i = -newf.first_statement;
                 if (i >= pr_numbuiltins)
                     PR_RunError((char*)"Bad builtin call number");
                 pr_builtins[i]();
@@ -607,7 +596,7 @@ void PR_ExecuteProgram(func_t fnum)
 
             s = PR_EnterFunction(newf);
             break;
-
+        }
         case OP_DONE:
         case OP_RETURN:
             pr_globals[OFS_RETURN] = pr_globals[st->a];

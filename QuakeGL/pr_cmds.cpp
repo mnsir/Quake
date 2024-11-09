@@ -1041,7 +1041,6 @@ void PF_walkmove()
     edict_t * ent;
     float yaw, dist;
     vec3_t move;
-    dfunction_t * oldf;
     int oldself;
 
     ent = PROG_TO_EDICT(pr_global_struct->self);
@@ -1061,7 +1060,7 @@ void PF_walkmove()
     move[2] = 0;
 
     // save program state, because SV_movestep may call other progs
-    oldf = pr_xfunction;
+    auto* oldf = pr_xfunction;
     oldself = pr_global_struct->self;
 
     G_FLOAT(OFS_RETURN) = SV_movestep(ent, move, true);

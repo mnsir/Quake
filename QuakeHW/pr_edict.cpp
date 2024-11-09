@@ -5,7 +5,6 @@
 #include <common/pak.h>
 #include <common/progs.h>
 
-dfunction_t * pr_functions;
 char * pr_strings;
 dstatement_t * pr_statements;
 globalvars_t * pr_global_struct;
@@ -123,26 +122,6 @@ void ED_Free(edict_t * ed)
 
 //===========================================================================
 
-/*
-============
-ED_FindFunction
-============
-*/
-dfunction_t * ED_FindFunction(char * name)
-{
-    dfunction_t * func;
-    int i;
-
-    for (i = 0; i < Progs::GetFunctions().size(); i++)
-    {
-        func = &pr_functions[i];
-        if (!strcmp(pr_strings + func->s_name, name))
-            return func;
-    }
-    return NULL;
-}
-
-
 eval_t * GetEdictFieldValue(edict_t * ed, char * field)
 {
     Progs::ddef_t* def = nullptr;
@@ -188,7 +167,6 @@ Returns a string describing *data in a type specific manner
 char * PR_ValueString(etype_t type, eval_t * val)
 {
     static char line[256];
-    dfunction_t * f;
 
     (int&)type &= ~DEF_SAVEGLOBAL;
 
@@ -201,9 +179,11 @@ char * PR_ValueString(etype_t type, eval_t * val)
         sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
         break;
     case ev_function:
-        f = pr_functions + val->function;
-        sprintf(line, "%s()", pr_strings + f->s_name);
+    {
+        auto&& f = Progs::GetFunctions()[val->function];
+        sprintf(line, "%s()", pr_strings + f.s_name);
         break;
+    }
     case ev_field:
     {
         const auto ofs = val->_int;
@@ -245,7 +225,6 @@ Easier to parse than PR_ValueString
 char * PR_UglyValueString(etype_t type, eval_t * val)
 {
     static char line[256];
-    dfunction_t * f;
 
     (int&)type &= ~DEF_SAVEGLOBAL;
 
@@ -258,9 +237,11 @@ char * PR_UglyValueString(etype_t type, eval_t * val)
         sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
         break;
     case ev_function:
-        f = pr_functions + val->function;
-        sprintf(line, "%s", pr_strings + f->s_name);
+    {
+        auto&& f = Progs::GetFunctions()[val->function];
+        sprintf(line, "%s", pr_strings + f.s_name);
         break;
+    }
     case ev_field:
     {
         const auto ofs = val->_int;
@@ -673,13 +654,16 @@ bool ED_ParseEpair(void * base, const Progs::ddef_t& key, char * s)
     }
     case ev_function:
     {
-        dfunction_t* func = ED_FindFunction(s);
-        if (!func)
+        auto funcs = Progs::GetFunctions();
+        if (auto it = std::ranges::find_if(funcs, StrCmp(s), &Progs::dfunction_t::s_name); it != funcs.end())
+        {
+            *(func_t*)d = std::ranges::distance(funcs.begin(), it);
+        }
+        else
         {
             Con_Printf("Can't find function %s\n", s);
             return false;
         }
-        *(func_t*)d = func - pr_functions;
         break;
     }
     default:
@@ -804,7 +788,6 @@ void ED_LoadFromFile(char * data)
 {
     edict_t * ent;
     int inhibit;
-    dfunction_t * func;
 
     ent = NULL;
     inhibit = 0;
@@ -855,20 +838,18 @@ void ED_LoadFromFile(char * data)
             ED_Free(ent);
             continue;
         }
-
-        // look for the spawn function
-        func = ED_FindFunction(pr_strings + ent->v.classname);
-
-        if (!func)
+        auto funcs = Progs::GetFunctions();
+        if (auto it = std::ranges::find_if(funcs, StrCmp(pr_strings + ent->v.classname), &Progs::dfunction_t::s_name); it != funcs.end())
+        {
+            pr_global_struct->self = EDICT_TO_PROG(ent);
+            PR_ExecuteProgram(std::ranges::distance(funcs.begin(), it));
+        }
+        else
         {
             Con_Printf("No spawn function for:\n");
             ED_Print(ent);
             ED_Free(ent);
-            continue;
         }
-
-        pr_global_struct->self = EDICT_TO_PROG(ent);
-        PR_ExecuteProgram(func - pr_functions);
     }
 
     Con_DPrintf((char*)"%i entities inhibited\n", inhibit);
@@ -885,9 +866,6 @@ void PR_LoadProgs()
     // flush the non-C variable lookup cache
     for (auto&& item : gefvCache)
         item.field[0] = '\0';
-
-    auto functions = Progs::GetFunctions();
-    pr_functions = (dfunction_t*)functions.data();
 
     auto strings = Progs::GetStrings();
     pr_strings = strings.data();

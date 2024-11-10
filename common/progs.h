@@ -31,24 +31,24 @@ struct dstatement_t
     short c;
 };
 
-enum etype_t
-{
-    ev_void,
-    ev_string,
-    ev_float,
-    ev_vector,
-    ev_entity,
-    ev_field,
-    ev_function,
-    ev_pointer
-};
-
 struct ddef_t
 {
-    unsigned short type; // if DEF_SAVEGLOBGAL bit is set
-    // the variable needs to be saved in savegames
+    enum class etype_t : uint8_t
+    {
+        ev_void,
+        ev_string,
+        ev_float,
+        ev_vector,
+        ev_entity,
+        ev_field,
+        ev_function,
+        ev_pointer,
+    };
+
+    bool save_global;
+    etype_t type;
     unsigned short ofs;
-    int s_name;
+    std::string_view s_name;
 };
 
 struct globalvars_t
@@ -112,8 +112,8 @@ struct globalvars_t
 
 std::span<dfunction_t> GetFunctions();
 std::span<char> GetStrings();
-std::span<ddef_t> GetFieldDefs();
-std::span<ddef_t> GetGlobalDefs();
+std::span<const ddef_t> GetFieldDefs();
+std::span<const ddef_t> GetGlobalDefs();
 std::span<dstatement_t> GetStatements();
 std::span<globalvars_t> GetGlobals();
 void GetGlobals2(std::span<globalvars_t> v, size_t& i);

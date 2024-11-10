@@ -230,8 +230,6 @@ edict_t * NEXT_EDICT(edict_t * e);
 #define E_VECTOR(e,o) (&((float*)&e->v)[o])
 #define E_STRING(e,o) (pr_strings + *(string_t *)&((float*)&e->v)[o])
 
-extern int type_size[8];
-
 typedef void (*builtin_t) ();
 extern builtin_t * pr_builtins;
 extern int pr_numbuiltins;

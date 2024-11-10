@@ -3,6 +3,7 @@
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 void GL_Set2D();
 /*
@@ -218,11 +219,11 @@ float CalcFov(float fov_x, float width, float height)
     if (fov_x < 1 || fov_x > 179)
         Sys_Error((char*)"Bad fov: %f", fov_x);
 
-    x = width / tan(fov_x / 360 * M_PI);
+    x = width / tan(fov_x / 360 * std::numbers::pi);
 
     a = atan(height / x);
 
-    a = a * 360 / M_PI;
+    a = a * 360 / std::numbers::pi;
 
     return a;
 }
@@ -237,7 +238,6 @@ Internal use only
 */
 static void SCR_CalcRefdef()
 {
-    vrect_t vrect;
     float size;
     int h;
     bool full = false;
@@ -452,7 +452,7 @@ void SCR_DrawPause()
     if (!cl.paused)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/pause.lmp");
+    pic = Draw_CachePic((qpic_t*)pak::gfx::pause_lmp().data());
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -471,7 +471,7 @@ void SCR_DrawLoading()
     if (!scr_drawloading)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/loading.lmp");
+    pic = Draw_CachePic((qpic_t*)pak::gfx::loading_lmp().data());
     Draw_Pic((vid.width - pic->width) / 2,
              (vid.height - 48 - pic->height) / 2, pic);
 }
@@ -809,7 +809,6 @@ needs almost the entire 256k of stack space!
 void SCR_UpdateScreen()
 {
     static float oldscr_viewsize;
-    vrect_t vrect;
 
     if (block_drawing)
         return;

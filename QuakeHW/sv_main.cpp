@@ -3,6 +3,8 @@
 
 #include "quakedef.h"
 
+using namespace std::string_view_literals;
+
 server_t sv;
 server_static_t svs;
 
@@ -174,7 +176,7 @@ void SV_SendServerinfo(client_t * client)
     char message[2048];
 
     MSG_WriteByte(&client->message, svc_print);
-    sprintf(message, "%c\nVERSION %4.2f SERVER (%i CRC)", 2, VERSION, pr_crc);
+    sprintf(message, "%c\nVERSION %4.2f SERVER", 2, VERSION);
     MSG_WriteString(&client->message, message);
 
     MSG_WriteByte(&client->message, svc_serverinfo);
@@ -593,7 +595,7 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
 
     // stuff the sigil bits into the high bits of items for sbar, or else
     // mix in items2
-    val = GetEdictFieldValue(ent, (char*)"items2");
+    val = GetEdictFieldValue(ent, "items2"sv);
 
     if (val)
         items = (int)ent->v.items | ((int)val->_float << 23);
@@ -1052,7 +1054,7 @@ void SV_SpawnServer(char * server)
     // allocate server memory
     sv.max_edicts = MAX_EDICTS;
 
-    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * pr_edict_size, (char*)"edicts");
+    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * Progs::edict_size, (char*)"edicts");
 
     sv.datagram.maxsize = sizeof(sv.datagram_buf);
     sv.datagram.cursize = 0;
@@ -1109,7 +1111,7 @@ void SV_SpawnServer(char * server)
     // load the rest of the entities
     // 
     ent = EDICT_NUM(0);
-    memset(&ent->v, 0, progs->entityfields * 4);
+    memset(&ent->v, 0, Progs::entityfields * 4);
     ent->free = false;
     ent->v.model = sv.worldmodel->name - pr_strings;
     ent->v.modelindex = 1; // world model

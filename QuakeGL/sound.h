@@ -61,15 +61,15 @@ typedef struct
     int master_vol; // 0-255 master volume
 } channel_t;
 
-typedef struct
+struct wavinfo_t
 {
-    int rate;
-    int width;
-    int channels;
-    int loopstart;
-    int samples;
-    int dataofs; // chunk starts this many bytes from file start
-} wavinfo_t;
+    int rate = 0;
+    int width = 0;
+    int channels = 0;
+    int loopstart = 0;
+    int samples = 0;
+    int dataofs = 0; // chunk starts this many bytes from file start
+};
 
 void S_Init();
 void S_Startup();

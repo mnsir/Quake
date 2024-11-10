@@ -336,8 +336,6 @@ char * Sys_ConsoleInput()
     static char text[256];
     static int len;
     INPUT_RECORD recs[1024];
-    int count;
-    int i;
     DWORD dummy;
     int ch;
     DWORD numread;
@@ -473,7 +471,6 @@ HWND hwnd_dialog;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    MSG msg;
     quakeparms_t parms;
     double time, oldtime, newtime;
     MEMORYSTATUS lpBuffer;
@@ -625,7 +622,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     S_BlockSound();
 
     Sys_Printf((char*)"Host_Init\n");
-    Host_Init(parms);
+    Host_Init(std::move(parms));
 
     oldtime = Sys_FloatTime();
 

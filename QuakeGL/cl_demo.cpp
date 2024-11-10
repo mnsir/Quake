@@ -1,6 +1,8 @@
 
 
 #include "quakedef.h"
+#include <string_view>
+#include <common/pak.h>
 
 void CL_FinishTimeDemo();
 
@@ -274,7 +276,14 @@ void CL_PlayDemo_f()
     COM_DefaultExtension(name, (char*)".dem");
 
     Con_Printf((char*)"Playing demo from %s.\n", name);
-    COM_FOpenFile(name, &cls.demofile);
+
+    using namespace std::string_view_literals;
+    auto data = name == "demo1.dem"sv ? pak::demo1_dem() : name == "demo2.dem"sv ? pak::demo2_dem() : name == "demo3.dem"sv ? pak::demo3_dem() : std::span<unsigned char>{};
+
+    cls.demofile = tmpfile();
+    fwrite(data.data(), sizeof(unsigned char), data.size(), cls.demofile);
+    rewind(cls.demofile);
+
     if (!cls.demofile)
     {
         Con_Printf((char*)"ERROR: couldn't open.\n");

@@ -195,7 +195,6 @@ typedef struct
 #include "console.h"
 #include "view.h"
 #include "menu.h"
-#include "crc.h"
 #include "cdaudio.h"
 
 #ifdef GLQUAKE
@@ -247,7 +246,7 @@ extern double realtime; // not bounded in any way, changed at
 void Host_ClearMemory();
 void Host_ServerFrame();
 void Host_InitCommands();
-void Host_Init(const quakeparms_t& parms);
+void Host_Init(quakeparms_t&& parms);
 void Host_Shutdown();
 void Host_Error(char * error, ...);
 void Host_EndGame(char * message, ...);

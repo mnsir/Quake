@@ -3,6 +3,7 @@
 
 #include "quakedef.h"
 #include "r_local.h"
+#include <common/pak.h>
 
 // only the refresh window will be updated unless these variables are flagged 
 int scr_copytop;
@@ -182,11 +183,11 @@ float CalcFov(float fov_x, float width, float height)
     if (fov_x < 1 || fov_x > 179)
         Sys_Error((char*)"Bad fov: %f", fov_x);
 
-    x = width / tan(fov_x / 360 * M_PI);
+    x = width / tan(fov_x / 360 * std::numbers::pi);
 
     a = atan(height / x);
 
-    a = a * 360 / M_PI;
+    a = a * 360 / std::numbers::pi;
 
     return a;
 }
@@ -391,9 +392,8 @@ void SCR_DrawPause()
     if (!cl.paused)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/pause.lmp");
-    Draw_Pic((vid.width - pic->width) / 2,
-             (vid.height - 48 - pic->height) / 2, pic);
+    pic = (qpic_t*)pak::gfx::pause_lmp().data();
+    Draw_Pic((vid.width - pic->width) / 2, (vid.height - 48 - pic->height) / 2, pic);
 }
 
 
@@ -410,9 +410,8 @@ void SCR_DrawLoading()
     if (!scr_drawloading)
         return;
 
-    pic = Draw_CachePic((char*)"gfx/loading.lmp");
-    Draw_Pic((vid.width - pic->width) / 2,
-             (vid.height - 48 - pic->height) / 2, pic);
+    pic = (qpic_t*)pak::gfx::loading_lmp().data();
+    Draw_Pic((vid.width - pic->width) / 2, (vid.height - 48 - pic->height) / 2, pic);
 }
 
 

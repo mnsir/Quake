@@ -19,4 +19,4 @@ void Draw_Fill(int x, int y, int w, int h, int c);
 void Draw_FadeScreen();
 void Draw_String(int x, int y, char * str);
 qpic_t * Draw_PicFromWad(char * name);
-qpic_t * Draw_CachePic(char * path);
+qpic_t * Draw_CachePic(qpic_t* p);

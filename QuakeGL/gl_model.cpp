@@ -215,15 +215,11 @@ Loads a model into the cache
 */
 model_t * Mod_LoadModel(model_t * mod, bool crash)
 {
-    void * d;
-    unsigned * buf;
-    byte stackbuf[1024]; // avoid dirtying the cache heap
-
     if (!mod->needload)
     {
         if (mod->type == mod_alias)
         {
-            d = Cache_Check(&mod->cache);
+            void* d = Cache_Check(&mod->cache);
             if (d)
                 return mod;
         }
@@ -231,35 +227,11 @@ model_t * Mod_LoadModel(model_t * mod, bool crash)
             return mod; // not cached at all
     }
 
-    //
-    // because the world is so huge, load it one piece at a time
-    //
-    if (!crash)
-    {
+    unsigned* buf = (unsigned *)COM_LoadFile(mod->name).data();
 
-    }
-
-    //
-    // load the file
-    //
-    buf = (unsigned *)COM_LoadStackFile(mod->name, stackbuf, sizeof(stackbuf));
-    if (!buf)
-    {
-        if (crash)
-            Sys_Error((char*)"Mod_NumForName: %s not found", mod->name);
-        return NULL;
-    }
-
-    //
-    // allocate a new model
-    //
     COM_FileBase(mod->name, loadname);
 
     loadmodel = mod;
-
-    //
-    // fill it in
-    //
 
     // call the apropriate loader
     mod->needload = false;
@@ -1223,7 +1195,7 @@ Mod_LoadAliasFrame
 void * Mod_LoadAliasFrame(void * pin, maliasframedesc_t * frame)
 {
     trivertx_t * pframe, * pinframe;
-    int i, j;
+    int i;
     daliasframe_t * pdaliasframe;
 
     pdaliasframe = (daliasframe_t *)pin;
@@ -1384,7 +1356,6 @@ void * Mod_LoadAllSkins(int numskins, daliasskintype_t * pskintype)
     int i, j, k;
     char name[32];
     int s;
-    byte * copy;
     byte * skin;
     byte * texels;
     daliasskingroup_t * pinskingroup;
@@ -1467,7 +1438,7 @@ void Mod_LoadAliasModel(model_t * mod, void * buffer)
     mdl_t * pinmodel;
     stvert_t * pinstverts;
     dtriangle_t * pintriangles;
-    int version, numframes, numskins;
+    int version, numframes;
     int size;
     daliasframetype_t * pframetype;
     daliasskintype_t * pskintype;
@@ -1631,9 +1602,7 @@ void * Mod_LoadSpriteFrame(void * pin, mspriteframe_t ** ppframe, int framenum)
 {
     dspriteframe_t * pinframe;
     mspriteframe_t * pspriteframe;
-    int i, width, height, size, origin[2];
-    unsigned short * ppixout;
-    byte * ppixin;
+    int width, height, size, origin[2];
     char name[64];
 
     pinframe = (dspriteframe_t *)pin;

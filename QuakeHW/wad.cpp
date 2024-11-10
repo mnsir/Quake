@@ -52,7 +52,7 @@ void W_LoadWadFile(char * filename)
     unsigned i;
     int infotableofs;
 
-    wad_base = COM_LoadHunkFile(filename);
+    wad_base = COM_LoadFile(filename).data();
     if (!wad_base)
         Sys_Error((char*)"W_LoadWadFile: couldn't load %s", filename);
 

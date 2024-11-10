@@ -1,5 +1,5 @@
 
-
+#include <common/progs.h>
 #include "pr_comp.h" // defs shared with qcc
 
 typedef struct
@@ -173,17 +173,14 @@ typedef struct edict_s
 
 //============================================================================
 
-extern dprograms_t * progs;
-extern dfunction_t * pr_functions;
 extern char * pr_strings;
-extern ddef_t * pr_globaldefs;
-extern ddef_t * pr_fielddefs;
 extern dstatement_t * pr_statements;
 extern globalvars_t * pr_global_struct;
 extern float * pr_globals; // same as pr_global_struct
-
-extern int pr_edict_size; // in bytes
-
+namespace Progs
+{
+    constexpr int edict_size = entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
+}
 //============================================================================
 
 void PR_Init();
@@ -213,8 +210,7 @@ void ED_LoadFromFile(char * data);
 
 edict_t * EDICT_NUM(int n);
 int NUM_FOR_EDICT(edict_t * e);
-
-#define NEXT_EDICT(e) ((edict_t *)( (byte *)e + pr_edict_size))
+edict_t * NEXT_EDICT(edict_t * e);
 
 #define EDICT_TO_PROG(e) ((byte *)e - (byte *)sv.edicts)
 #define PROG_TO_EDICT(e) ((edict_t *)((byte *)sv.edicts + e))
@@ -234,8 +230,6 @@ int NUM_FOR_EDICT(edict_t * e);
 #define E_VECTOR(e,o) (&((float*)&e->v)[o])
 #define E_STRING(e,o) (pr_strings + *(string_t *)&((float*)&e->v)[o])
 
-extern int type_size[8];
-
 typedef void (*builtin_t) ();
 extern builtin_t * pr_builtins;
 extern int pr_numbuiltins;
@@ -243,15 +237,13 @@ extern int pr_numbuiltins;
 extern int pr_argc;
 
 extern bool pr_trace;
-extern dfunction_t * pr_xfunction;
+extern Progs::dfunction_t * pr_xfunction;
 extern int pr_xstatement;
-
-extern unsigned short pr_crc;
 
 void PR_RunError(char * error, ...);
 
 void ED_PrintEdicts();
 void ED_PrintNum(int ent);
 
-eval_t * GetEdictFieldValue(edict_t * ed, char * field);
+eval_t * GetEdictFieldValue(edict_t * ed, std::string_view field);
 

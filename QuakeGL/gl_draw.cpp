@@ -4,6 +4,7 @@
 // vid buffer
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 #define GL_COLOR_INDEX8_EXT 0x80E5
 
@@ -91,7 +92,6 @@ int Scrap_AllocBlock(int w, int h, int * x, int * y)
 {
     int i, j;
     int best, best2;
-    int bestx;
     int texnum;
 
     for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
@@ -149,7 +149,7 @@ void Scrap_Upload()
 
 typedef struct cachepic_s
 {
-    char name[MAX_QPATH];
+    qpic_t* ptr;
     qpic_t pic;
     byte padding[32]; // for appended glpic
 } cachepic_t;
@@ -211,39 +211,35 @@ qpic_t * Draw_PicFromWad(char * name)
 Draw_CachePic
 ================
 */
-qpic_t * Draw_CachePic(char * path)
+qpic_t * Draw_CachePic(qpic_t* ptr)
 {
     cachepic_t * pic;
     int i;
-    qpic_t * dat;
-    glpic_t * gl;
 
     for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
-        if (!strcmp(path, pic->name))
+        if (ptr == pic->ptr)
             return &pic->pic;
 
     if (menu_numcachepics == MAX_CACHED_PICS)
         Sys_Error((char*)"menu_numcachepics == MAX_CACHED_PICS");
     menu_numcachepics++;
-    strcpy(pic->name, path);
+    pic->ptr = ptr;
 
     //
     // load the pic from disk
     //
-    dat = (qpic_t *)COM_LoadTempFile(path);
-    if (!dat)
-        Sys_Error((char*)"Draw_CachePic: failed to load %s", path);
-
+    qpic_t* dat = ptr;
+    
     // HACK HACK HACK --- we need to keep the bytes for
     // the translatable player picture just for the menu
     // configuration dialog
-    if (!strcmp(path, "gfx/menuplyr.lmp"))
+    if (ptr == (qpic_t*)pak::gfx::menuplyr_lmp().data())
         memcpy(menuplyr_pixels, dat->data, dat->width * dat->height);
 
     pic->pic.width = dat->width;
     pic->pic.height = dat->height;
 
-    gl = (glpic_t *)pic->pic.data;
+    glpic_t* gl = (glpic_t *)pic->pic.data;
     gl->texnum = GL_LoadPicTexture(dat);
     gl->sl = 0;
     gl->sh = 1;
@@ -350,13 +346,12 @@ void Draw_Init()
 {
     int i;
     qpic_t * cb;
-    byte * dest, * src;
+    byte * dest;
     int x, y;
     char ver[40];
     glpic_t * gl;
     int start;
     byte * ncdata;
-    int f, fstep;
 
 
     Cvar_RegisterVariable(&gl_nobind);
@@ -384,10 +379,8 @@ void Draw_Init()
 
     start = Hunk_LowMark();
 
-    cb = (qpic_t *)COM_LoadTempFile((char*)"gfx/conback.lmp");
-    if (!cb)
-        Sys_Error((char*)"Couldn't load gfx/conback.lmp");
-
+    cb = (qpic_t *)pak::gfx::conback_lmp().data();
+    
     sprintf(ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 
     dest = cb->data + 320 * 186 + 320 - 11 - 8 * strlen(ver);
@@ -441,10 +434,6 @@ smoothly scrolled off.
 */
 void Draw_Character(int x, int y, int num)
 {
-    byte * dest;
-    byte * source;
-    unsigned short * pusdest;
-    int drawline;
     int row, col;
     float frow, fcol, size;
 
@@ -512,8 +501,6 @@ Draw_AlphaPic
 */
 void Draw_AlphaPic(int x, int y, qpic_t * pic, float alpha)
 {
-    byte * dest, * source;
-    unsigned short * pusdest;
     int v, u;
     glpic_t * gl;
 
@@ -549,9 +536,6 @@ Draw_Pic
 */
 void Draw_Pic(int x, int y, qpic_t * pic)
 {
-    byte * dest, * source;
-    unsigned short * pusdest;
-    int v, u;
     glpic_t * gl;
 
     if (scrap_dirty)
@@ -579,10 +563,6 @@ Draw_TransPic
 */
 void Draw_TransPic(int x, int y, qpic_t * pic)
 {
-    byte * dest, * source, tbyte;
-    unsigned short * pusdest;
-    int v, u;
-
     if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
         (unsigned)(y + pic->height) > vid.height)
     {
@@ -1021,7 +1001,6 @@ void GL_Upload8_EXT(byte * data, int width, int height, bool mipmap, bool alpha)
 {
     int i, s;
     bool noalpha;
-    int p;
     static unsigned j;
     int samples;
     static unsigned char scaled[1024 * 512]; // [512*256];
@@ -1165,8 +1144,7 @@ GL_LoadTexture
 */
 int GL_LoadTexture(char * identifier, int width, int height, byte * data, bool mipmap, bool alpha)
 {
-    bool noalpha;
-    int i, p, s;
+    int i;
     gltexture_t * glt;
 
     // see if the texture is allready present

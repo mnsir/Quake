@@ -334,7 +334,6 @@ int WIPX_GetSocketAddr(int handle, struct qsockaddr * addr)
 {
     int socket = ipxsocket[handle];
     int addrlen = sizeof(struct qsockaddr);
-    unsigned int a;
 
     std::memset(addr, 0, sizeof(struct qsockaddr));
     if (pgetsockname(socket, (struct sockaddr *)addr, &addrlen) != 0)

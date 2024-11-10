@@ -2,6 +2,7 @@
 // sbar.c -- status bar code
 
 #include "quakedef.h"
+#include <common/pak.h>
 
 
 int sb_updates; // if >= vid.numpages, no update needed
@@ -1033,7 +1034,7 @@ void Sbar_DeathmatchOverlay()
     scr_copyeverything = 1;
     scr_fullupdate = 0;
 
-    pic = Draw_CachePic((char*)"gfx/ranking.lmp");
+    pic = (qpic_t*)pak::gfx::ranking_lmp().data();
     M_DrawPic((320 - pic->width) / 2, 8, pic);
 
     // scores
@@ -1086,7 +1087,6 @@ Sbar_DeathmatchOverlay
 */
 void Sbar_MiniDeathmatchOverlay()
 {
-    qpic_t * pic;
     int i, k, l;
     int top, bottom;
     int x, y, f;
@@ -1184,10 +1184,10 @@ void Sbar_IntermissionOverlay()
         return;
     }
 
-    pic = Draw_CachePic((char*)"gfx/complete.lmp");
+    pic = (qpic_t*)pak::gfx::complete_lmp().data();
     Draw_Pic(64, 24, pic);
 
-    pic = Draw_CachePic((char*)"gfx/inter.lmp");
+    pic = (qpic_t*)pak::gfx::inter_lmp().data();
     Draw_TransPic(0, 56, pic);
 
     // time
@@ -1221,6 +1221,6 @@ void Sbar_FinaleOverlay()
 
     scr_copyeverything = 1;
 
-    pic = Draw_CachePic((char*)"gfx/finale.lmp");
+    pic = (qpic_t*)pak::gfx::finale_lmp().data();
     Draw_TransPic((vid.width - pic->width) / 2, 16, pic);
 }

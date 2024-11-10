@@ -78,7 +78,7 @@ void R_RenderDlight(dlight_t * light)
     glColor3f(0, 0, 0);
     for (i = 16; i >= 0; i--)
     {
-        a = i / 16.0 * M_PI * 2;
+        a = i / 16.0 * std::numbers::pi * 2;
         for (j = 0; j < 3; j++)
             v[j] = light->origin[j] + vright[j] * cos(a) * rad
             + vup[j] * sin(a) * rad;

@@ -9,10 +9,6 @@ typedef int fixed4_t;
 typedef int fixed8_t;
 typedef int fixed16_t;
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846 // matches value in gcc v2 cmath
-#endif
-
 struct mplane_s;
 
 extern vec3_t vec3_origin;

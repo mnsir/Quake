@@ -137,7 +137,7 @@ void SetMinMaxSize(edict_t * e, float * min, float * max, bool rotate)
         // find min / max for rotations
         angles = e->v.angles;
 
-        a = angles[1] / 180 * M_PI;
+        a = angles[1] / 180 * std::numbers::pi;
 
         xvector[0] = cos(a);
         xvector[1] = sin(a);
@@ -391,7 +391,7 @@ void PF_vectoyaw()
         yaw = 0;
     else
     {
-        yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+        yaw = (int)(atan2(value1[1], value1[0]) * 180 / std::numbers::pi);
         if (yaw < 0)
             yaw += 360;
     }
@@ -425,12 +425,12 @@ void PF_vectoangles()
     }
     else
     {
-        yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+        yaw = (int)(atan2(value1[1], value1[0]) * 180 / std::numbers::pi);
         if (yaw < 0)
             yaw += 360;
 
         forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
-        pitch = (int)(atan2(value1[2], forward) * 180 / M_PI);
+        pitch = (int)(atan2(value1[2], forward) * 180 / std::numbers::pi);
         if (pitch < 0)
             pitch += 360;
     }
@@ -1041,7 +1041,6 @@ void PF_walkmove()
     edict_t * ent;
     float yaw, dist;
     vec3_t move;
-    dfunction_t * oldf;
     int oldself;
 
     ent = PROG_TO_EDICT(pr_global_struct->self);
@@ -1054,14 +1053,14 @@ void PF_walkmove()
         return;
     }
 
-    yaw = yaw * M_PI * 2 / 360;
+    yaw = yaw * std::numbers::pi * 2 / 360;
 
     move[0] = cos(yaw) * dist;
     move[1] = sin(yaw) * dist;
     move[2] = 0;
 
     // save program state, because SV_movestep may call other progs
-    oldf = pr_xfunction;
+    auto* oldf = pr_xfunction;
     oldself = pr_global_struct->self;
 
     G_FLOAT(OFS_RETURN) = SV_movestep(ent, move, true);

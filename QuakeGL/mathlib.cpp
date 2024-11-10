@@ -11,7 +11,7 @@ int nanmask = 255 << 23;
 
 /*-----------------------------------------------------------------*/
 
-#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
+#define DEG2RAD( a ) ( a * std::numbers::pi ) / 180.0F
 
 void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {
@@ -214,13 +214,13 @@ void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
     float angle;
     float sr, sp, sy, cr, cp, cy;
 
-    angle = angles[YAW] * (M_PI * 2 / 360);
+    angle = angles[YAW] * (std::numbers::pi * 2 / 360);
     sy = sin(angle);
     cy = cos(angle);
-    angle = angles[PITCH] * (M_PI * 2 / 360);
+    angle = angles[PITCH] * (std::numbers::pi * 2 / 360);
     sp = sin(angle);
     cp = cos(angle);
-    angle = angles[ROLL] * (M_PI * 2 / 360);
+    angle = angles[ROLL] * (std::numbers::pi * 2 / 360);
     sr = sin(angle);
     cr = cos(angle);
 

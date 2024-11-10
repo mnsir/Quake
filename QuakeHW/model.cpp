@@ -238,9 +238,6 @@ Loads a model into the cache
 */
 model_t * Mod_LoadModel(model_t * mod, bool crash)
 {
-    unsigned * buf;
-    byte stackbuf[1024]; // avoid dirtying the cache heap
-
     if (mod->type == mod_alias)
     {
         if (Cache_Check(&mod->cache))
@@ -255,31 +252,11 @@ model_t * Mod_LoadModel(model_t * mod, bool crash)
             return mod;
     }
 
-    //
-    // because the world is so huge, load it one piece at a time
-    //
+    unsigned* buf = (unsigned *)COM_LoadFile(mod->name).data();
 
-    //
-    // load the file
-    //
-    buf = (unsigned *)COM_LoadStackFile(mod->name, stackbuf, sizeof(stackbuf));
-    if (!buf)
-    {
-        if (crash)
-            Sys_Error((char*)"Mod_NumForName: %s not found", mod->name);
-        return NULL;
-    }
-
-    //
-    // allocate a new model
-    //
     COM_FileBase(mod->name, loadname);
 
     loadmodel = mod;
-
-    //
-    // fill it in
-    //
 
     // call the apropriate loader
     mod->needload = NL_PRESENT;

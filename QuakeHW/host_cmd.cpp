@@ -3,6 +3,9 @@
 #include "quakedef.h"
 
 #include <common/time.h>
+#include <common/progs.h>
+
+using namespace std::string_view_literals;
 
 extern cvar_t pausable;
 
@@ -614,7 +617,7 @@ void Host_Loadgame_f()
         { // parse an edict
 
             ent = EDICT_NUM(entnum);
-            memset(&ent->v, 0, progs->entityfields * 4);
+            memset(&ent->v, 0, Progs::entityfields * 4);
             ent->free = false;
             ED_ParseEdict(start, ent);
 
@@ -993,7 +996,7 @@ void Host_Spawn_f()
         // set up the edict
         ent = host_client->edict;
 
-        memset(&ent->v, 0, progs->entityfields * 4);
+        memset(&ent->v, 0, Progs::entityfields * 4);
         ent->v.colormap = NUM_FOR_EDICT(ent);
         ent->v.team = (host_client->colors & 15) + 1;
         ent->v.netname = host_client->name - pr_strings;
@@ -1204,7 +1207,7 @@ Host_Give_f
 void Host_Give_f()
 {
     char * t;
-    int v, w;
+    int v;
     eval_t * val;
 
     if (cmd_source == src_command)
@@ -1258,7 +1261,7 @@ void Host_Give_f()
     case 's':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_shells1");
+            val = GetEdictFieldValue(sv_player, "ammo_shells1"sv);
             if (val)
                 val->_float = v;
         }
@@ -1268,7 +1271,7 @@ void Host_Give_f()
     case 'n':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_nails1");
+            val = GetEdictFieldValue(sv_player, "ammo_nails1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1284,7 +1287,7 @@ void Host_Give_f()
     case 'l':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_lava_nails");
+            val = GetEdictFieldValue(sv_player, "ammo_lava_nails"sv);
             if (val)
             {
                 val->_float = v;
@@ -1296,7 +1299,7 @@ void Host_Give_f()
     case 'r':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_rockets1");
+            val = GetEdictFieldValue(sv_player, "ammo_rockets1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1312,7 +1315,7 @@ void Host_Give_f()
     case 'm':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_multi_rockets");
+            val = GetEdictFieldValue(sv_player, "ammo_multi_rockets"sv);
             if (val)
             {
                 val->_float = v;
@@ -1327,7 +1330,7 @@ void Host_Give_f()
     case 'c':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_cells1");
+            val = GetEdictFieldValue(sv_player, "ammo_cells1"sv);
             if (val)
             {
                 val->_float = v;
@@ -1343,7 +1346,7 @@ void Host_Give_f()
     case 'p':
         if constexpr (rogue)
         {
-            val = GetEdictFieldValue(sv_player, (char*)"ammo_plasma");
+            val = GetEdictFieldValue(sv_player, "ammo_plasma"sv);
             if (val)
             {
                 val->_float = v;

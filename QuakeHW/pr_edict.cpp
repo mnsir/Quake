@@ -10,8 +10,6 @@ dstatement_t * pr_statements;
 globalvars_t * pr_global_struct;
 float * pr_globals; // same as pr_global_struct
 
-bool ED_ParseEpair(void * base, const Progs::ddef_t& key, char * s);
-
 cvar_t nomonsters = {(char*)"nomonsters", (char*)"0"};
 cvar_t gamecfg = {(char*)"gamecfg", (char*)"0"};
 cvar_t scratch1 = {(char*)"scratch1", (char*)"0"};
@@ -62,19 +60,204 @@ namespace
             return 0;
         }
     }
-}
 
-/*
-=================
-ED_ClearEdict
+    // Sets everything to NULL
+    void ED_ClearEdict(edict_t& e)
+    {
+        memset(&e.v, 0, Progs::entityfields * 4);
+        e.free = false;
+    }
 
-Sets everything to NULL
-=================
-*/
-void ED_ClearEdict(edict_t * e)
-{
-    memset(&e->v, 0, Progs::entityfields * 4);
-    e->free = false;
+    // Returns a string describing *data in a type specific manner
+    char* PR_ValueString(Progs::ddef_t::etype_t type, const eval_t& val)
+    {
+        static char line[256];
+
+        switch (type)
+        {
+        case Progs::ddef_t::etype_t::ev_string:
+            sprintf(line, "%s", pr_strings + val.string);
+            break;
+        case Progs::ddef_t::etype_t::ev_entity:
+            sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            break;
+        case Progs::ddef_t::etype_t::ev_function:
+        {
+            auto&& f = Progs::GetFunctions()[val.function];
+            sprintf(line, "%s()", pr_strings + f.s_name);
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_field:
+        {
+            const auto ofs = val._int;
+            auto defs = Progs::GetFieldDefs();
+            if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
+            {
+                sprintf(line, ".%s", it->s_name.data());
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_void:
+            sprintf(line, "void");
+            break;
+        case Progs::ddef_t::etype_t::ev_float:
+            sprintf(line, "%5.1f", val._float);
+            break;
+        case Progs::ddef_t::etype_t::ev_vector:
+            sprintf(line, "'%5.1f %5.1f %5.1f'", val.vector[0], val.vector[1], val.vector[2]);
+            break;
+        case Progs::ddef_t::etype_t::ev_pointer:
+            sprintf(line, "pointer");
+            break;
+        default:
+            sprintf(line, "bad type %i", type);
+            break;
+        }
+
+        return line;
+    }
+
+    // Returns a string describing *data in a type specific manner Easier to parse than PR_ValueString
+    char* PR_UglyValueString(Progs::ddef_t::etype_t type, const eval_t& val)
+    {
+        static char line[256];
+
+        switch (type)
+        {
+        case Progs::ddef_t::etype_t::ev_string:
+            sprintf(line, "%s", pr_strings + val.string);
+            break;
+        case Progs::ddef_t::etype_t::ev_entity:
+            sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            break;
+        case Progs::ddef_t::etype_t::ev_function:
+        {
+            auto&& f = Progs::GetFunctions()[val.function];
+            sprintf(line, "%s", pr_strings + f.s_name);
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_field:
+        {
+            const auto ofs = val._int;
+            auto defs = Progs::GetFieldDefs();
+            if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
+            {
+                sprintf(line, "%s", it->s_name.data());
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_void:
+            sprintf(line, "void");
+            break;
+        case Progs::ddef_t::etype_t::ev_float:
+            sprintf(line, "%f", val._float);
+            break;
+        case Progs::ddef_t::etype_t::ev_vector:
+            sprintf(line, "%f %f %f", val.vector[0], val.vector[1], val.vector[2]);
+            break;
+        default:
+            sprintf(line, "bad type %i", type);
+            break;
+        }
+
+        return line;
+    }
+
+    char* ED_NewString(char* string)
+    {
+        char* new_, * new_p;
+        int i, l;
+
+        l = strlen(string) + 1;
+        new_ = (char*)Hunk_Alloc(l);
+        new_p = new_;
+
+        for (i = 0; i < l; i++)
+        {
+            if (string[i] == '\\' && i < l - 1)
+            {
+                i++;
+                if (string[i] == 'n')
+                    *new_p++ = '\n';
+                else
+                    *new_p++ = '\\';
+            }
+            else
+                *new_p++ = string[i];
+        }
+
+        return new_;
+    }
+
+    // Can parse either fields or globals returns false if error
+    bool ED_ParseEpair(void* base, const Progs::ddef_t& key, char* s)
+    {
+        void* d = (void*)((int*)base + key.ofs);
+
+        switch (key.type)
+        {
+        case Progs::ddef_t::etype_t::ev_string:
+            *(string_t*)d = ED_NewString(s) - pr_strings;
+            break;
+
+        case Progs::ddef_t::etype_t::ev_float:
+            *(float*)d = atof(s);
+            break;
+
+        case Progs::ddef_t::etype_t::ev_vector:
+        {
+            char string[128];
+            strcpy(string, s);
+            char* v = string;
+            char* w = string;
+            for (int i = 0; i < 3; i++)
+            {
+                while (*v && *v != ' ')
+                    v++;
+                *v = 0;
+                ((float*)d)[i] = atof(w);
+                w = v = v + 1;
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_entity:
+            *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
+            break;
+
+        case Progs::ddef_t::etype_t::ev_field:
+        {
+            auto defs = Progs::GetFieldDefs();
+            if (auto it = std::ranges::find(defs, s, &Progs::ddef_t::s_name); it != defs.end())
+            {
+                *(int*)d = *(int*)(pr_globals + it->ofs);
+            }
+            else
+            {
+                Con_Printf((char*)"Can't find field %s\n", s);
+                return false;
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_function:
+        {
+            auto funcs = Progs::GetFunctions();
+            if (auto it = std::ranges::find_if(funcs, StrCmp(s), &Progs::dfunction_t::s_name); it != funcs.end())
+            {
+                *(func_t*)d = std::ranges::distance(funcs.begin(), it);
+            }
+            else
+            {
+                Con_Printf((char*)"Can't find function %s\n", s);
+                return false;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }
+
 }
 
 /*
@@ -100,7 +283,7 @@ edict_t * ED_Alloc()
         // freeing and allocating, so relax the replacement policy
         if (e->free && (e->freetime < 2 || sv.time - e->freetime > 0.5))
         {
-            ED_ClearEdict(e);
+            ED_ClearEdict(*e);
             return e;
         }
     }
@@ -110,7 +293,7 @@ edict_t * ED_Alloc()
 
     sv.num_edicts++;
     e = EDICT_NUM(i);
-    ED_ClearEdict(e);
+    ED_ClearEdict(*e);
 
     return e;
 }
@@ -168,101 +351,6 @@ eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
     return def ? (eval_t*)((char*)&ed->v + def->ofs * 4) : nullptr;
 }
 
-// Returns a string describing *data in a type specific manner
-char* PR_ValueString(Progs::ddef_t::etype_t type, eval_t* val)
-{
-    static char line[256];
-
-    switch (type)
-    {
-    case Progs::ddef_t::etype_t::ev_string:
-        sprintf(line, "%s", pr_strings + val->string);
-        break;
-    case Progs::ddef_t::etype_t::ev_entity:
-        sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
-        break;
-    case Progs::ddef_t::etype_t::ev_function:
-    {
-        auto&& f = Progs::GetFunctions()[val->function];
-        sprintf(line, "%s()", pr_strings + f.s_name);
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_field:
-    {
-        const auto ofs = val->_int;
-        auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
-        {
-            sprintf(line, ".%s", it->s_name.data());
-        }
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_void:
-        sprintf(line, "void");
-        break;
-    case Progs::ddef_t::etype_t::ev_float:
-        sprintf(line, "%5.1f", val->_float);
-        break;
-    case Progs::ddef_t::etype_t::ev_vector:
-        sprintf(line, "'%5.1f %5.1f %5.1f'", val->vector[0], val->vector[1], val->vector[2]);
-        break;
-    case Progs::ddef_t::etype_t::ev_pointer:
-        sprintf(line, "pointer");
-        break;
-    default:
-        sprintf(line, "bad type %i", type);
-        break;
-    }
-
-    return line;
-}
-
-// Returns a string describing *data in a type specific manner Easier to parse than PR_ValueString
-char* PR_UglyValueString(Progs::ddef_t::etype_t type, eval_t* val)
-{
-    static char line[256];
-
-    switch (type)
-    {
-    case Progs::ddef_t::etype_t::ev_string:
-        sprintf(line, "%s", pr_strings + val->string);
-        break;
-    case Progs::ddef_t::etype_t::ev_entity:
-        sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)));
-        break;
-    case Progs::ddef_t::etype_t::ev_function:
-    {
-        auto&& f = Progs::GetFunctions()[val->function];
-        sprintf(line, "%s", pr_strings + f.s_name);
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_field:
-    {
-        const auto ofs = val->_int;
-        auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
-        {
-            sprintf(line, "%s", it->s_name.data());
-        }
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_void:
-        sprintf(line, "void");
-        break;
-    case Progs::ddef_t::etype_t::ev_float:
-        sprintf(line, "%f", val->_float);
-        break;
-    case Progs::ddef_t::etype_t::ev_vector:
-        sprintf(line, "%f %f %f", val->vector[0], val->vector[1], val->vector[2]);
-        break;
-    default:
-        sprintf(line, "bad type %i", type);
-        break;
-    }
-
-    return line;
-}
-
 /*
 ============
 PR_GlobalString
@@ -279,7 +367,7 @@ char* PR_GlobalString(int ofs)
     if (auto it = std::ranges::find(gd, ofs, &Progs::ddef_t::ofs); it != gd.end())
     {
         void* val = (void*)&pr_globals[ofs];
-        char* s = PR_ValueString(it->type, (eval_t*)val);
+        char* s = PR_ValueString(it->type, *(eval_t*)val);
         sprintf(line, "%i(%s)%s", ofs, it->s_name.data(), s);
     }
     else
@@ -356,7 +444,7 @@ void ED_Print(edict_t * ed)
         while (l++ < 15)
             Con_Printf((char*)" ");
 
-        Con_Printf((char*)"%s\n", PR_ValueString(def.type, (eval_t *)v));
+        Con_Printf((char*)"%s\n", PR_ValueString(def.type, *(eval_t *)v));
     }
 }
 
@@ -395,7 +483,7 @@ void ED_Write(FILE * f, edict_t * ed)
             continue;
 
         fprintf(f, "\"%s\" ", name.data());
-        fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, (eval_t *)v));
+        fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, *(eval_t *)v));
     }
 
     fprintf(f, "}\n");
@@ -504,7 +592,7 @@ void ED_WriteGlobals(FILE * f)
                 def.type == Progs::ddef_t::etype_t::ev_entity)
             {
                 fprintf(f, "\"%s\" ", def.s_name.data());
-                fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, (eval_t*)(pr_globals + def.ofs)));
+                fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, *(eval_t*)(pr_globals + def.ofs)));
             }
         }
     }
@@ -553,115 +641,6 @@ void ED_ParseGlobals(char * data)
 }
 
 //============================================================================
-
-
-/*
-=============
-ED_NewString
-=============
-*/
-char * ED_NewString(char * string)
-{
-    char * new_, * new_p;
-    int i, l;
-
-    l = strlen(string) + 1;
-    new_ = (char*)Hunk_Alloc(l);
-    new_p = new_;
-
-    for (i = 0; i < l; i++)
-    {
-        if (string[i] == '\\' && i < l - 1)
-        {
-            i++;
-            if (string[i] == 'n')
-                *new_p++ = '\n';
-            else
-                *new_p++ = '\\';
-        }
-        else
-            *new_p++ = string[i];
-    }
-
-    return new_;
-}
-
-
-/*
-=============
-ED_ParseEval
-
-Can parse either fields or globals
-returns false if error
-=============
-*/
-bool ED_ParseEpair(void * base, const Progs::ddef_t& key, char * s)
-{
-    void* d = (void *)((int *)base + key.ofs);
-
-    switch (key.type)
-    {
-    case Progs::ddef_t::etype_t::ev_string:
-        *(string_t*)d = ED_NewString(s) - pr_strings;
-        break;
-
-    case Progs::ddef_t::etype_t::ev_float:
-        *(float*)d = atof(s);
-        break;
-
-    case Progs::ddef_t::etype_t::ev_vector:
-    {
-        char string[128];
-        strcpy(string, s);
-        char* v = string;
-        char* w = string;
-        for (int i = 0; i < 3; i++)
-        {
-            while (*v && *v != ' ')
-                v++;
-            *v = 0;
-            ((float*)d)[i] = atof(w);
-            w = v = v + 1;
-        }
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_entity:
-        *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
-        break;
-
-    case Progs::ddef_t::etype_t::ev_field:
-    {
-        auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find(defs, s, &Progs::ddef_t::s_name); it != defs.end())
-        {
-            *(int*)d = *(int*)(pr_globals + it->ofs);
-        }
-        else
-        {
-            Con_Printf((char*)"Can't find field %s\n", s);
-            return false;
-        }
-        break;
-    }
-    case Progs::ddef_t::etype_t::ev_function:
-    {
-        auto funcs = Progs::GetFunctions();
-        if (auto it = std::ranges::find_if(funcs, StrCmp(s), &Progs::dfunction_t::s_name); it != funcs.end())
-        {
-            *(func_t*)d = std::ranges::distance(funcs.begin(), it);
-        }
-        else
-        {
-            Con_Printf((char*)"Can't find function %s\n", s);
-            return false;
-        }
-        break;
-    }
-    default:
-        break;
-    }
-    return true;
-}
 
 /*
 ====================

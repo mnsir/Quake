@@ -187,7 +187,7 @@ void PR_StackTrace()
             Con_Printf((char*)"<NO FUNCTION>\n");
         }
         else
-            Con_Printf((char*)"%12s : %s\n", pr_strings + f->s_file, pr_strings + f->s_name);
+            Con_Printf((char*)"%12s : %s\n", f->s_file.data(), f->s_name.data());
     }
 }
 
@@ -217,7 +217,7 @@ void PR_Profile_f()
         if (best)
         {
             if (num < 10)
-                Con_Printf((char*)"%7i %s\n", best->profile, pr_strings + best->s_name);
+                Con_Printf((char*)"%7i %s\n", best->profile, best->s_name.data());
             num++;
             best->profile = 0;
         }

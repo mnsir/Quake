@@ -42,8 +42,7 @@ void PF_error()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf((char*)"======SERVER ERROR in %s:\n%s\n"
-               , pr_strings + pr_xfunction->s_name, s);
+    Con_Printf((char*)"======SERVER ERROR in %s:\n%s\n", pr_xfunction->s_name.data(), s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
 
@@ -66,8 +65,7 @@ void PF_objerror()
     edict_t * ed;
 
     s = PF_VarString(0);
-    Con_Printf((char*)"======OBJECT ERROR in %s:\n%s\n"
-               , pr_strings + pr_xfunction->s_name, s);
+    Con_Printf((char*)"======OBJECT ERROR in %s:\n%s\n", pr_xfunction->s_name.data(), s);
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
     ED_Free(ed);

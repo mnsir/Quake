@@ -87,7 +87,7 @@ namespace
         case Progs::ddef_t::etype_t::ev_function:
         {
             auto&& f = Progs::GetFunctions()[val.function];
-            sprintf(line, "%s()", pr_strings + f.s_name);
+            sprintf(line, "%s()", f.s_name.data());
             break;
         }
         case Progs::ddef_t::etype_t::ev_field:
@@ -136,7 +136,7 @@ namespace
         case Progs::ddef_t::etype_t::ev_function:
         {
             auto&& f = Progs::GetFunctions()[val.function];
-            sprintf(line, "%s", pr_strings + f.s_name);
+            sprintf(line, "%s", f.s_name.data());
             break;
         }
         case Progs::ddef_t::etype_t::ev_field:
@@ -244,7 +244,7 @@ namespace
         case Progs::ddef_t::etype_t::ev_function:
         {
             auto funcs = Progs::GetFunctions();
-            if (auto it = std::ranges::find_if(funcs, StrCmp(s), &Progs::dfunction_t::s_name); it != funcs.end())
+            if (auto it = std::ranges::find(funcs, s, &Progs::dfunction_t::s_name); it != funcs.end())
             {
                 *(func_t*)d = std::ranges::distance(funcs.begin(), it);
             }
@@ -805,7 +805,7 @@ void ED_LoadFromFile(char * data)
             continue;
         }
         auto funcs = Progs::GetFunctions();
-        if (auto it = std::ranges::find_if(funcs, StrCmp(pr_strings + ent->v.classname), &Progs::dfunction_t::s_name); it != funcs.end())
+        if (auto it = std::ranges::find(funcs, pr_strings + ent->v.classname, &Progs::dfunction_t::s_name); it != funcs.end())
         {
             pr_global_struct->self = EDICT_TO_PROG(ent);
             PR_ExecuteProgram(std::ranges::distance(funcs.begin(), it));

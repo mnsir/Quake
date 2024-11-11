@@ -10,17 +10,17 @@ namespace Progs
 
 struct dfunction_t
 {
-    int first_statement; // negative numbers are builtins
-    int parm_start;
-    int locals; // total ints of parms + locals
+    int first_statement = 0; // negative numbers are builtins
+    int parm_start = 0;
+    int locals = 0; // total ints of parms + locals
 
-    int profile; // runtime
+    int profile = 0; // runtime
 
-    int s_name;
-    int s_file; // source file defined in
+    std::string_view s_name;
+    std::string_view s_file; // source file defined in
 
-    int numparms;
-    std::array<unsigned char, 8> parm_size;
+    int numparms = 0;
+    std::array<unsigned char, 8> parm_size = {};
 };
 
 struct dstatement_t

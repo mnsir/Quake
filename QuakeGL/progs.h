@@ -174,7 +174,6 @@ typedef struct edict_s
 //============================================================================
 
 extern char * pr_strings;
-extern dstatement_t * pr_statements;
 extern globalvars_t * pr_global_struct;
 extern float * pr_globals; // same as pr_global_struct
 namespace Progs

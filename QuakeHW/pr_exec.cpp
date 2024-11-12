@@ -29,141 +29,137 @@ int pr_xstatement;
 
 int pr_argc;
 
-char * pr_opnames[] =
-{
-    (char*)"DONE",
-
-    (char*)"MUL_F",
-    (char*)"MUL_V",
-    (char*)"MUL_FV",
-    (char*)"MUL_VF",
-
-    (char*)"DIV",
-
-    (char*)"ADD_F",
-    (char*)"ADD_V",
-
-    (char*)"SUB_F",
-    (char*)"SUB_V",
-
-    (char*)"EQ_F",
-    (char*)"EQ_V",
-    (char*)"EQ_S",
-    (char*)"EQ_E",
-    (char*)"EQ_FNC",
-
-    (char*)"NE_F",
-    (char*)"NE_V",
-    (char*)"NE_S",
-    (char*)"NE_E",
-    (char*)"NE_FNC",
-
-    (char*)"LE",
-    (char*)"GE",
-    (char*)"LT",
-    (char*)"GT",
-
-    (char*)"INDIRECT",
-    (char*)"INDIRECT",
-    (char*)"INDIRECT",
-    (char*)"INDIRECT",
-    (char*)"INDIRECT",
-    (char*)"INDIRECT",
-
-    (char*)"ADDRESS",
-
-    (char*)"STORE_F",
-    (char*)"STORE_V",
-    (char*)"STORE_S",
-    (char*)"STORE_ENT",
-    (char*)"STORE_FLD",
-    (char*)"STORE_FNC",
-
-    (char*)"STOREP_F",
-    (char*)"STOREP_V",
-    (char*)"STOREP_S",
-    (char*)"STOREP_ENT",
-    (char*)"STOREP_FLD",
-    (char*)"STOREP_FNC",
-
-    (char*)"RETURN",
-
-    (char*)"NOT_F",
-    (char*)"NOT_V",
-    (char*)"NOT_S",
-    (char*)"NOT_ENT",
-    (char*)"NOT_FNC",
-
-    (char*)"IF",
-    (char*)"IFNOT",
-
-    (char*)"CALL0",
-    (char*)"CALL1",
-    (char*)"CALL2",
-    (char*)"CALL3",
-    (char*)"CALL4",
-    (char*)"CALL5",
-    (char*)"CALL6",
-    (char*)"CALL7",
-    (char*)"CALL8",
-
-    (char*)"STATE",
-
-    (char*)"GOTO",
-
-    (char*)"AND",
-    (char*)"OR",
-
-    (char*)"BITAND",
-    (char*)"BITOR"
-};
-
 char * PR_GlobalString(int ofs);
 char * PR_GlobalStringNoContents(int ofs);
 
-
-//=============================================================================
-
-/*
-=================
-PR_PrintStatement
-=================
-*/
-void PR_PrintStatement(dstatement_t * s)
+namespace
 {
-    int i;
+    void PR_PrintStatement(const Progs::dstatement_t& s)
+    {
+        using namespace std::string_view_literals;
+        static constinit const auto pr_opnames = std::to_array({
+            "DONE"sv,
 
-    if ((unsigned)s->op < sizeof(pr_opnames) / sizeof(pr_opnames[0]))
-    {
-        Con_Printf((char*)"%s ", pr_opnames[s->op]);
-        i = strlen(pr_opnames[s->op]);
-        for (; i < 10; i++)
-            Con_Printf((char*)" ");
-    }
+            "MUL_F"sv,
+            "MUL_V"sv,
+            "MUL_FV"sv,
+            "MUL_VF"sv,
 
-    if (s->op == OP_IF || s->op == OP_IFNOT)
-        Con_Printf((char*)"%sbranch %i", PR_GlobalString(s->a), s->b);
-    else if (s->op == OP_GOTO)
-    {
-        Con_Printf((char*)"branch %i", s->a);
+            "DIV"sv,
+
+            "ADD_F"sv,
+            "ADD_V"sv,
+
+            "SUB_F"sv,
+            "SUB_V"sv,
+
+            "EQ_F"sv,
+            "EQ_V"sv,
+            "EQ_S"sv,
+            "EQ_E"sv,
+            "EQ_FNC"sv,
+
+            "NE_F"sv,
+            "NE_V"sv,
+            "NE_S"sv,
+            "NE_E"sv,
+            "NE_FNC"sv,
+
+            "LE"sv,
+            "GE"sv,
+            "LT"sv,
+            "GT"sv,
+
+            "INDIRECT"sv,
+            "INDIRECT"sv,
+            "INDIRECT"sv,
+            "INDIRECT"sv,
+            "INDIRECT"sv,
+            "INDIRECT"sv,
+
+            "ADDRESS"sv,
+
+            "STORE_F"sv,
+            "STORE_V"sv,
+            "STORE_S"sv,
+            "STORE_ENT"sv,
+            "STORE_FLD"sv,
+            "STORE_FNC"sv,
+
+            "STOREP_F"sv,
+            "STOREP_V"sv,
+            "STOREP_S"sv,
+            "STOREP_ENT"sv,
+            "STOREP_FLD"sv,
+            "STOREP_FNC"sv,
+
+            "RETURN"sv,
+
+            "NOT_F"sv,
+            "NOT_V"sv,
+            "NOT_S"sv,
+            "NOT_ENT"sv,
+            "NOT_FNC"sv,
+
+            "IF"sv,
+            "IFNOT"sv,
+
+            "CALL0"sv,
+            "CALL1"sv,
+            "CALL2"sv,
+            "CALL3"sv,
+            "CALL4"sv,
+            "CALL5"sv,
+            "CALL6"sv,
+            "CALL7"sv,
+            "CALL8"sv,
+
+            "STATE"sv,
+
+            "GOTO"sv,
+
+            "AND"sv,
+            "OR"sv,
+
+            "BITAND"sv,
+            "BITOR"sv,
+            });
+
+        using Underlying = std::underlying_type_t<decltype(s.op)>;
+
+        if (static_cast<Underlying>(s.op) < pr_opnames.size())
+        {
+            auto&& name = pr_opnames[static_cast<Underlying>(s.op)];
+            Con_Printf((char*)"%s ", name.data());
+            for (size_t i = name.size(); i < 10; i++)
+                Con_Printf((char*)" ");
+        }
+
+        if (s.op == Progs::Op::OP_IF || s.op == Progs::Op::OP_IFNOT)
+        {
+            Con_Printf((char*)"%sbranch %i", PR_GlobalString(s.a), s.b);
+        }
+        else if (s.op == Progs::Op::OP_GOTO)
+        {
+            Con_Printf((char*)"branch %i", s.a);
+        }
+        else if ((static_cast<Underlying>(s.op) - static_cast<Underlying>(Progs::Op::OP_STORE_F)) < 6)
+        {
+            Con_Printf((char*)"%s", PR_GlobalString(s.a));
+            Con_Printf((char*)"%s", PR_GlobalStringNoContents(s.b));
+        }
+        else
+        {
+            if (s.a)
+                Con_Printf((char*)"%s", PR_GlobalString(s.a));
+            if (s.b)
+                Con_Printf((char*)"%s", PR_GlobalString(s.b));
+            if (s.c)
+                Con_Printf((char*)"%s", PR_GlobalStringNoContents(s.c));
+        }
+        Con_Printf((char*)"\n");
     }
-    else if ((unsigned)(s->op - OP_STORE_F) < 6)
-    {
-        Con_Printf((char*)"%s", PR_GlobalString(s->a));
-        Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->b));
-    }
-    else
-    {
-        if (s->a)
-            Con_Printf((char*)"%s", PR_GlobalString(s->a));
-        if (s->b)
-            Con_Printf((char*)"%s", PR_GlobalString(s->b));
-        if (s->c)
-            Con_Printf((char*)"%s", PR_GlobalStringNoContents(s->c));
-    }
-    Con_Printf((char*)"\n");
 }
-
 /*
 ============
 PR_StackTrace
@@ -242,7 +238,7 @@ void PR_RunError(char * error, ...)
     vsprintf(string, error, argptr);
     va_end(argptr);
 
-    PR_PrintStatement(pr_statements + pr_xstatement);
+    PR_PrintStatement(Progs::GetStatements()[pr_xstatement]);
     PR_StackTrace();
     Con_Printf((char*)"%s\n", string);
 
@@ -332,7 +328,6 @@ void PR_ExecuteProgram(func_t fnum)
 {
     eval_t * a, * b, * c;
     int s;
-    dstatement_t * st;
     int runaway;
     int i;
     edict_t * ed;
@@ -361,10 +356,10 @@ void PR_ExecuteProgram(func_t fnum)
     {
         s++; // next statement
 
-        st = &pr_statements[s];
-        a = (eval_t *)&pr_globals[st->a];
-        b = (eval_t *)&pr_globals[st->b];
-        c = (eval_t *)&pr_globals[st->c];
+        auto&& st = Progs::GetStatements()[s];
+        a = (eval_t *)&pr_globals[st.a];
+        b = (eval_t *)&pr_globals[st.b];
+        c = (eval_t *)&pr_globals[st.c];
 
         if (!--runaway)
             PR_RunError((char*)"runaway loop error");
@@ -375,177 +370,177 @@ void PR_ExecuteProgram(func_t fnum)
         if (pr_trace)
             PR_PrintStatement(st);
 
-        switch (st->op)
+        switch (st.op)
         {
-        case OP_ADD_F:
+        case Progs::Op::OP_ADD_F:
             c->_float = a->_float + b->_float;
             break;
-        case OP_ADD_V:
+        case Progs::Op::OP_ADD_V:
             c->vector[0] = a->vector[0] + b->vector[0];
             c->vector[1] = a->vector[1] + b->vector[1];
             c->vector[2] = a->vector[2] + b->vector[2];
             break;
 
-        case OP_SUB_F:
+        case Progs::Op::OP_SUB_F:
             c->_float = a->_float - b->_float;
             break;
-        case OP_SUB_V:
+        case Progs::Op::OP_SUB_V:
             c->vector[0] = a->vector[0] - b->vector[0];
             c->vector[1] = a->vector[1] - b->vector[1];
             c->vector[2] = a->vector[2] - b->vector[2];
             break;
 
-        case OP_MUL_F:
+        case Progs::Op::OP_MUL_F:
             c->_float = a->_float * b->_float;
             break;
-        case OP_MUL_V:
+        case Progs::Op::OP_MUL_V:
             c->_float = a->vector[0] * b->vector[0]
                 + a->vector[1] * b->vector[1]
                 + a->vector[2] * b->vector[2];
             break;
-        case OP_MUL_FV:
+        case Progs::Op::OP_MUL_FV:
             c->vector[0] = a->_float * b->vector[0];
             c->vector[1] = a->_float * b->vector[1];
             c->vector[2] = a->_float * b->vector[2];
             break;
-        case OP_MUL_VF:
+        case Progs::Op::OP_MUL_VF:
             c->vector[0] = b->_float * a->vector[0];
             c->vector[1] = b->_float * a->vector[1];
             c->vector[2] = b->_float * a->vector[2];
             break;
 
-        case OP_DIV_F:
+        case Progs::Op::OP_DIV_F:
             c->_float = a->_float / b->_float;
             break;
 
-        case OP_BITAND:
+        case Progs::Op::OP_BITAND:
             c->_float = (int)a->_float & (int)b->_float;
             break;
 
-        case OP_BITOR:
+        case Progs::Op::OP_BITOR:
             c->_float = (int)a->_float | (int)b->_float;
             break;
 
 
-        case OP_GE:
+        case Progs::Op::OP_GE:
             c->_float = a->_float >= b->_float;
             break;
-        case OP_LE:
+        case Progs::Op::OP_LE:
             c->_float = a->_float <= b->_float;
             break;
-        case OP_GT:
+        case Progs::Op::OP_GT:
             c->_float = a->_float > b->_float;
             break;
-        case OP_LT:
+        case Progs::Op::OP_LT:
             c->_float = a->_float < b->_float;
             break;
-        case OP_AND:
+        case Progs::Op::OP_AND:
             c->_float = a->_float && b->_float;
             break;
-        case OP_OR:
+        case Progs::Op::OP_OR:
             c->_float = a->_float || b->_float;
             break;
 
-        case OP_NOT_F:
+        case Progs::Op::OP_NOT_F:
             c->_float = !a->_float;
             break;
-        case OP_NOT_V:
+        case Progs::Op::OP_NOT_V:
             c->_float = !a->vector[0] && !a->vector[1] && !a->vector[2];
             break;
-        case OP_NOT_S:
+        case Progs::Op::OP_NOT_S:
             c->_float = !a->string || !pr_strings[a->string];
             break;
-        case OP_NOT_FNC:
+        case Progs::Op::OP_NOT_FNC:
             c->_float = !a->function;
             break;
-        case OP_NOT_ENT:
+        case Progs::Op::OP_NOT_ENT:
             c->_float = (PROG_TO_EDICT(a->edict) == sv.edicts);
             break;
 
-        case OP_EQ_F:
+        case Progs::Op::OP_EQ_F:
             c->_float = a->_float == b->_float;
             break;
-        case OP_EQ_V:
+        case Progs::Op::OP_EQ_V:
             c->_float = (a->vector[0] == b->vector[0]) &&
                 (a->vector[1] == b->vector[1]) &&
                 (a->vector[2] == b->vector[2]);
             break;
-        case OP_EQ_S:
+        case Progs::Op::OP_EQ_S:
             c->_float = !strcmp(pr_strings + a->string, pr_strings + b->string);
             break;
-        case OP_EQ_E:
+        case Progs::Op::OP_EQ_E:
             c->_float = a->_int == b->_int;
             break;
-        case OP_EQ_FNC:
+        case Progs::Op::OP_EQ_FNC:
             c->_float = a->function == b->function;
             break;
 
 
-        case OP_NE_F:
+        case Progs::Op::OP_NE_F:
             c->_float = a->_float != b->_float;
             break;
-        case OP_NE_V:
+        case Progs::Op::OP_NE_V:
             c->_float = (a->vector[0] != b->vector[0]) ||
                 (a->vector[1] != b->vector[1]) ||
                 (a->vector[2] != b->vector[2]);
             break;
-        case OP_NE_S:
+        case Progs::Op::OP_NE_S:
             c->_float = strcmp(pr_strings + a->string, pr_strings + b->string);
             break;
-        case OP_NE_E:
+        case Progs::Op::OP_NE_E:
             c->_float = a->_int != b->_int;
             break;
-        case OP_NE_FNC:
+        case Progs::Op::OP_NE_FNC:
             c->_float = a->function != b->function;
             break;
 
             //==================
-        case OP_STORE_F:
-        case OP_STORE_ENT:
-        case OP_STORE_FLD: // integers
-        case OP_STORE_S:
-        case OP_STORE_FNC: // pointers
+        case Progs::Op::OP_STORE_F:
+        case Progs::Op::OP_STORE_ENT:
+        case Progs::Op::OP_STORE_FLD: // integers
+        case Progs::Op::OP_STORE_S:
+        case Progs::Op::OP_STORE_FNC: // pointers
             b->_int = a->_int;
             break;
-        case OP_STORE_V:
+        case Progs::Op::OP_STORE_V:
             b->vector[0] = a->vector[0];
             b->vector[1] = a->vector[1];
             b->vector[2] = a->vector[2];
             break;
 
-        case OP_STOREP_F:
-        case OP_STOREP_ENT:
-        case OP_STOREP_FLD: // integers
-        case OP_STOREP_S:
-        case OP_STOREP_FNC: // pointers
+        case Progs::Op::OP_STOREP_F:
+        case Progs::Op::OP_STOREP_ENT:
+        case Progs::Op::OP_STOREP_FLD: // integers
+        case Progs::Op::OP_STOREP_S:
+        case Progs::Op::OP_STOREP_FNC: // pointers
             ptr = (eval_t *)((byte *)sv.edicts + b->_int);
             ptr->_int = a->_int;
             break;
-        case OP_STOREP_V:
+        case Progs::Op::OP_STOREP_V:
             ptr = (eval_t *)((byte *)sv.edicts + b->_int);
             ptr->vector[0] = a->vector[0];
             ptr->vector[1] = a->vector[1];
             ptr->vector[2] = a->vector[2];
             break;
 
-        case OP_ADDRESS:
+        case Progs::Op::OP_ADDRESS:
             ed = PROG_TO_EDICT(a->edict);
             if (ed == (edict_t *)sv.edicts && sv.state == ss_active)
                 PR_RunError((char*)"assignment to world entity");
             c->_int = (byte *)((int *)&ed->v + b->_int) - (byte *)sv.edicts;
             break;
 
-        case OP_LOAD_F:
-        case OP_LOAD_FLD:
-        case OP_LOAD_ENT:
-        case OP_LOAD_S:
-        case OP_LOAD_FNC:
+        case Progs::Op::OP_LOAD_F:
+        case Progs::Op::OP_LOAD_FLD:
+        case Progs::Op::OP_LOAD_ENT:
+        case Progs::Op::OP_LOAD_S:
+        case Progs::Op::OP_LOAD_FNC:
             ed = PROG_TO_EDICT(a->edict);
             a = (eval_t *)((int *)&ed->v + b->_int);
             c->_int = a->_int;
             break;
 
-        case OP_LOAD_V:
+        case Progs::Op::OP_LOAD_V:
             ed = PROG_TO_EDICT(a->edict);
             a = (eval_t *)((int *)&ed->v + b->_int);
             c->vector[0] = a->vector[0];
@@ -555,31 +550,31 @@ void PR_ExecuteProgram(func_t fnum)
 
             //==================
 
-        case OP_IFNOT:
+        case Progs::Op::OP_IFNOT:
             if (!a->_int)
-                s += st->b - 1; // offset the s++
+                s += st.b - 1; // offset the s++
             break;
 
-        case OP_IF:
+        case Progs::Op::OP_IF:
             if (a->_int)
-                s += st->b - 1; // offset the s++
+                s += st.b - 1; // offset the s++
             break;
 
-        case OP_GOTO:
-            s += st->a - 1; // offset the s++
+        case Progs::Op::OP_GOTO:
+            s += st.a - 1; // offset the s++
             break;
 
-        case OP_CALL0:
-        case OP_CALL1:
-        case OP_CALL2:
-        case OP_CALL3:
-        case OP_CALL4:
-        case OP_CALL5:
-        case OP_CALL6:
-        case OP_CALL7:
-        case OP_CALL8:
+        case Progs::Op::OP_CALL0:
+        case Progs::Op::OP_CALL1:
+        case Progs::Op::OP_CALL2:
+        case Progs::Op::OP_CALL3:
+        case Progs::Op::OP_CALL4:
+        case Progs::Op::OP_CALL5:
+        case Progs::Op::OP_CALL6:
+        case Progs::Op::OP_CALL7:
+        case Progs::Op::OP_CALL8:
         {
-            pr_argc = st->op - OP_CALL0;
+            pr_argc = (unsigned)st.op - (unsigned)Progs::Op::OP_CALL0;
             if (!a->function)
                 PR_RunError((char*)"NULL function");
 
@@ -597,18 +592,18 @@ void PR_ExecuteProgram(func_t fnum)
             s = PR_EnterFunction(newf);
             break;
         }
-        case OP_DONE:
-        case OP_RETURN:
-            pr_globals[OFS_RETURN] = pr_globals[st->a];
-            pr_globals[OFS_RETURN + 1] = pr_globals[st->a + 1];
-            pr_globals[OFS_RETURN + 2] = pr_globals[st->a + 2];
+        case Progs::Op::OP_DONE:
+        case Progs::Op::OP_RETURN:
+            pr_globals[OFS_RETURN] = pr_globals[st.a];
+            pr_globals[OFS_RETURN + 1] = pr_globals[st.a + 1];
+            pr_globals[OFS_RETURN + 2] = pr_globals[st.a + 2];
 
             s = PR_LeaveFunction();
             if (pr_depth == exitdepth)
                 return; // all done
             break;
 
-        case OP_STATE:
+        case Progs::Op::OP_STATE:
             ed = PROG_TO_EDICT(pr_global_struct->self);
             ed->v.nextthink = pr_global_struct->time + 0.1;
             if (a->_float != ed->v.frame)
@@ -619,7 +614,7 @@ void PR_ExecuteProgram(func_t fnum)
             break;
 
         default:
-            PR_RunError((char*)"Bad opcode %i", st->op);
+            PR_RunError((char*)"Bad opcode %i", st.op);
         }
     }
 

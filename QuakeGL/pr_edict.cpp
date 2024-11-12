@@ -9,7 +9,6 @@
 #include <format>
 
 char * pr_strings;
-dstatement_t * pr_statements;
 globalvars_t * pr_global_struct;
 float * pr_globals; // same as pr_global_struct
 
@@ -831,9 +830,6 @@ void PR_LoadProgs()
     auto strings = Progs::GetStrings();
     pr_strings = strings.data();
 
-    auto statements = Progs::GetStatements();
-    pr_statements = (dstatement_t *)statements.data();
-    
     auto globals = Progs::GetGlobals();
     pr_global_struct = (globalvars_t *)globals.data();
 

@@ -913,7 +913,7 @@ void R_RenderView_()
     R_MarkLeaves(); // done here so we know if we're in water
 
     if (!cl_entities[0].model || !cl.worldmodel)
-        Sys_Error((char*)"R_RenderView: NULL worldmodel");
+        Sys_Error("R_RenderView: NULL worldmodel");
 
     if (!r_dspeeds.value)
     {
@@ -989,16 +989,16 @@ void R_RenderView()
 
     delta = (byte *)&dummy - r_stack_start;
     if (delta < -10000 || delta > 10000)
-        Sys_Error((char*)"R_RenderView: called without enough stack");
+        Sys_Error("R_RenderView: called without enough stack");
 
     if (Hunk_LowMark() & 3)
-        Sys_Error((char*)"Hunk is missaligned");
+        Sys_Error("Hunk is missaligned");
 
     if ((long)(&dummy) & 3)
-        Sys_Error((char*)"Stack is missaligned");
+        Sys_Error("Stack is missaligned");
 
     if ((long)(&r_warpbuffer) & 3)
-        Sys_Error((char*)"Globals are missaligned");
+        Sys_Error("Globals are missaligned");
 
     R_RenderView_();
 }

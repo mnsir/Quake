@@ -80,7 +80,7 @@ void Host_EndGame(char * message, ...)
         Host_ShutdownServer(false);
 
     if (cls.state == ca_dedicated)
-        Sys_Error((char*)"Host_EndGame: %s\n", string); // dedicated servers exit
+        Sys_Error("Host_EndGame: %s\n", string); // dedicated servers exit
 
     if (cls.demonum != -1)
         CL_NextDemo();
@@ -104,7 +104,7 @@ void Host_Error(char * error, ...)
     static bool inerror = false;
 
     if (inerror)
-        Sys_Error((char*)"Host_Error: recursively entered");
+        Sys_Error("Host_Error: recursively entered");
     inerror = true;
 
     SCR_EndLoadingPlaque(); // reenable screen updates
@@ -118,7 +118,7 @@ void Host_Error(char * error, ...)
         Host_ShutdownServer(false);
 
     if (cls.state == ca_dedicated)
-        Sys_Error((char*)"Host_Error: %s\n", string); // dedicated servers exit
+        Sys_Error("Host_Error: %s\n", string); // dedicated servers exit
 
     CL_Disconnect();
     cls.demonum = -1;
@@ -157,7 +157,7 @@ void Host_FindMaxClients()
     if (i)
     {
         if (cls.state == ca_dedicated)
-            Sys_Error((char*)"Only one of -dedicated or -listen can be specified");
+            Sys_Error("Only one of -dedicated or -listen can be specified");
         if (i != (com_argc - 1))
             svs.maxclients = std::atoi(com_argv[i + 1]);
         else
@@ -697,15 +697,15 @@ void Host_InitVCR(char* arg0)
     if (COM_CheckParm((char*)"-playback"))
     {
         if (com_argc != 2)
-            Sys_Error((char*)"No other parameters allowed with -playback\n");
+            Sys_Error("No other parameters allowed with -playback\n");
 
         Sys_FileOpenRead((char*)"quake.vcr", &vcrFile);
         if (vcrFile == -1)
-            Sys_Error((char*)"playback file not found\n");
+            Sys_Error("playback file not found\n");
 
         Sys_FileRead(vcrFile, &i, sizeof(int));
         if (i != VCR_SIGNATURE)
-            Sys_Error((char*)"Invalid signature in vcr file\n");
+            Sys_Error("Invalid signature in vcr file\n");
 
         Sys_FileRead(vcrFile, &com_argc, sizeof(int));
         com_argv = (char**)malloc(com_argc * sizeof(char *));
@@ -757,7 +757,7 @@ void Host_Init(quakeparms_t&& parms)
     host_parms = std::move(parms);
     
     if (host_parms.mem.size() < minimum_memory)
-        Sys_Error((char*)"Only %4.1f megs of memory available, can't execute game", host_parms.mem.size() / (float)0x100000);
+        Sys_Error("Only %4.1f megs of memory available, can't execute game", host_parms.mem.size() / (float)0x100000);
 
     com_argc = host_parms.argc;
     com_argv = host_parms.argv;

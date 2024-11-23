@@ -630,7 +630,7 @@ void Key_Event(int key, bool down)
             M_ToggleMenu_f();
             break;
         default:
-            Sys_Error((char*)"Bad key_dest");
+            Sys_Error("Bad key_dest");
         }
         return;
     }
@@ -717,7 +717,7 @@ void Key_Event(int key, bool down)
         Key_Console(key);
         break;
     default:
-        Sys_Error((char*)"Bad key_dest");
+        Sys_Error("Bad key_dest");
     }
 }
 

@@ -1262,7 +1262,7 @@ void R_RenderView()
         return;
 
     if (!r_worldentity.model || !cl.worldmodel)
-        Sys_Error((char*)"R_RenderView: NULL worldmodel");
+        Sys_Error("R_RenderView: NULL worldmodel");
 
     if (r_speeds.value)
     {

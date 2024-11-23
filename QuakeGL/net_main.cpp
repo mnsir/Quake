@@ -142,7 +142,7 @@ void NET_FreeQSocket(qsocket_t * sock)
                 break;
             }
         if (!s)
-            Sys_Error((char*)"NET_FreeQSocket: not active\n");
+            Sys_Error("NET_FreeQSocket: not active\n");
     }
 
     // add it to free list
@@ -807,7 +807,7 @@ void NET_Init()
         if (i < com_argc - 1)
             DEFAULTnet_hostport = std::atoi(com_argv[i + 1]);
         else
-            Sys_Error((char*)"NET_Init: you must specify a number after -port");
+            Sys_Error("NET_Init: you must specify a number after -port");
     }
     net_hostport = DEFAULTnet_hostport;
 

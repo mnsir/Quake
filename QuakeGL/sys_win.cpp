@@ -51,7 +51,7 @@ int findhandle()
     for (i = 1; i < MAX_HANDLES; i++)
         if (!sys_handles[i])
             return i;
-    Sys_Error((char*)"out of handles");
+    Sys_Error("out of handles");
     return -1;
 }
 
@@ -119,7 +119,7 @@ int Sys_FileOpenWrite(char * path)
 
     f = fopen(path, "wb");
     if (!f)
-        Sys_Error((char*)"Error opening %s: %s", path, strerror(errno));
+        Sys_Error("Error opening %s: %s", path, strerror(errno));
     sys_handles[i] = f;
 
     VID_ForceLockState(t);
@@ -213,10 +213,10 @@ void Sys_MakeCodeWriteable(unsigned long startaddr, unsigned long length)
     DWORD flOldProtect;
 
     if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-        Sys_Error((char*)"Protection change failed\n");
+        Sys_Error("Protection change failed\n");
 }
 
-void Sys_Error(char * error, ...)
+void Sys_Error(const char * error, ...)
 {
     va_list argptr;
     char text[1024], text2[1024];
@@ -348,16 +348,16 @@ char * Sys_ConsoleInput()
     for (;; )
     {
         if (!GetNumberOfConsoleInputEvents(hinput, &numevents))
-            Sys_Error((char*)"Error getting # of console events");
+            Sys_Error("Error getting # of console events");
 
         if (numevents <= 0)
             break;
 
         if (!ReadConsoleInput(hinput, recs, 1, &numread))
-            Sys_Error((char*)"Error reading console input");
+            Sys_Error("Error reading console input");
 
         if (numread != 1)
-            Sys_Error((char*)"Couldn't read console input");
+            Sys_Error("Couldn't read console input");
 
         if (recs[0].EventType == KEY_EVENT)
         {
@@ -489,7 +489,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     GlobalMemoryStatus(&lpBuffer);
 
     if (!GetCurrentDirectory(sizeof(cwd), cwd))
-        Sys_Error((char*)"Couldn't determine current directory");
+        Sys_Error("Couldn't determine current directory");
 
     if (cwd[std::strlen(cwd) - 1] == '/')
         cwd[std::strlen(cwd) - 1] = 0;
@@ -584,13 +584,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
     if (!tevent)
-        Sys_Error((char*)"Couldn't create event");
+        Sys_Error("Couldn't create event");
 
     if (isDedicated)
     {
         if (!AllocConsole())
         {
-            Sys_Error((char*)"Couldn't create dedicated server console");
+            Sys_Error("Couldn't create dedicated server console");
         }
 
         hinput = GetStdHandle(STD_INPUT_HANDLE);

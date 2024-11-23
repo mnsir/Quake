@@ -299,7 +299,7 @@ wavinfo_t GetWavinfo(char * name, byte * wav, int wavlength)
     if (info.samples)
     {
         if (samples < info.samples)
-            Sys_Error((char*)"Sound %s has a bad loop length", name);
+            Sys_Error("Sound %s has a bad loop length", name);
     }
     else
         info.samples = samples;

@@ -416,7 +416,7 @@ static void Test_Poll()
             break;
 
         if (MSG_ReadByte() != CCREP_PLAYER_INFO)
-            Sys_Error((char*)"Unexpected repsonse to Player Info request\n");
+            Sys_Error("Unexpected repsonse to Player Info request\n");
 
         playerNumber = MSG_ReadByte();
         std::strcpy(name, MSG_ReadString());

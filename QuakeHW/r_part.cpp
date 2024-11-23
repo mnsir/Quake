@@ -132,7 +132,7 @@ void R_ReadPointFile_f()
     sprintf(name, "maps/%s.pts", sv.name);
 
     //COM_FOpenFile(name, &f);
-    Sys_Error((char*)"fix me");
+    Sys_Error("fix me");
     if (!f)
     {
         Con_Printf("couldn't open %s\n", name);

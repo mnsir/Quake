@@ -108,13 +108,13 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
     int ent;
 
     if (volume < 0 || volume > 255)
-        Sys_Error((char*)"SV_StartSound: volume = %i", volume);
+        Sys_Error("SV_StartSound: volume = %i", volume);
 
     if (attenuation < 0 || attenuation > 4)
-        Sys_Error((char*)"SV_StartSound: attenuation = %f", attenuation);
+        Sys_Error("SV_StartSound: attenuation = %f", attenuation);
 
     if (channel < 0 || channel > 7)
-        Sys_Error((char*)"SV_StartSound: channel = %i", channel);
+        Sys_Error("SV_StartSound: channel = %i", channel);
 
     if (sv.datagram.cursize > MAX_DATAGRAM - 16)
         return;
@@ -300,7 +300,7 @@ void SV_CheckForNewClients()
             if (!svs.clients[i].active)
                 break;
         if (i == svs.maxclients)
-            Sys_Error((char*)"Host_CheckForNewClients: no free clients");
+            Sys_Error("Host_CheckForNewClients: no free clients");
 
         svs.clients[i].netconnection = ret;
         SV_ConnectClient(i);
@@ -880,7 +880,7 @@ int SV_ModelIndex(char * name)
         if (!strcmp(sv.model_precache[i], name))
             return i;
     if (i == MAX_MODELS || !sv.model_precache[i])
-        Sys_Error((char*)"SV_ModelIndex: model %s not precached", name);
+        Sys_Error("SV_ModelIndex: model %s not precached", name);
     return i;
 }
 

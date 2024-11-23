@@ -124,7 +124,7 @@ void WIPX_Listen(bool state)
         if (net_acceptsocket != -1)
             return;
         if ((net_acceptsocket = WIPX_OpenSocket(net_hostport)) == -1)
-            Sys_Error((char*)"WIPX_Listen: Unable to open accept socket\n");
+            Sys_Error("WIPX_Listen: Unable to open accept socket\n");
         return;
     }
 
@@ -170,7 +170,7 @@ int WIPX_OpenSocket(int port)
         return handle;
     }
 
-    Sys_Error((char*)"Winsock IPX bind failed\n");
+    Sys_Error("Winsock IPX bind failed\n");
 ErrorReturn:
     pclosesocket(newsocket);
     return -1;
@@ -206,7 +206,7 @@ int WIPX_CheckNewConnections()
         return -1;
 
     if (pioctlsocket(ipxsocket[net_acceptsocket], FIONREAD, &available) == -1)
-        Sys_Error((char*)"WIPX: ioctlsocket (FIONREAD) failed\n");
+        Sys_Error("WIPX: ioctlsocket (FIONREAD) failed\n");
     if (available)
         return net_acceptsocket;
     return -1;

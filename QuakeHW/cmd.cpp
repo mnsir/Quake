@@ -516,7 +516,7 @@ void Cmd_AddCommand(char * cmd_name, xcommand_t function)
     cmd_function_t * cmd;
 
     if (host_initialized) // because hunk allocation would get stomped
-        Sys_Error((char*)"Cmd_AddCommand after host_initialized");
+        Sys_Error("Cmd_AddCommand after host_initialized");
 
     // fail if the command is a variable name
     if (Cvar_VariableString(cmd_name)[0])
@@ -677,7 +677,7 @@ int Cmd_CheckParm(char * parm)
     int i;
 
     if (!parm)
-        Sys_Error((char*)"Cmd_CheckParm: NULL");
+        Sys_Error("Cmd_CheckParm: NULL");
 
     for (i = 1; i < Cmd_Argc(); i++)
         if (!Q_strcasecmp(parm, Cmd_Argv(i)))

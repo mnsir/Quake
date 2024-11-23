@@ -703,7 +703,7 @@ void VID_InitMGLDIB(HINSTANCE hInstance)
     wc.lpszClassName = "WinQuake";
 
     if (!RegisterClass(&wc))
-        Sys_Error((char*)"Couldn't register window class");
+        Sys_Error("Couldn't register window class");
 
     /* Find the size for the DIB window */
     /* Initialise the MGL for windowed operation */
@@ -1343,7 +1343,7 @@ bool VID_SetWindowedMode(int modenum)
             NULL);
 
         if (!mainwindow)
-            Sys_Error((char*)"Couldn't create DIB window");
+            Sys_Error("Couldn't create DIB window");
 
         // tell MGL to use this window for fullscreen modes
         //MGL_registerFullScreenWindow(mainwindow);
@@ -1364,7 +1364,7 @@ bool VID_SetWindowedMode(int modenum)
                       SWP_NOCOPYBITS | SWP_NOZORDER |
                       SWP_HIDEWINDOW))
     {
-        Sys_Error((char*)"Couldn't resize DIB window");
+        Sys_Error("Couldn't resize DIB window");
     }
 
     if (hide_window)
@@ -1492,7 +1492,7 @@ bool VID_SetFullDIBMode(int modenum)
     gdevmode.dmSize = sizeof(gdevmode);
 
     if (ChangeDisplaySettings(&gdevmode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-        Sys_Error((char*)"Couldn't set fullscreen DIB mode");
+        Sys_Error("Couldn't set fullscreen DIB mode");
 
     lastmodestate = modestate;
     modestate = MS_FULLDIB;
@@ -1524,7 +1524,7 @@ bool VID_SetFullDIBMode(int modenum)
                       WindowRect.bottom - WindowRect.top,
                       SWP_NOCOPYBITS | SWP_NOZORDER))
     {
-        Sys_Error((char*)"Couldn't resize DIB window");
+        Sys_Error("Couldn't resize DIB window");
     }
 
     // position and show the DIB window
@@ -1581,7 +1581,7 @@ void VID_RestoreOldMode(int original_mode)
         vid_modenum = MODE_WINDOWED - 1;
 
         if (!VID_SetMode(windowed_default, vid_curpal))
-            Sys_Error((char*)"Can't set any video mode");
+            Sys_Error("Can't set any video mode");
     }
 
     inerror = false;
@@ -1802,7 +1802,7 @@ void VID_UnlockBuffer()
         return;
 
     if (lockcount < 0)
-        Sys_Error((char*)"Unbalanced unlock");
+        Sys_Error("Unbalanced unlock");
 
     //MGL_endDirectAccess();
 
@@ -2455,7 +2455,7 @@ void D_BeginDirectRect(int x, int y, byte * pbitmap, int width, int height)
         VID_LockBuffer();
 
         if (!vid.direct)
-            Sys_Error((char*)"NULL vid.direct pointer");
+            Sys_Error("NULL vid.direct pointer");
 
         for (i = 0; i < (height << repshift); i += reps)
         {
@@ -2550,7 +2550,7 @@ void D_EndDirectRect(int x, int y, int width, int height)
         VID_LockBuffer();
 
         if (!vid.direct)
-            Sys_Error((char*)"NULL vid.direct pointer");
+            Sys_Error("NULL vid.direct pointer");
 
         for (i = 0; i < (height << repshift); i += reps)
         {

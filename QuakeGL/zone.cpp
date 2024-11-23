@@ -761,7 +761,7 @@ Cache_Report
 */
 void Cache_Report()
 {
-    Con_DPrintf((char*)"%4.1f megabyte data cache\n", (hunk_size - hunk_high_used - hunk_low_used) / (float)(1024 * 1024));
+    Con_DPrintf("%4.1f megabyte data cache\n", (hunk_size - hunk_high_used - hunk_low_used) / (float)(1024 * 1024));
 }
 
 /*

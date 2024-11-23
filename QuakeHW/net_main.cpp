@@ -859,9 +859,9 @@ void NET_Init()
     }
 
     if (*my_ipx_address)
-        Con_DPrintf((char*)"IPX address %s\n", my_ipx_address);
+        Con_DPrintf("IPX address %s\n", my_ipx_address);
     if (*my_tcpip_address)
-        Con_DPrintf((char*)"TCP/IP address %s\n", my_tcpip_address);
+        Con_DPrintf("TCP/IP address %s\n", my_tcpip_address);
 }
 
 /*

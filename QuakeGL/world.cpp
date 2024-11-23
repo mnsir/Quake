@@ -631,7 +631,7 @@ bool SV_RecursiveHullCheck(hull_t * hull, int num, float p1f, float p2f, vec3_t 
         {
             trace->fraction = midf;
             VectorCopy(mid, trace->endpos);
-            Con_DPrintf((char*)"backup past 0\n");
+            Con_DPrintf("backup past 0\n");
             return false;
         }
         midf = p1f + (p2f - p1f) * frac;

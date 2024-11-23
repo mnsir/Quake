@@ -46,7 +46,7 @@ void PF_error()
     ed = PROG_TO_EDICT(pr_global_struct->self);
     ED_Print(ed);
 
-    Host_Error((char*)"Program error");
+    Host_Error("Program error");
 }
 
 /*
@@ -70,7 +70,7 @@ void PF_objerror()
     ED_Print(ed);
     ED_Free(ed);
 
-    Host_Error((char*)"Program error");
+    Host_Error("Program error");
 }
 
 
@@ -866,7 +866,7 @@ PF_dprint
 */
 void PF_dprint()
 {
-    Con_DPrintf((char*)"%s", PF_VarString(0));
+    Con_DPrintf("%s", PF_VarString(0));
 }
 
 char pr_string_temp[128];

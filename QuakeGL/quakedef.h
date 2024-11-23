@@ -248,7 +248,7 @@ void Host_ServerFrame();
 void Host_InitCommands();
 void Host_Init(quakeparms_t&& parms);
 void Host_Shutdown();
-void Host_Error(char * error, ...);
+void Host_Error(const char * error, ...);
 void Host_EndGame(char * message, ...);
 void Host_Frame(float time);
 void Host_Quit_f();

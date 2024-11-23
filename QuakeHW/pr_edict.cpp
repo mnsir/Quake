@@ -630,7 +630,7 @@ void ED_ParseGlobals(char * data)
         if (auto it = std::ranges::find(defs, keyname, &Progs::ddef_t::s_name); it != defs.end())
         {
             if (!ED_ParseEpair((void*)pr_globals, *it, com_token))
-                Host_Error((char*)"ED_ParseGlobals: parse error");
+                Host_Error("ED_ParseGlobals: parse error");
         }
         else
         {
@@ -723,7 +723,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
             }
 
             if (!ED_ParseEpair((void*)&ent->v, *it, com_token))
-                Host_Error((char*)"ED_ParseEdict: parse error");
+                Host_Error("ED_ParseEdict: parse error");
         }
         else
         {
@@ -821,7 +821,7 @@ void ED_LoadFromFile(char * data)
         }
     }
 
-    Con_DPrintf((char*)"%i entities inhibited\n", inhibit);
+    Con_DPrintf("%i entities inhibited\n", inhibit);
 }
 
 

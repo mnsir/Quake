@@ -885,7 +885,7 @@ int MapKey(int key)
     if (key > 127)
         return 0;
     if (scantokey[key] == 0)
-        Con_DPrintf((char*)"key 0x%02x has no translation\n", key);
+        Con_DPrintf("key 0x%02x has no translation\n", key);
     return scantokey[key];
 }
 

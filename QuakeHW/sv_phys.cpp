@@ -598,7 +598,7 @@ void SV_CheckStuck(edict_t * ent)
     VectorCopy(ent->v.oldorigin, ent->v.origin);
     if (!SV_TestEntityPosition(ent))
     {
-        Con_DPrintf((char*)"Unstuck.\n");
+        Con_DPrintf("Unstuck.\n");
         SV_LinkEdict(ent, true);
         return;
     }
@@ -612,14 +612,14 @@ void SV_CheckStuck(edict_t * ent)
                 ent->v.origin[2] = org[2] + z;
                 if (!SV_TestEntityPosition(ent))
                 {
-                    Con_DPrintf((char*)"Unstuck.\n");
+                    Con_DPrintf("Unstuck.\n");
                     SV_LinkEdict(ent, true);
                     return;
                 }
             }
 
     VectorCopy(org, ent->v.origin);
-    Con_DPrintf((char*)"player is stuck.\n");
+    Con_DPrintf("player is stuck.\n");
 }
 
 

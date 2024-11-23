@@ -64,7 +64,7 @@ entity_t * CL_EntityNum(int num)
     if (num >= cl.num_entities)
     {
         if (num >= MAX_EDICTS)
-            Host_Error((char*)"CL_EntityNum: %i is an invalid number", num);
+            Host_Error("CL_EntityNum: %i is an invalid number", num);
         while (cl.num_entities <= num)
         {
             cl_entities[cl.num_entities].colormap = vid.colormap;
@@ -110,7 +110,7 @@ void CL_ParseStartSoundPacket()
     channel &= 7;
 
     if (ent > MAX_EDICTS)
-        Host_Error((char*)"CL_ParseStartSoundPacket: ent = %i", ent);
+        Host_Error("CL_ParseStartSoundPacket: ent = %i", ent);
 
     for (i = 0; i < 3; i++)
         pos[i] = MSG_ReadCoord();
@@ -149,15 +149,15 @@ void CL_KeepaliveMessage()
         switch (ret)
         {
         default:
-            Host_Error((char*)"CL_KeepaliveMessage: CL_GetMessage failed");
+            Host_Error("CL_KeepaliveMessage: CL_GetMessage failed");
         case 0:
             break; // nothing waiting
         case 1:
-            Host_Error((char*)"CL_KeepaliveMessage: received a message");
+            Host_Error("CL_KeepaliveMessage: received a message");
             break;
         case 2:
             if (MSG_ReadByte() != svc_nop)
-                Host_Error((char*)"CL_KeepaliveMessage: datagram wasn't a nop");
+                Host_Error("CL_KeepaliveMessage: datagram wasn't a nop");
             break;
         }
     } while (ret);
@@ -192,7 +192,7 @@ void CL_ParseServerInfo()
     char model_precache[MAX_MODELS][MAX_QPATH];
     char sound_precache[MAX_SOUNDS][MAX_QPATH];
 
-    Con_DPrintf((char*)"Serverinfo packet received.\n");
+    Con_DPrintf("Serverinfo packet received.\n");
     //
     // wipe the client_state_t struct
     //
@@ -354,7 +354,7 @@ void CL_ParseUpdate(int bits)
     {
         modnum = MSG_ReadByte();
         if (modnum >= MAX_MODELS)
-            Host_Error((char*)"CL_ParseModel: bad modnum");
+            Host_Error("CL_ParseModel: bad modnum");
     }
     else
         modnum = ent->baseline.modelindex;
@@ -656,7 +656,7 @@ void CL_ParseStatic()
 
     i = cl.num_statics;
     if (i >= MAX_STATIC_ENTITIES)
-        Host_Error((char*)"Too many static entities");
+        Host_Error("Too many static entities");
     ent = &cl_static_entities[i];
     cl.num_statics++;
     CL_ParseBaseline(ent);
@@ -723,7 +723,7 @@ void CL_ParseServerMessage()
     while (1)
     {
         if (msg_badread)
-            Host_Error((char*)"CL_ParseServerMessage: Bad server message");
+            Host_Error("CL_ParseServerMessage: Bad server message");
 
         cmd = MSG_ReadByte();
 
@@ -747,7 +747,7 @@ void CL_ParseServerMessage()
         switch (cmd)
         {
         default:
-            Host_Error((char*)"CL_ParseServerMessage: Illegible server message\n");
+            Host_Error("CL_ParseServerMessage: Illegible server message\n");
             break;
 
         case svc_nop:
@@ -767,7 +767,7 @@ void CL_ParseServerMessage()
         case svc_version:
             i = MSG_ReadLong();
             if (i != PROTOCOL_VERSION)
-                Host_Error((char*)"CL_ParseServerMessage: Server is protocol %i instead of %i\n", i, PROTOCOL_VERSION);
+                Host_Error("CL_ParseServerMessage: Server is protocol %i instead of %i\n", i, PROTOCOL_VERSION);
             break;
 
         case svc_disconnect:
@@ -824,7 +824,7 @@ void CL_ParseServerMessage()
             Sbar_Changed();
             i = MSG_ReadByte();
             if (i >= cl.maxclients)
-                Host_Error((char*)"CL_ParseServerMessage: svc_updatename > MAX_SCOREBOARD");
+                Host_Error("CL_ParseServerMessage: svc_updatename > MAX_SCOREBOARD");
             strcpy(cl.scores[i].name, MSG_ReadString());
             break;
 
@@ -832,7 +832,7 @@ void CL_ParseServerMessage()
             Sbar_Changed();
             i = MSG_ReadByte();
             if (i >= cl.maxclients)
-                Host_Error((char*)"CL_ParseServerMessage: svc_updatefrags > MAX_SCOREBOARD");
+                Host_Error("CL_ParseServerMessage: svc_updatefrags > MAX_SCOREBOARD");
             cl.scores[i].frags = MSG_ReadShort();
             break;
 
@@ -840,7 +840,7 @@ void CL_ParseServerMessage()
             Sbar_Changed();
             i = MSG_ReadByte();
             if (i >= cl.maxclients)
-                Host_Error((char*)"CL_ParseServerMessage: svc_updatecolors > MAX_SCOREBOARD");
+                Host_Error("CL_ParseServerMessage: svc_updatecolors > MAX_SCOREBOARD");
             cl.scores[i].colors = MSG_ReadByte();
             CL_NewTranslation(i);
             break;
@@ -881,7 +881,7 @@ void CL_ParseServerMessage()
         case svc_signonnum:
             i = MSG_ReadByte();
             if (i <= cls.signon)
-                Host_Error((char*)"Received signon %i when at %i", i, cls.signon);
+                Host_Error("Received signon %i when at %i", i, cls.signon);
             cls.signon = i;
             CL_SignonReply();
             break;

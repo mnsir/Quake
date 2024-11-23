@@ -74,7 +74,7 @@ void Host_EndGame(char * message, ...)
     va_start(argptr, message);
     vsprintf(string, message, argptr);
     va_end(argptr);
-    Con_DPrintf((char*)"Host_EndGame: %s\n", string);
+    Con_DPrintf("Host_EndGame: %s\n", string);
 
     if (sv.active)
         Host_ShutdownServer(false);
@@ -97,7 +97,7 @@ Host_Error
 This shuts down both the client and server
 ================
 */
-void Host_Error(char * error, ...)
+void Host_Error(const char * error, ...)
 {
     va_list argptr;
     char string[1024];
@@ -454,7 +454,7 @@ not reinitialize anything.
 */
 void Host_ClearMemory()
 {
-    Con_DPrintf((char*)"Clearing memory\n");
+    Con_DPrintf("Clearing memory\n");
     D_FlushCaches();
     Mod_ClearAll();
     if (host_hunklevel)

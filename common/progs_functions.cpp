@@ -1,6 +1,6 @@
 #include "progs.h"
 
-std::span<Progs::dfunction_t> Progs::GetFunctions()
+std::span<const Progs::dfunction_t> Progs::GetFunctions()
 {
     using namespace std::string_view_literals;
     constinit static auto res = std::to_array({

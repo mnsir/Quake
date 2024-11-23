@@ -14,7 +14,7 @@ struct dfunction_t
     int parm_start = 0;
     int locals = 0; // total ints of parms + locals
 
-    int profile = 0; // runtime
+    mutable int profile = 0; // runtime
 
     std::string_view s_name;
     std::string_view s_file; // source file defined in
@@ -190,11 +190,11 @@ struct globalvars_t
     int/*func_t*/ SetChangeParms = 0;
 };
 
-std::span<dfunction_t> GetFunctions();
+std::span<const dfunction_t> GetFunctions();
 std::span<char> GetStrings();
 std::span<const ddef_t> GetFieldDefs();
 std::span<const ddef_t> GetGlobalDefs();
-std::span<dstatement_t> GetStatements();
+std::span<const dstatement_t> GetStatements();
 std::span<globalvars_t> GetGlobals();
 void GetGlobals2(std::span<globalvars_t> v, size_t& i);
 void GetGlobals3(std::span<globalvars_t> v, size_t& i);

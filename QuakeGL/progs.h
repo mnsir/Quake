@@ -233,7 +233,7 @@ extern int pr_numbuiltins;
 extern int pr_argc;
 
 extern bool pr_trace;
-extern Progs::dfunction_t * pr_xfunction;
+extern const Progs::dfunction_t * pr_xfunction;
 extern int pr_xstatement;
 
 void PR_RunError(char * error, ...);

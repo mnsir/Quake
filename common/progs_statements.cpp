@@ -1,6 +1,6 @@
 #include "progs.h"
 
-std::span<Progs::dstatement_t> Progs::GetStatements()
+std::span<const Progs::dstatement_t> Progs::GetStatements()
 {
     static auto res = std::to_array({
         dstatement_t{ .op = Op::OP_DONE, },

@@ -10,7 +10,7 @@
 typedef struct
 {
     int s;
-    Progs::dfunction_t * f;
+    const Progs::dfunction_t * f;
 } prstack_t;
 
 #define MAX_STACK_DEPTH 32
@@ -23,7 +23,7 @@ int localstack_used;
 
 
 bool pr_trace;
-Progs::dfunction_t * pr_xfunction;
+const Progs::dfunction_t * pr_xfunction;
 int pr_xstatement;
 
 
@@ -196,7 +196,7 @@ PR_Profile_f
 */
 void PR_Profile_f()
 {
-    Progs::dfunction_t* best;
+    const Progs::dfunction_t* best;
 
     int num = 0;
     do
@@ -257,7 +257,7 @@ The interpretation main loop
 
 
 //Returns the new program statement counter
-int PR_EnterFunction(Progs::dfunction_t& f)
+int PR_EnterFunction(const Progs::dfunction_t& f)
 {
     int i, j, c, o;
 

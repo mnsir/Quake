@@ -130,34 +130,34 @@ namespace
         if (static_cast<Underlying>(s.op) < pr_opnames.size())
         {
             auto&& name = pr_opnames[static_cast<Underlying>(s.op)];
-            Con_Printf((char*)"%s ", name.data());
+            Con_Printf("%s ", name.data());
             for (size_t i = name.size(); i < 10; i++)
-                Con_Printf((char*)" ");
+                Con_Printf(" ");
         }
 
         if (s.op == Progs::Op::OP_IF || s.op == Progs::Op::OP_IFNOT)
         {
-            Con_Printf((char*)"%sbranch %i", PR_GlobalString(s.a), s.b);
+            Con_Printf("%sbranch %i", PR_GlobalString(s.a), s.b);
         }
         else if (s.op == Progs::Op::OP_GOTO)
         {
-            Con_Printf((char*)"branch %i", s.a);
+            Con_Printf("branch %i", s.a);
         }
         else if ((static_cast<Underlying>(s.op) - static_cast<Underlying>(Progs::Op::OP_STORE_F)) < 6)
         {
-            Con_Printf((char*)"%s", PR_GlobalString(s.a));
-            Con_Printf((char*)"%s", PR_GlobalStringNoContents(s.b));
+            Con_Printf("%s", PR_GlobalString(s.a));
+            Con_Printf("%s", PR_GlobalStringNoContents(s.b));
         }
         else
         {
             if (s.a)
-                Con_Printf((char*)"%s", PR_GlobalString(s.a));
+                Con_Printf("%s", PR_GlobalString(s.a));
             if (s.b)
-                Con_Printf((char*)"%s", PR_GlobalString(s.b));
+                Con_Printf("%s", PR_GlobalString(s.b));
             if (s.c)
-                Con_Printf((char*)"%s", PR_GlobalStringNoContents(s.c));
+                Con_Printf("%s", PR_GlobalStringNoContents(s.c));
         }
-        Con_Printf((char*)"\n");
+        Con_Printf("\n");
     }
 }
 /*
@@ -169,7 +169,7 @@ void PR_StackTrace()
 {
     if (pr_depth == 0)
     {
-        Con_Printf((char*)"<NO STACK>\n");
+        Con_Printf("<NO STACK>\n");
         return;
     }
 
@@ -180,10 +180,10 @@ void PR_StackTrace()
 
         if (!f)
         {
-            Con_Printf((char*)"<NO FUNCTION>\n");
+            Con_Printf("<NO FUNCTION>\n");
         }
         else
-            Con_Printf((char*)"%12s : %s\n", f->s_file.data(), f->s_name.data());
+            Con_Printf("%12s : %s\n", f->s_file.data(), f->s_name.data());
     }
 }
 
@@ -213,7 +213,7 @@ void PR_Profile_f()
         if (best)
         {
             if (num < 10)
-                Con_Printf((char*)"%7i %s\n", best->profile, best->s_name.data());
+                Con_Printf("%7i %s\n", best->profile, best->s_name.data());
             num++;
             best->profile = 0;
         }
@@ -239,7 +239,7 @@ void PR_RunError(char * error, ...)
 
     PR_PrintStatement(Progs::GetStatements()[pr_xstatement]);
     PR_StackTrace();
-    Con_Printf((char*)"%s\n", string);
+    Con_Printf("%s\n", string);
 
     pr_depth = 0; // dump the stack so host_error can shutdown functions
 

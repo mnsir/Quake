@@ -1813,15 +1813,15 @@ void Mod_Print()
     int i;
     model_t * mod;
 
-    Con_Printf((char*)"Cached models:\n");
+    Con_Printf("Cached models:\n");
     for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
     {
-        Con_Printf((char*)"%8p : %s", mod->cache.data, mod->name);
+        Con_Printf("%8p : %s", mod->cache.data, mod->name);
         if (mod->needload & NL_UNREFERENCED)
-            Con_Printf((char*)" (!R)");
+            Con_Printf(" (!R)");
         if (mod->needload & NL_NEEDS_LOADED)
-            Con_Printf((char*)" (!P)");
-        Con_Printf((char*)"\n");
+            Con_Printf(" (!P)");
+        Con_Printf("\n");
     }
 }
 

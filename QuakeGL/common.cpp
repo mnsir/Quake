@@ -379,7 +379,7 @@ void * SZ_GetSpace(sizebuf_t * buf, int length)
             Sys_Error((char*)"SZ_GetSpace: %i is > full buffer size", length);
 
         buf->overflowed = true;
-        Con_Printf((char*)"SZ_GetSpace: overflow");
+        Con_Printf("SZ_GetSpace: overflow");
         SZ_Clear(buf);
     }
 
@@ -642,7 +642,7 @@ void COM_CheckRegistered()
     Cvar_Set((char*)"cmdline", com_cmdline);
     Cvar_Set((char*)"registered", (char*)"1");
     static_registered = 1;
-    Con_Printf((char*)"Playing registered version.\n");
+    Con_Printf("Playing registered version.\n");
 }
 
 /*

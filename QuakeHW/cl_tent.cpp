@@ -78,7 +78,7 @@ void CL_ParseBeam(model_t * m)
             return;
         }
     }
-    Con_Printf((char*)"beam list overflow!\n");
+    Con_Printf("beam list overflow!\n");
 }
 
 /*

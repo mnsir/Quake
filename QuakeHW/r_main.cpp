@@ -976,10 +976,10 @@ void R_RenderView_()
         R_PrintDSpeeds();
 
     if (r_reportsurfout.value && r_outofsurfaces)
-        Con_Printf((char*)"Short %d surfaces\n", r_outofsurfaces);
+        Con_Printf("Short %d surfaces\n", r_outofsurfaces);
 
     if (r_reportedgeout.value && r_outofedges)
-        Con_Printf((char*)"Short roughly %d edges\n", r_outofedges * 2 / 3);
+        Con_Printf("Short roughly %d edges\n", r_outofedges * 2 / 3);
 }
 
 void R_RenderView()

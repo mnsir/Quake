@@ -47,7 +47,7 @@ void Host_Status_f()
     int minutes;
     int hours = 0;
     int j;
-    void (*print) (char * fmt, ...);
+    void (*print) (const char * fmt, ...);
 
     if (cmd_source == src_command)
     {
@@ -61,14 +61,14 @@ void Host_Status_f()
     else
         print = SV_ClientPrintf;
 
-    print((char*)"host: %s\n", Cvar_VariableString((char*)"hostname"));
-    print((char*)"version: %4.2f\n", VERSION);
+    print("host: %s\n", Cvar_VariableString((char*)"hostname"));
+    print("version: %4.2f\n", VERSION);
     if (tcpipAvailable)
-        print((char*)"tcp/ip: %s\n", my_tcpip_address);
+        print("tcp/ip: %s\n", my_tcpip_address);
     if (ipxAvailable)
-        print((char*)"ipx: %s\n", my_ipx_address);
-    print((char*)"map: %s\n", sv.name);
-    print((char*)"players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
+        print("ipx: %s\n", my_ipx_address);
+    print("map: %s\n", sv.name);
+    print("players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
     for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
     {
         if (!client->active)
@@ -84,8 +84,8 @@ void Host_Status_f()
         }
         else
             hours = 0;
-        print((char*)"#%-2u %-16.16s %3i %2i:%02i:%02i\n", j + 1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
-        print((char*)" %s\n", client->netconnection->address);
+        print("#%-2u %-16.16s %3i %2i:%02i:%02i\n", j + 1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
+        print(" %s\n", client->netconnection->address);
     }
 }
 
@@ -299,12 +299,12 @@ void Host_Changelevel_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"changelevel <levelname> : continue game on a new level\n");
+        Con_Printf("changelevel <levelname> : continue game on a new level\n");
         return;
     }
     if (!sv.active || cls.demoplayback)
     {
-        Con_Printf((char*)"Only the server may changelevel\n");
+        Con_Printf("Only the server may changelevel\n");
         return;
     }
     SV_SaveSpawnparms();
@@ -422,31 +422,31 @@ void Host_Savegame_f()
 
     if (!sv.active)
     {
-        Con_Printf((char*)"Not playing a local game.\n");
+        Con_Printf("Not playing a local game.\n");
         return;
     }
 
     if (cl.intermission)
     {
-        Con_Printf((char*)"Can't save in intermission.\n");
+        Con_Printf("Can't save in intermission.\n");
         return;
     }
 
     if (svs.maxclients != 1)
     {
-        Con_Printf((char*)"Can't save multiplayer games.\n");
+        Con_Printf("Can't save multiplayer games.\n");
         return;
     }
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"save <savename> : save a game\n");
+        Con_Printf("save <savename> : save a game\n");
         return;
     }
 
     if (strstr(Cmd_Argv(1), ".."))
     {
-        Con_Printf((char*)"Relative pathnames are not allowed.\n");
+        Con_Printf("Relative pathnames are not allowed.\n");
         return;
     }
 
@@ -454,7 +454,7 @@ void Host_Savegame_f()
     {
         if (svs.clients[i].active && (svs.clients[i].edict->v.health <= 0))
         {
-            Con_Printf((char*)"Can't savegame with a dead player\n");
+            Con_Printf("Can't savegame with a dead player\n");
             return;
         }
     }
@@ -462,11 +462,11 @@ void Host_Savegame_f()
     sprintf(name, "%s/%s", com_gamedir, Cmd_Argv(1));
     COM_DefaultExtension(name, (char*)".sav");
 
-    Con_Printf((char*)"Saving game to %s...\n", name);
+    Con_Printf("Saving game to %s...\n", name);
     f = fopen(name, "w");
     if (!f)
     {
-        Con_Printf((char*)"ERROR: couldn't open.\n");
+        Con_Printf("ERROR: couldn't open.\n");
         return;
     }
 
@@ -497,7 +497,7 @@ void Host_Savegame_f()
         fflush(f);
     }
     fclose(f);
-    Con_Printf((char*)"done.\n");
+    Con_Printf("done.\n");
 }
 
 
@@ -524,7 +524,7 @@ void Host_Loadgame_f()
 
     if (Cmd_Argc() != 2)
     {
-        Con_Printf((char*)"load <savename> : load a game\n");
+        Con_Printf("load <savename> : load a game\n");
         return;
     }
 
@@ -537,11 +537,11 @@ void Host_Loadgame_f()
     // been used. The menu calls it before stuffing loadgame command
     // SCR_BeginLoadingPlaque ();
 
-    Con_Printf((char*)"Loading game from %s...\n", name);
+    Con_Printf("Loading game from %s...\n", name);
     f = fopen(name, "r");
     if (!f)
     {
-        Con_Printf((char*)"ERROR: couldn't open.\n");
+        Con_Printf("ERROR: couldn't open.\n");
         return;
     }
 
@@ -549,7 +549,7 @@ void Host_Loadgame_f()
     if (version != SAVEGAME_VERSION)
     {
         fclose(f);
-        Con_Printf((char*)"Savegame is version %i, not %i\n", version, SAVEGAME_VERSION);
+        Con_Printf("Savegame is version %i, not %i\n", version, SAVEGAME_VERSION);
         return;
     }
     fscanf(f, "%s\n", str);
@@ -569,7 +569,7 @@ void Host_Loadgame_f()
 
     if (!sv.active)
     {
-        Con_Printf((char*)"Couldn't load map\n");
+        Con_Printf("Couldn't load map\n");
         return;
     }
     sv.paused = true; // pause until all clients connect
@@ -658,7 +658,7 @@ void Host_Name_f()
 
     if (Cmd_Argc() == 1)
     {
-        Con_Printf((char*)"\"name\" is \"%s\"\n", cl_name.string);
+        Con_Printf("\"name\" is \"%s\"\n", cl_name.string);
         return;
     }
     if (Cmd_Argc() == 2)
@@ -679,7 +679,7 @@ void Host_Name_f()
 
     if (host_client->name[0] && strcmp(host_client->name, "unconnected"))
         if (std::strcmp(host_client->name, newName) != 0)
-            Con_Printf((char*)"%s renamed to %s\n", host_client->name, newName);
+            Con_Printf("%s renamed to %s\n", host_client->name, newName);
     std::strcpy(host_client->name, newName);
     host_client->edict->v.netname = host_client->name - pr_strings;
 
@@ -693,8 +693,8 @@ void Host_Name_f()
 
 void Host_Version_f()
 {
-    Con_Printf((char*)"Version %4.2f\n", VERSION);
-    Con_Printf((char*)"Exe: " __TIME__ " " __DATE__ "\n");
+    Con_Printf("Version %4.2f\n", VERSION);
+    Con_Printf("Exe: " __TIME__ " " __DATE__ "\n");
 }
 
 void Host_Say(bool teamonly)
@@ -837,8 +837,8 @@ void Host_Color_f()
 
     if (Cmd_Argc() == 1)
     {
-        Con_Printf((char*)"\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
-        Con_Printf((char*)"color <0-13> [0-13]\n");
+        Con_Printf("\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
+        Con_Printf("color <0-13> [0-13]\n");
         return;
     }
 
@@ -947,13 +947,13 @@ void Host_PreSpawn_f()
 {
     if (cmd_source == src_command)
     {
-        Con_Printf((char*)"prespawn is not valid from the console\n");
+        Con_Printf("prespawn is not valid from the console\n");
         return;
     }
 
     if (host_client->spawned)
     {
-        Con_Printf((char*)"prespawn not valid -- allready spawned\n");
+        Con_Printf("prespawn not valid -- allready spawned\n");
         return;
     }
 
@@ -976,13 +976,13 @@ void Host_Spawn_f()
 
     if (cmd_source == src_command)
     {
-        Con_Printf((char*)"spawn is not valid from the console\n");
+        Con_Printf("spawn is not valid from the console\n");
         return;
     }
 
     if (host_client->spawned)
     {
-        Con_Printf((char*)"Spawn not valid -- allready spawned\n");
+        Con_Printf("Spawn not valid -- allready spawned\n");
         return;
     }
 
@@ -1096,7 +1096,7 @@ void Host_Begin_f()
 {
     if (cmd_source == src_command)
     {
-        Con_Printf((char*)"begin is not valid from the console\n");
+        Con_Printf("begin is not valid from the console\n");
         return;
     }
 
@@ -1370,7 +1370,7 @@ edict_t * FindViewthing()
         if (!strcmp(pr_strings + e->v.classname, "viewthing"))
             return e;
     }
-    Con_Printf((char*)"No viewthing on map\n");
+    Con_Printf("No viewthing on map\n");
     return NULL;
 }
 
@@ -1391,7 +1391,7 @@ void Host_Viewmodel_f()
     m = Mod_ForName(Cmd_Argv(1), false);
     if (!m)
     {
-        Con_Printf((char*)"Can't load %s\n", Cmd_Argv(1));
+        Con_Printf("Can't load %s\n", Cmd_Argv(1));
         return;
     }
 
@@ -1433,7 +1433,7 @@ void PrintFrameName(model_t * m, int frame)
         return;
     pframedesc = &hdr->frames[frame];
 
-    Con_Printf((char*)"frame %i: %s\n", frame, pframedesc->name);
+    Con_Printf("frame %i: %s\n", frame, pframedesc->name);
 }
 
 /*
@@ -1509,10 +1509,10 @@ void Host_Startdemos_f()
     c = Cmd_Argc() - 1;
     if (c > MAX_DEMOS)
     {
-        Con_Printf((char*)"Max %i demos in demoloop\n", MAX_DEMOS);
+        Con_Printf("Max %i demos in demoloop\n", MAX_DEMOS);
         c = MAX_DEMOS;
     }
-    Con_Printf((char*)"%i demo(s) in loop\n", c);
+    Con_Printf("%i demo(s) in loop\n", c);
 
     for (i = 1; i < c + 1; i++)
         strncpy(cls.demos[i - 1], Cmd_Argv(i), sizeof(cls.demos[0]) - 1);

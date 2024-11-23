@@ -1933,7 +1933,7 @@ VID_DescribeCurrentMode_f
 */
 void VID_DescribeCurrentMode_f()
 {
-    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(vid_modenum));
+    Con_Printf("%s\n", VID_GetExtModeDescription(vid_modenum));
 }
 
 
@@ -1946,9 +1946,9 @@ void VID_NumModes_f()
 {
 
     if (nummodes == 1)
-        Con_Printf((char*)"%d video mode is available\n", nummodes);
+        Con_Printf("%d video mode is available\n", nummodes);
     else
-        Con_Printf((char*)"%d video modes are available\n", nummodes);
+        Con_Printf("%d video modes are available\n", nummodes);
 }
 
 
@@ -1963,7 +1963,7 @@ void VID_DescribeMode_f()
 
     modenum = std::atoi(Cmd_Argv(1));
 
-    Con_Printf((char*)"%s\n", VID_GetExtModeDescription(modenum));
+    Con_Printf("%s\n", VID_GetExtModeDescription(modenum));
 }
 
 
@@ -1990,18 +1990,18 @@ void VID_DescribeModes_f()
 
         if (VID_CheckAdequateMem(pv->width, pv->height))
         {
-            Con_Printf((char*)"%2d: %s\n", i, pinfo);
+            Con_Printf("%2d: %s\n", i, pinfo);
         }
         else
         {
-            Con_Printf((char*)"**: %s\n", pinfo);
+            Con_Printf("**: %s\n", pinfo);
             na = true;
         }
     }
 
     if (na)
     {
-        Con_Printf((char*)"\n[**: not enough system RAM for mode]\n");
+        Con_Printf("\n[**: not enough system RAM for mode]\n");
     }
 }
 

@@ -235,7 +235,7 @@ namespace
             }
             else
             {
-                Con_Printf((char*)"Can't find field %s\n", s);
+                Con_Printf("Can't find field %s\n", s);
                 return false;
             }
             break;
@@ -249,7 +249,7 @@ namespace
             }
             else
             {
-                Con_Printf((char*)"Can't find function %s\n", s);
+                Con_Printf("Can't find function %s\n", s);
                 return false;
             }
             break;
@@ -413,11 +413,11 @@ void ED_Print(edict_t * ed)
 {
     if (ed->free)
     {
-        Con_Printf((char*)"FREE\n");
+        Con_Printf("FREE\n");
         return;
     }
 
-    Con_Printf((char*)"\nEDICT %i:\n", NUM_FOR_EDICT(ed));
+    Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
     for (auto&& def : Progs::GetFieldDefs() | std::views::drop(1))
     {
         auto&& name = def.s_name;
@@ -435,12 +435,12 @@ void ED_Print(edict_t * ed)
         if (j == sz)
             continue;
 
-        Con_Printf((char*)"%s", name);
+        Con_Printf("%s", name);
         int l = name.size();
         while (l++ < 15)
-            Con_Printf((char*)" ");
+            Con_Printf(" ");
 
-        Con_Printf((char*)"%s\n", PR_ValueString(def.type, *(eval_t*)v));
+        Con_Printf("%s\n", PR_ValueString(def.type, *(eval_t*)v));
     }
 }
 
@@ -500,7 +500,7 @@ void ED_PrintEdicts()
 {
     int i;
 
-    Con_Printf((char*)"%i entities\n", sv.num_edicts);
+    Con_Printf("%i entities\n", sv.num_edicts);
     for (i = 0; i < sv.num_edicts; i++)
         ED_PrintNum(i);
 }
@@ -519,7 +519,7 @@ void ED_PrintEdict_f()
     i = std::atoi(Cmd_Argv(1));
     if (i >= sv.num_edicts)
     {
-        Con_Printf((char*)"Bad edict number\n");
+        Con_Printf("Bad edict number\n");
         return;
     }
     ED_PrintNum(i);
@@ -553,11 +553,11 @@ void ED_Count()
             step++;
     }
 
-    Con_Printf((char*)"num_edicts:%3i\n", sv.num_edicts);
-    Con_Printf((char*)"active :%3i\n", active);
-    Con_Printf((char*)"view :%3i\n", models);
-    Con_Printf((char*)"touch :%3i\n", solid);
-    Con_Printf((char*)"step :%3i\n", step);
+    Con_Printf("num_edicts:%3i\n", sv.num_edicts);
+    Con_Printf("active :%3i\n", active);
+    Con_Printf("view :%3i\n", models);
+    Con_Printf("touch :%3i\n", solid);
+    Con_Printf("step :%3i\n", step);
 
 }
 
@@ -630,7 +630,7 @@ void ED_ParseGlobals(char * data)
         }
         else
         {
-            Con_Printf((char*)"'%s' is not a global\n", keyname);
+            Con_Printf("'%s' is not a global\n", keyname);
         }
     }
 }
@@ -723,7 +723,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
         }
         else
         {
-            Con_Printf((char*)"'%s' is not a field\n", keyname);
+            Con_Printf("'%s' is not a field\n", keyname);
         }
     }
 
@@ -798,7 +798,7 @@ void ED_LoadFromFile(char * data)
         //
         if (!ent->v.classname)
         {
-            Con_Printf((char*)"No classname for:\n");
+            Con_Printf("No classname for:\n");
             ED_Print(ent);
             ED_Free(ent);
             continue;
@@ -811,7 +811,7 @@ void ED_LoadFromFile(char * data)
         }
         else
         {
-            Con_Printf((char*)"No spawn function for:\n");
+            Con_Printf("No spawn function for:\n");
             ED_Print(ent);
             ED_Free(ent);
         }

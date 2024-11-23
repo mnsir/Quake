@@ -213,7 +213,7 @@ int WINS_Init()
 
     if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
     {
-        Con_Printf((char*)"WINS_Init: Unable to open control socket\n");
+        Con_Printf("WINS_Init: Unable to open control socket\n");
         if (--winsock_initialized == 0)
             pWSACleanup();
         return -1;
@@ -223,7 +223,7 @@ int WINS_Init()
     ((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
     ((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
-    Con_Printf((char*)"Winsock TCP/IP Initialized\n");
+    Con_Printf("Winsock TCP/IP Initialized\n");
     tcpipAvailable = true;
 
     return net_controlsocket;
@@ -424,7 +424,7 @@ int WINS_Broadcast(int socket, byte * buf, int len)
         ret = WINS_MakeSocketBroadcastCapable(socket);
         if (ret == -1)
         {
-            Con_Printf((char*)"Unable to make socket broadcast capable\n");
+            Con_Printf("Unable to make socket broadcast capable\n");
             return ret;
         }
     }

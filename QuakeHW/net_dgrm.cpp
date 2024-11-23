@@ -206,7 +206,7 @@ int Datagram_GetMessage(qsocket_t * sock)
 
         if (length == -1)
         {
-            Con_Printf((char*)"Read error\n");
+            Con_Printf("Read error\n");
             return -1;
         }
 
@@ -329,10 +329,10 @@ int Datagram_GetMessage(qsocket_t * sock)
 
 void PrintStats(qsocket_t * s)
 {
-    Con_Printf((char*)"canSend = %4u \n", s->canSend);
-    Con_Printf((char*)"sendSeq = %4u ", s->sendSequence);
-    Con_Printf((char*)"recvSeq = %4u \n", s->receiveSequence);
-    Con_Printf((char*)"\n");
+    Con_Printf("canSend = %4u \n", s->canSend);
+    Con_Printf("sendSeq = %4u ", s->sendSequence);
+    Con_Printf("recvSeq = %4u \n", s->receiveSequence);
+    Con_Printf("\n");
 }
 
 void NET_Stats_f()
@@ -341,16 +341,16 @@ void NET_Stats_f()
 
     if (Cmd_Argc() == 1)
     {
-        Con_Printf((char*)"unreliable messages sent = %i\n", unreliableMessagesSent);
-        Con_Printf((char*)"unreliable messages recv = %i\n", unreliableMessagesReceived);
-        Con_Printf((char*)"reliable messages sent = %i\n", messagesSent);
-        Con_Printf((char*)"reliable messages received = %i\n", messagesReceived);
-        Con_Printf((char*)"packetsSent = %i\n", packetsSent);
-        Con_Printf((char*)"packetsReSent = %i\n", packetsReSent);
-        Con_Printf((char*)"packetsReceived = %i\n", packetsReceived);
-        Con_Printf((char*)"receivedDuplicateCount = %i\n", receivedDuplicateCount);
-        Con_Printf((char*)"shortPacketCount = %i\n", shortPacketCount);
-        Con_Printf((char*)"droppedDatagrams = %i\n", droppedDatagrams);
+        Con_Printf("unreliable messages sent = %i\n", unreliableMessagesSent);
+        Con_Printf("unreliable messages recv = %i\n", unreliableMessagesReceived);
+        Con_Printf("reliable messages sent = %i\n", messagesSent);
+        Con_Printf("reliable messages received = %i\n", messagesReceived);
+        Con_Printf("packetsSent = %i\n", packetsSent);
+        Con_Printf("packetsReSent = %i\n", packetsReSent);
+        Con_Printf("packetsReceived = %i\n", packetsReceived);
+        Con_Printf("receivedDuplicateCount = %i\n", receivedDuplicateCount);
+        Con_Printf("shortPacketCount = %i\n", shortPacketCount);
+        Con_Printf("droppedDatagrams = %i\n", droppedDatagrams);
     }
     else if (std::strcmp(Cmd_Argv(1), "*") == 0)
     {
@@ -425,7 +425,7 @@ static void Test_Poll()
         connectTime = MSG_ReadLong();
         std::strcpy(address, MSG_ReadString());
 
-        Con_Printf((char*)"%s\n frags:%3i colors:%u %u time:%u\n %s\n", name, frags, colors >> 4, colors & 0x0f, connectTime / 60, address);
+        Con_Printf("%s\n frags:%3i colors:%u %u time:%u\n %s\n", name, frags, colors >> 4, colors & 0x0f, connectTime / 60, address);
     }
 
     testPollCount--;
@@ -546,7 +546,7 @@ static void Test2_Poll()
         goto Done;
     std::strcpy(value, MSG_ReadString());
 
-    Con_Printf((char*)"%-16.16s %-16.16s\n", name, value);
+    Con_Printf("%-16.16s %-16.16s\n", name, value);
 
     SZ_Clear(&net_message);
     // save space for the header, filled in later
@@ -562,7 +562,7 @@ Reschedule:
     return;
 
 Error:
-    Con_Printf((char*)"Unexpected repsonse to Rule Info request\n");
+    Con_Printf("Unexpected repsonse to Rule Info request\n");
 Done:
     dfunc.CloseSocket(test2Socket);
     test2InProgress = false;
@@ -1082,7 +1082,7 @@ static qsocket_t * _Datagram_Connect(char * host)
         goto ErrorReturn;
 
     // send the connection request
-    Con_Printf((char*)"trying...\n"); SCR_UpdateScreen();
+    Con_Printf("trying...\n"); SCR_UpdateScreen();
     start_time = net_time;
 
     for (reps = 0; reps < 3; reps++)
@@ -1139,14 +1139,14 @@ static qsocket_t * _Datagram_Connect(char * host)
         } while (ret == 0 && (SetNetTime() - start_time) < 2.5);
         if (ret)
             break;
-        Con_Printf((char*)"still trying...\n"); SCR_UpdateScreen();
+        Con_Printf("still trying...\n"); SCR_UpdateScreen();
         start_time = SetNetTime();
     }
 
     if (ret == 0)
     {
         reason = (char*)"No Response";
-        Con_Printf((char*)"%s\n", reason);
+        Con_Printf("%s\n", reason);
         std::strcpy(m_return_reason, reason);
         goto ErrorReturn;
     }
@@ -1154,7 +1154,7 @@ static qsocket_t * _Datagram_Connect(char * host)
     if (ret == -1)
     {
         reason = (char*)"Network Error";
-        Con_Printf((char*)"%s\n", reason);
+        Con_Printf("%s\n", reason);
         std::strcpy(m_return_reason, reason);
         goto ErrorReturn;
     }
@@ -1176,21 +1176,21 @@ static qsocket_t * _Datagram_Connect(char * host)
     else
     {
         reason = (char*)"Bad Response";
-        Con_Printf((char*)"%s\n", reason);
+        Con_Printf("%s\n", reason);
         std::strcpy(m_return_reason, reason);
         goto ErrorReturn;
     }
 
     dfunc.GetNameFromAddr(&sendaddr, sock->address);
 
-    Con_Printf((char*)"Connection accepted\n");
+    Con_Printf("Connection accepted\n");
     sock->lastMessageTime = SetNetTime();
 
     // switch the connection to the specified address
     if (dfunc.Connect(newsock, &sock->addr) == -1)
     {
         reason = (char*)"Connect to Game failed";
-        Con_Printf((char*)"%s\n", reason);
+        Con_Printf("%s\n", reason);
         std::strcpy(m_return_reason, reason);
         goto ErrorReturn;
     }

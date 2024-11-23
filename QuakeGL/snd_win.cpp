@@ -328,7 +328,7 @@ sndinitstat SNDDMA_InitDirect()
 
         if (DS_OK != pDSPBuf->GetCaps(&dsbcaps))
         {
-            Con_Printf((char*)"DS:GetCaps failed\n");
+            Con_Printf("DS:GetCaps failed\n");
             return SIS_FAILURE;
         }
 

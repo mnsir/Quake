@@ -55,7 +55,7 @@ void SV_CheckAllEnts()
             continue;
 
         if (SV_TestEntityPosition(check))
-            Con_Printf((char*)"entity in invalid position\n");
+            Con_Printf("entity in invalid position\n");
     }
 }
 
@@ -75,12 +75,12 @@ void SV_CheckVelocity(edict_t * ent)
     {
         if (IS_NAN(ent->v.velocity[i]))
         {
-            Con_Printf((char*)"Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
+            Con_Printf("Got a NaN velocity on %s\n", pr_strings + ent->v.classname);
             ent->v.velocity[i] = 0;
         }
         if (IS_NAN(ent->v.origin[i]))
         {
-            Con_Printf((char*)"Got a NaN origin on %s\n", pr_strings + ent->v.classname);
+            Con_Printf("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
             ent->v.origin[i] = 0;
         }
         if (ent->v.velocity[i] > sv_maxvelocity.value)

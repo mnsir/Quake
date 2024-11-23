@@ -172,7 +172,7 @@ void CL_KeepaliveMessage()
     lastmsg = time;
 
     // write out a nop
-    Con_Printf((char*)"--> client to server keepalive\n");
+    Con_Printf("--> client to server keepalive\n");
 
     MSG_WriteByte(&cls.message, clc_nop);
     NET_SendMessage(cls.netcon, &cls.message);
@@ -202,7 +202,7 @@ void CL_ParseServerInfo()
     i = MSG_ReadLong();
     if (i != PROTOCOL_VERSION)
     {
-        Con_Printf((char*)"Server returned version %i, not %i", i, PROTOCOL_VERSION);
+        Con_Printf("Server returned version %i, not %i", i, PROTOCOL_VERSION);
         return;
     }
 
@@ -210,7 +210,7 @@ void CL_ParseServerInfo()
     cl.maxclients = MSG_ReadByte();
     if (cl.maxclients < 1 || cl.maxclients > MAX_SCOREBOARD)
     {
-        Con_Printf((char*)"Bad maxclients (%u) from server\n", cl.maxclients);
+        Con_Printf("Bad maxclients (%u) from server\n", cl.maxclients);
         return;
     }
     cl.scores = (scoreboard_t*)Hunk_AllocName(cl.maxclients * sizeof(*cl.scores), (char*)"scores");
@@ -223,8 +223,8 @@ void CL_ParseServerInfo()
     strncpy(cl.levelname, str, sizeof(cl.levelname) - 1);
 
     // seperate the printfs so the server message can have a color
-    Con_Printf((char*)"\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
-    Con_Printf((char*)"%c%s\n", 2, str);
+    Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
+    Con_Printf("%c%s\n", 2, str);
 
     //
     // first we go through and touch all of the precache data that still
@@ -241,7 +241,7 @@ void CL_ParseServerInfo()
             break;
         if (nummodels == MAX_MODELS)
         {
-            Con_Printf((char*)"Server sent too many model precaches\n");
+            Con_Printf("Server sent too many model precaches\n");
             return;
         }
         strcpy(model_precache[nummodels], str);
@@ -257,7 +257,7 @@ void CL_ParseServerInfo()
             break;
         if (numsounds == MAX_SOUNDS)
         {
-            Con_Printf((char*)"Server sent too many sound precaches\n");
+            Con_Printf("Server sent too many sound precaches\n");
             return;
         }
         strcpy(sound_precache[numsounds], str);
@@ -273,7 +273,7 @@ void CL_ParseServerInfo()
         cl.model_precache[i] = Mod_ForName(model_precache[i], false);
         if (cl.model_precache[i] == NULL)
         {
-            Con_Printf((char*)"Model %s not found\n", model_precache[i]);
+            Con_Printf("Model %s not found\n", model_precache[i]);
             return;
         }
         CL_KeepaliveMessage();
@@ -710,9 +710,9 @@ void CL_ParseServerMessage()
     // if recording demos, copy the message out
     //
     if (cl_shownet.value == 1)
-        Con_Printf((char*)"%i ", net_message.cursize);
+        Con_Printf("%i ", net_message.cursize);
     else if (cl_shownet.value == 2)
-        Con_Printf((char*)"------------------\n");
+        Con_Printf("------------------\n");
 
     cl.onground = false; // unless the server says otherwise 
     //
@@ -729,19 +729,19 @@ void CL_ParseServerMessage()
 
         if (cmd == -1)
         {
-            if (cl_shownet.value == 2)Con_Printf((char*)"%3i:%s\n", msg_readcount - 1, "END OF MESSAGE");;
+            if (cl_shownet.value == 2)Con_Printf("%3i:%s\n", msg_readcount - 1, "END OF MESSAGE");;
             return; // end of message
         }
 
         // if the high bit of the command byte is set, it is a fast update
         if (cmd & 128)
         {
-            if (cl_shownet.value == 2)Con_Printf((char*)"%3i:%s\n", msg_readcount - 1, "fast update");;
+            if (cl_shownet.value == 2)Con_Printf("%3i:%s\n", msg_readcount - 1, "fast update");;
             CL_ParseUpdate(cmd & 127);
             continue;
         }
 
-        if (cl_shownet.value == 2)Con_Printf((char*)"%3i:%s\n", msg_readcount - 1, svc_strings[cmd]);;
+        if (cl_shownet.value == 2)Con_Printf("%3i:%s\n", msg_readcount - 1, svc_strings[cmd]);;
 
         // other commands
         switch (cmd)
@@ -774,7 +774,7 @@ void CL_ParseServerMessage()
             Host_EndGame((char*)"Server disconnected\n");
 
         case svc_print:
-            Con_Printf((char*)"%s", MSG_ReadString());
+            Con_Printf("%s", MSG_ReadString());
             break;
 
         case svc_centerprint:

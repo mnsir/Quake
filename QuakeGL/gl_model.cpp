@@ -1774,10 +1774,10 @@ void Mod_Print()
     int i;
     model_t * mod;
 
-    Con_Printf((char*)"Cached models:\n");
+    Con_Printf("Cached models:\n");
     for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
     {
-        Con_Printf((char*)"%8p : %s\n", mod->cache.data, mod->name);
+        Con_Printf("%8p : %s\n", mod->cache.data, mod->name);
     }
 }
 

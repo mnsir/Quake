@@ -130,6 +130,23 @@ struct ddef_t
     std::string_view s_name;
 };
 
+struct FieldDef
+{
+    enum class Type : uint8_t
+    {
+        ev_void,
+        ev_string,
+        ev_float,
+        ev_vector,
+        ev_entity,
+        ev_function,
+    };
+
+    Type type;
+    unsigned short ofs;
+    std::string_view name;
+};
+
 struct globalvars_t
 {
     int pad[28] = { 0 };
@@ -191,7 +208,7 @@ struct globalvars_t
 
 std::span<const dfunction_t> GetFunctions();
 std::span<char> GetStrings();
-std::span<const ddef_t> GetFieldDefs();
+std::span<const FieldDef> GetFieldDefs();
 std::span<const ddef_t> GetGlobalDefs();
 std::span<const dstatement_t> GetStatements();
 std::span<globalvars_t> GetGlobals();

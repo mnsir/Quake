@@ -35,23 +35,21 @@ struct SvCmp
 
 namespace
 {
-    size_t GetTypeSize(Progs::ddef_t::etype_t type)
+    size_t GetTypeSize(Progs::FieldDef::Type type)
     {
         switch (type)
         {
-        case Progs::ddef_t::etype_t::ev_void:
+        case Progs::FieldDef::Type::ev_void:
             return 1;
-        case Progs::ddef_t::etype_t::ev_string:
+        case Progs::FieldDef::Type::ev_string:
             return sizeof(string_t) / 4;
-        case Progs::ddef_t::etype_t::ev_float:
+        case Progs::FieldDef::Type::ev_float:
             return 1;
-        case Progs::ddef_t::etype_t::ev_vector:
+        case Progs::FieldDef::Type::ev_vector:
             return 3;
-        case Progs::ddef_t::etype_t::ev_entity:
+        case Progs::FieldDef::Type::ev_entity:
             return 1;
-        case Progs::ddef_t::etype_t::ev_field:
-            return 1;
-        case Progs::ddef_t::etype_t::ev_function:
+        case Progs::FieldDef::Type::ev_function:
             return sizeof(func_t) / 4;
         default:
             return 0;
@@ -88,9 +86,9 @@ namespace
         {
             const auto ofs = val._int;
             auto defs = Progs::GetFieldDefs();
-            if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
+            if (auto it = std::ranges::find(defs, ofs, &Progs::FieldDef::ofs); it != defs.end())
             {
-                sprintf(line, ".%s", it->s_name.data());
+                sprintf(line, ".%s", it->name.data());
             }
             break;
         }
@@ -101,6 +99,42 @@ namespace
             sprintf(line, "%5.1f", val._float);
             break;
         case Progs::ddef_t::etype_t::ev_vector:
+            sprintf(line, "'%5.1f %5.1f %5.1f'", val.vector[0], val.vector[1], val.vector[2]);
+            break;
+        default:
+            sprintf(line, "bad type %i", type);
+            break;
+        }
+
+        return line;
+    }
+
+    // Returns a string describing *data in a type specific manner
+    char* PR_ValueString(Progs::FieldDef::Type type, const eval_t& val)
+    {
+        static char line[256];
+
+        switch (type)
+        {
+        case Progs::FieldDef::Type::ev_string:
+            sprintf(line, "%s", pr_strings + val.string);
+            break;
+        case Progs::FieldDef::Type::ev_entity:
+            sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            break;
+        case Progs::FieldDef::Type::ev_function:
+        {
+            auto&& f = Progs::GetFunctions()[val.function];
+            sprintf(line, "%s()", f.s_name.data());
+            break;
+        }
+        case Progs::FieldDef::Type::ev_void:
+            sprintf(line, "void");
+            break;
+        case Progs::FieldDef::Type::ev_float:
+            sprintf(line, "%5.1f", val._float);
+            break;
+        case Progs::FieldDef::Type::ev_vector:
             sprintf(line, "'%5.1f %5.1f %5.1f'", val.vector[0], val.vector[1], val.vector[2]);
             break;
         default:
@@ -134,9 +168,9 @@ namespace
         {
             const auto ofs = val._int;
             auto defs = Progs::GetFieldDefs();
-            if (auto it = std::ranges::find(defs, ofs, &Progs::ddef_t::ofs); it != defs.end())
+            if (auto it = std::ranges::find(defs, ofs, &Progs::FieldDef::ofs); it != defs.end())
             {
-                sprintf(line, "%s", it->s_name.data());
+                sprintf(line, "%s", it->name.data());
             }
             break;
         }
@@ -147,6 +181,42 @@ namespace
             sprintf(line, "%f", val._float);
             break;
         case Progs::ddef_t::etype_t::ev_vector:
+            sprintf(line, "%f %f %f", val.vector[0], val.vector[1], val.vector[2]);
+            break;
+        default:
+            sprintf(line, "bad type %i", type);
+            break;
+        }
+
+        return line;
+    }
+
+    // Returns a string describing *data in a type specific manner Easier to parse than PR_ValueString
+    char* PR_UglyValueString(Progs::FieldDef::Type type, const eval_t& val)
+    {
+        static char line[256];
+
+        switch (type)
+        {
+        case Progs::FieldDef::Type::ev_string:
+            sprintf(line, "%s", pr_strings + val.string);
+            break;
+        case Progs::FieldDef::Type::ev_entity:
+            sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            break;
+        case Progs::FieldDef::Type::ev_function:
+        {
+            auto&& f = Progs::GetFunctions()[val.function];
+            sprintf(line, "%s", f.s_name.data());
+            break;
+        }
+        case Progs::FieldDef::Type::ev_void:
+            sprintf(line, "void");
+            break;
+        case Progs::FieldDef::Type::ev_float:
+            sprintf(line, "%f", val._float);
+            break;
+        case Progs::FieldDef::Type::ev_vector:
             sprintf(line, "%f %f %f", val.vector[0], val.vector[1], val.vector[2]);
             break;
         default:
@@ -184,7 +254,62 @@ namespace
     }
 
     // Can parse either fields or globals returns false if error
-    bool ED_ParseEpair(void* base, const Progs::ddef_t& key, char* s)
+    bool ED_ParseEpair(entvars_t* base, const Progs::FieldDef& key, char* s)
+    {
+        void* d = (void*)((int*)base + key.ofs);
+
+        switch (key.type)
+        {
+        case Progs::FieldDef::Type::ev_string:
+            *(string_t*)d = ED_NewString(s) - pr_strings;
+            break;
+
+        case Progs::FieldDef::Type::ev_float:
+            *(float*)d = atof(s);
+            break;
+
+        case Progs::FieldDef::Type::ev_vector:
+        {
+            char string[128];
+            strcpy(string, s);
+            char* v = string;
+            char* w = string;
+            for (int i = 0; i < 3; i++)
+            {
+                while (*v && *v != ' ')
+                    v++;
+                *v = 0;
+                ((float*)d)[i] = atof(w);
+                w = v = v + 1;
+            }
+            break;
+        }
+        case Progs::FieldDef::Type::ev_entity:
+            *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
+            break;
+
+        case Progs::FieldDef::Type::ev_function:
+        {
+            auto funcs = Progs::GetFunctions();
+            if (auto it = std::ranges::find(funcs, s, &Progs::dfunction_t::s_name); it != funcs.end())
+            {
+                *(func_t*)d = std::ranges::distance(funcs.begin(), it);
+            }
+            else
+            {
+                Con_Printf("Can't find function %s\n", s);
+                return false;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }
+
+    // Can parse either fields or globals returns false if error
+    bool ED_ParseEpair(float* base, const Progs::ddef_t& key, char* s)
     {
         void* d = (void*)((int*)base + key.ofs);
 
@@ -221,7 +346,7 @@ namespace
         case Progs::ddef_t::etype_t::ev_field:
         {
             auto defs = Progs::GetFieldDefs();
-            if (auto it = std::ranges::find(defs, s, &Progs::ddef_t::s_name); it != defs.end())
+            if (auto it = std::ranges::find(defs, s, &Progs::FieldDef::name); it != defs.end())
             {
                 *(int*)d = *(int*)(pr_globals + it->ofs);
             }
@@ -251,7 +376,6 @@ namespace
         }
         return true;
     }
-
 }
 
 /*
@@ -323,10 +447,10 @@ void ED_Free(edict_t * ed)
 
 eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
 {
-    static std::array<std::pair<std::string_view, const Progs::ddef_t*>, 2> cache = {};
+    static std::array<std::pair<std::string_view, const Progs::FieldDef*>, 2> cache = {};
     static int rep = 0;
 
-    const Progs::ddef_t* def = nullptr;
+    const Progs::FieldDef* def = nullptr;
     if (auto it = std::ranges::find(cache, field, &decltype(cache)::value_type::first); it != cache.end())
     {
         def = it->second;
@@ -334,7 +458,7 @@ eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
     else
     {
         auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find(defs, field, &Progs::ddef_t::s_name); it != defs.end())
+        if (auto it = std::ranges::find(defs, field, &Progs::FieldDef::name); it != defs.end())
         {
             def = &*it;
         }
@@ -418,7 +542,7 @@ void ED_Print(edict_t * ed)
     Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
     for (auto&& def : Progs::GetFieldDefs() | std::views::drop(1))
     {
-        auto&& name = def.s_name;
+        auto&& name = def.name;
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
@@ -461,7 +585,7 @@ void ED_Write(FILE * f, edict_t * ed)
 
     for (auto&& def : Progs::GetFieldDefs() | std::views::drop(1))
     {
-        auto&& name = def.s_name;
+        auto&& name = def.name;
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
@@ -624,7 +748,7 @@ void ED_ParseGlobals(char * data)
         auto defs = Progs::GetGlobalDefs();
         if (auto it = std::ranges::find(defs, keyname, &Progs::ddef_t::s_name); it != defs.end())
         {
-            if (!ED_ParseEpair((void*)pr_globals, *it, com_token))
+            if (!ED_ParseEpair(pr_globals, *it, com_token))
                 Host_Error("ED_ParseGlobals: parse error");
         }
         else
@@ -708,7 +832,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
             continue;
 
         auto defs = Progs::GetFieldDefs();
-        if (auto it = std::ranges::find(defs, keyname, &Progs::ddef_t::s_name); it != defs.end())
+        if (auto it = std::ranges::find(defs, keyname, &Progs::FieldDef::name); it != defs.end())
         {
             if (anglehack)
             {
@@ -717,7 +841,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
                 sprintf(com_token, "0 %s 0", temp);
             }
 
-            if (!ED_ParseEpair((void*)&ent->v, *it, com_token))
+            if (!ED_ParseEpair(&ent->v, *it, com_token))
                 Host_Error("ED_ParseEdict: parse error");
         }
         else

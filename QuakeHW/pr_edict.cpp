@@ -53,8 +53,6 @@ namespace
             return 1;
         case Progs::ddef_t::etype_t::ev_function:
             return sizeof(func_t) / 4;
-        case Progs::ddef_t::etype_t::ev_pointer:
-            return sizeof(void*) / 4;
         default:
             return 0;
         }
@@ -104,9 +102,6 @@ namespace
             break;
         case Progs::ddef_t::etype_t::ev_vector:
             sprintf(line, "'%5.1f %5.1f %5.1f'", val.vector[0], val.vector[1], val.vector[2]);
-            break;
-        case Progs::ddef_t::etype_t::ev_pointer:
-            sprintf(line, "pointer");
             break;
         default:
             sprintf(line, "bad type %i", type);

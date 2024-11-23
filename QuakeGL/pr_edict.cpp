@@ -56,8 +56,6 @@ namespace
             return 1;
         case Progs::ddef_t::etype_t::ev_function:
             return sizeof(func_t) / 4;
-        case Progs::ddef_t::etype_t::ev_pointer:
-            return sizeof(void*) / 4;
         default:
             return 0;
         }
@@ -107,9 +105,6 @@ namespace
             break;
         case Progs::ddef_t::etype_t::ev_vector:
             sprintf(line, "'%5.1f %5.1f %5.1f'", val.vector[0], val.vector[1], val.vector[2]);
-            break;
-        case Progs::ddef_t::etype_t::ev_pointer:
-            sprintf(line, "pointer");
             break;
         default:
             sprintf(line, "bad type %i", type);
@@ -192,7 +187,7 @@ namespace
     }
 
     // Can parse either fields or globals returns false if error
-    bool ED_ParseEpair(void* base, const Progs::ddef_t& key, char* s)
+    bool ED_ParseEpair(entvars_t* base, const Progs::ddef_t& key, char* s)
     {
         void* d = (void*)((int*)base + key.ofs);
 
@@ -259,7 +254,75 @@ namespace
         }
         return true;
     }
+    
+    // Can parse either fields or globals returns false if error
+    bool ED_ParseEpair(float* base, const Progs::ddef_t& key, char* s)
+    {
+        void* d = (void*)((int*)base + key.ofs);
 
+        switch (key.type)
+        {
+        case Progs::ddef_t::etype_t::ev_string:
+            *(string_t*)d = ED_NewString(s) - pr_strings;
+            break;
+
+        case Progs::ddef_t::etype_t::ev_float:
+            *(float*)d = atof(s);
+            break;
+
+        case Progs::ddef_t::etype_t::ev_vector:
+        {
+            char string[128];
+            strcpy(string, s);
+            char* v = string;
+            char* w = string;
+            for (int i = 0; i < 3; i++)
+            {
+                while (*v && *v != ' ')
+                    v++;
+                *v = 0;
+                ((float*)d)[i] = atof(w);
+                w = v = v + 1;
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_entity:
+            *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
+            break;
+
+        case Progs::ddef_t::etype_t::ev_field:
+        {
+            auto defs = Progs::GetFieldDefs();
+            if (auto it = std::ranges::find(defs, s, &Progs::ddef_t::s_name); it != defs.end())
+            {
+                *(int*)d = *(int*)(pr_globals + it->ofs);
+            }
+            else
+            {
+                Con_Printf("Can't find field %s\n", s);
+                return false;
+            }
+            break;
+        }
+        case Progs::ddef_t::etype_t::ev_function:
+        {
+            auto funcs = Progs::GetFunctions();
+            if (auto it = std::ranges::find(funcs, s, &Progs::dfunction_t::s_name); it != funcs.end())
+            {
+                *(func_t*)d = std::ranges::distance(funcs.begin(), it);
+            }
+            else
+            {
+                Con_Printf("Can't find function %s\n", s);
+                return false;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+        return true;
+    }
 }
 
 
@@ -625,7 +688,7 @@ void ED_ParseGlobals(char * data)
         auto defs = Progs::GetGlobalDefs();
         if (auto it = std::ranges::find(defs, keyname, &Progs::ddef_t::s_name); it != defs.end())
         {
-            if (!ED_ParseEpair((void*)pr_globals, *it, com_token))
+            if (!ED_ParseEpair(pr_globals, *it, com_token))
                 Host_Error("ED_ParseGlobals: parse error");
         }
         else
@@ -718,7 +781,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
                 sprintf(com_token, "0 %s 0", temp);
             }
 
-            if (!ED_ParseEpair((void*)&ent->v, *it, com_token))
+            if (!ED_ParseEpair(&ent->v, *it, com_token))
                 Host_Error("ED_ParseEdict: parse error");
         }
         else

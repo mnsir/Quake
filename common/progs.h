@@ -122,7 +122,6 @@ struct ddef_t
         ev_entity,
         ev_field,
         ev_function,
-        ev_pointer,
     };
 
     bool save_global;

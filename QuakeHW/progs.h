@@ -170,7 +170,6 @@ struct edict_t
 
 //============================================================================
 
-extern char * pr_strings;
 extern globalvars_t * pr_global_struct;
 extern float * pr_globals; // same as pr_global_struct
 namespace Progs
@@ -215,13 +214,13 @@ edict_t* NEXT_EDICT(edict_t* e);
 #define G_EDICT(o) ((edict_t *)((byte *)sv.edicts+ *(int *)&pr_globals[o]))
 #define G_EDICTNUM(o) NUM_FOR_EDICT(G_EDICT(o))
 #define G_VECTOR(o) (&pr_globals[o])
-#define G_STRING(o) (pr_strings + *(string_t *)&pr_globals[o])
+#define G_STRING(o) (Progs::FromStringOffset(*(string_t *)&pr_globals[o]))
 #define G_FUNCTION(o) (*(func_t *)&pr_globals[o])
 
 #define E_FLOAT(e,o) (((float*)&e->v)[o])
 #define E_INT(e,o) (*(int *)&((float*)&e->v)[o])
 #define E_VECTOR(e,o) (&((float*)&e->v)[o])
-#define E_STRING(e,o) (pr_strings + *(string_t *)&((float*)&e->v)[o])
+#define E_STRING(e,o) (Progs::FromStringOffset(*(string_t *)&((float*)&e->v)[o]))
 
 typedef void (*builtin_t) ();
 extern builtin_t * pr_builtins;
@@ -240,3 +239,8 @@ void ED_PrintNum(int ent);
 
 eval_t * GetEdictFieldValue(edict_t * ed, std::string_view field);
 
+namespace Progs
+{
+    string_t ToStringOffset(char* str);
+    char* FromStringOffset(string_t offset);
+}

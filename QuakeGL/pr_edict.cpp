@@ -8,7 +8,6 @@
 #include <sstream>
 #include <format>
 
-char * pr_strings;
 globalvars_t * pr_global_struct;
 float * pr_globals; // same as pr_global_struct
 
@@ -27,13 +26,13 @@ cvar_t saved4 = {(char*)"saved4", (char*)"0", true};
 struct StrCmp
 {
     const char* name = nullptr;
-    [[nodiscard]] bool operator()(int i) const { return !strcmp(pr_strings + i, name); }
+    [[nodiscard]] bool operator()(int i) const { return !strcmp(Progs::FromStringOffset(i), name); }
 };
 
 struct SvCmp
 {
     std::string_view name;
-    [[nodiscard]] bool operator()(int i) const { return pr_strings + i == name; }
+    [[nodiscard]] bool operator()(int i) const { return Progs::FromStringOffset(i) == name; }
 };
 
 namespace
@@ -74,7 +73,7 @@ namespace
         switch (type)
         {
         case Progs::ddef_t::etype_t::ev_string:
-            sprintf(line, "%s", pr_strings + val.string);
+            sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::ddef_t::etype_t::ev_entity:
             sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
@@ -120,7 +119,7 @@ namespace
         switch (type)
         {
         case Progs::FieldDef::Type::ev_string:
-            sprintf(line, "%s", pr_strings + val.string);
+            sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::FieldDef::Type::ev_entity:
             sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
@@ -156,7 +155,7 @@ namespace
         switch (type)
         {
         case Progs::ddef_t::etype_t::ev_string:
-            sprintf(line, "%s", pr_strings + val.string);
+            sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::ddef_t::etype_t::ev_entity:
             sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
@@ -202,7 +201,7 @@ namespace
         switch (type)
         {
         case Progs::FieldDef::Type::ev_string:
-            sprintf(line, "%s", pr_strings + val.string);
+            sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::FieldDef::Type::ev_entity:
             sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
@@ -264,7 +263,7 @@ namespace
         switch (key.type)
         {
         case Progs::FieldDef::Type::ev_string:
-            *(string_t*)d = ED_NewString(s) - pr_strings;
+            *(string_t*)d = Progs::ToStringOffset(ED_NewString(s));
             break;
 
         case Progs::FieldDef::Type::ev_float:
@@ -319,7 +318,7 @@ namespace
         switch (key.type)
         {
         case Progs::ddef_t::etype_t::ev_string:
-            *(string_t*)d = ED_NewString(s) - pr_strings;
+            *(string_t*)d = Progs::ToStringOffset(ED_NewString(s));
             break;
 
         case Progs::ddef_t::etype_t::ev_float:
@@ -923,7 +922,7 @@ void ED_LoadFromFile(char * data)
             continue;
         }
         auto funcs = Progs::GetFunctions();
-        if (auto it = std::ranges::find(funcs, pr_strings + ent->v.classname, &Progs::dfunction_t::s_name); it != funcs.end())
+        if (auto it = std::ranges::find(funcs, Progs::FromStringOffset(ent->v.classname), &Progs::dfunction_t::s_name); it != funcs.end())
         {
             pr_global_struct->self = EDICT_TO_PROG(ent);
             PR_ExecuteProgram(std::ranges::distance(funcs.begin(), it));
@@ -946,9 +945,6 @@ PR_LoadProgs
 */
 void PR_LoadProgs()
 {
-    auto strings = Progs::GetStrings();
-    pr_strings = strings.data();
-
     auto globals = Progs::GetGlobals();
     pr_global_struct = (globalvars_t *)globals.data();
 
@@ -1004,4 +1000,14 @@ int NUM_FOR_EDICT(edict_t * e)
 edict_t* NEXT_EDICT(edict_t* e)
 {
     return (edict_t*)((byte*)e + Progs::edict_size);
+}
+
+string_t Progs::ToStringOffset(char* str)
+{
+    return str - Progs::GetStrings().data();
+}
+
+char* Progs::FromStringOffset(string_t offset)
+{
+    return Progs::GetStrings().data() + offset;
 }

@@ -681,7 +681,7 @@ void Host_Name_f()
         if (std::strcmp(host_client->name, newName) != 0)
             Con_Printf("%s renamed to %s\n", host_client->name, newName);
     std::strcpy(host_client->name, newName);
-    host_client->edict->v.netname = host_client->name - pr_strings;
+    host_client->edict->v.netname = Progs::ToStringOffset(host_client->name);
 
     // send notification to all clients
 
@@ -922,11 +922,11 @@ void Host_Pause_f()
 
         if (sv.paused)
         {
-            SV_BroadcastPrintf((char*)"%s paused the game\n", pr_strings + sv_player->v.netname);
+            SV_BroadcastPrintf((char*)"%s paused the game\n", Progs::FromStringOffset(sv_player->v.netname));
         }
         else
         {
-            SV_BroadcastPrintf((char*)"%s unpaused the game\n", pr_strings + sv_player->v.netname);
+            SV_BroadcastPrintf((char*)"%s unpaused the game\n", Progs::FromStringOffset(sv_player->v.netname));
         }
 
         // send notification to all clients
@@ -1000,7 +1000,7 @@ void Host_Spawn_f()
         memset(&ent->v, 0, Progs::entityfields * 4);
         ent->v.colormap = NUM_FOR_EDICT(ent);
         ent->v.team = (host_client->colors & 15) + 1;
-        ent->v.netname = host_client->name - pr_strings;
+        ent->v.netname = Progs::ToStringOffset(host_client->name);
 
         // copy spawn parms out of the client_t
 
@@ -1367,7 +1367,7 @@ edict_t * FindViewthing()
     for (i = 0; i < sv.num_edicts; i++)
     {
         e = EDICT_NUM(i);
-        if (!strcmp(pr_strings + e->v.classname, "viewthing"))
+        if (!strcmp(Progs::FromStringOffset(e->v.classname), "viewthing"))
             return e;
     }
     Con_Printf("No viewthing on map\n");

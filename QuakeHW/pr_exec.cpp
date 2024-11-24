@@ -448,7 +448,7 @@ void PR_ExecuteProgram(func_t fnum)
             c->_float = !a->vector[0] && !a->vector[1] && !a->vector[2];
             break;
         case Progs::Op::OP_NOT_S:
-            c->_float = !a->string || !pr_strings[a->string];
+            c->_float = !a->string || !*Progs::FromStringOffset(a->string);
             break;
         case Progs::Op::OP_NOT_FNC:
             c->_float = !a->function;
@@ -466,7 +466,7 @@ void PR_ExecuteProgram(func_t fnum)
                 (a->vector[2] == b->vector[2]);
             break;
         case Progs::Op::OP_EQ_S:
-            c->_float = !strcmp(pr_strings + a->string, pr_strings + b->string);
+            c->_float = !strcmp(Progs::FromStringOffset(a->string), Progs::FromStringOffset(b->string));
             break;
         case Progs::Op::OP_EQ_E:
             c->_float = a->_int == b->_int;
@@ -485,7 +485,7 @@ void PR_ExecuteProgram(func_t fnum)
                 (a->vector[2] != b->vector[2]);
             break;
         case Progs::Op::OP_NE_S:
-            c->_float = strcmp(pr_strings + a->string, pr_strings + b->string);
+            c->_float = strcmp(Progs::FromStringOffset(a->string), Progs::FromStringOffset(b->string));
             break;
         case Progs::Op::OP_NE_E:
             c->_float = a->_int != b->_int;

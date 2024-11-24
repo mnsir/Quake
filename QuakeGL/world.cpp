@@ -321,7 +321,7 @@ void SV_FindTouchedLeafs(edict_t * ent, mnode_t * node)
 
     if (node->contents < 0)
     {
-        if (ent->num_leafs == MAX_ENT_LEAFS)
+        if (ent->num_leafs == ent->leafnums.size())
             return;
 
         leaf = (mleaf_t *)node;

@@ -2,7 +2,7 @@
 #include <common/progs.h>
 #include "pr_comp.h" // defs shared with qcc
 
-typedef struct
+struct globalvars_t
 {
     int pad[28];
     int self;
@@ -59,9 +59,9 @@ typedef struct
     func_t ClientDisconnect;
     func_t SetNewParms;
     func_t SetChangeParms;
-} globalvars_t;
+};
 
-typedef struct
+struct entvars_t
 {
     float modelindex;
     vec3_t absmin;
@@ -140,11 +140,9 @@ typedef struct
     string_t noise1;
     string_t noise2;
     string_t noise3;
-} entvars_t;
+};
 
-#define PROGHEADER_CRC 5927
-
-typedef union eval_s
+union eval_t
 {
     string_t string;
     float _float;
@@ -152,23 +150,22 @@ typedef union eval_s
     func_t function;
     int _int;
     int edict;
-} eval_t;
+};
 
-#define MAX_ENT_LEAFS 16
-typedef struct edict_s
+struct edict_t
 {
     bool free;
     link_t area; // linked to a division node or leaf
 
     int num_leafs;
-    short leafnums[MAX_ENT_LEAFS];
+    std::array<short, 16> leafnums;
 
     entity_state_t baseline;
 
     float freetime; // sv.time when the object was freed
     entvars_t v; // C exported fields from progs
     // other fields from progs come immediately after
-} edict_t;
+};
 #define EDICT_FROM_AREA(l) STRUCT_FROM_LINK(l,edict_t,area)
 
 //============================================================================

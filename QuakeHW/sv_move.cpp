@@ -86,7 +86,7 @@ SV_movestep
 Called by monster program code.
 The move will be adjusted for slopes and stairs, but if the move isn't
 possible, no move is done, false is returned, and
-pr_global_struct->trace_normal is set to the normal of the blocking wall
+Progs::GetGlobalStruct().trace_normal is set to the normal of the blocking wall
 =============
 */
 bool SV_movestep(edict_t * ent, vec3_t move, bool relink)
@@ -377,7 +377,7 @@ void SV_MoveToGoal()
     edict_t * ent, * goal;
     float dist;
 
-    ent = PROG_TO_EDICT(pr_global_struct->self);
+    ent = PROG_TO_EDICT(Progs::GetGlobalStruct().self);
     goal = PROG_TO_EDICT(ent->v.goalentity);
     dist = G_FLOAT(OFS_PARM0);
 

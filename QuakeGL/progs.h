@@ -170,7 +170,6 @@ struct edict_t
 
 //============================================================================
 
-extern globalvars_t * pr_global_struct;
 extern float * pr_globals; // same as pr_global_struct
 namespace Progs
 {
@@ -242,4 +241,6 @@ namespace Progs
 
     using BuiltIn = void(*)();
     std::span<const BuiltIn> GetBuiltIns();
+
+    ::globalvars_t& GetGlobalStruct();
 }

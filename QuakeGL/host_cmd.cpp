@@ -105,7 +105,7 @@ void Host_God_f()
         return;
     }
 
-    if (pr_global_struct->deathmatch && !host_client->privileged)
+    if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
@@ -123,7 +123,7 @@ void Host_Notarget_f()
         return;
     }
 
-    if (pr_global_struct->deathmatch && !host_client->privileged)
+    if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
@@ -143,7 +143,7 @@ void Host_Noclip_f()
         return;
     }
 
-    if (pr_global_struct->deathmatch && !host_client->privileged)
+    if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     if (sv_player->v.movetype != MOVETYPE_NOCLIP)
@@ -175,7 +175,7 @@ void Host_Fly_f()
         return;
     }
 
-    if (pr_global_struct->deathmatch && !host_client->privileged)
+    if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     if (sv_player->v.movetype != MOVETYPE_FLY)
@@ -895,9 +895,9 @@ void Host_Kill_f()
         return;
     }
 
-    pr_global_struct->time = sv.time;
-    pr_global_struct->self = EDICT_TO_PROG(sv_player);
-    PR_ExecuteProgram(pr_global_struct->ClientKill);
+    Progs::GetGlobalStruct().time = sv.time;
+    Progs::GetGlobalStruct().self = EDICT_TO_PROG(sv_player);
+    PR_ExecuteProgram(Progs::GetGlobalStruct().ClientKill);
 }
 
 
@@ -1005,18 +1005,18 @@ void Host_Spawn_f()
         // copy spawn parms out of the client_t
 
         for (i = 0; i < NUM_SPAWN_PARMS; i++)
-            (&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
+            (&Progs::GetGlobalStruct().parm1)[i] = host_client->spawn_parms[i];
 
         // call the spawn function
 
-        pr_global_struct->time = sv.time;
-        pr_global_struct->self = EDICT_TO_PROG(sv_player);
-        PR_ExecuteProgram(pr_global_struct->ClientConnect);
+        Progs::GetGlobalStruct().time = sv.time;
+        Progs::GetGlobalStruct().self = EDICT_TO_PROG(sv_player);
+        PR_ExecuteProgram(Progs::GetGlobalStruct().ClientConnect);
 
         if ((Sys_FloatTime() - host_client->netconnection->connecttime) <= sv.time)
             Sys_Printf((char*)"%s entered the game\n", host_client->name);
 
-        PR_ExecuteProgram(pr_global_struct->PutClientInServer);
+        PR_ExecuteProgram(Progs::GetGlobalStruct().PutClientInServer);
     }
 
 
@@ -1053,19 +1053,19 @@ void Host_Spawn_f()
     //
     MSG_WriteByte(&host_client->message, svc_updatestat);
     MSG_WriteByte(&host_client->message, STAT_TOTALSECRETS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->total_secrets);
+    MSG_WriteLong(&host_client->message, Progs::GetGlobalStruct().total_secrets);
 
     MSG_WriteByte(&host_client->message, svc_updatestat);
     MSG_WriteByte(&host_client->message, STAT_TOTALMONSTERS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->total_monsters);
+    MSG_WriteLong(&host_client->message, Progs::GetGlobalStruct().total_monsters);
 
     MSG_WriteByte(&host_client->message, svc_updatestat);
     MSG_WriteByte(&host_client->message, STAT_SECRETS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->found_secrets);
+    MSG_WriteLong(&host_client->message, Progs::GetGlobalStruct().found_secrets);
 
     MSG_WriteByte(&host_client->message, svc_updatestat);
     MSG_WriteByte(&host_client->message, STAT_MONSTERS);
-    MSG_WriteLong(&host_client->message, pr_global_struct->killed_monsters);
+    MSG_WriteLong(&host_client->message, Progs::GetGlobalStruct().killed_monsters);
 
 
     //
@@ -1129,7 +1129,7 @@ void Host_Kick_f()
             return;
         }
     }
-    else if (pr_global_struct->deathmatch && !host_client->privileged)
+    else if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     save = host_client;
@@ -1217,7 +1217,7 @@ void Host_Give_f()
         return;
     }
 
-    if (pr_global_struct->deathmatch && !host_client->privileged)
+    if (Progs::GetGlobalStruct().deathmatch && !host_client->privileged)
         return;
 
     t = Cmd_Argv(1);

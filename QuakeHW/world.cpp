@@ -278,16 +278,16 @@ void SV_TouchLinks(edict_t * ent, areanode_t * node)
             || ent->v.absmax[1] < touch->v.absmin[1]
             || ent->v.absmax[2] < touch->v.absmin[2])
             continue;
-        old_self = pr_global_struct->self;
-        old_other = pr_global_struct->other;
+        old_self = Progs::GetGlobalStruct().self;
+        old_other = Progs::GetGlobalStruct().other;
 
-        pr_global_struct->self = EDICT_TO_PROG(touch);
-        pr_global_struct->other = EDICT_TO_PROG(ent);
-        pr_global_struct->time = sv.time;
+        Progs::GetGlobalStruct().self = EDICT_TO_PROG(touch);
+        Progs::GetGlobalStruct().other = EDICT_TO_PROG(ent);
+        Progs::GetGlobalStruct().time = sv.time;
         PR_ExecuteProgram(touch->v.touch);
 
-        pr_global_struct->self = old_self;
-        pr_global_struct->other = old_other;
+        Progs::GetGlobalStruct().self = old_self;
+        Progs::GetGlobalStruct().other = old_other;
     }
 
     // recurse down both sides

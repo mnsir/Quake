@@ -874,7 +874,7 @@ void ED_LoadFromFile(char * data)
 
     ent = NULL;
     inhibit = 0;
-    pr_global_struct->time = sv.time;
+    Progs::GetGlobalStruct().time = sv.time;
 
     // parse ents
     while (1)
@@ -924,7 +924,7 @@ void ED_LoadFromFile(char * data)
         auto funcs = Progs::GetFunctions();
         if (auto it = std::ranges::find(funcs, Progs::FromStringOffset(ent->v.classname), &Progs::dfunction_t::s_name); it != funcs.end())
         {
-            pr_global_struct->self = EDICT_TO_PROG(ent);
+            Progs::GetGlobalStruct().self = EDICT_TO_PROG(ent);
             PR_ExecuteProgram(std::ranges::distance(funcs.begin(), it));
         }
         else
@@ -1010,4 +1010,9 @@ string_t Progs::ToStringOffset(char* str)
 char* Progs::FromStringOffset(string_t offset)
 {
     return Progs::GetStrings().data() + offset;
+}
+
+globalvars_t& Progs::GetGlobalStruct()
+{
+    return *pr_global_struct;
 }

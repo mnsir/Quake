@@ -264,9 +264,9 @@ void SV_ConnectClient(int clientnum)
     else
     {
         // call the progs to get default spawn parms for the new client
-        PR_ExecuteProgram(pr_global_struct->SetNewParms);
+        PR_ExecuteProgram(Progs::GetGlobalStruct().SetNewParms);
         for (i = 0; i < NUM_SPAWN_PARMS; i++)
-            client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+            client->spawn_parms[i] = (&Progs::GetGlobalStruct().parm1)[i];
     }
 
     SV_SendServerinfo(client);
@@ -600,7 +600,7 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     if (val)
         items = (int)ent->v.items | ((int)val->_float << 23);
     else
-        items = (int)ent->v.items | ((int)pr_global_struct->serverflags << 28);
+        items = (int)ent->v.items | ((int)Progs::GetGlobalStruct().serverflags << 28);
 
     bits |= SU_ITEMS;
 
@@ -980,7 +980,7 @@ void SV_SaveSpawnparms()
 {
     int i, j;
 
-    svs.serverflags = pr_global_struct->serverflags;
+    svs.serverflags = Progs::GetGlobalStruct().serverflags;
 
     for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
     {
@@ -988,10 +988,10 @@ void SV_SaveSpawnparms()
             continue;
 
         // call the progs to get default spawn parms for the new client
-        pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
-        PR_ExecuteProgram(pr_global_struct->SetChangeParms);
+        Progs::GetGlobalStruct().self = EDICT_TO_PROG(host_client->edict);
+        PR_ExecuteProgram(Progs::GetGlobalStruct().SetChangeParms);
         for (j = 0; j < NUM_SPAWN_PARMS; j++)
-            host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
+            host_client->spawn_parms[j] = (&Progs::GetGlobalStruct().parm1)[j];
     }
 }
 
@@ -1119,14 +1119,14 @@ void SV_SpawnServer(char * server)
     ent->v.movetype = MOVETYPE_PUSH;
 
     if (coop.value)
-        pr_global_struct->coop = coop.value;
+        Progs::GetGlobalStruct().coop = coop.value;
     else
-        pr_global_struct->deathmatch = deathmatch.value;
+        Progs::GetGlobalStruct().deathmatch = deathmatch.value;
 
-    pr_global_struct->mapname = Progs::ToStringOffset(sv.name);
+    Progs::GetGlobalStruct().mapname = Progs::ToStringOffset(sv.name);
 
     // serverflags are for cross level information (sigils)
-    pr_global_struct->serverflags = svs.serverflags;
+    Progs::GetGlobalStruct().serverflags = svs.serverflags;
 
     ED_LoadFromFile(sv.worldmodel->entities);
 

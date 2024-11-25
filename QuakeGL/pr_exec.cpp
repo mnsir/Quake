@@ -335,8 +335,8 @@ void PR_ExecuteProgram(func_t fnum)
     auto funcs = Progs::GetFunctions();
     if (!fnum || fnum >= funcs.size())
     {
-        if (pr_global_struct->self)
-            ED_Print(PROG_TO_EDICT(pr_global_struct->self));
+        if (Progs::GetGlobalStruct().self)
+            ED_Print(PROG_TO_EDICT(Progs::GetGlobalStruct().self));
         Host_Error("PR_ExecuteProgram: NULL function");
     }
 
@@ -603,8 +603,8 @@ void PR_ExecuteProgram(func_t fnum)
             break;
 
         case Progs::Op::OP_STATE:
-            ed = PROG_TO_EDICT(pr_global_struct->self);
-            ed->v.nextthink = pr_global_struct->time + 0.1;
+            ed = PROG_TO_EDICT(Progs::GetGlobalStruct().self);
+            ed->v.nextthink = Progs::GetGlobalStruct().time + 0.1;
             if (a->_float != ed->v.frame)
             {
                 ed->v.frame = a->_float;

@@ -222,10 +222,6 @@ edict_t * NEXT_EDICT(edict_t * e);
 #define E_VECTOR(e,o) (&((float*)&e->v)[o])
 #define E_STRING(e,o) (Progs::FromStringOffset(*(string_t *)&((float*)&e->v)[o]))
 
-typedef void (*builtin_t) ();
-extern builtin_t * pr_builtins;
-extern int pr_numbuiltins;
-
 extern int pr_argc;
 
 extern bool pr_trace;
@@ -243,4 +239,7 @@ namespace Progs
 {
     string_t ToStringOffset(char* str);
     char* FromStringOffset(string_t offset);
+
+    using BuiltIn = void(*)();
+    std::span<const BuiltIn> GetBuiltIns();
 }

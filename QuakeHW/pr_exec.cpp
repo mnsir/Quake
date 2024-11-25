@@ -583,9 +583,10 @@ void PR_ExecuteProgram(func_t fnum)
             if (newf.first_statement < 0)
             { // negative statements are built in functions
                 i = -newf.first_statement;
-                if (i >= pr_numbuiltins)
+                auto&& builtIns = Progs::GetBuiltIns();
+                if (i >= builtIns.size())
                     PR_RunError((char*)"Bad builtin call number");
-                pr_builtins[i]();
+                builtIns[i]();
                 break;
             }
 

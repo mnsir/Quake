@@ -657,7 +657,7 @@ int PF_newcheckclient(int check)
         if (i == svs.maxclients + 1)
             i = 1;
 
-        ent = EDICT_NUM(i);
+        ent = &sv.edicts[i];
 
         if (i == check)
             break; // didn't find anything else
@@ -714,7 +714,7 @@ void PF_checkclient()
     }
 
     // return check if it might be visible 
-    ent = EDICT_NUM(sv.lastcheck);
+    ent = &sv.edicts[sv.lastcheck];
     if (ent->free || ent->v.health <= 0)
     {
         RETURN_EDICT(sv.edicts);
@@ -839,8 +839,8 @@ void PF_findradius()
     org = G_VECTOR(OFS_PARM0);
     rad = G_FLOAT(OFS_PARM1);
 
-    ent = NEXT_EDICT(sv.edicts);
-    for (i = 1; i < sv.num_edicts; i++, ent = NEXT_EDICT(ent))
+    ent = std::next(sv.edicts);
+    for (i = 1; i < sv.num_edicts; i++, ent = std::next(ent))
     {
         if (ent->free)
             continue;
@@ -928,7 +928,7 @@ void PF_Find()
 
     for (e++; e < sv.num_edicts; e++)
     {
-        ed = EDICT_NUM(e);
+        ed = &sv.edicts[e];
         if (ed->free)
             continue;
         t = E_STRING(ed, f);
@@ -1202,7 +1202,7 @@ void PF_nextent()
             RETURN_EDICT(sv.edicts);
             return;
         }
-        ent = EDICT_NUM(i);
+        ent = &sv.edicts[i];
         if (!ent->free)
         {
             RETURN_EDICT(ent);
@@ -1252,8 +1252,8 @@ void PF_aim()
     bestdist = sv_aim.value;
     bestent = NULL;
 
-    check = NEXT_EDICT(sv.edicts);
-    for (i = 1; i < sv.num_edicts; i++, check = NEXT_EDICT(check))
+    check = std::next(sv.edicts);
+    for (i = 1; i < sv.num_edicts; i++, check = std::next(check))
     {
         if (check->v.takedamage != DAMAGE_AIM)
             continue;
@@ -1363,7 +1363,7 @@ sizebuf_t * WriteDest()
 
     case MSG_ONE:
         ent = PROG_TO_EDICT(Progs::GetGlobalStruct().msg_entity);
-        entnum = NUM_FOR_EDICT(ent);
+        entnum = std::distance(sv.edicts, ent);
         if (entnum < 1 || entnum > svs.maxclients)
             PR_RunError((char*)"WriteDest: not a client");
         return &svs.clients[entnum - 1].message;
@@ -1465,7 +1465,7 @@ void PF_setspawnparms()
     client_t * client;
 
     ent = G_EDICT(OFS_PARM0);
-    i = NUM_FOR_EDICT(ent);
+    i = std::distance(sv.edicts, ent);
     if (i < 1 || i > svs.maxclients)
         PR_RunError((char*)"Entity is not a client");
 

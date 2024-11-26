@@ -5,9 +5,6 @@
 namespace Progs
 {
 
-    constexpr int entityfields = 195;
-    
-
 struct dfunction_t
 {
     int first_statement = 0; // negative numbers are builtins

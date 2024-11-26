@@ -493,7 +493,7 @@ void Host_Savegame_f()
     ED_WriteGlobals(f);
     for (i = 0; i < sv.num_edicts; i++)
     {
-        ED_Write(f, EDICT_NUM(i));
+        ED_Write(f, &sv.edicts[i]);
         fflush(f);
     }
     fclose(f);
@@ -616,8 +616,8 @@ void Host_Loadgame_f()
         else
         { // parse an edict
 
-            ent = EDICT_NUM(entnum);
-            memset(&ent->v, 0, Progs::entityfields * 4);
+            ent = &sv.edicts[entnum];
+            memset(&ent->v, 0, sizeof(entvars_t));
             ent->free = false;
             ED_ParseEdict(start, ent);
 
@@ -996,8 +996,8 @@ void Host_Spawn_f()
         // set up the edict
         ent = host_client->edict;
 
-        memset(&ent->v, 0, Progs::entityfields * 4);
-        ent->v.colormap = NUM_FOR_EDICT(ent);
+        memset(&ent->v, 0, sizeof(entvars_t));
+        ent->v.colormap = std::distance(sv.edicts, ent);
         ent->v.team = (host_client->colors & 15) + 1;
         ent->v.netname = Progs::ToStringOffset(host_client->name);
 
@@ -1073,7 +1073,7 @@ void Host_Spawn_f()
     // in a state where it is expecting the client to correct the angle
     // and it won't happen if the game was just loaded, so you wind up
     // with a permanent head tilt
-    ent = EDICT_NUM(1 + (host_client - svs.clients));
+    ent = &sv.edicts[1 + (host_client - svs.clients)];
     MSG_WriteByte(&host_client->message, svc_setangle);
     for (i = 0; i < 2; i++)
         MSG_WriteAngle(&host_client->message, ent->v.angles[i]);
@@ -1365,7 +1365,7 @@ edict_t * FindViewthing()
 
     for (i = 0; i < sv.num_edicts; i++)
     {
-        e = EDICT_NUM(i);
+        e = &sv.edicts[i];
         if (!strcmp(Progs::FromStringOffset(e->v.classname), "viewthing"))
             return e;
     }

@@ -61,7 +61,7 @@ struct globalvars_t
     func_t SetChangeParms;
 };
 
-struct entvars_t
+struct alignas(4) entvars_t
 {
     float modelindex;
     vec3_t absmin;
@@ -140,6 +140,80 @@ struct entvars_t
     string_t noise1;
     string_t noise2;
     string_t noise3;
+    string_t wad;
+    string_t map;
+    float worldtype;
+    string_t killtarget;
+    float light_lev;
+    float style;
+    func_t th_stand;
+    func_t th_walk;
+    func_t th_run;
+    func_t th_missile;
+    func_t th_melee;
+    func_t th_pain;
+    func_t th_die;
+    int /*entity_t*/ oldenemy;
+    float speed;
+    float lefty;
+    float search_time;
+    float attack_state;
+    float walkframe;
+    float attack_finished;
+    float pain_finished;
+    float invincible_finished;
+    float invisible_finished;
+    float super_damage_finished;
+    float radsuit_finished;
+    float invincible_time;
+    float invincible_sound;
+    float invisible_time;
+    float invisible_sound;
+    float super_time;
+    float super_sound;
+    float rad_time;
+    float fly_sound;
+    float axhitme;
+    float show_hostile;
+    float jump_flag;
+    float swim_flag;
+    float air_finished;
+    float bubble_count;
+    string_t deathtype;
+    string_t mdl;
+    vec3_t mangle;
+    float t_length;
+    float t_width;
+    vec3_t dest;
+    vec3_t dest1;
+    vec3_t dest2;
+    float wait;
+    float delay;
+    int /*entity_t*/ trigger_field;
+    string_t noise4;
+    float pausetime;
+    int /*entity_t*/ movetarget;
+    float aflag;
+    float dmg;
+    float cnt;
+    func_t think1;
+    vec3_t finaldest;
+    vec3_t finalangle;
+    float count;
+    float lip;
+    float state;
+    vec3_t pos1;
+    vec3_t pos2;
+    float height;
+    float waitmin;
+    float waitmax;
+    float distance;
+    float volume;
+    float healamount;
+    float healtype;
+    float hit_z;
+    float dmgtime;
+    float inpain;
 };
 
 union eval_t
@@ -171,10 +245,7 @@ struct edict_t
 //============================================================================
 
 extern float * pr_globals; // same as pr_global_struct
-namespace Progs
-{
-    constexpr int edict_size = entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
-}
+
 //============================================================================
 
 void PR_Init();
@@ -196,13 +267,6 @@ void ED_ParseGlobals(char * data);
 
 void ED_LoadFromFile(char * data);
 
-//define EDICT_NUM(n) ((edict_t *)(sv.edicts+ (n)*pr_edict_size))
-//define NUM_FOR_EDICT(e) (((byte *)(e) - sv.edicts)/pr_edict_size)
-
-edict_t * EDICT_NUM(int n);
-int NUM_FOR_EDICT(edict_t * e);
-edict_t* NEXT_EDICT(edict_t* e);
-
 #define EDICT_TO_PROG(e) ((byte *)e - (byte *)sv.edicts)
 #define PROG_TO_EDICT(e) ((edict_t *)((byte *)sv.edicts + e))
 
@@ -211,7 +275,7 @@ edict_t* NEXT_EDICT(edict_t* e);
 #define G_FLOAT(o) (pr_globals[o])
 #define G_INT(o) (*(int *)&pr_globals[o])
 #define G_EDICT(o) ((edict_t *)((byte *)sv.edicts+ *(int *)&pr_globals[o]))
-#define G_EDICTNUM(o) NUM_FOR_EDICT(G_EDICT(o))
+#define G_EDICTNUM(o) std::distance(sv.edicts, G_EDICT(o))
 #define G_VECTOR(o) (&pr_globals[o])
 #define G_STRING(o) (Progs::FromStringOffset(*(string_t *)&pr_globals[o]))
 #define G_FUNCTION(o) (*(func_t *)&pr_globals[o])

@@ -44,8 +44,8 @@ void SV_CheckAllEnts()
     edict_t * check;
 
     // see if any solid entities are inside the final position
-    check = NEXT_EDICT(sv.edicts);
-    for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
+    check = std::next(sv.edicts);
+    for (e = 1; e < sv.num_edicts; e++, check = std::next(check))
     {
         if (check->free)
             continue;
@@ -440,8 +440,8 @@ void SV_PushMove(edict_t * pusher, float movetime)
 
     // see if any solid entities are inside the final position
     num_moved = 0;
-    check = NEXT_EDICT(sv.edicts);
-    for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
+    check = std::next(sv.edicts);
+    for (e = 1; e < sv.num_edicts; e++, check = std::next(check))
     {
         if (check->free)
             continue;
@@ -1138,7 +1138,7 @@ void SV_Physics()
     // treat each object in turn
     //
     ent = sv.edicts;
-    for (i = 0; i < sv.num_edicts; i++, ent = NEXT_EDICT(ent))
+    for (i = 0; i < sv.num_edicts; i++, ent = std::next(ent))
     {
         if (ent->free)
             continue;

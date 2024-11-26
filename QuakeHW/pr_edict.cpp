@@ -4,21 +4,24 @@
 #include "quakedef.h"
 #include <common/pak.h>
 #include <common/progs.h>
+#include <fstream>
+#include <sstream>
+#include <format>
 
-globalvars_t * pr_global_struct;
-float * pr_globals; // same as pr_global_struct
+globalvars_t* pr_global_struct;
+float* pr_globals; // same as pr_global_struct
 
-cvar_t nomonsters = {(char*)"nomonsters", (char*)"0"};
-cvar_t gamecfg = {(char*)"gamecfg", (char*)"0"};
-cvar_t scratch1 = {(char*)"scratch1", (char*)"0"};
-cvar_t scratch2 = {(char*)"scratch2", (char*)"0"};
-cvar_t scratch3 = {(char*)"scratch3", (char*)"0"};
-cvar_t scratch4 = {(char*)"scratch4", (char*)"0"};
-cvar_t savedgamecfg = {(char*)"savedgamecfg", (char*)"0", true};
-cvar_t saved1 = {(char*)"saved1", (char*)"0", true};
-cvar_t saved2 = {(char*)"saved2", (char*)"0", true};
-cvar_t saved3 = {(char*)"saved3", (char*)"0", true};
-cvar_t saved4 = {(char*)"saved4", (char*)"0", true};
+cvar_t nomonsters = { (char*)"nomonsters", (char*)"0" };
+cvar_t gamecfg = { (char*)"gamecfg", (char*)"0" };
+cvar_t scratch1 = { (char*)"scratch1", (char*)"0" };
+cvar_t scratch2 = { (char*)"scratch2", (char*)"0" };
+cvar_t scratch3 = { (char*)"scratch3", (char*)"0" };
+cvar_t scratch4 = { (char*)"scratch4", (char*)"0" };
+cvar_t savedgamecfg = { (char*)"savedgamecfg", (char*)"0", true };
+cvar_t saved1 = { (char*)"saved1", (char*)"0", true };
+cvar_t saved2 = { (char*)"saved2", (char*)"0", true };
+cvar_t saved3 = { (char*)"saved3", (char*)"0", true };
+cvar_t saved4 = { (char*)"saved4", (char*)"0", true };
 
 struct StrCmp
 {
@@ -58,12 +61,12 @@ namespace
     // Sets everything to NULL
     void ED_ClearEdict(edict_t& e)
     {
-        memset(&e.v, 0, Progs::entityfields * 4);
+        memset(&e.v, 0, sizeof(entvars_t));
         e.free = false;
     }
 
     // Returns a string describing *data in a type specific manner
-    char* PR_ValueString(Progs::ddef_t::etype_t type, const eval_t& val)
+    char* PR_Value_String(Progs::ddef_t::etype_t type, const eval_t& val)
     {
         static char line[256];
 
@@ -73,7 +76,7 @@ namespace
             sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::ddef_t::etype_t::ev_entity:
-            sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            sprintf(line, "entity %i", std::distance(sv.edicts, PROG_TO_EDICT(val.edict)));
             break;
         case Progs::ddef_t::etype_t::ev_function:
         {
@@ -108,6 +111,13 @@ namespace
         return line;
     }
 
+    std::string ValueString(const Progs::ddef_t& gd)
+    {
+        void* val = (void*)&pr_globals[gd.ofs];
+        char* s = PR_Value_String(gd.type, *(eval_t*)val);
+        return s;
+    }
+
     // Returns a string describing *data in a type specific manner
     char* PR_ValueString(Progs::FieldDef::Type type, const eval_t& val)
     {
@@ -119,7 +129,7 @@ namespace
             sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::FieldDef::Type::ev_entity:
-            sprintf(line, "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            sprintf(line, "entity %i", std::distance(sv.edicts, PROG_TO_EDICT(val.edict)));
             break;
         case Progs::FieldDef::Type::ev_function:
         {
@@ -144,7 +154,7 @@ namespace
         return line;
     }
 
-    // Returns a string describing *data in a type specific manner Easier to parse than PR_ValueString
+    // Returns a string describing *data in a type specific manner Easier to parse than PR_Value String
     char* PR_UglyValueString(Progs::ddef_t::etype_t type, const eval_t& val)
     {
         static char line[256];
@@ -155,7 +165,7 @@ namespace
             sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::ddef_t::etype_t::ev_entity:
-            sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            sprintf(line, "%i", std::distance(sv.edicts, PROG_TO_EDICT(val.edict)));
             break;
         case Progs::ddef_t::etype_t::ev_function:
         {
@@ -190,7 +200,7 @@ namespace
         return line;
     }
 
-    // Returns a string describing *data in a type specific manner Easier to parse than PR_ValueString
+    // Returns a string describing *data in a type specific manner Easier to parse than PR_ValueS tring
     char* PR_UglyValueString(Progs::FieldDef::Type type, const eval_t& val)
     {
         static char line[256];
@@ -201,7 +211,7 @@ namespace
             sprintf(line, "%s", Progs::FromStringOffset(val.string));
             break;
         case Progs::FieldDef::Type::ev_entity:
-            sprintf(line, "%i", NUM_FOR_EDICT(PROG_TO_EDICT(val.edict)));
+            sprintf(line, "%i", std::distance(sv.edicts, PROG_TO_EDICT(val.edict)));
             break;
         case Progs::FieldDef::Type::ev_function:
         {
@@ -284,7 +294,7 @@ namespace
             break;
         }
         case Progs::FieldDef::Type::ev_entity:
-            *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
+            *(int*)d = EDICT_TO_PROG(&sv.edicts[atoi(s)]);
             break;
 
         case Progs::FieldDef::Type::ev_function:
@@ -339,7 +349,7 @@ namespace
             break;
         }
         case Progs::ddef_t::etype_t::ev_entity:
-            *(int*)d = EDICT_TO_PROG(EDICT_NUM(atoi(s)));
+            *(int*)d = EDICT_TO_PROG(&sv.edicts[atoi(s)]);
             break;
 
         case Progs::ddef_t::etype_t::ev_field:
@@ -377,6 +387,7 @@ namespace
     }
 }
 
+
 /*
 =================
 ED_Alloc
@@ -388,14 +399,14 @@ instead of being removed and recreated, which can cause interpolated
 angles and bad trails.
 =================
 */
-edict_t * ED_Alloc()
+edict_t* ED_Alloc()
 {
     int i;
-    edict_t * e;
+    edict_t* e;
 
     for (i = svs.maxclients + 1; i < sv.num_edicts; i++)
     {
-        e = EDICT_NUM(i);
+        e = &sv.edicts[i];
         // the first couple seconds of server time can involve a lot of
         // freeing and allocating, so relax the replacement policy
         if (e->free && (e->freetime < 2 || sv.time - e->freetime > 0.5))
@@ -409,7 +420,7 @@ edict_t * ED_Alloc()
         Sys_Error("ED_Alloc: no free edicts");
 
     sv.num_edicts++;
-    e = EDICT_NUM(i);
+    e = &sv.edicts[i];
     ED_ClearEdict(*e);
 
     return e;
@@ -423,7 +434,7 @@ Marks the edict as free
 FIXME: walk all entities and NULL out references to this entity
 =================
 */
-void ED_Free(edict_t * ed)
+void ED_Free(edict_t* ed)
 {
     SV_UnlinkEdict(ed); // unlink from world bsp
 
@@ -461,21 +472,14 @@ eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
         {
             def = &*it;
         }
-        cache[rep] = { field,def };
+        cache[rep] = { field, def };
         rep ^= 1;
     }
 
     return def ? (eval_t*)((char*)&ed->v + def->ofs * 4) : nullptr;
 }
 
-/*
-============
-PR_GlobalString
-
-Returns a string with a description and the contents of a global,
-padded to 20 field width
-============
-*/
+// Returns a string with a description and the contents of a global, padded to 20 field width
 char* PR_GlobalString(int ofs)
 {
     static char line[128];
@@ -483,9 +487,8 @@ char* PR_GlobalString(int ofs)
     auto gd = Progs::GetGlobalDefs();
     if (auto it = std::ranges::find(gd, ofs, &Progs::ddef_t::ofs); it != gd.end())
     {
-        void* val = (void*)&pr_globals[ofs];
-        char* s = PR_ValueString(it->type, *(eval_t*)val);
-        sprintf(line, "%i(%s)%s", ofs, it->s_name.data(), s);
+        auto&& s = ValueString(*it);
+        sprintf(line, "%i(%s)%s", it->ofs, it->s_name.data(), s.data());
     }
     else
     {
@@ -500,7 +503,7 @@ char* PR_GlobalString(int ofs)
     return line;
 }
 
-char * PR_GlobalStringNoContents(int ofs)
+char* PR_GlobalStringNoContents(int ofs)
 {
     static char line[128];
 
@@ -530,7 +533,7 @@ ED_Print
 For debugging
 =============
 */
-void ED_Print(edict_t * ed)
+void ED_Print(edict_t* ed)
 {
     if (ed->free)
     {
@@ -538,14 +541,14 @@ void ED_Print(edict_t * ed)
         return;
     }
 
-    Con_Printf("\nEDICT %i:\n", NUM_FOR_EDICT(ed));
+    Con_Printf("\nEDICT %i:\n", std::distance(sv.edicts, ed));
     for (auto&& def : Progs::GetFieldDefs() | std::views::drop(1))
     {
         auto&& name = def.name;
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
-        int* v = (int *)((char *)&ed->v + def.ofs * 4);
+        int* v = (int*)((char*)&ed->v + def.ofs * 4);
 
         // if the value is still all 0, skip the field
         int j = 0;
@@ -561,7 +564,7 @@ void ED_Print(edict_t * ed)
         while (l++ < 15)
             Con_Printf(" ");
 
-        Con_Printf("%s\n", PR_ValueString(def.type, *(eval_t *)v));
+        Con_Printf("%s\n", PR_ValueString(def.type, *(eval_t*)v));
     }
 }
 
@@ -572,7 +575,7 @@ ED_Write
 For savegames
 =============
 */
-void ED_Write(FILE * f, edict_t * ed)
+void ED_Write(FILE* f, edict_t* ed)
 {
     fprintf(f, "{\n");
 
@@ -581,14 +584,13 @@ void ED_Write(FILE * f, edict_t * ed)
         fprintf(f, "}\n");
         return;
     }
-
     for (auto&& def : Progs::GetFieldDefs() | std::views::drop(1))
     {
         auto&& name = def.name;
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
-        int* v = (int *)((char *)&ed->v + def.ofs * 4);
+        int* v = (int*)((char*)&ed->v + def.ofs * 4);
 
         // if the value is still all 0, skip the field
         int j = 0;
@@ -600,7 +602,7 @@ void ED_Write(FILE * f, edict_t * ed)
             continue;
 
         fprintf(f, "\"%s\" ", name.data());
-        fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, *(eval_t *)v));
+        fprintf(f, "\"%s\"\n", PR_UglyValueString(def.type, *(eval_t*)v));
     }
 
     fprintf(f, "}\n");
@@ -608,7 +610,7 @@ void ED_Write(FILE * f, edict_t * ed)
 
 void ED_PrintNum(int ent)
 {
-    ED_Print(EDICT_NUM(ent));
+    ED_Print(&sv.edicts[ent]);
 }
 
 /*
@@ -657,13 +659,13 @@ For debugging
 void ED_Count()
 {
     int i;
-    edict_t * ent;
+    edict_t* ent;
     int active, models, solid, step;
 
     active = models = solid = step = 0;
     for (i = 0; i < sv.num_edicts; i++)
     {
-        ent = EDICT_NUM(i);
+        ent = &sv.edicts[i];
         if (ent->free)
             continue;
         active++;
@@ -697,7 +699,7 @@ FIXME: need to tag constants, doesn't really work
 ED_WriteGlobals
 =============
 */
-void ED_WriteGlobals(FILE * f)
+void ED_WriteGlobals(FILE* f)
 {
     fprintf(f, "{\n");
     for (auto&& def : Progs::GetGlobalDefs())
@@ -721,7 +723,7 @@ void ED_WriteGlobals(FILE * f)
 ED_ParseGlobals
 =============
 */
-void ED_ParseGlobals(char * data)
+void ED_ParseGlobals(char* data)
 {
     char keyname[64];
 
@@ -768,7 +770,7 @@ ed should be a properly initialized empty edict.
 Used for initial level load and for savegames.
 ====================
 */
-char * ED_ParseEdict(char * data, edict_t * ent)
+char* ED_ParseEdict(char* data, edict_t* ent)
 {
     bool anglehack;
     bool init;
@@ -779,7 +781,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
 
     // clear it
     if (ent != sv.edicts) // hack
-        memset(&ent->v, 0, Progs::entityfields * 4);
+        memset(&ent->v, 0, sizeof(entvars_t));
 
     // go through all the dictionary pairs
     while (1)
@@ -871,9 +873,9 @@ Used for both fresh maps and savegame loads. A fresh map would also need
 to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 ================
 */
-void ED_LoadFromFile(char * data)
+void ED_LoadFromFile(char* data)
 {
-    edict_t * ent;
+    edict_t* ent;
     int inhibit;
 
     ent = NULL;
@@ -891,7 +893,7 @@ void ED_LoadFromFile(char * data)
             Sys_Error("ED_LoadFromFile: found %s when expecting {", com_token);
 
         if (!ent)
-            ent = EDICT_NUM(0);
+            ent = &sv.edicts[0];
         else
             ent = ED_Alloc();
         data = ED_ParseEdict(data, ent);
@@ -907,8 +909,8 @@ void ED_LoadFromFile(char * data)
             }
         }
         else if ((current_skill == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY))
-                 || (current_skill == 1 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_MEDIUM))
-                 || (current_skill >= 2 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_HARD)))
+            || (current_skill == 1 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_MEDIUM))
+            || (current_skill >= 2 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_HARD)))
         {
             ED_Free(ent);
             inhibit++;
@@ -941,7 +943,6 @@ void ED_LoadFromFile(char * data)
 
     Con_DPrintf("%i entities inhibited\n", inhibit);
 }
-
 
 /*
 ===============
@@ -979,32 +980,6 @@ void PR_Init()
     Cvar_RegisterVariable(&saved2);
     Cvar_RegisterVariable(&saved3);
     Cvar_RegisterVariable(&saved4);
-}
-
-
-
-edict_t * EDICT_NUM(int n)
-{
-    if (n < 0 || n >= sv.max_edicts)
-        Sys_Error("EDICT_NUM: bad number %i", n);
-    return (edict_t *)((byte *)sv.edicts + (n)*Progs::edict_size);
-}
-
-int NUM_FOR_EDICT(edict_t * e)
-{
-    int b;
-
-    b = (byte *)e - (byte *)sv.edicts;
-    b = b / Progs::edict_size;
-
-    if (b < 0 || b >= sv.num_edicts)
-        Sys_Error("NUM_FOR_EDICT: bad pointer");
-    return b;
-}
-
-edict_t* NEXT_EDICT(edict_t* e)
-{
-    return (edict_t*)((byte*)e + Progs::edict_size);
 }
 
 string_t Progs::ToStringOffset(char* str)

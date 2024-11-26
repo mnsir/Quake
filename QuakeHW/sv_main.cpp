@@ -131,7 +131,7 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
         return;
     }
 
-    ent = NUM_FOR_EDICT(entity);
+    ent = std::distance(sv.edicts, entity);
 
     channel = (ent << 3) | channel;
 
@@ -207,7 +207,7 @@ void SV_SendServerinfo(client_t * client)
 
     // set view 
     MSG_WriteByte(&client->message, svc_setview);
-    MSG_WriteShort(&client->message, NUM_FOR_EDICT(client->edict));
+    MSG_WriteShort(&client->message, std::distance(sv.edicts, client->edict));
 
     MSG_WriteByte(&client->message, svc_signonnum);
     MSG_WriteByte(&client->message, 1);
@@ -239,7 +239,7 @@ void SV_ConnectClient(int clientnum)
 
     edictnum = clientnum + 1;
 
-    ent = EDICT_NUM(edictnum);
+    ent = &sv.edicts[edictnum];
 
     // set up the client_t
     netconnection = client->netconnection;
@@ -418,8 +418,8 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
     pvs = SV_FatPVS(org);
 
     // send over all entities (excpet the client) that touch the pvs
-    ent = NEXT_EDICT(sv.edicts);
-    for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
+    ent = std::next(sv.edicts);
+    for (e = 1; e < sv.num_edicts; e++, ent = std::next(ent))
     {
         // ignore if not touching a PV leaf
         if (ent != clent) // clent is ALLWAYS sent
@@ -533,8 +533,8 @@ void SV_CleanupEnts()
     int e;
     edict_t * ent;
 
-    ent = NEXT_EDICT(sv.edicts);
-    for (e = 1; e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
+    ent = std::next(sv.edicts);
+    for (e = 1; e < sv.num_edicts; e++, ent = std::next(ent))
     {
         ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
     }
@@ -899,7 +899,7 @@ void SV_CreateBaseline()
     for (entnum = 0; entnum < sv.num_edicts; entnum++)
     {
         // get the current server version
-        svent = EDICT_NUM(entnum);
+        svent = &sv.edicts[entnum];
         if (svent->free)
             continue;
         if (entnum > svs.maxclients && !svent->v.modelindex)
@@ -1054,7 +1054,7 @@ void SV_SpawnServer(char * server)
     // allocate server memory
     sv.max_edicts = MAX_EDICTS;
 
-    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * Progs::edict_size, (char*)"edicts");
+    sv.edicts = (edict_t*)Hunk_AllocName(sv.max_edicts * sizeof(edict_t), (char*)"edicts");
 
     sv.datagram.maxsize = sizeof(sv.datagram_buf);
     sv.datagram.cursize = 0;
@@ -1072,7 +1072,7 @@ void SV_SpawnServer(char * server)
     sv.num_edicts = svs.maxclients + 1;
     for (i = 0; i < svs.maxclients; i++)
     {
-        ent = EDICT_NUM(i + 1);
+        ent = &sv.edicts[i + 1];
         svs.clients[i].edict = ent;
     }
 
@@ -1110,8 +1110,8 @@ void SV_SpawnServer(char * server)
     //
     // load the rest of the entities
     // 
-    ent = EDICT_NUM(0);
-    memset(&ent->v, 0, Progs::entityfields * 4);
+    ent = &sv.edicts[0];
+    memset(&ent->v, 0, sizeof(entvars_t));
     ent->free = false;
     ent->v.model = Progs::ToStringOffset(sv.worldmodel->name);
     ent->v.modelindex = 1; // world model

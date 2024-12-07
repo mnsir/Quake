@@ -916,12 +916,11 @@ void PF_Remove()
 void PF_Find()
 {
     int e;
-    int f;
     char * s, * t;
     edict_t * ed;
 
     e = G_EDICTNUM(OFS_PARM0);
-    f = G_INT(OFS_PARM1);
+    int offset = G_INT(OFS_PARM1);
     s = G_STRING(OFS_PARM2);
     if (!s)
         PR_RunError((char*)"PF_Find: bad search string");
@@ -931,7 +930,7 @@ void PF_Find()
         ed = &sv.edicts[e];
         if (ed->free)
             continue;
-        t = E_STRING(ed, f);
+        t = Progs::FromStringOffset(reinterpret_cast<int*>(&ed->v)[offset]);
         if (!t)
             continue;
         if (!strcmp(t, s))

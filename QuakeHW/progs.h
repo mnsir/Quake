@@ -280,11 +280,6 @@ void ED_LoadFromFile(char * data);
 #define G_STRING(o) (Progs::FromStringOffset(*(string_t *)&pr_globals[o]))
 #define G_FUNCTION(o) (*(func_t *)&pr_globals[o])
 
-#define E_FLOAT(e,o) (((float*)&e->v)[o])
-#define E_INT(e,o) (*(int *)&((float*)&e->v)[o])
-#define E_VECTOR(e,o) (&((float*)&e->v)[o])
-#define E_STRING(e,o) (Progs::FromStringOffset(*(string_t *)&((float*)&e->v)[o]))
-
 extern int pr_argc;
 
 extern bool pr_trace;

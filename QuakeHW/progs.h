@@ -300,6 +300,4 @@ namespace Progs
 
     using BuiltIn = void(*)();
     std::span<const BuiltIn> GetBuiltIns();
-
-    ::globalvars_t& GetGlobalStruct();
 }

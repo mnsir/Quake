@@ -8,7 +8,6 @@
 #include <sstream>
 #include <format>
 
-globalvars_t * pr_global_struct;
 float * pr_globals; // same as pr_global_struct
 
 cvar_t nomonsters = {(char*)"nomonsters", (char*)"0"};
@@ -951,10 +950,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs()
 {
-    auto globals = Progs::GetGlobals();
-    pr_global_struct = (globalvars_t *)globals.data();
-
-    pr_globals = (float *)pr_global_struct;
+    pr_globals = (float *)&Progs::GetGlobalStruct();
 }
 
 
@@ -990,9 +986,4 @@ string_t Progs::ToStringOffset(char* str)
 char* Progs::FromStringOffset(string_t offset)
 {
     return Progs::GetStrings().data() + offset;
-}
-
-globalvars_t& Progs::GetGlobalStruct()
-{
-    return *pr_global_struct;
 }

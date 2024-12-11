@@ -317,11 +317,9 @@ namespace
     }
 
     // Can parse either fields or globals returns false if error
-    bool ED_ParseEpair(float* base, const Progs::ddef_t& key, char* s)
+    bool ED_ParseEpair(void* d, Progs::ddef_t::etype_t type, char* s)
     {
-        void* d = (void*)((int*)base + key.ofs);
-
-        switch (key.type)
+        switch (type)
         {
         case Progs::ddef_t::etype_t::ev_string:
             *(string_t*)d = Progs::ToStringOffset(ED_NewString(s));
@@ -748,7 +746,7 @@ void ED_ParseGlobals(char* data)
         auto defs = Progs::GetGlobalDefs();
         if (auto it = std::ranges::find(defs, keyname, &Progs::ddef_t::s_name); it != defs.end())
         {
-            if (!ED_ParseEpair(pr_globals, *it, com_token))
+            if (!ED_ParseEpair((int*)pr_globals + it->ofs, it->type, com_token))
                 Host_Error("ED_ParseGlobals: parse error");
         }
         else

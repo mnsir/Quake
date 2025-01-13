@@ -151,7 +151,7 @@ void SV_StartSound(edict_t * entity, int channel, char * sample, int volume,
     MSG_WriteShort(&sv.datagram, channel);
     MSG_WriteByte(&sv.datagram, sound_num);
     for (i = 0; i < 3; i++)
-        MSG_WriteCoord(&sv.datagram, entity->v.origin[i] + 0.5 * (entity->v.mins[i] + entity->v.maxs[i]));
+        MSG_WriteCoord(&sv.datagram, entity->entvars.origin[i] + 0.5 * (entity->entvars.mins[i] + entity->entvars.maxs[i]));
 }
 
 /*
@@ -188,7 +188,7 @@ void SV_SendServerinfo(client_t * client)
     else
         MSG_WriteByte(&client->message, GAME_COOP);
 
-    sprintf(message, Progs::FromStringOffset(sv.edicts->v.message));
+    sprintf(message, Progs::FromStringOffset(sv.edicts->entvars.message));
 
     MSG_WriteString(&client->message, message);
 
@@ -202,8 +202,8 @@ void SV_SendServerinfo(client_t * client)
 
     // send music
     MSG_WriteByte(&client->message, svc_cdtrack);
-    MSG_WriteByte(&client->message, sv.edicts->v.sounds);
-    MSG_WriteByte(&client->message, sv.edicts->v.sounds);
+    MSG_WriteByte(&client->message, sv.edicts->entvars.sounds);
+    MSG_WriteByte(&client->message, sv.edicts->entvars.sounds);
 
     // set view 
     MSG_WriteByte(&client->message, svc_setview);
@@ -414,7 +414,7 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
     edict_t * ent;
 
     // find the client's PVS
-    VectorAdd(clent->v.origin, clent->v.view_ofs, org);
+    VectorAdd(clent->entvars.origin, clent->entvars.view_ofs, org);
     pvs = SV_FatPVS(org);
 
     // send over all entities (excpet the client) that touch the pvs
@@ -425,7 +425,7 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
         if (ent != clent) // clent is ALLWAYS sent
         {
             // ignore ents without visible models
-            if (!ent->v.modelindex || !*Progs::FromStringOffset(ent->v.model))
+            if (!ent->entvars.modelindex || !*Progs::FromStringOffset(ent->entvars.model))
                 continue;
 
             for (i = 0; i < ent->num_leafs; i++)
@@ -447,36 +447,36 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
 
         for (i = 0; i < 3; i++)
         {
-            miss = ent->v.origin[i] - ent->baseline.origin[i];
+            miss = ent->entvars.origin[i] - ent->baseline.origin[i];
             if (miss < -0.1 || miss > 0.1)
                 bits |= U_ORIGIN1 << i;
         }
 
-        if (ent->v.angles[0] != ent->baseline.angles[0])
+        if (ent->entvars.angles[0] != ent->baseline.angles[0])
             bits |= U_ANGLE1;
 
-        if (ent->v.angles[1] != ent->baseline.angles[1])
+        if (ent->entvars.angles[1] != ent->baseline.angles[1])
             bits |= U_ANGLE2;
 
-        if (ent->v.angles[2] != ent->baseline.angles[2])
+        if (ent->entvars.angles[2] != ent->baseline.angles[2])
             bits |= U_ANGLE3;
 
-        if (ent->v.movetype == MOVETYPE_STEP)
+        if (ent->entvars.movetype == MOVETYPE_STEP)
             bits |= U_NOLERP; // don't mess up the step animation
 
-        if (ent->baseline.colormap != ent->v.colormap)
+        if (ent->baseline.colormap != ent->entvars.colormap)
             bits |= U_COLORMAP;
 
-        if (ent->baseline.skin != ent->v.skin)
+        if (ent->baseline.skin != ent->entvars.skin)
             bits |= U_SKIN;
 
-        if (ent->baseline.frame != ent->v.frame)
+        if (ent->baseline.frame != ent->entvars.frame)
             bits |= U_FRAME;
 
-        if (ent->baseline.effects != ent->v.effects)
+        if (ent->baseline.effects != ent->entvars.effects)
             bits |= U_EFFECTS;
 
-        if (ent->baseline.modelindex != ent->v.modelindex)
+        if (ent->baseline.modelindex != ent->entvars.modelindex)
             bits |= U_MODEL;
 
         if (e >= 256)
@@ -498,27 +498,27 @@ void SV_WriteEntitiesToClient(edict_t * clent, sizebuf_t * msg)
             MSG_WriteByte(msg, e);
 
         if (bits & U_MODEL)
-            MSG_WriteByte(msg, ent->v.modelindex);
+            MSG_WriteByte(msg, ent->entvars.modelindex);
         if (bits & U_FRAME)
-            MSG_WriteByte(msg, ent->v.frame);
+            MSG_WriteByte(msg, ent->entvars.frame);
         if (bits & U_COLORMAP)
-            MSG_WriteByte(msg, ent->v.colormap);
+            MSG_WriteByte(msg, ent->entvars.colormap);
         if (bits & U_SKIN)
-            MSG_WriteByte(msg, ent->v.skin);
+            MSG_WriteByte(msg, ent->entvars.skin);
         if (bits & U_EFFECTS)
-            MSG_WriteByte(msg, ent->v.effects);
+            MSG_WriteByte(msg, ent->entvars.effects);
         if (bits & U_ORIGIN1)
-            MSG_WriteCoord(msg, ent->v.origin[0]);
+            MSG_WriteCoord(msg, ent->entvars.origin[0]);
         if (bits & U_ANGLE1)
-            MSG_WriteAngle(msg, ent->v.angles[0]);
+            MSG_WriteAngle(msg, ent->entvars.angles[0]);
         if (bits & U_ORIGIN2)
-            MSG_WriteCoord(msg, ent->v.origin[1]);
+            MSG_WriteCoord(msg, ent->entvars.origin[1]);
         if (bits & U_ANGLE2)
-            MSG_WriteAngle(msg, ent->v.angles[1]);
+            MSG_WriteAngle(msg, ent->entvars.angles[1]);
         if (bits & U_ORIGIN3)
-            MSG_WriteCoord(msg, ent->v.origin[2]);
+            MSG_WriteCoord(msg, ent->entvars.origin[2]);
         if (bits & U_ANGLE3)
-            MSG_WriteAngle(msg, ent->v.angles[2]);
+            MSG_WriteAngle(msg, ent->entvars.angles[2]);
     }
 }
 
@@ -536,7 +536,7 @@ void SV_CleanupEnts()
     ent = std::next(sv.edicts);
     for (e = 1; e < sv.num_edicts; e++, ent = std::next(ent))
     {
-        ent->v.effects = (int)ent->v.effects & ~EF_MUZZLEFLASH;
+        ent->entvars.effects = (int)ent->entvars.effects & ~EF_MUZZLEFLASH;
     }
 
 }
@@ -558,17 +558,17 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     //
     // send a damage message
     //
-    if (ent->v.dmg_take || ent->v.dmg_save)
+    if (ent->entvars.dmg_take || ent->entvars.dmg_save)
     {
-        other = PROG_TO_EDICT(ent->v.dmg_inflictor);
+        other = PROG_TO_EDICT(ent->entvars.dmg_inflictor);
         MSG_WriteByte(msg, svc_damage);
-        MSG_WriteByte(msg, ent->v.dmg_save);
-        MSG_WriteByte(msg, ent->v.dmg_take);
+        MSG_WriteByte(msg, ent->entvars.dmg_save);
+        MSG_WriteByte(msg, ent->entvars.dmg_take);
         for (i = 0; i < 3; i++)
-            MSG_WriteCoord(msg, other->v.origin[i] + 0.5 * (other->v.mins[i] + other->v.maxs[i]));
+            MSG_WriteCoord(msg, other->entvars.origin[i] + 0.5 * (other->entvars.mins[i] + other->entvars.maxs[i]));
 
-        ent->v.dmg_take = 0;
-        ent->v.dmg_save = 0;
+        ent->entvars.dmg_take = 0;
+        ent->entvars.dmg_save = 0;
     }
 
     //
@@ -577,20 +577,20 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     SV_SetIdealPitch(); // how much to look up / down ideally
 
     // a fixangle might get lost in a dropped packet. Oh well.
-    if (ent->v.fixangle)
+    if (ent->entvars.fixangle)
     {
         MSG_WriteByte(msg, svc_setangle);
         for (i = 0; i < 3; i++)
-            MSG_WriteAngle(msg, ent->v.angles[i]);
-        ent->v.fixangle = 0;
+            MSG_WriteAngle(msg, ent->entvars.angles[i]);
+        ent->entvars.fixangle = 0;
     }
 
     bits = 0;
 
-    if (ent->v.view_ofs[2] != DEFAULT_VIEWHEIGHT)
+    if (ent->entvars.view_ofs[2] != DEFAULT_VIEWHEIGHT)
         bits |= SU_VIEWHEIGHT;
 
-    if (ent->v.idealpitch)
+    if (ent->entvars.idealpitch)
         bits |= SU_IDEALPITCH;
 
     // stuff the sigil bits into the high bits of items for sbar, or else
@@ -598,33 +598,33 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     val = GetEdictFieldValue(ent, "items2"sv);
 
     if (val)
-        items = (int)ent->v.items | ((int)val->_float << 23);
+        items = (int)ent->entvars.items | ((int)val->_float << 23);
     else
-        items = (int)ent->v.items | ((int)Progs::GetGlobalStruct().serverflags << 28);
+        items = (int)ent->entvars.items | ((int)Progs::GetGlobalStruct().serverflags << 28);
 
     bits |= SU_ITEMS;
 
-    if ((int)ent->v.flags & FL_ONGROUND)
+    if ((int)ent->entvars.flags & FL_ONGROUND)
         bits |= SU_ONGROUND;
 
-    if (ent->v.waterlevel >= 2)
+    if (ent->entvars.waterlevel >= 2)
         bits |= SU_INWATER;
 
     for (i = 0; i < 3; i++)
     {
-        if (ent->v.punchangle[i])
+        if (ent->entvars.punchangle[i])
             bits |= (SU_PUNCH1 << i);
-        if (ent->v.velocity[i])
+        if (ent->entvars.velocity[i])
             bits |= (SU_VELOCITY1 << i);
     }
 
-    if (ent->v.weaponframe)
+    if (ent->entvars.weaponframe)
         bits |= SU_WEAPONFRAME;
 
-    if (ent->v.armorvalue)
+    if (ent->entvars.armorvalue)
         bits |= SU_ARMOR;
 
-    // if (ent->v.weapon)
+    // if (ent->entvars.weapon)
     bits |= SU_WEAPON;
 
     // send the data
@@ -633,45 +633,45 @@ void SV_WriteClientdataToMessage(edict_t * ent, sizebuf_t * msg)
     MSG_WriteShort(msg, bits);
 
     if (bits & SU_VIEWHEIGHT)
-        MSG_WriteChar(msg, ent->v.view_ofs[2]);
+        MSG_WriteChar(msg, ent->entvars.view_ofs[2]);
 
     if (bits & SU_IDEALPITCH)
-        MSG_WriteChar(msg, ent->v.idealpitch);
+        MSG_WriteChar(msg, ent->entvars.idealpitch);
 
     for (i = 0; i < 3; i++)
     {
         if (bits & (SU_PUNCH1 << i))
-            MSG_WriteChar(msg, ent->v.punchangle[i]);
+            MSG_WriteChar(msg, ent->entvars.punchangle[i]);
         if (bits & (SU_VELOCITY1 << i))
-            MSG_WriteChar(msg, ent->v.velocity[i] / 16);
+            MSG_WriteChar(msg, ent->entvars.velocity[i] / 16);
     }
 
     // [always sent] if (bits & SU_ITEMS)
     MSG_WriteLong(msg, items);
 
     if (bits & SU_WEAPONFRAME)
-        MSG_WriteByte(msg, ent->v.weaponframe);
+        MSG_WriteByte(msg, ent->entvars.weaponframe);
     if (bits & SU_ARMOR)
-        MSG_WriteByte(msg, ent->v.armorvalue);
+        MSG_WriteByte(msg, ent->entvars.armorvalue);
     if (bits & SU_WEAPON)
-        MSG_WriteByte(msg, SV_ModelIndex(Progs::FromStringOffset(ent->v.weaponmodel)));
+        MSG_WriteByte(msg, SV_ModelIndex(Progs::FromStringOffset(ent->entvars.weaponmodel)));
 
-    MSG_WriteShort(msg, ent->v.health);
-    MSG_WriteByte(msg, ent->v.currentammo);
-    MSG_WriteByte(msg, ent->v.ammo_shells);
-    MSG_WriteByte(msg, ent->v.ammo_nails);
-    MSG_WriteByte(msg, ent->v.ammo_rockets);
-    MSG_WriteByte(msg, ent->v.ammo_cells);
+    MSG_WriteShort(msg, ent->entvars.health);
+    MSG_WriteByte(msg, ent->entvars.currentammo);
+    MSG_WriteByte(msg, ent->entvars.ammo_shells);
+    MSG_WriteByte(msg, ent->entvars.ammo_nails);
+    MSG_WriteByte(msg, ent->entvars.ammo_rockets);
+    MSG_WriteByte(msg, ent->entvars.ammo_cells);
 
     if constexpr (standard_quake)
     {
-        MSG_WriteByte(msg, ent->v.weapon);
+        MSG_WriteByte(msg, ent->entvars.weapon);
     }
     else
     {
         for (i = 0; i < 32; i++)
         {
-            if (((int)ent->v.weapon) & (1 << i))
+            if (((int)ent->entvars.weapon) & (1 << i))
             {
                 MSG_WriteByte(msg, i);
                 break;
@@ -729,7 +729,7 @@ void SV_UpdateToReliableMessages()
     // check for changes to be sent over the reliable streams
     for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
     {
-        if (host_client->old_frags != host_client->edict->v.frags)
+        if (host_client->old_frags != host_client->edict->entvars.frags)
         {
             for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
             {
@@ -737,10 +737,10 @@ void SV_UpdateToReliableMessages()
                     continue;
                 MSG_WriteByte(&client->message, svc_updatefrags);
                 MSG_WriteByte(&client->message, i);
-                MSG_WriteShort(&client->message, host_client->edict->v.frags);
+                MSG_WriteShort(&client->message, host_client->edict->entvars.frags);
             }
 
-            host_client->old_frags = host_client->edict->v.frags;
+            host_client->old_frags = host_client->edict->entvars.frags;
         }
     }
 
@@ -902,16 +902,16 @@ void SV_CreateBaseline()
         svent = &sv.edicts[entnum];
         if (svent->free)
             continue;
-        if (entnum > svs.maxclients && !svent->v.modelindex)
+        if (entnum > svs.maxclients && !svent->entvars.modelindex)
             continue;
 
         //
         // create entity baseline
         //
-        VectorCopy(svent->v.origin, svent->baseline.origin);
-        VectorCopy(svent->v.angles, svent->baseline.angles);
-        svent->baseline.frame = svent->v.frame;
-        svent->baseline.skin = svent->v.skin;
+        VectorCopy(svent->entvars.origin, svent->baseline.origin);
+        VectorCopy(svent->entvars.angles, svent->baseline.angles);
+        svent->baseline.frame = svent->entvars.frame;
+        svent->baseline.skin = svent->entvars.skin;
         if (entnum > 0 && entnum <= svs.maxclients)
         {
             svent->baseline.colormap = entnum;
@@ -921,7 +921,7 @@ void SV_CreateBaseline()
         {
             svent->baseline.colormap = 0;
             svent->baseline.modelindex =
-                SV_ModelIndex(Progs::FromStringOffset(svent->v.model));
+                SV_ModelIndex(Progs::FromStringOffset(svent->entvars.model));
         }
 
         //
@@ -1111,12 +1111,12 @@ void SV_SpawnServer(char * server)
     // load the rest of the entities
     // 
     ent = &sv.edicts[0];
-    memset(&ent->v, 0, sizeof(entvars_t));
+    memset(&ent->entvars, 0, sizeof(entvars_t));
     ent->free = false;
-    ent->v.model = Progs::ToStringOffset(sv.worldmodel->name);
-    ent->v.modelindex = 1; // world model
-    ent->v.solid = SOLID_BSP;
-    ent->v.movetype = MOVETYPE_PUSH;
+    ent->entvars.model = Progs::ToStringOffset(sv.worldmodel->name);
+    ent->entvars.modelindex = 1; // world model
+    ent->entvars.solid = SOLID_BSP;
+    ent->entvars.movetype = MOVETYPE_PUSH;
 
     if (coop.value)
         Progs::GetGlobalStruct().coop = coop.value;

@@ -216,6 +216,10 @@ struct alignas(4) entvars_t
     float inpain;
 };
 
+constexpr auto g1 = offsetof(entvars_t, owner) / sizeof(int);
+constexpr auto g = offsetof(entvars_t, movetarget) / sizeof(int);
+constexpr auto a = offsetof(entvars_t, inpain) / sizeof(int);
+
 union eval_t
 {
     string_t string;
@@ -237,7 +241,7 @@ struct edict_t
     entity_state_t baseline;
 
     float freetime; // sv.time when the object was freed
-    entvars_t v; // C exported fields from progs
+    entvars_t entvars; // C exported fields from progs
     // other fields from progs come immediately after
 };
 #define EDICT_FROM_AREA(l) STRUCT_FROM_LINK(l,edict_t,area)
@@ -252,8 +256,6 @@ void PR_Init();
 
 void PR_ExecuteProgram(func_t fnum);
 void PR_LoadProgs();
-
-void PR_Profile_f();
 
 edict_t * ED_Alloc();
 void ED_Free(edict_t * ed);
@@ -280,13 +282,7 @@ void ED_LoadFromFile(char * data);
 #define G_STRING(o) (Progs::FromStringOffset(*(string_t *)&pr_globals[o]))
 #define G_FUNCTION(o) (*(func_t *)&pr_globals[o])
 
-extern int pr_argc;
-
-extern bool pr_trace;
-extern const Progs::dfunction_t * pr_xfunction;
-extern int pr_xstatement;
-
-void PR_RunError(char * error, ...);
+void PR_RunError(const char * error, ...);
 
 void ED_PrintEdicts();
 void ED_PrintNum(int ent);

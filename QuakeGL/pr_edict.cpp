@@ -60,7 +60,7 @@ namespace
     // Sets everything to NULL
     void ED_ClearEdict(edict_t& e)
     {
-        memset(&e.v, 0, sizeof(entvars_t));
+        memset(&e.entvars, 0, sizeof(entvars_t));
         e.free = false;
     }
 
@@ -436,16 +436,16 @@ void ED_Free(edict_t * ed)
     SV_UnlinkEdict(ed); // unlink from world bsp
 
     ed->free = true;
-    ed->v.model = 0;
-    ed->v.takedamage = 0;
-    ed->v.modelindex = 0;
-    ed->v.colormap = 0;
-    ed->v.skin = 0;
-    ed->v.frame = 0;
-    VectorCopy(vec3_origin, ed->v.origin);
-    VectorCopy(vec3_origin, ed->v.angles);
-    ed->v.nextthink = -1;
-    ed->v.solid = 0;
+    ed->entvars.model = 0;
+    ed->entvars.takedamage = 0;
+    ed->entvars.modelindex = 0;
+    ed->entvars.colormap = 0;
+    ed->entvars.skin = 0;
+    ed->entvars.frame = 0;
+    VectorCopy(vec3_origin, ed->entvars.origin);
+    VectorCopy(vec3_origin, ed->entvars.angles);
+    ed->entvars.nextthink = -1;
+    ed->entvars.solid = 0;
 
     ed->freetime = sv.time;
 }
@@ -473,55 +473,8 @@ eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field)
         rep ^= 1;
     }
 
-    return def ? (eval_t*)((char*)&ed->v + def->ofs * 4) : nullptr;
+    return def ? (eval_t*)((char*)&ed->entvars + def->ofs * 4) : nullptr;
 }
-
-// Returns a string with a description and the contents of a global, padded to 20 field width
-char* PR_GlobalString(int ofs)
-{
-    static char line[128];
-
-    auto gd = Progs::GetGlobalDefs();
-    if (auto it = std::ranges::find(gd, ofs, &Progs::ddef_t::ofs); it != gd.end())
-    {
-        auto&& s = ValueString(*it);
-        sprintf(line, "%i(%s)%s", it->ofs, it->s_name.data(), s.data());
-    }
-    else
-    {
-        sprintf(line, "%i(???)", ofs);
-    }
-
-    int i = strlen(line);
-    for (; i < 20; i++)
-        strcat(line, " ");
-    strcat(line, " ");
-
-    return line;
-}
-
-char* PR_GlobalStringNoContents(int ofs)
-{
-    static char line[128];
-
-    auto gd = Progs::GetGlobalDefs();
-    if (auto it = std::ranges::find(gd, ofs, &Progs::ddef_t::ofs); it != gd.end())
-    {
-        sprintf(line, "%i(%s)", ofs, it->s_name.data());
-    }
-    else
-    {
-        sprintf(line, "%i(???)", ofs);
-    }
-
-    int i = strlen(line);
-    for (; i < 20; i++)
-        strcat(line, " ");
-    strcat(line, " ");
-
-    return line;
-}
-
 
 /*
 =============
@@ -545,7 +498,7 @@ void ED_Print(edict_t * ed)
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
-        int* v = (int *)((char *)&ed->v + def.ofs * 4);
+        int* v = (int *)((char *)&ed->entvars + def.ofs * 4);
 
         // if the value is still all 0, skip the field
         int j = 0;
@@ -587,7 +540,7 @@ void ED_Write(FILE * f, edict_t * ed)
         if (name[name.size() - 2] == '_')
             continue; // skip _x, _y, _z vars
 
-        int* v = (int *)((char *)&ed->v + def.ofs * 4);
+        int* v = (int *)((char *)&ed->entvars + def.ofs * 4);
 
         // if the value is still all 0, skip the field
         int j = 0;
@@ -666,11 +619,11 @@ void ED_Count()
         if (ent->free)
             continue;
         active++;
-        if (ent->v.solid)
+        if (ent->entvars.solid)
             solid++;
-        if (ent->v.model)
+        if (ent->entvars.model)
             models++;
-        if (ent->v.movetype == MOVETYPE_STEP)
+        if (ent->entvars.movetype == MOVETYPE_STEP)
             step++;
     }
 
@@ -778,7 +731,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
 
     // clear it
     if (ent != sv.edicts) // hack
-        memset(&ent->v, 0, sizeof(entvars_t));
+        memset(&ent->entvars, 0, sizeof(entvars_t));
 
     // go through all the dictionary pairs
     while (1)
@@ -839,7 +792,7 @@ char * ED_ParseEdict(char * data, edict_t * ent)
                 sprintf(com_token, "0 %s 0", temp);
             }
 
-            if (!ED_ParseEpair(&ent->v, *it, com_token))
+            if (!ED_ParseEpair(&ent->entvars, *it, com_token))
                 Host_Error("ED_ParseEdict: parse error");
         }
         else
@@ -898,16 +851,16 @@ void ED_LoadFromFile(char * data)
         // remove things from different skill levels or deathmatch
         if (deathmatch.value)
         {
-            if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_DEATHMATCH))
+            if (((int)ent->entvars.spawnflags & SPAWNFLAG_NOT_DEATHMATCH))
             {
                 ED_Free(ent);
                 inhibit++;
                 continue;
             }
         }
-        else if ((current_skill == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY))
-                 || (current_skill == 1 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_MEDIUM))
-                 || (current_skill >= 2 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_HARD)))
+        else if ((current_skill == 0 && ((int)ent->entvars.spawnflags & SPAWNFLAG_NOT_EASY))
+                 || (current_skill == 1 && ((int)ent->entvars.spawnflags & SPAWNFLAG_NOT_MEDIUM))
+                 || (current_skill >= 2 && ((int)ent->entvars.spawnflags & SPAWNFLAG_NOT_HARD)))
         {
             ED_Free(ent);
             inhibit++;
@@ -917,7 +870,7 @@ void ED_LoadFromFile(char * data)
         //
         // immediately call spawn function
         //
-        if (!ent->v.classname)
+        if (!ent->entvars.classname)
         {
             Con_Printf("No classname for:\n");
             ED_Print(ent);
@@ -925,7 +878,7 @@ void ED_LoadFromFile(char * data)
             continue;
         }
         auto funcs = Progs::GetFunctions();
-        if (auto it = std::ranges::find(funcs, Progs::FromStringOffset(ent->v.classname), &Progs::dfunction_t::s_name); it != funcs.end())
+        if (auto it = std::ranges::find(funcs, Progs::FromStringOffset(ent->entvars.classname), &Progs::dfunction_t::s_name); it != funcs.end())
         {
             Progs::GetGlobalStruct().self = EDICT_TO_PROG(ent);
             PR_ExecuteProgram(std::ranges::distance(funcs.begin(), it));
@@ -962,7 +915,6 @@ void PR_Init()
     Cmd_AddCommand((char*)"edict", ED_PrintEdict_f);
     Cmd_AddCommand((char*)"edicts", ED_PrintEdicts);
     Cmd_AddCommand((char*)"edictcount", ED_Count);
-    Cmd_AddCommand((char*)"profile", PR_Profile_f);
     Cvar_RegisterVariable(&nomonsters);
     Cvar_RegisterVariable(&gamecfg);
     Cvar_RegisterVariable(&scratch1);

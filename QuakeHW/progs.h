@@ -237,14 +237,14 @@ struct edict_t
     entity_state_t baseline;
 
     float freetime; // sv.time when the object was freed
-    entvars_t v; // C exported fields from progs
+    entvars_t entvars; // C exported fields from progs
     // other fields from progs come immediately after
 };
 #define EDICT_FROM_AREA(l) STRUCT_FROM_LINK(l,edict_t,area)
 
 //============================================================================
 
-extern float * pr_globals; // same as pr_global_struct
+extern float* pr_globals; // same as pr_global_struct
 
 //============================================================================
 
@@ -253,19 +253,17 @@ void PR_Init();
 void PR_ExecuteProgram(func_t fnum);
 void PR_LoadProgs();
 
-void PR_Profile_f();
+edict_t* ED_Alloc();
+void ED_Free(edict_t* ed);
 
-edict_t * ED_Alloc();
-void ED_Free(edict_t * ed);
+void ED_Print(edict_t* ed);
+void ED_Write(FILE* f, edict_t* ed);
+char* ED_ParseEdict(char* data, edict_t* ent);
 
-void ED_Print(edict_t * ed);
-void ED_Write(FILE * f, edict_t * ed);
-char * ED_ParseEdict(char * data, edict_t * ent);
+void ED_WriteGlobals(FILE* f);
+void ED_ParseGlobals(char* data);
 
-void ED_WriteGlobals(FILE * f);
-void ED_ParseGlobals(char * data);
-
-void ED_LoadFromFile(char * data);
+void ED_LoadFromFile(char* data);
 
 #define EDICT_TO_PROG(e) ((byte *)e - (byte *)sv.edicts)
 #define PROG_TO_EDICT(e) ((edict_t *)((byte *)sv.edicts + e))
@@ -280,18 +278,12 @@ void ED_LoadFromFile(char * data);
 #define G_STRING(o) (Progs::FromStringOffset(*(string_t *)&pr_globals[o]))
 #define G_FUNCTION(o) (*(func_t *)&pr_globals[o])
 
-extern int pr_argc;
-
-extern bool pr_trace;
-extern const Progs::dfunction_t * pr_xfunction;
-extern int pr_xstatement;
-
-void PR_RunError(char * error, ...);
+void PR_RunError(const char* error, ...);
 
 void ED_PrintEdicts();
 void ED_PrintNum(int ent);
 
-eval_t * GetEdictFieldValue(edict_t * ed, std::string_view field);
+eval_t* GetEdictFieldValue(edict_t* ed, std::string_view field);
 
 namespace Progs
 {

@@ -1,25 +1,12 @@
 #pragma once
 #include <array>
 #include <span>
+#include <vector>
+#include <variant>
 #include "progs_globals.h"
 
 namespace Progs
 {
-
-struct dfunction_t
-{
-    int first_statement = 0; // negative numbers are builtins
-    int parm_start = 0;
-    int locals = 0; // total ints of parms + locals
-
-    mutable int profile = 0; // runtime
-
-    std::string_view s_name;
-    std::string_view s_file; // source file defined in
-
-    int numparms = 0;
-    std::array<unsigned char, 8> parm_size = {};
-};
 
 enum class Op : unsigned short
 {
@@ -109,6 +96,35 @@ struct dstatement_t
     short c;
 };
 
+using VarVector = std::array<float, 3>;
+struct VarString { int data; };
+struct VarFunction { int data; };
+struct VarEntity { int data; };
+using ProgsVariant = std::variant<std::monostate, float, VarVector, VarString, VarFunction, VarEntity, int>;
+
+struct StackVar
+{
+    int offset;
+    std::string_view name;
+    ProgsVariant data;
+};
+
+struct dfunction_t
+{
+    int first_statement = 0; // negative numbers are builtins
+    std::vector<dstatement_t> statements;
+    int parm_start = 0;
+    int locals = 0; // total ints of parms + locals
+
+    mutable int profile = 0; // runtime
+
+    std::string_view s_name;
+    std::string_view s_file; // source file defined in
+
+    int numparms = 0;
+    std::array<unsigned char, 8> parm_size = {};
+};
+
 struct ddef_t
 {
     enum class etype_t : uint8_t
@@ -149,6 +165,5 @@ std::span<const dfunction_t> GetFunctions();
 std::span<char> GetStrings();
 std::span<const FieldDef> GetFieldDefs();
 std::span<const ddef_t> GetGlobalDefs();
-std::span<const dstatement_t> GetStatements();
 Progs::Globals& GetGlobalStruct();
 }

@@ -7,7 +7,6 @@ add_library(common STATIC
 	"progs_globaldefs.cpp"
 	"progs_globals.cpp"
 	"progs_globals.h"
-	"progs_statements.cpp"
 	"progs_strings.cpp"
 	"time.cpp"
 	"time.h"

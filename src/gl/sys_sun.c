@@ -294,7 +294,6 @@ void Sys_Sleep (void)
 {
 }
 
-#if !id386
 void Sys_HighFPPrecision (void)
 {
 }
@@ -302,13 +301,9 @@ void Sys_HighFPPrecision (void)
 void Sys_LowFPPrecision (void)
 {
 }
-#endif
 
 void Sys_Init(void)
 {
-#if id386
-	Sys_SetFPCW();
-#endif
 }
 
 //=============================================================================

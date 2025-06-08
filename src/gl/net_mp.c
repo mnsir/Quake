@@ -269,9 +269,9 @@ int MPATH_Read (int socket, byte *buf, int len, struct qsockaddr *addr)
 	ret = recvfrom (socket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
-		int errno = WSAGetLastError();
+		int errno_ = WSAGetLastError();
 
-		if (errno == WSAEWOULDBLOCK || errno == WSAECONNREFUSED)
+		if (errno_ == WSAEWOULDBLOCK || errno_ == WSAECONNREFUSED)
 			return 0;
 
 	}

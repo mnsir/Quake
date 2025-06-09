@@ -632,6 +632,13 @@ void Sys_Sleep (void)
 	Sleep (1);
 }
 
+void Sys_HighFPPrecision(void)
+{
+}
+
+void Sys_LowFPPrecision(void)
+{
+}
 
 void Sys_SendKeyEvents (void)
 {

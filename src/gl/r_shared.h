@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef GLQUAKE
 #include "d_iface.h"
-#endif
 
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
@@ -23,7 +21,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#ifndef GLQUAKE
+
 // r_shared.h: general refresh-related stuff shared between the refresh and the
 // driver
 
@@ -154,5 +152,3 @@ typedef struct edge_s
 	float			nearzi;
 	medge_t			*owner;
 } edge_t;
-
-#endif	// GLQUAKE

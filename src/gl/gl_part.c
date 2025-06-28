@@ -1,30 +1,9 @@
-/*
-Copyright (C) 1996-1997 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-
 #include "console.h"
-#include "r_local.h"
+#include "glquake.h"
 #include "server.h"
 
 #include <math.h>
 #include <stdlib.h>
-
 
 #define MAX_PARTICLES			2048	// default max # of particles at one
 										//  time
@@ -661,11 +640,16 @@ void R_DrawParticles (void)
 	float			dvel;
 	float			frametime;
 	
-	D_StartParticles ();
+	vec3_t			up, right;
+	float			scale;
 
-	VectorScale (vright, xscaleshrink, r_pright);
-	VectorScale (vup, yscaleshrink, r_pup);
-	VectorCopy (vpn, r_ppn);
+    GL_Bind(particletexture);
+	glEnable (GL_BLEND);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glBegin (GL_TRIANGLES);
+
+	VectorScale (vup, 1.5, up);
+	VectorScale (vright, 1.5, right);
 
 	frametime = cl.time - cl.oldtime;
 	time3 = frametime * 15;
@@ -702,7 +686,20 @@ void R_DrawParticles (void)
 			break;
 		}
 
-		D_DrawParticle (p);
+		// hack a scale up to keep particles from disapearing
+		scale = (p->org[0] - r_origin[0])*vpn[0] + (p->org[1] - r_origin[1])*vpn[1]
+			+ (p->org[2] - r_origin[2])*vpn[2];
+		if (scale < 20)
+			scale = 1;
+		else
+			scale = 1 + scale * 0.004;
+		glColor3ubv ((byte *)&d_8to24table[(int)p->color]);
+		glTexCoord2f (0,0);
+		glVertex3fv (p->org);
+		glTexCoord2f (1,0);
+		glVertex3f (p->org[0] + up[0]*scale, p->org[1] + up[1]*scale, p->org[2] + up[2]*scale);
+		glTexCoord2f (0,1);
+		glVertex3f (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
 
 		p->org[0] += p->vel[0]*frametime;
 		p->org[1] += p->vel[1]*frametime;
@@ -766,6 +763,8 @@ void R_DrawParticles (void)
 		}
 	}
 
-	D_EndParticles ();
+	glEnd ();
+	glDisable (GL_BLEND);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 

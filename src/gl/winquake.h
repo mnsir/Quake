@@ -48,18 +48,6 @@ extern LPDIRECTSOUNDBUFFER pDSBuf;
 extern DWORD gSndBufSize;
 //#define SNDBUFSIZE 65536
 
-#if defined(_WIN32) && !defined(WINDED)
-
-void	VID_LockBuffer(void);
-void	VID_UnlockBuffer(void);
-
-#else
-
-#define	VID_LockBuffer()
-#define	VID_UnlockBuffer()
-
-#endif
-
 #endif
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;

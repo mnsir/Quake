@@ -19,7 +19,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_tent.c -- client side temporary entities
 
-#include "quakedef.h"
+#include "client.h"
+#include "console.h"
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+#include "protocol.h"
+#include "sound.h"
+#include "sys.h"
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 
 int			num_temp_entities;
 entity_t	cl_temp_entities[MAX_TEMP_ENTITIES];

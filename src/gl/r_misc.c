@@ -19,7 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_misc.c
 
-#include "quakedef.h"
+#include "console.h"
+#include "host.h"
+#include "screen.h"
+#include "server.h"
+#include "sys.h"
+#include "view.h"
+
+
 #include "r_local.h"
 
 

@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <sys/audioio.h>
 #include <errno.h>
-#include "quakedef.h"
+
 
 int audio_fd;
 int snd_inited;

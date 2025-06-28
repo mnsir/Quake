@@ -18,7 +18,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "quakedef.h"
+#include "client.h"
+#include "cmd.h"
+#include "console.h"
+#include "host.h"
+#include "net.h"
+#include "protocol.h"
+#include "sys.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+
 
 void CL_FinishTimeDemo (void);
 

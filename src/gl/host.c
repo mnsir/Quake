@@ -19,7 +19,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // host.c -- coordinates spawning and killing of local servers
 
-#include "quakedef.h"
+#include "host.h"
+
+#include "cdaudio.h"
+#include "chase.h"
+#include "cmd.h"
+#include "console.h"
+#include "draw.h"
+#include "input.h"
+#include "keys.h"
+#include "menu.h"
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+#include "net.h"
+#include "protocol.h"
+#include "sbar.h"
+#include "screen.h"
+#include "server.h"
+#include "sound.h"
+#include "sys.h"
+#include "view.h"
+
+#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 #include "r_local.h"
 
 /*
@@ -407,7 +435,7 @@ void Host_ShutdownServer(qboolean crash)
 	int		i;
 	int		count;
 	sizebuf_t	buf;
-	char		message[4];
+	byte		message[4];
 	double	start;
 
 	if (!sv.active)

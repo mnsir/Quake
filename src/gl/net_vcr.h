@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -18,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // net_vcr.h
+
+#include "net.h"
 
 #define VCR_OP_CONNECT					1
 #define VCR_OP_GETMESSAGE				2

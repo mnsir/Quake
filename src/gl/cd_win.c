@@ -20,8 +20,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 // rights reserved.
 
+#include "cdaudio.h"
+
+#include "client.h"
+#include "cmd.h"
+#include "console.h"
+
 #include <windows.h>
-#include "quakedef.h"
+
+
 
 extern	HWND	mainwindow;
 extern	cvar_t	bgmvolume;
@@ -245,7 +252,6 @@ static void CD_f (void)
 	char	*command;
 	int		ret;
 	int		n;
-	int		startAddress;
 
 	if (Cmd_Argc() < 2)
 		return;
@@ -362,6 +368,8 @@ static void CD_f (void)
 
 LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	UNREFERENCED_PARAMETER(uMsg);
+	UNREFERENCED_PARAMETER(hWnd);
 	if (lParam != wDeviceID)
 		return 1;
 

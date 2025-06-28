@@ -19,7 +19,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.c -- misc functions used in client and server
 
-#include "quakedef.h"
+#include "common.h"
+
+#include "cmd.h"
+#include "console.h"
+#include "crc.h"
+#include "draw.h"
+#include "host.h"
+#include "net.h"
+#include "sys.h"
+#include "zone.h"
+
+#include <windows.h>
+
+
 
 #define NUM_SAFE_ARGVS  7
 
@@ -1124,6 +1137,7 @@ COM_Init
 */
 void COM_Init (char *basedir)
 {
+	UNREFERENCED_PARAMETER(basedir);
 	byte    swaptest[2] = {1,0};
 
 // set the byte swapping variables in a portable manner 

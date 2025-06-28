@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -19,6 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // refresh.h -- public interface to refresh functions
+
+#include "byte.h"
+#include "entity_state.h"
+#include "mathlib.h"
+#include "qboolean.h"
+#include "vid.h"
 
 #define	MAXCLIPPLANES	11
 

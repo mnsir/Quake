@@ -20,9 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // d_polyset.c: routines for drawing sets of polygons sharing the same
 // texture (used for Alias models)
 
-#include "quakedef.h"
+#include "d_iface.h"
+
+
 #include "r_local.h"
 #include "d_local.h"
+
+#include <math.h>
 
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!

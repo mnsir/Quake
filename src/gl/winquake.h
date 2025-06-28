@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -46,8 +48,17 @@ extern LPDIRECTSOUNDBUFFER pDSBuf;
 extern DWORD gSndBufSize;
 //#define SNDBUFSIZE 65536
 
-void	VID_LockBuffer (void);
-void	VID_UnlockBuffer (void);
+#if defined(_WIN32) && !defined(WINDED)
+
+void	VID_LockBuffer(void);
+void	VID_UnlockBuffer(void);
+
+#else
+
+#define	VID_LockBuffer()
+#define	VID_UnlockBuffer()
+
+#endif
 
 #endif
 

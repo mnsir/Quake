@@ -19,7 +19,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // view.c -- player eye positioning
 
-#include "quakedef.h"
+#include "view.h"
+
+#include "bspfile.h"
+#include "chase.h"
+#include "client.h"
+#include "cmd.h"
+#include "console.h"
+#include "draw.h"
+#include "host.h"
+#include "screen.h"
+
+#include <math.h>
+#include <stdlib.h>
+
+
 #include "r_local.h"
 
 /*

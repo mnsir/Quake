@@ -19,7 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_init.c: rasterization driver initialization
 
-#include "quakedef.h"
+#include <windows.h>
+
+
 #include "d_local.h"
 
 #define NUM_MIPS	4
@@ -76,8 +78,8 @@ void D_CopyRects (vrect_t *prects, int transparent)
 // console); Quake will then draw into wherever the driver points vid.buffer
 // and will call this function before swapping buffers
 
-	UNUSED(prects);
-	UNUSED(transparent);
+	UNREFERENCED_PARAMETER(prects);
+	UNREFERENCED_PARAMETER(transparent);
 }
 
 
@@ -161,6 +163,6 @@ void D_UpdateRects (vrect_t *prect)
 
 // the software driver draws these directly to the vid buffer
 
-	UNUSED(prect);
+	UNREFERENCED_PARAMETER(prect);
 }
 

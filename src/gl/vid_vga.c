@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <dos.h>
 
-#include "quakedef.h"
+
 #include "d_local.h"
 #include "dosisms.h"
 #include "vid_dos.h"
@@ -413,8 +413,8 @@ void VGA_SetPalette(viddef_t *lvid, vmode_t *pcurrentmode, unsigned char *pal)
 	int shiftcomponents=2;
 	int i;
 
-	UNUSED(lvid);
-	UNUSED(pcurrentmode);
+	UNREFERENCED_PARAMETER(lvid);
+	UNREFERENCED_PARAMETER(pcurrentmode);
 
 	dos_outportb(0x3c8, 0);
 	for (i=0 ; i<768 ; i++)
@@ -431,7 +431,7 @@ void VGA_SwapBuffersCopy (viddef_t *lvid, vmode_t *pcurrentmode,
 	vrect_t *rects)
 {
 
-	UNUSED(pcurrentmode);
+	UNREFERENCED_PARAMETER(pcurrentmode);
 
 // TODO: can write a dword at a time
 // TODO: put in ASM
@@ -468,7 +468,7 @@ VGA_SwapBuffers
 */
 void VGA_SwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t *rects)
 {
-	UNUSED(lvid);
+	UNREFERENCED_PARAMETER(lvid);
 
 	if (vid_wait.value == VID_WAIT_VSYNC)
 		VGA_WaitVsync ();

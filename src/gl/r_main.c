@@ -19,7 +19,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_main.c
 
-#include "quakedef.h"
+#include "cmd.h"
+#include "console.h"
+#include "screen.h"
+#include "sound.h"
+#include "sys.h"
+#include "view.h"
+
+#include <math.h>
+
+
 #include "r_local.h"
 
 //define	PASSAGES

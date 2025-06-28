@@ -18,7 +18,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "quakedef.h"
+#include "host.h"
+#include "console.h"
+#include "server.h"
+#include "sys.h"
+
+#include <stdarg.h>
+#include <string.h>
+
 
 
 /*

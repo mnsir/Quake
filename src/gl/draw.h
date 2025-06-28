@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -20,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // draw.h -- these are the only functions outside the refresh allowed
 // to touch the vid buffer
+
+#include "wad.h"
 
 extern	qpic_t		*draw_disc;	// also used on sbar
 

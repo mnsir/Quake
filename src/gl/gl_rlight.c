@@ -19,7 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_light.c
 
-#include "quakedef.h"
+#include "client.h"
+#include "glquake.h"
+#include "view.h"
+
+#include <math.h>
+
+
+
 
 int	r_dlightframecount;
 

@@ -19,8 +19,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_sprite.c
 
-#include "quakedef.h"
+#include "console.h"
+#include "sys.h"
+
+#include <math.h>
+
+
 #include "r_local.h"
+
+typedef vec_t vec5_t[5];
 
 static int				clip_current;
 static vec5_t			clip_verts[2][MAXWORKINGVERTS];

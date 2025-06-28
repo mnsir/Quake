@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -23,6 +25,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma warning(disable : 4136)     // X86
 #pragma warning(disable : 4051)     // ALPHA
   
+#include "byte.h"
+#include "cvar.h"
+#include "gl_model.h"
+#include "mathlib.h"
+#include "qboolean.h"
+#include "render.h"
+#include "vid.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif

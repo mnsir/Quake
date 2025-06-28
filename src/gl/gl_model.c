@@ -22,7 +22,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // models are the only shared resource between a client and server running
 // on the same machine.
 
-#include "quakedef.h"
+#include "common.h"
+#include "console.h"
+#include "glquake.h"
+#include "sys.h"
+
+#include <math.h>
+
+
+
+void GL_SubdivideSurface(msurface_t* fa);
+void GL_MakeAliasModelDisplayLists(model_t* m, aliashdr_t* hdr);
 
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
@@ -1251,8 +1261,8 @@ Mod_LoadAliasFrame
 */
 void * Mod_LoadAliasFrame (void * pin, maliasframedesc_t *frame)
 {
-	trivertx_t		*pframe, *pinframe;
-	int				i, j;
+	trivertx_t		*pinframe;
+	int				i;
 	daliasframe_t	*pdaliasframe;
 	
 	pdaliasframe = (daliasframe_t *)pin;
@@ -1413,7 +1423,6 @@ void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype)
 	int		i, j, k;
 	char	name[32];
 	int		s;
-	byte	*copy;
 	byte	*skin;
 	byte	*texels;
 	daliasskingroup_t		*pinskingroup;
@@ -1492,7 +1501,7 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	mdl_t				*pinmodel;
 	stvert_t			*pinstverts;
 	dtriangle_t			*pintriangles;
-	int					version, numframes, numskins;
+	int					version, numframes;
 	int					size;
 	daliasframetype_t	*pframetype;
 	daliasskintype_t	*pskintype;
@@ -1656,9 +1665,7 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
-	int					i, width, height, size, origin[2];
-	unsigned short		*ppixout;
-	byte				*ppixin;
+	int					width, height, size, origin[2];
 	char				name[64];
 
 	pinframe = (dspriteframe_t *)pin;

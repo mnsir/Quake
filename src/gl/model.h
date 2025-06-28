@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -17,6 +19,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+
+#include "bspfile.h"
+#include "byte.h"
+#include "mathlib.h"
+#include "qboolean.h"
+#include "render.h"
+#include "zone.h"
 
 #ifndef __MODEL__
 #define __MODEL__

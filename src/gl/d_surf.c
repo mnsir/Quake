@@ -19,7 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_surf.c: rasterization driver surface heap manager
 
-#include "quakedef.h"
+#include "console.h"
+#include "d_iface.h"
+#include "host.h"
+#include "sys.h"
+
+
 #include "d_local.h"
 #include "r_local.h"
 

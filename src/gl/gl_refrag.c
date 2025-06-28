@@ -19,7 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_efrag.c
 
-#include "quakedef.h"
+#include "client.h"
+#include "console.h"
+#include "glquake.h"
+#include "mathlib2.h"
+#include "sys.h"
+
+
 
 mnode_t	*r_pefragtopnode;
 

@@ -19,7 +19,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_parse.c  -- parse a message received from the server
 
-#include "quakedef.h"
+#include "cdaudio.h"
+#include "cmd.h"
+#include "console.h"
+#ifdef GLQUAKE
+#include "glquake.h"
+#endif
+#include "host.h"
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+#include "net.h"
+#include "protocol.h"
+#include "sbar.h"
+#include "screen.h"
+#include "server.h"
+#include "sound.h"
+#include "sys.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+
 
 char *svc_strings[] =
 {

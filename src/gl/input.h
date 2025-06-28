@@ -1,3 +1,7 @@
+#pragma once
+
+#include "client.h"
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -28,6 +32,8 @@ void IN_Commands (void);
 
 void IN_Move (usercmd_t *cmd);
 // add additional movement on top of the keyboard move cmd
+
+void IN_Accumulate(void);
 
 void IN_ClearStates (void);
 // restores all button and position states to defaults

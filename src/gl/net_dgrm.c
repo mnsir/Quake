@@ -19,6 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // net_dgrm.c
 
+#include "cmd.h"
+#include "console.h"
+#include "keys.h"
+#include "net.h"
+#include "screen.h"
+#include "server.h"
+#include "sys.h"
+
 // This is enables a simple IP banning mechanism
 #define BAN_TEST
 
@@ -52,7 +60,7 @@ unsigned long inet_addr(const char *cp);
 #endif
 #endif	// BAN_TEST
 
-#include "quakedef.h"
+
 #include "net_dgrm.h"
 
 // these two macros are to make the code more readable

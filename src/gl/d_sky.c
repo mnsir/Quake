@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // d_sky.c
 
-#include "quakedef.h"
+
 #include "r_local.h"
 #include "d_local.h"
 
@@ -66,7 +66,7 @@ void D_DrawSkyScans8 (espan_t *pspan)
 {
 	int				count, spancount, u, v;
 	unsigned char	*pdest;
-	fixed16_t		s, t, snext, tnext, sstep, tstep;
+	fixed16_t		s, t, snext = 0, tnext = 0, sstep, tstep;
 	int				spancountminus1;
 
 	sstep = 0;	// keep compiler happy

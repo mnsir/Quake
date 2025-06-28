@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <dos.h>
 
-#include "quakedef.h"
+
 #include "d_local.h"
 #include "dosisms.h"
 #include "vid_dos.h"
@@ -183,8 +183,8 @@ void VID_SetVESAPalette (viddef_t *lvid, vmode_t *pcurrentmode,
 	int		i;
 	byte	*pp;
 
-	UNUSED(lvid);
-	UNUSED(pcurrentmode);
+	UNREFERENCED_PARAMETER(lvid);
+	UNREFERENCED_PARAMETER(pcurrentmode);
 
 	pp = ppal;
 
@@ -718,8 +718,8 @@ void VID_ExtraSwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode,
 {
 	int	pageoffset;
 
-	UNUSED(rects);
-	UNUSED(pcurrentmode);
+	UNREFERENCED_PARAMETER(rects);
+	UNREFERENCED_PARAMETER(pcurrentmode);
 
 	pageoffset = VID_pagelist[VID_currentpage];
 

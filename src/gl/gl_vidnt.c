@@ -19,10 +19,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // gl_vidnt.c -- NT GL vid component
 
-#include "quakedef.h"
+#include "vid.h"
+
+#include "cdaudio.h"
+#include "cmd.h"
+#include "console.h"
+#include "draw.h"
+#include "glquake.h"
+#include "host.h"
+#include "input.h"
+#include "keys.h"
+#include "sbar.h"
+#include "screen.h"
+#include "sound.h"
+#include "sys.h"
+
+
 #include "winquake.h"
 #include "resource.h"
 #include <commctrl.h>
+
+#include <math.h>
+
+LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 #define MAX_MODE_LIST	30
 #define VID_ROW_SIZE	3
@@ -160,10 +179,12 @@ RECT		window_rect;
 
 void VID_HandlePause (qboolean pause)
 {
+	UNREFERENCED_PARAMETER(pause);
 }
 
 void VID_ForceLockState (int lk)
 {
+	UNREFERENCED_PARAMETER(lk);
 }
 
 void VID_LockBuffer (void)
@@ -181,16 +202,25 @@ int VID_ForceUnlockedAndReturnState (void)
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
+	UNREFERENCED_PARAMETER(x);
+	UNREFERENCED_PARAMETER(y);
+	UNREFERENCED_PARAMETER(pbitmap);
+	UNREFERENCED_PARAMETER(width);
+	UNREFERENCED_PARAMETER(height);
 }
 
 void D_EndDirectRect (int x, int y, int width, int height)
 {
+	UNREFERENCED_PARAMETER(x);
+	UNREFERENCED_PARAMETER(y);
+	UNREFERENCED_PARAMETER(width);
+	UNREFERENCED_PARAMETER(height);
 }
 
 
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
-    RECT    rect;
+	UNREFERENCED_PARAMETER(lefttopjustify);
     int     CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
@@ -375,7 +405,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	int				original_mode, temp;
 	qboolean		stat;
     MSG				msg;
-	HDC				hdc;
 
 	if ((windowed && (modenum != 0)) ||
 		(!windowed && (modenum < 1)) ||
@@ -501,13 +530,12 @@ BINDTEXFUNCPTR bindTexFunc;
 
 void CheckTextureExtensions (void)
 {
-	char		*tmp;
 	qboolean	texture_ext;
 	HINSTANCE	hInstGL;
 
 	texture_ext = FALSE;
 	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
+	unsigned char* tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
@@ -540,10 +568,8 @@ void CheckTextureExtensions (void)
 
 void CheckArrayExtensions (void)
 {
-	char		*tmp;
-
 	/* check for texture extension */
-	tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
+	unsigned char* tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp((const char*)tmp, "GL_EXT_vertex_array", strlen("GL_EXT_vertex_array")) == 0)
@@ -598,14 +624,14 @@ GL_Init
 */
 void GL_Init (void)
 {
-	gl_vendor = glGetString (GL_VENDOR);
+	gl_vendor = (const char*)glGetString (GL_VENDOR);
 	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
-	gl_renderer = glGetString (GL_RENDERER);
+	gl_renderer = (const char*)glGetString (GL_RENDERER);
 	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
 
-	gl_version = glGetString (GL_VERSION);
+	gl_version = (const char*)glGetString (GL_VERSION);
 	Con_Printf ("GL_VERSION: %s\n", gl_version);
-	gl_extensions = glGetString (GL_EXTENSIONS);
+	gl_extensions = (const char*)glGetString (GL_EXTENSIONS);
 	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
@@ -706,13 +732,9 @@ void	VID_SetPalette (unsigned char *palette)
 	unsigned r,g,b;
 	unsigned v;
 	int     r1,g1,b1;
-	int		j,k,l,m;
+	int		j,k,l;
 	unsigned short i;
 	unsigned	*table;
-	FILE *f;
-	char s[255];
-	HWND hDlg, hProgress;
-	float gamma;
 
 //
 // 8 8 8 encoding
@@ -764,6 +786,7 @@ BOOL	gammaworks;
 
 void	VID_ShiftPalette (unsigned char *palette)
 {
+	UNREFERENCED_PARAMETER(palette);
 	extern	byte ramps[3][256];
 	
 //	VID_SetPalette (palette);
@@ -953,9 +976,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 *
 ****************************************************************************/
 {
-	MSG msg;
-    HDC			hdc;
-    int			i, t;
 	static BOOL	sound_active;
 
 	ActiveApp = fActive;
@@ -1020,7 +1040,7 @@ LONG WINAPI MainWndProc (
     LPARAM  lParam)
 {
     LONG    lRet = 1;
-	int		fwKeys, xPos, yPos, fActive, fMinimized, temp;
+	int		fActive, fMinimized, temp;
 	extern unsigned int uiWheelMessage;
 
 	if ( uMsg == uiWheelMessage )
@@ -1308,8 +1328,6 @@ void VID_DescribeModes_f (void)
 void VID_InitDIB (HINSTANCE hInstance)
 {
 	WNDCLASS		wc;
-	HDC				hdc;
-	int				i;
 
 	/* Register the frame class */
     wc.style         = 0;
@@ -1364,8 +1382,9 @@ VID_InitFullDIB
 */
 void VID_InitFullDIB (HINSTANCE hInstance)
 {
+	UNREFERENCED_PARAMETER(hInstance);
 	DEVMODE	devmode;
-	int		i, modenum, cmodes, originalnummodes, existingmode, numlowresmodes;
+	int		i, modenum, originalnummodes, existingmode, numlowresmodes;
 	int		j, bpp, done;
 	BOOL	stat;
 
@@ -1574,7 +1593,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int		i, existingmode;
 	int		basenummodes, width, height, bpp, findbpp, done;
-	byte	*ptmp;
 	char	gldir[MAX_OSPATH];
 	HDC		hdc;
 	DEVMODE	devmode;
@@ -1866,8 +1884,7 @@ void VID_MenuDraw (void)
 {
 	qpic_t		*p;
 	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
+	int			lnummodes, i, k, column, row;
 	vmode_t		*pv;
 
 	p = Draw_CachePic ("gfx/vidmodes.lmp");

@@ -19,7 +19,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_surf.c: surface-related refresh code
 
-#include "quakedef.h"
+#include "client.h"
+#include "glquake.h"
+#include "host.h"
+#include "sys.h"
+
+#include <math.h>
+
+
+
+void EmitWaterPolys(msurface_t* fa);
+void EmitSkyPolys(msurface_t* fa);
+void EmitBothSkyLayers(msurface_t* fa);
+void R_DrawSkyChain(msurface_t* s);
+qboolean R_CullBox(vec3_t mins, vec3_t maxs);
+void R_MarkLights(dlight_t* light, int bit, mnode_t* node);
+void R_RotateForEntity(entity_t* e);
+void R_StoreEfrags(efrag_t** ppefrag);
 
 int			skytexturenum;
 
@@ -143,7 +159,6 @@ void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	byte		*lightmap;
 	unsigned	scale;
 	int			maps;
-	int			lightadj[4];
 	unsigned	*bl;
 
 	surf->cached_dlight = (surf->dlightframe == r_framecount);
@@ -413,9 +428,7 @@ void R_DrawSequentialPoly (msurface_t *s)
 	float		*v;
 	int			i;
 	texture_t	*t;
-	vec3_t		nv, dir;
-	float		ss, ss2, length;
-	float		s1, t1;
+	vec3_t		nv;
 	glRect_t	*theRect;
 
 	//
@@ -594,7 +607,6 @@ void DrawGLWaterPoly (glpoly_t *p)
 {
 	int		i;
 	float	*v;
-	float	s, t, os, ot;
 	vec3_t	nv;
 
 	GL_DisableMultitexture();
@@ -618,7 +630,6 @@ void DrawGLWaterPolyLightmap (glpoly_t *p)
 {
 	int		i;
 	float	*v;
-	float	s, t, os, ot;
 	vec3_t	nv;
 
 	GL_DisableMultitexture();
@@ -831,7 +842,6 @@ Multitexture
 */
 void R_RenderDynamicLightmaps (msurface_t *fa)
 {
-	texture_t	*t;
 	byte		*base;
 	int			maps;
 	glRect_t    *theRect;
@@ -1074,9 +1084,9 @@ R_DrawBrushModel
 */
 void R_DrawBrushModel (entity_t *e)
 {
-	int			j, k;
+	int		k;
 	vec3_t		mins, maxs;
-	int			i, numsurfaces;
+	int			i;
 	msurface_t	*psurf;
 	float		dot;
 	mplane_t	*pplane;
@@ -1186,13 +1196,11 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode (mnode_t *node)
 {
-	int			i, c, side, *pindex;
-	vec3_t		acceptpt, rejectpt;
+	int			c, side;
 	mplane_t	*plane;
 	msurface_t	*surf, **mark;
 	mleaf_t		*pleaf;
-	double		d, dot;
-	vec3_t		mins, maxs;
+	double		dot;
 
 	if (node->contents == CONTENTS_SOLID)
 		return;		// solid
@@ -1313,7 +1321,6 @@ R_DrawWorld
 void R_DrawWorld (void)
 {
 	entity_t	ent;
-	int			i;
 
 	memset (&ent, 0, sizeof(ent));
 	ent.model = cl.worldmodel;
@@ -1401,7 +1408,6 @@ int AllocBlock (int w, int h, int *x, int *y)
 {
 	int		i, j;
 	int		best, best2;
-	int		bestx;
 	int		texnum;
 
 	for (texnum=0 ; texnum<MAX_LIGHTMAPS ; texnum++)
@@ -1451,14 +1457,9 @@ BuildSurfaceDisplayList
 */
 void BuildSurfaceDisplayList (msurface_t *fa)
 {
-	int			i, lindex, lnumverts, s_axis, t_axis;
-	float		dist, lastdist, lzi, scale, u, v, frac;
-	unsigned	mask;
-	vec3_t		local, transformed;
+	int			i, lindex, lnumverts;
 	medge_t		*pedges, *r_pedge;
-	mplane_t	*pplane;
-	int			vertpage, newverts, newpage, lastvert;
-	qboolean	visible;
+	int			vertpage;
 	float		*vec;
 	float		s, t;
 	glpoly_t	*poly;
@@ -1529,7 +1530,6 @@ void BuildSurfaceDisplayList (msurface_t *fa)
 		{
 			vec3_t v1, v2;
 			float *prev, *this, *next;
-			float f;
 
 			prev = poly->verts[(i + lnumverts - 1) % lnumverts];
 			this = poly->verts[i];
@@ -1571,7 +1571,7 @@ GL_CreateSurfaceLightmap
 */
 void GL_CreateSurfaceLightmap (msurface_t *surf)
 {
-	int		smax, tmax, s, t, l, i;
+	int		smax, tmax;
 	byte	*base;
 
 	if (surf->flags & (SURF_DRAWSKY|SURF_DRAWTURB))

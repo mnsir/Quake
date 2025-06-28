@@ -18,7 +18,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "quakedef.h"
+#include "cmd.h"
+#include "console.h"
+#include "host.h"
+#include "keys.h"
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+#include "net.h"
+#include "protocol.h"
+#include "screen.h"
+#include "server.h"
+#include "sys.h"
+#include "world.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+
 
 extern cvar_t	pausable;
 
@@ -564,7 +583,8 @@ void Host_Loadgame_f (void)
 	FILE	*f;
 	char	mapname[MAX_QPATH];
 	float	time, tfloat;
-	char	str[32768], *start;
+	char	str[32768] = {0};
+	char	*start;
 	int		i, r;
 	edict_t	*ent;
 	int		entnum;
@@ -1516,7 +1536,7 @@ Host_Give_f
 void Host_Give_f (void)
 {
 	char	*t;
-	int		v, w;
+	int		v;
 	eval_t	*val;
 
 	if (cmd_source == src_command)

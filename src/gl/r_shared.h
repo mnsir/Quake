@@ -1,3 +1,9 @@
+#pragma once
+
+#ifndef GLQUAKE
+#include "d_iface.h"
+#endif
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -22,9 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // driver
 
 // FIXME: clean up and move into d_iface.h
-
-#ifndef _R_SHARED_H_
-#define _R_SHARED_H_
 
 #define	MAXVERTS	16					// max points in a surface polygon
 #define MAXWORKINGVERTS	(MAXVERTS+4)	// max points in an intermediate
@@ -151,7 +154,5 @@ typedef struct edge_s
 	float			nearzi;
 	medge_t			*owner;
 } edge_t;
-
-#endif	// _R_SHARED_H_
 
 #endif	// GLQUAKE

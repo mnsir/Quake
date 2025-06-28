@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -18,6 +20,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // sound.h -- client sound i/o functions
+
+#include "byte.h"
+#include "cvar.h"
+#include "defines.h"
+#include "mathlib.h"
+#include "qboolean.h"
+#include "zone.h"
 
 #ifndef __SOUND__
 #define __SOUND__

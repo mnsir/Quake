@@ -19,7 +19,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cmd.c -- Quake script command processing module
 
-#include "quakedef.h"
+#include "cmd.h"
+
+#include "client.h"
+#include "console.h"
+#include "host.h"
+#include "protocol.h"
+#include "sound.h"
+#include "sys.h"
+
+#include <string.h>
+
+
 
 void Cmd_ForwardToServer (void);
 

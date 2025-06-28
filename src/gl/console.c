@@ -19,14 +19,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // console.c
 
+#include "console.h"
+
+#include "client.h"
+#include "cmd.h"
+#include "draw.h"
+#include "host.h"
+#include "keys.h"
+#include "screen.h"
+#include "sound.h"
+#include "sys.h"
+#include "zone.h"
+
 #ifdef NeXT
 #include <libc.h>
 #endif
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
+#include <io.h>
 #include <fcntl.h>
-#include "quakedef.h"
+#include <stdarg.h>
+#include <string.h>
+
+
 
 int 		con_linewidth;
 

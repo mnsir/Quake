@@ -19,7 +19,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
-#include "quakedef.h"
+#include "chase.h"
+#include "cmd.h"
+#include "console.h"
+#include "host.h"
+#include "input.h"
+#ifdef GLQUAKE
+#include "gl_model.h"
+#else
+#include "model.h"
+#endif
+#include "net.h"
+#include "protocol.h"
+#include "screen.h"
+#include "server.h"
+#include "sound.h"
+
+#include <windows.h>
+
+
 
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
@@ -305,6 +323,8 @@ void SetPal (int i)
 		}
 		VID_SetPalette (pal);
 	}
+#else
+	UNREFERENCED_PARAMETER(i);
 #endif
 }
 

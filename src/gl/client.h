@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -18,6 +20,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // client.h
+
+#include "byte.h"
+#include "common.h"
+#include "cvar.h"
+#include "defines.h"
+#include "mathlib.h"
+#include "render.h"
+
+#include <stdio.h>
 
 typedef struct
 {

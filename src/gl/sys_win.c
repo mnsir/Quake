@@ -19,11 +19,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sys_win.c -- Win32 system interface code
 
-#include "quakedef.h"
-#include "winquake.h"
-#include "errno.h"
-#include "resource.h"
+#include "sys.h"
+
+#include "client.h"
+#include "common.h"
 #include "conproc.h"
+#include "defines.h"
+#include "host.h"
+#include "qboolean.h"
+#include "screen.h"
+#include "winquake.h"
+
+#include "resource.h"
+
+#include <stdio.h>
+#include <errno.h>
+#include <direct.h>
 
 #define MINIMUM_WIN_MEMORY		0x0880000
 #define MAXIMUM_WIN_MEMORY		0x1000000

@@ -20,7 +20,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // screen.c -- master for refresh, status bar, console, chat, notify, etc
 
-#include "quakedef.h"
+#include "client.h"
+#include "cmd.h"
+#include "console.h"
+#include "draw.h"
+#include "glquake.h"
+#include "host.h"
+#include "keys.h"
+#include "menu.h"
+#include "sbar.h"
+#include "screen.h"
+#include "sound.h"
+#include "sys.h"
+
+#include <math.h>
+
+
+
+
+void GL_Set2D(void);
 
 /*
 
@@ -254,7 +272,6 @@ Internal use only
 */
 static void SCR_CalcRefdef (void)
 {
-	vrect_t		vrect;
 	float		size;
 	int		h;
 	qboolean		full = false;
@@ -821,7 +838,6 @@ needs almost the entire 256k of stack space!
 void SCR_UpdateScreen (void)
 {
 	static float	oldscr_viewsize;
-	vrect_t		vrect;
 
 	if (block_drawing)
 		return;

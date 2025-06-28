@@ -19,9 +19,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_misc.c
 
-#include "quakedef.h"
+#include "client.h"
+#include "cmd.h"
+#include "console.h"
+#include "glquake.h"
+#include "sys.h"
 
 
+
+void R_InitParticles(void);
+qboolean VID_Is8bit();
+void GL_Upload8_EXT(byte* data, int width, int height, qboolean mipmap, qboolean alpha);
+void R_ClearParticles(void);
+void GL_BuildLightmaps(void);
 
 /*
 ==================
@@ -106,7 +116,6 @@ Grab six views for environment mapping tests
 void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
-	char	name[1024];
 
 	glDrawBuffer  (GL_FRONT);
 	glReadBuffer  (GL_FRONT);
@@ -426,8 +435,6 @@ void R_TimeRefresh_f (void)
 {
 	int			i;
 	float		start, stop, time;
-	int			startangle;
-	vrect_t		vr;
 
 	glDrawBuffer  (GL_FRONT);
 	glFinish ();

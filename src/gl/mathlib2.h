@@ -2,7 +2,8 @@
 
 #include "mathlib.h"
 
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
+typedef struct mplane_s mplane_t;
+int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t*p);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
 	(((p)->type < 3)?						\

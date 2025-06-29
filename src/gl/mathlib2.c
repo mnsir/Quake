@@ -1,11 +1,6 @@
 #include "mathlib2.h"
 
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
 #include "model.h"
-#endif
-
 
 
 void Sys_Error (char *error, ...);

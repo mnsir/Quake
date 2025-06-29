@@ -23,11 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "console.h"
 #include "mathlib2.h"
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
 #include "model.h"
-#endif
 #include "server.h"
 #include "sys.h"
 

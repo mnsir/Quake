@@ -33,8 +33,8 @@ typedef struct
 
 typedef struct
 {
-	qboolean	allsolid;	// if true, plane is not valid
-	qboolean	startsolid;	// if true, the initial point was in a solid area
+	qboolean	allsolid;	// if true_, plane is not valid
+	qboolean	startsolid;	// if true_, the initial point was in a solid area
 	qboolean	inopen, inwater;
 	float	fraction;		// time completed, 1.0 = didn't hit anything
 	vec3_t	endpos;			// final position

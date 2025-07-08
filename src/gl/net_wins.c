@@ -75,7 +75,7 @@ BOOL PASCAL FAR BlockingHook(void)
 	if ((Sys_FloatTime() - blocktime) > 2.0)
 	{
 		WSACancelBlockingCall();
-		return FALSE;
+		return false_;
 	}
 
     /* get the next message, if any */ 
@@ -134,11 +134,11 @@ int WINS_Init (void)
 	if (hInst == NULL)
 	{
 		Con_SafePrintf ("Failed to load winsock.dll\n");
-		winsock_lib_initialized = false;
+		winsock_lib_initialized = false_;
 		return -1;
 	}
 
-	winsock_lib_initialized = true;
+	winsock_lib_initialized = true_;
 
     pWSAStartup = (void *)GetProcAddress(hInst, "WSAStartup");
     pWSACleanup = (void *)GetProcAddress(hInst, "WSACleanup");
@@ -243,7 +243,7 @@ int WINS_Init (void)
 	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
 	Con_Printf("Winsock TCP/IP Initialized\n");
-	tcpipAvailable = true;
+	tcpipAvailable = true_;
 
 	return net_controlsocket;
 }
@@ -252,7 +252,7 @@ int WINS_Init (void)
 
 void WINS_Shutdown (void)
 {
-	WINS_Listen (false);
+	WINS_Listen (false_);
 	WINS_CloseSocket (net_controlsocket);
 	if (--winsock_initialized == 0)
 		pWSACleanup ();

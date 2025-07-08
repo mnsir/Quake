@@ -46,8 +46,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MIN_WIDTH 320
 #define MIN_HEIGHT 200
 
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
-cvar_t		m_filter = {"m_filter","0", true};
+cvar_t		_windowed_mouse = {"_windowed_mouse","0", true_};
+cvar_t		m_filter = {"m_filter","0", true_};
 float old_windowed_mouse;
 
 // The following X property format is defined in Motif 1.1's
@@ -124,13 +124,13 @@ int		vid_buffersize;
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
 byte	*VGA_pagebase;
 
-qboolean			x_fullscreen = true;
+qboolean			x_fullscreen = true_;
 Display				*x_disp = NULL;
 int				x_screen, x_screen_width, x_screen_height;
 int				x_center_width, x_center_height;
 int				x_std_event_mask = STD_EVENT_MASK;
 Window				x_win, x_root_win;
-qboolean			x_focus = true;
+qboolean			x_focus = true_;
 int				global_dx, global_dy;
 
 
@@ -141,15 +141,15 @@ static XVisualInfo		*x_visinfo;
 static Atom			aHints = NULL;
 static Atom			aWMDelete = NULL;
 
-static qboolean			oktodraw = false;
-static qboolean			X11_active = false;
+static qboolean			oktodraw = false_;
+static qboolean			X11_active = false_;
 
 
 static int verbose=1;
 
 static byte current_palette[768];
 
-cvar_t pixel_multiply = {"pixel_multiply", "2", true};
+cvar_t pixel_multiply = {"pixel_multiply", "2", true_};
 int current_pixel_multiply = 2;
 
 #define PM(a) (int)((current_pixel_multiply)?((a)*current_pixel_multiply):(a))
@@ -240,7 +240,7 @@ qboolean CheckPixelMultiply (void)
 		Cvar_SetValue("pixel_multiply", m);
 		
 		if(XGetWindowAttributes(x_disp, x_win, & wattr) == 0)
-			return true; // ???
+			return true_; // ???
 
 		memset(&chg, 0, sizeof(chg));
 		chg.width = wattr.width/old_pixel * current_pixel_multiply;
@@ -262,9 +262,9 @@ qboolean CheckPixelMultiply (void)
 			vid.height = 200;
 		VID_ResetFramebuffer();
 
-		return true;
+		return true_;
 	}
-	return false;
+	return false_;
 }
 
 // ========================================================================
@@ -444,7 +444,7 @@ void	VID_Init (unsigned char *palette)
 
 // for debugging only
 	if (verbose)
-		XSynchronize(x_disp, True);
+		XSynchronize(x_disp, true_);
 
 //
 // check for command-line window size
@@ -590,13 +590,13 @@ void	VID_Init (unsigned char *palette)
 	{
 		XGCValues xgcvalues;
 		int valuemask = GCGraphicsExposures;
-		xgcvalues.graphics_exposures = False;
+		xgcvalues.graphics_exposures = false_;
 		x_gc = XCreateGC(x_disp, x_win, valuemask, &xgcvalues );
 	}
 
 // map the window
 	XMapWindow(x_disp, x_win);
-	XSync(x_disp, True) ;        /* wait for map */
+	XSync(x_disp, true_) ;        /* wait for map */
 //
 // wait for first exposure event
 //
@@ -605,7 +605,7 @@ void	VID_Init (unsigned char *palette)
 		do{
 			XNextEvent(x_disp, &event);
 			if (event.type == Expose && !event.xexpose.count)
-				oktodraw = true;
+				oktodraw = true_;
 		} while (!oktodraw);
 	}
 //
@@ -621,7 +621,7 @@ void	VID_Init (unsigned char *palette)
 		Sys_Error("xil_open failed\n");
 	}
 	
-	X11_active = true;
+	X11_active = true_;
 
 	VID_ResetFramebuffer();
 
@@ -651,13 +651,13 @@ VID_ResetFramebuffer()
 
 	xil_export(quake_image);
 	
-	if (xil_get_memory_storage(quake_image, &storage) == FALSE)
+	if (xil_get_memory_storage(quake_image, &storage) == false_)
 		Sys_Error("xil_get_memory_storage");
 	
-	xil_import(quake_image, TRUE);
+	xil_import(quake_image, true_);
 	xil_export(quake_image);
 
-	if (xil_get_memory_storage(quake_image, &storage) == FALSE)
+	if (xil_get_memory_storage(quake_image, &storage) == false_)
 		Sys_Error("xil_get_memory_storage");
 
 	vid.rowbytes = storage.byte.scanline_stride;
@@ -735,7 +735,7 @@ void VID_SetPalette(unsigned char *palette)
 
 void	VID_Shutdown (void)
 {
-	X11_active = false;
+	X11_active = false_;
 	Con_Printf("VID_Shutdown\n");
 	//XAutoRepeatOn(x_disp);
 	xil_destroy(display_image);
@@ -832,10 +832,10 @@ void GetEvent(void)
 	XNextEvent(x_disp, &x_event);
 	switch(x_event.type) {
 		case KeyPress:
-			Key_Event(XLateKey(&x_event.xkey), true);
+			Key_Event(XLateKey(&x_event.xkey), true_);
 			break;
 		case KeyRelease:
-			Key_Event(XLateKey(&x_event.xkey), false);
+			Key_Event(XLateKey(&x_event.xkey), false_);
 			break;
 
 		case MotionNotify:
@@ -899,11 +899,11 @@ void GetEvent(void)
 #if 0
 		case FocusIn:
 			printf("FocusIn...\n");
-			x_focus = true;
+			x_focus = true_;
 			break;
 		case FocusOut:
 			printf("FocusOut...\n");
-			x_focus = false;
+			x_focus = false_;
 			break;
 #endif
 	}
@@ -916,7 +916,7 @@ void GetEvent(void)
 			XUngrabPointer(x_disp,CurrentTime);
 		} else {
 			/* grab the pointer */
-			XGrabPointer(x_disp,x_win,True,0,GrabModeAsync,
+			XGrabPointer(x_disp,x_win,true_,0,GrabModeAsync,
 				GrabModeAsync,x_win,None,CurrentTime);
 		}
 	}
@@ -998,7 +998,7 @@ VID_Update (vrect_t *rects)
 	while (rects) { // I've never seen more than one rect?
 		XilMemoryStorage storage;
 
-		xil_import(quake_image, TRUE); // let xil control the image
+		xil_import(quake_image, true_); // let xil control the image
 
 		if (current_pixel_multiply < 2)
 			xil_copy(quake_image, display_image);
@@ -1008,7 +1008,7 @@ VID_Update (vrect_t *rects)
 
 		xil_export(quake_image);  // back to quake
 
-		if (xil_get_memory_storage(quake_image, &storage) == FALSE)
+		if (xil_get_memory_storage(quake_image, &storage) == false_)
 			Sys_Error("xil_get_memory_storage");
 
 		vid.buffer =   storage.byte.data;
@@ -1095,7 +1095,7 @@ drain_renderpipeline(XilImage old)
 
 	xil_export(new);
 
-	if (xil_get_memory_storage(new, &storage) == FALSE)
+	if (xil_get_memory_storage(new, &storage) == false_)
 		Sys_Error("xil_get_memory_storage");
 
 	vid.rowbytes = storage.byte.scanline_stride;
@@ -1127,7 +1127,7 @@ sched_update(XilImage image)
 
 	xil_export(new);
 
-	if (xil_get_memory_storage(new, &storage) == FALSE)
+	if (xil_get_memory_storage(new, &storage) == false_)
 		Sys_Error("xil_get_memory_storage");
 
 	vid.buffer =   storage.byte.data;
@@ -1145,7 +1145,7 @@ void *update_thread()
 
 	while (read(render_pipeline[0], &image, sizeof (image)) == sizeof(image)) {
 
-		xil_import(image, TRUE); // let xil control the image
+		xil_import(image, true_); // let xil control the image
 
 		if (!display_image)
 			return;
@@ -1237,10 +1237,10 @@ void IN_Commands (void)
    
 	for (i=0 ; i<mouse_buttons ; i++) {
 		if ( (mouse_buttonstate & (1<<i)) && !(mouse_oldbuttonstate & (1<<i)) )
-			Key_Event (K_MOUSE1 + i, true);
+			Key_Event (K_MOUSE1 + i, true_);
 
 		if ( !(mouse_buttonstate & (1<<i)) && (mouse_oldbuttonstate & (1<<i)) )
-			Key_Event (K_MOUSE1 + i, false);
+			Key_Event (K_MOUSE1 + i, false_);
 	}
 	mouse_oldbuttonstate = mouse_buttonstate;
 }

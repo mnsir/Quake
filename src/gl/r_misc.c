@@ -491,7 +491,7 @@ r_refdef.viewangles[2]=    0;
 			R_ViewChanged (&vrect, sb_lines, vid.aspect);
 		}
 
-		r_viewchanged = false;
+		r_viewchanged = false_;
 	}
 
 // start off with just the four screen edge clip planes
@@ -507,7 +507,7 @@ r_refdef.viewangles[2]=    0;
 
 	R_SetUpFrustumIndexes ();
 
-	r_cache_thrash = false;
+	r_cache_thrash = false_;
 
 // clear frame counts
 	c_faceclip = 0;

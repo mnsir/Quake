@@ -302,8 +302,8 @@ qboolean R_AliasCheckBBox (void)
 	basepts[2][2] = basepts[3][2] = basepts[6][2] = basepts[7][2] =
 			(float)pframedesc->bboxmax.v[2];
 
-	zclipped = false;
-	zfullyclipped = true;
+	zclipped = false_;
+	zfullyclipped = true_;
 
 	minz = 9999;
 	for (i=0; i<8 ; i++)
@@ -314,21 +314,21 @@ qboolean R_AliasCheckBBox (void)
 		{
 		// we must clip points that are closer than the near clip plane
 			viewpts[i].flags = ALIAS_Z_CLIP;
-			zclipped = true;
+			zclipped = true_;
 		}
 		else
 		{
 			if (viewaux[i].fv[2] < minz)
 				minz = viewaux[i].fv[2];
 			viewpts[i].flags = 0;
-			zfullyclipped = false;
+			zfullyclipped = false_;
 		}
 	}
 
 	
 	if (zfullyclipped)
 	{
-		return false;	// everything was near-z-clipped
+		return false_;	// everything was near-z-clipped
 	}
 
 	numv = 8;
@@ -394,7 +394,7 @@ qboolean R_AliasCheckBBox (void)
 	}
 
 	if (allclip)
-		return false;	// trivial reject off one side
+		return false_;	// trivial reject off one side
 
 	currententity->trivial_accept = !anyclip & !zclipped;
 
@@ -406,7 +406,7 @@ qboolean R_AliasCheckBBox (void)
 		}
 	}
 
-	return true;
+	return true_;
 }
 
 

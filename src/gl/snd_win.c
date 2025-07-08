@@ -40,7 +40,7 @@ typedef enum {SIS_SUCCESS, SIS_FAILURE, SIS_NOTAVAIL} sndinitstat;
 static qboolean	wavonly;
 static qboolean	dsound_init;
 static qboolean	wav_init;
-static qboolean	snd_firsttime = true, snd_isdirect, snd_iswave;
+static qboolean	snd_firsttime = true_, snd_isdirect, snd_iswave;
 static qboolean	primary_format_set;
 
 static int	sample16;
@@ -173,8 +173,8 @@ void FreeSound (void)
 	hWaveHdr = 0;
 	lpData = NULL;
 	lpWaveHdr = NULL;
-	dsound_init = false;
-	wav_init = false;
+	dsound_init = false_;
+	wav_init = false_;
 }
 
 
@@ -284,7 +284,7 @@ sndinitstat SNDDMA_InitDirect (void)
 
 	memset(&dsbcaps, 0, sizeof(dsbcaps));
 	dsbcaps.dwSize = sizeof(dsbcaps);
-	primary_format_set = false;
+	primary_format_set = false_;
 
 	if (!COM_CheckParm ("-snoforceformat"))
 	{
@@ -302,7 +302,7 @@ sndinitstat SNDDMA_InitDirect (void)
 				if (snd_firsttime)
 					Con_SafePrintf ("Set primary sound buffer format: yes\n");
 
-				primary_format_set = true;
+				primary_format_set = true_;
 			}
 		}
 	}
@@ -403,15 +403,15 @@ sndinitstat SNDDMA_InitDirect (void)
 	pDSBuf->lpVtbl->GetCurrentPosition(pDSBuf, &mmstarttime.u.sample, &dwWrite);
 	pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
-	shm->soundalive = true;
-	shm->splitbuffer = false;
+	shm->soundalive = true_;
+	shm->splitbuffer = false_;
 	shm->samples = gSndBufSize/(shm->samplebits/8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
 	sample16 = (shm->samplebits/8) - 1;
 
-	dsound_init = true;
+	dsound_init = true_;
 
 	return SIS_SUCCESS;
 }
@@ -458,7 +458,7 @@ qboolean SNDDMA_InitWav (void)
 		if (hr != MMSYSERR_ALLOCATED)
 		{
 			Con_SafePrintf ("waveOutOpen failed\n");
-			return false;
+			return false_;
 		}
 
 		if (MessageBox (NULL,
@@ -469,7 +469,7 @@ qboolean SNDDMA_InitWav (void)
 		{
 			Con_SafePrintf ("waveOutOpen failure;\n"
 							"  hardware already in use\n");
-			return false;
+			return false_;
 		}
 	} 
 
@@ -485,14 +485,14 @@ qboolean SNDDMA_InitWav (void)
 	{ 
 		Con_SafePrintf ("Sound: Out of memory.\n");
 		FreeSound ();
-		return false; 
+		return false_; 
 	}
 	lpData = GlobalLock(hData);
 	if (!lpData)
 	{ 
 		Con_SafePrintf ("Sound: Failed to lock.\n");
 		FreeSound ();
-		return false; 
+		return false_; 
 	} 
 	memset (lpData, 0, gSndBufSize);
 
@@ -508,7 +508,7 @@ qboolean SNDDMA_InitWav (void)
 	{ 
 		Con_SafePrintf ("Sound: Failed to Alloc header.\n");
 		FreeSound ();
-		return false; 
+		return false_; 
 	} 
 
 	lpWaveHdr = (LPWAVEHDR) GlobalLock(hWaveHdr); 
@@ -517,7 +517,7 @@ qboolean SNDDMA_InitWav (void)
 	{ 
 		Con_SafePrintf ("Sound: Failed to lock header.\n");
 		FreeSound ();
-		return false; 
+		return false_; 
 	}
 
 	memset (lpWaveHdr, 0, sizeof(WAVEHDR) * WAV_BUFFERS);
@@ -533,21 +533,21 @@ qboolean SNDDMA_InitWav (void)
 		{
 			Con_SafePrintf ("Sound: failed to prepare wave headers\n");
 			FreeSound ();
-			return false;
+			return false_;
 		}
 	}
 
-	shm->soundalive = true;
-	shm->splitbuffer = false;
+	shm->soundalive = true_;
+	shm->splitbuffer = false_;
 	shm->samples = gSndBufSize/(shm->samplebits/8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
 	sample16 = (shm->samplebits/8) - 1;
 
-	wav_init = true;
+	wav_init = true_;
 
-	return true;
+	return true_;
 }
 
 /*
@@ -559,12 +559,12 @@ Returns false if nothing is found.
 ==================
 */
 
-int SNDDMA_Init(void)
+qboolean SNDDMA_Init(void)
 {
 	sndinitstat	stat;
 
 	if (COM_CheckParm ("-wavonly"))
-		wavonly = true;
+		wavonly = true_;
 
 	dsound_init = wav_init = 0;
 
@@ -579,14 +579,14 @@ int SNDDMA_Init(void)
 
 			if (stat == SIS_SUCCESS)
 			{
-				snd_isdirect = true;
+				snd_isdirect = true_;
 
 				if (snd_firsttime)
 					Con_SafePrintf ("DirectSound initialized\n");
 			}
 			else
 			{
-				snd_isdirect = false;
+				snd_isdirect = false_;
 				Con_SafePrintf ("DirectSound failed to init\n");
 			}
 		}
@@ -615,7 +615,7 @@ int SNDDMA_Init(void)
 		}
 	}
 
-	snd_firsttime = false;
+	snd_firsttime = false_;
 
 	if (!dsound_init && !wav_init)
 	{

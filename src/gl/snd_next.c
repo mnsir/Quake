@@ -38,7 +38,7 @@ qboolean SNDDMA_Init(void)
 	shm->samples = 16384 / (desired_bits / 8);
 	shm->submission_chunk = 1;
 
-	return true;
+	return true_;
 }
 
 // return the current sample position (in mono samples read)

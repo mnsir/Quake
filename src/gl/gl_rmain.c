@@ -136,8 +136,8 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 
 	for (i=0 ; i<4 ; i++)
 		if (BoxOnPlaneSide (mins, maxs, &frustum[i]) == 2)
-			return true;
-	return false;
+			return true_;
+	return false_;
 }
 
 
@@ -1015,7 +1015,7 @@ void R_SetupFrame (void)
 	V_SetContentsColor (r_viewleaf->contents);
 	V_CalcBlend ();
 
-	r_cache_thrash = false;
+	r_cache_thrash = false_;
 
 	c_brush_polys = 0;
 	c_alias_polys = 0;
@@ -1300,7 +1300,7 @@ void R_RenderView (void)
 		c_alias_polys = 0;
 	}
 
-	mirror = false;
+	mirror = false_;
 
 	if (gl_finish.value)
 		glFinish ();

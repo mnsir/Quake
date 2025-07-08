@@ -226,12 +226,12 @@ static struct cd_request	*cdRequest;
 static union readInfo_u		*readInfo;
 static cd_info				cd;
 
-static qboolean	playing = false;
-static qboolean	wasPlaying = false;
-static qboolean	mediaCheck = false;
-static qboolean	initialized = false;
-static qboolean	enabled = true;
-static qboolean playLooping = false;
+static qboolean	playing = false_;
+static qboolean	wasPlaying = false_;
+static qboolean	mediaCheck = false_;
+static qboolean	initialized = false_;
+static qboolean	enabled = true_;
+static qboolean playLooping = false_;
 static short	cdRequestSegment;
 static short	cdRequestOffset;
 static short	readInfoSegment;
@@ -370,7 +370,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 		return -1;
 	}
 
-	cd.valid = true;
+	cd.valid = true_;
 	cd.lowTrack = readInfo->audioDiskInfo.lowTrack;
 	cd.highTrack = readInfo->audioDiskInfo.highTrack;
 	cd.leadOutAddress = readInfo->audioDiskInfo.leadOutStart;
@@ -558,12 +558,12 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (cdRequest->status & STATUS_ERROR_BIT)
 	{
 		Con_DPrintf("CDAudio_Play: track %u failed\n", track);
-		cd.valid = false;
-		playing = false;
+		cd.valid = false_;
+		playing = false_;
 		return;
 	}
 
-	playing = true;
+	playing = true_;
 }
 
 
@@ -584,7 +584,7 @@ void CDAudio_Stop(void)
 	dos_int86 (0x2f);
 
 	wasPlaying = playing;
-	playing = false;
+	playing = false_;
 }
 
 
@@ -616,7 +616,7 @@ void CDAudio_Resume(void)
 	regs.x.bx = cdRequestOffset;
 	dos_int86 (0x2f);
 
-	playing = true;
+	playing = true_;
 }
 
 
@@ -634,7 +634,7 @@ static void CD_f (void)
 
 	if (Q_strcasecmp(command, "on") == 0)
 	{
-		enabled = true;
+		enabled = true_;
 		return;
 	}
 
@@ -642,13 +642,13 @@ static void CD_f (void)
 	{
 		if (playing)
 			CDAudio_Stop();
-		enabled = false;
+		enabled = false_;
 		return;
 	}
 
 	if (Q_strcasecmp(command, "reset") == 0)
 	{
-		enabled = true;
+		enabled = true_;
 		if (playing)
 			CDAudio_Stop();
 		for (n = 0; n < 256; n++)
@@ -681,13 +681,13 @@ static void CD_f (void)
 
 	if (Q_strcasecmp(command, "play") == 0)
 	{
-		CDAudio_Play(Q_atoi(Cmd_Argv (2)), false);
+		CDAudio_Play(Q_atoi(Cmd_Argv (2)), false_);
 		return;
 	}
 
 	if (Q_strcasecmp(command, "loop") == 0)
 	{
-		CDAudio_Play(Q_atoi(Cmd_Argv (2)), true);
+		CDAudio_Play(Q_atoi(Cmd_Argv (2)), true_);
 		return;
 	}
 
@@ -714,7 +714,7 @@ static void CD_f (void)
 		if (playing)
 			CDAudio_Stop();
 		CDAudio_Eject();
-		cd.valid = false;
+		cd.valid = false_;
 		return;
 	}
 
@@ -761,9 +761,9 @@ void CDAudio_Update(void)
 		if (ret == MEDIA_CHANGED)
 		{
 			Con_DPrintf("CDAudio: media changed\n");
-			playing = false;
-			wasPlaying = false;
-			cd.valid = false;
+			playing = false_;
+			wasPlaying = false_;
+			cd.valid = false_;
 			CDAudio_GetAudioDiskInfo();
 			return;
 		}
@@ -790,9 +790,9 @@ void CDAudio_Update(void)
 		CDAudio_GetAudioStatus();
 		if ((cdRequest->status & STATUS_BUSY_BIT) == 0)
 		{
-			playing = false;
+			playing = false_;
 			if (playLooping)
-				CDAudio_Play(playTrack, true);
+				CDAudio_Play(playTrack, true_);
 		}
 	}
 }
@@ -810,7 +810,7 @@ int CDAudio_Init(void)
 		return -1;
 
 	if (COM_CheckParm("-cdmediacheck"))
-		mediaCheck = true;
+		mediaCheck = true_;
 
 	regs.x.ax = 0x1500;
 	regs.x.bx = 0;
@@ -861,13 +861,13 @@ int CDAudio_Init(void)
 
 	for (n = 0; n < 256; n++)
 		remap[n] = n;
-	initialized = true;
+	initialized = true_;
 
 	CDAudio_SetVolume (255);
 	if (CDAudio_GetAudioDiskInfo())
 	{
 		Con_Printf("CDAudio_Init: No CD in player.\n");
-		enabled = false;
+		enabled = false_;
 	}
 
 	Cmd_AddCommand ("cd", CD_f);

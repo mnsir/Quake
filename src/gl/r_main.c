@@ -41,7 +41,7 @@ int			r_numallocatededges;
 qboolean	r_drawpolys;
 qboolean	r_drawculledpolys;
 qboolean	r_worldpolysbacktofront;
-qboolean	r_recursiveaffinetriangles = true;
+qboolean	r_recursiveaffinetriangles = true_;
 int			r_pixbytes = 1;
 float		r_aliasuvscale = 1.0;
 int			r_outofsurfaces;
@@ -224,12 +224,12 @@ void R_Init (void)
 	Cvar_SetValue ("r_maxedges", (float)NUMSTACKEDGES);
 	Cvar_SetValue ("r_maxsurfs", (float)NUMSTACKSURFACES);
 
-	view_clipplanes[0].leftedge = true;
-	view_clipplanes[1].rightedge = true;
+	view_clipplanes[0].leftedge = true_;
+	view_clipplanes[1].rightedge = true_;
 	view_clipplanes[1].leftedge = view_clipplanes[2].leftedge =
-			view_clipplanes[3].leftedge = false;
+			view_clipplanes[3].leftedge = false_;
 	view_clipplanes[0].rightedge = view_clipplanes[2].rightedge =
-			view_clipplanes[3].rightedge = false;
+			view_clipplanes[3].rightedge = false_;
 
 	r_refdef.xOrigin = XCENTERING;
 	r_refdef.yOrigin = YCENTERING;
@@ -266,7 +266,7 @@ void R_NewMap (void)
 		surfaces = Hunk_AllocName (r_cnumsurfs * sizeof(surf_t), "surfaces");
 		surface_p = surfaces;
 		surf_max = &surfaces[r_cnumsurfs];
-		r_surfsonstack = false;
+		r_surfsonstack = false_;
 	// surface 0 doesn't really exist; it's just a dummy because index 0
 	// is used to indicate no edge attached to surface
 		surfaces--;
@@ -274,7 +274,7 @@ void R_NewMap (void)
 	}
 	else
 	{
-		r_surfsonstack = true;
+		r_surfsonstack = true_;
 	}
 
 	r_maxedgesseen = 0;
@@ -295,8 +295,8 @@ void R_NewMap (void)
 								   "edges");
 	}
 
-	r_dowarpold = false;
-	r_viewchanged = false;
+	r_dowarpold = false_;
+	r_viewchanged = false_;
 #ifdef PASSAGES
 CreatePassages ();
 #endif
@@ -361,7 +361,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	int		i;
 	float	res_scale;
 
-	r_viewchanged = true;
+	r_viewchanged = true_;
 
 	R_SetVrect (pvrect, &r_refdef.vrect, lineadj);
 
@@ -458,9 +458,9 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	r_resfudge = r_aliastransadj.value * res_scale;
 
 	if (scr_fov.value <= 90.0)
-		r_fov_greater_than_90 = false;
+		r_fov_greater_than_90 = false_;
 	else
-		r_fov_greater_than_90 = true;
+		r_fov_greater_than_90 = true_;
 
 	D_ViewChanged ();
 }
@@ -735,7 +735,7 @@ void R_DrawBEntitiesOnList (void)
 		return;
 
 	VectorCopy (modelorg, oldorigin);
-	insubmodel = true;
+	insubmodel = true_;
 	r_dlightframecount = r_framecount;
 
 	for (i=0 ; i<cl_numvisedicts ; i++)
@@ -847,7 +847,7 @@ void R_DrawBEntitiesOnList (void)
 		}
 	}
 
-	insubmodel = false;
+	insubmodel = false_;
 }
 
 

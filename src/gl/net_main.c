@@ -33,9 +33,9 @@ qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;
 int			net_numsockets = 0;
 
-qboolean	serialAvailable = false;
-qboolean	ipxAvailable = false;
-qboolean	tcpipAvailable = false;
+qboolean	serialAvailable = false_;
+qboolean	ipxAvailable = false_;
+qboolean	tcpipAvailable = false_;
 
 int			net_hostport;
 int			DEFAULTnet_hostport = 26000;
@@ -48,11 +48,11 @@ void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean 
 void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
 void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
 
-static qboolean	listening = false;
+static qboolean	listening = false_;
 
-qboolean	slistInProgress = false;
-qboolean	slistSilent = false;
-qboolean	slistLocal = true;
+qboolean	slistInProgress = false_;
+qboolean	slistSilent = false_;
+qboolean	slistLocal = true_;
 static double	slistStartTime;
 static int		slistLastShown;
 
@@ -73,22 +73,22 @@ int unreliableMessagesReceived = 0;
 cvar_t	net_messagetimeout = {"net_messagetimeout","300"};
 cvar_t	hostname = {"hostname", "UNNAMED"};
 
-qboolean	configRestored = false;
-cvar_t	config_com_port = {"_config_com_port", "0x3f8", true};
-cvar_t	config_com_irq = {"_config_com_irq", "4", true};
-cvar_t	config_com_baud = {"_config_com_baud", "57600", true};
-cvar_t	config_com_modem = {"_config_com_modem", "1", true};
-cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", true};
-cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", true};
-cvar_t	config_modem_init = {"_config_modem_init", "", true};
-cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", true};
+qboolean	configRestored = false_;
+cvar_t	config_com_port = {"_config_com_port", "0x3f8", true_};
+cvar_t	config_com_irq = {"_config_com_irq", "4", true_};
+cvar_t	config_com_baud = {"_config_com_baud", "57600", true_};
+cvar_t	config_com_modem = {"_config_com_modem", "1", true_};
+cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", true_};
+cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", true_};
+cvar_t	config_modem_init = {"_config_modem_init", "", true_};
+cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", true_};
 
 #ifdef IDGODS
 cvar_t	idgods = {"idgods", "0"};
 #endif
 
 int	vcrFile = -1;
-qboolean recording = false;
+qboolean recording = false_;
 
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
@@ -132,14 +132,14 @@ qsocket_t *NET_NewQSocket (void)
 	sock->next = net_activeSockets;
 	net_activeSockets = sock;
 
-	sock->disconnected = false;
+	sock->disconnected = false_;
 	sock->connecttime = net_time;
 	Q_strcpy (sock->address,"UNSET ADDRESS");
 	sock->driver = net_driverlevel;
 	sock->socket = 0;
 	sock->driverdata = NULL;
-	sock->canSend = true;
-	sock->sendNext = false;
+	sock->canSend = true_;
+	sock->sendNext = false_;
 	sock->lastMessageTime = net_time;
 	sock->ackSequence = 0;
 	sock->sendSequence = 0;
@@ -175,7 +175,7 @@ void NET_FreeQSocket(qsocket_t *sock)
 	// add it to free list
 	sock->next = net_freeSockets;
 	net_freeSockets = sock;
-	sock->disconnected = true;
+	sock->disconnected = true_;
 }
 
 
@@ -187,11 +187,11 @@ static void NET_Listen_f (void)
 		return;
 	}
 
-	listening = Q_atoi(Cmd_Argv(1)) ? true : false;
+	listening = Q_atoi(Cmd_Argv(1)) ? true_ : false_;
 
 	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers; net_driverlevel++)
 	{
-		if (net_drivers[net_driverlevel].initialized == false)
+		if (net_drivers[net_driverlevel].initialized == false_)
 			continue;
 		dfunc.Listen (listening);
 	}
@@ -309,7 +309,7 @@ void NET_Slist_f (void)
 		PrintSlistHeader();
 	}
 
-	slistInProgress = true;
+	slistInProgress = true_;
 	slistStartTime = Sys_FloatTime();
 
 	SchedulePollProcedure(&slistSendProcedure, 0.0);
@@ -325,9 +325,9 @@ static void Slist_Send(void)
 	{
 		if (!slistLocal && net_driverlevel == 0)
 			continue;
-		if (net_drivers[net_driverlevel].initialized == false)
+		if (net_drivers[net_driverlevel].initialized == false_)
 			continue;
-		dfunc.SearchForHosts (true);
+		dfunc.SearchForHosts (true_);
 	}
 
 	if ((Sys_FloatTime() - slistStartTime) < 0.5)
@@ -341,9 +341,9 @@ static void Slist_Poll(void)
 	{
 		if (!slistLocal && net_driverlevel == 0)
 			continue;
-		if (net_drivers[net_driverlevel].initialized == false)
+		if (net_drivers[net_driverlevel].initialized == false_)
 			continue;
-		dfunc.SearchForHosts (false);
+		dfunc.SearchForHosts (false_);
 	}
 
 	if (! slistSilent)
@@ -357,9 +357,9 @@ static void Slist_Poll(void)
 
 	if (! slistSilent)
 		PrintSlistTrailer();
-	slistInProgress = false;
-	slistSilent = false;
-	slistLocal = true;
+	slistInProgress = false_;
+	slistSilent = false_;
+	slistLocal = true_;
 }
 
 
@@ -404,7 +404,7 @@ qsocket_t *NET_Connect (char *host)
 		}
 	}
 
-	slistSilent = host ? true : false;
+	slistSilent = host ? true_ : false_;
 	NET_Slist_f ();
 
 	while(slistInProgress)
@@ -429,7 +429,7 @@ qsocket_t *NET_Connect (char *host)
 JustDoIt:
 	for (net_driverlevel=0 ; net_driverlevel<numdrivers; net_driverlevel++)
 	{
-		if (net_drivers[net_driverlevel].initialized == false)
+		if (net_drivers[net_driverlevel].initialized == false_)
 			continue;
 		ret = dfunc.Connect (host);
 		if (ret)
@@ -469,9 +469,9 @@ qsocket_t *NET_CheckNewConnections (void)
 
 	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers; net_driverlevel++)
 	{
-		if (net_drivers[net_driverlevel].initialized == false)
+		if (net_drivers[net_driverlevel].initialized == false_)
 			continue;
-		if (net_driverlevel && listening == false)
+		if (net_driverlevel && listening == false_)
 			continue;
 		ret = dfunc.CheckNewConnections ();
 		if (ret)
@@ -704,10 +704,10 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 	int		r;
 	
 	if (!sock)
-		return false;
+		return false_;
 
 	if (sock->disconnected)
-		return false;
+		return false_;
 
 	SetNetTime();
 
@@ -743,18 +743,18 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			if (host_client->netconnection->driver == 0)
 			{
 				NET_SendMessage(host_client->netconnection, data);
-				state1[i] = true;
-				state2[i] = true;
+				state1[i] = true_;
+				state2[i] = true_;
 				continue;
 			}
 			count++;
-			state1[i] = false;
-			state2[i] = false;
+			state1[i] = false_;
+			state2[i] = false_;
 		}
 		else
 		{
-			state1[i] = true;
-			state2[i] = true;
+			state1[i] = true_;
+			state2[i] = true_;
 		}
 	}
 
@@ -768,7 +768,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			{
 				if (NET_CanSendMessage (host_client->netconnection))
 				{
-					state1[i] = true;
+					state1[i] = true_;
 					NET_SendMessage(host_client->netconnection, data);
 				}
 				else
@@ -783,7 +783,7 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 			{
 				if (NET_CanSendMessage (host_client->netconnection))
 				{
-					state2[i] = true;
+					state2[i] = true_;
 				}
 				else
 				{
@@ -821,7 +821,7 @@ void NET_Init (void)
 	}
 
 	if (COM_CheckParm("-record"))
-		recording = true;
+		recording = true_;
 
 	i = COM_CheckParm ("-port");
 	if (!i)
@@ -839,7 +839,7 @@ void NET_Init (void)
 	net_hostport = DEFAULTnet_hostport;
 
 	if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
-		listening = true;
+		listening = true_;
 	net_numsockets = svs.maxclientslimit;
 	if (cls.state != ca_dedicated)
 		net_numsockets++;
@@ -851,7 +851,7 @@ void NET_Init (void)
 		s = (qsocket_t *)Hunk_AllocName(sizeof(qsocket_t), "qsocket");
 		s->next = net_freeSockets;
 		net_freeSockets = s;
-		s->disconnected = true;
+		s->disconnected = true_;
 	}
 
 	// allocate space for network message buffer
@@ -882,10 +882,10 @@ void NET_Init (void)
 		controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)
 			continue;
-		net_drivers[net_driverlevel].initialized = true;
+		net_drivers[net_driverlevel].initialized = true_;
 		net_drivers[net_driverlevel].controlSock = controlSocket;
 		if (listening)
-			net_drivers[net_driverlevel].Listen (true);
+			net_drivers[net_driverlevel].Listen (true_);
 		}
 
 	if (*my_ipx_address)
@@ -914,10 +914,10 @@ void		NET_Shutdown (void)
 //
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
-		if (net_drivers[net_driverlevel].initialized == true)
+		if (net_drivers[net_driverlevel].initialized == true_)
 		{
 			net_drivers[net_driverlevel].Shutdown ();
-			net_drivers[net_driverlevel].initialized = false;
+			net_drivers[net_driverlevel].initialized = false_;
 		}
 	}
 
@@ -941,13 +941,13 @@ void NET_Poll(void)
 		if (serialAvailable)
 		{
 			if (config_com_modem.value == 1.0)
-				useModem = true;
+				useModem = true_;
 			else
-				useModem = false;
+				useModem = false_;
 			SetComPortConfig (0, (int)config_com_port.value, (int)config_com_irq.value, (int)config_com_baud.value, useModem);
 			SetModemConfig (0, config_modem_dialtype.string, config_modem_clear.string, config_modem_init.string, config_modem_hangup.string);
 		}
-		configRestored = true;
+		configRestored = true_;
 	}
 
 	SetNetTime();
@@ -992,13 +992,13 @@ void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
 qboolean IsID(struct qsockaddr *addr)
 {
 	if (idgods.value == 0.0)
-		return false;
+		return false_;
 
 	if (addr->sa_family != 2)
-		return false;
+		return false_;
 
 	if ((BigLong(*(int *)&addr->sa_data[2]) & 0xffffff00) == IDNET)
-		return true;
-	return false;
+		return true_;
+	return false_;
 }
 #endif

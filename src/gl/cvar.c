@@ -198,17 +198,17 @@ qboolean	Cvar_Command (void)
 // check variables
 	v = Cvar_FindVar (Cmd_Argv(0));
 	if (!v)
-		return false;
+		return false_;
 		
 // perform a variable print or set
 	if (Cmd_Argc() == 1)
 	{
 		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
-		return true;
+		return true_;
 	}
 
 	Cvar_Set (v->name, Cmd_Argv(1));
-	return true;
+	return true_;
 }
 
 

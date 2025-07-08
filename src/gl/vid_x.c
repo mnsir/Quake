@@ -41,8 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "d_local.h"
 
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
-cvar_t		m_filter = {"m_filter","0", true};
+cvar_t		_windowed_mouse = {"_windowed_mouse","0", true_};
+cvar_t		m_filter = {"m_filter","0", true_};
 float old_windowed_mouse;
 
 qboolean        mouse_avail;
@@ -83,7 +83,7 @@ static XVisualInfo		*x_visinfo;
 static int				x_shmeventtype;
 //static XShmSegmentInfo	x_shminfo;
 
-static qboolean			oktodraw = false;
+static qboolean			oktodraw = false_;
 
 int XShmQueryExtension(Display *);
 int XShmGetEventBase(Display *);
@@ -486,7 +486,7 @@ void	VID_Init (unsigned char *palette)
 	XAutoRepeatOff(x_disp);
 
 // for debugging only
-	XSynchronize(x_disp, True);
+	XSynchronize(x_disp, true_);
 
 // check for command-line window size
 	if ((pnum=COM_CheckParm("-winsize")))
@@ -614,7 +614,7 @@ void	VID_Init (unsigned char *palette)
 	{
 		XGCValues xgcvalues;
 		int valuemask = GCGraphicsExposures;
-		xgcvalues.graphics_exposures = False;
+		xgcvalues.graphics_exposures = false_;
 		x_gc = XCreateGC(x_disp, x_win, valuemask, &xgcvalues );
 	}
 
@@ -628,7 +628,7 @@ void	VID_Init (unsigned char *palette)
 		{
 			XNextEvent(x_disp, &event);
 			if (event.type == Expose && !event.xexpose.count)
-				oktodraw = true;
+				oktodraw = true_;
 		} while (!oktodraw);
 	}
 // now safe to draw
@@ -637,7 +637,7 @@ void	VID_Init (unsigned char *palette)
 	if (XShmQueryExtension(x_disp))
 	{
 		char *displayname;
-		doShm = true;
+		doShm = true_;
 		displayname = (char *) getenv("DISPLAY");
 		if (displayname)
 		{
@@ -645,7 +645,7 @@ void	VID_Init (unsigned char *palette)
 			while (*d && (*d != ':')) d++;
 			if (*d) *d = 0;
 			if (!(!strcasecmp(displayname, "unix") || !*displayname))
-				doShm = false;
+				doShm = false_;
 		}
 	}
 
@@ -667,7 +667,7 @@ void	VID_Init (unsigned char *palette)
 	vid.conheight = vid.height;
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
 
-//	XSynchronize(x_disp, False);
+//	XSynchronize(x_disp, false_);
 
 }
 
@@ -867,12 +867,12 @@ void GetEvent(void)
 	switch(x_event.type) {
 	case KeyPress:
 		keyq[keyq_head].key = XLateKey(&x_event.xkey);
-		keyq[keyq_head].down = true;
+		keyq[keyq_head].down = true_;
 		keyq_head = (keyq_head + 1) & 63;
 		break;
 	case KeyRelease:
 		keyq[keyq_head].key = XLateKey(&x_event.xkey);
-		keyq[keyq_head].down = false;
+		keyq[keyq_head].down = false_;
 		keyq_head = (keyq_head + 1) & 63;
 		break;
 
@@ -935,7 +935,7 @@ void GetEvent(void)
 
 	default:
 		if (doShm && x_event.type == x_shmeventtype)
-			oktodraw = true;
+			oktodraw = true_;
 	}
    
 	if (old_windowed_mouse != _windowed_mouse.value) {
@@ -946,7 +946,7 @@ void GetEvent(void)
 			XUngrabPointer(x_disp,CurrentTime);
 		} else {
 			/* grab the pointer */
-			XGrabPointer(x_disp,x_win,True,0,GrabModeAsync,
+			XGrabPointer(x_disp,x_win,true_,0,GrabModeAsync,
 				GrabModeAsync,x_win,None,CurrentTime);
 		}
 	}
@@ -1005,16 +1005,16 @@ void	VID_Update (vrect_t *rects)
 					rects->height);
 			if (!XShmPutImage(x_disp, x_win, x_gc,
 				x_framebuffer[current_framebuffer], rects->x, rects->y,
-				rects->x, rects->y, rects->width, rects->height, True))
+				rects->x, rects->y, rects->width, rects->height, true_))
 					Sys_Error("VID_Update: XShmPutImage failed\n");
-			oktodraw = false;
+			oktodraw = false_;
 			while (!oktodraw) GetEvent();
 			rects = rects->pnext;
 		}
 		current_framebuffer = !current_framebuffer;
 		vid.buffer = x_framebuffer[current_framebuffer]->data;
 		vid.conbuffer = vid.buffer;
-		XSync(x_disp, False);
+		XSync(x_disp, false_);
 	}
 	else
 	{
@@ -1032,7 +1032,7 @@ void	VID_Update (vrect_t *rects)
 				rects->y, rects->x, rects->y, rects->width, rects->height);
 			rects = rects->pnext;
 		}
-		XSync(x_disp, False);
+		XSync(x_disp, false_);
 	}
 
 }
@@ -1152,10 +1152,10 @@ void IN_Commands (void)
    
 	for (i=0 ; i<mouse_buttons ; i++) {
 		if ( (mouse_buttonstate & (1<<i)) && !(mouse_oldbuttonstate & (1<<i)) )
-			Key_Event (K_MOUSE1 + i, true);
+			Key_Event (K_MOUSE1 + i, true_);
 
 		if ( !(mouse_buttonstate & (1<<i)) && (mouse_oldbuttonstate & (1<<i)) )
-			Key_Event (K_MOUSE1 + i, false);
+			Key_Event (K_MOUSE1 + i, false_);
 	}
 	mouse_oldbuttonstate = mouse_buttonstate;
 }

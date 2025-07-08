@@ -50,7 +50,7 @@ int			total_channels;
 
 int				snd_blocked = 0;
 static qboolean	snd_ambient = 1;
-qboolean		snd_initialized = false;
+qboolean		snd_initialized = false_;
 
 // pointer should go away
 volatile dma_t  *shm = 0;
@@ -77,8 +77,8 @@ int 		desired_bits = 16;
 
 int sound_started=0;
 
-cvar_t bgmvolume = {"bgmvolume", "1", true};
-cvar_t volume = {"volume", "0.7", true};
+cvar_t bgmvolume = {"bgmvolume", "1", true_};
+cvar_t volume = {"volume", "0.7", true_};
 
 cvar_t nosound = {"nosound", "0"};
 cvar_t precache = {"precache", "1"};
@@ -88,7 +88,7 @@ cvar_t ambient_level = {"ambient_level", "0.3"};
 cvar_t ambient_fade = {"ambient_fade", "100"};
 cvar_t snd_noextraupdate = {"snd_noextraupdate", "0"};
 cvar_t snd_show = {"snd_show", "0"};
-cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true};
+cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true_};
 
 
 // ====================================================================
@@ -102,19 +102,19 @@ cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true};
 // number of times S_Update() is called per second.
 //
 
-qboolean fakedma = false;
+qboolean fakedma = false_;
 int fakedma_updates = 15;
 
 
 void S_AmbientOff (void)
 {
-	snd_ambient = false;
+	snd_ambient = false_;
 }
 
 
 void S_AmbientOn (void)
 {
-	snd_ambient = true;
+	snd_ambient = true_;
 }
 
 
@@ -182,7 +182,7 @@ void S_Init (void)
 		return;
 
 	if (COM_CheckParm("-simsound"))
-		fakedma = true;
+		fakedma = true_;
 
 	Cmd_AddCommand("play", S_Play);
 	Cmd_AddCommand("playvol", S_PlayVol);
@@ -210,7 +210,7 @@ void S_Init (void)
 
 
 
-	snd_initialized = true;
+	snd_initialized = true_;
 
 	S_Startup ();
 
@@ -230,8 +230,8 @@ void S_Init (void)
 		shm->channels = 2;
 		shm->samples = 32768;
 		shm->samplepos = 0;
-		shm->soundalive = true;
-		shm->gamealive = true;
+		shm->soundalive = true_;
+		shm->gamealive = true_;
 		shm->submission_chunk = 1;
 		shm->buffer = Hunk_AllocName(1<<16, "shmbuf");
 	}
@@ -246,7 +246,7 @@ void S_Init (void)
 	ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
 	ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
 
-	S_StopAllSounds (true);
+	S_StopAllSounds (true_);
 }
 
 
@@ -562,7 +562,7 @@ void S_StopAllSounds(qboolean clear)
 
 void S_StopAllSoundsC (void)
 {
-	S_StopAllSounds (true);
+	S_StopAllSounds (true_);
 }
 
 void S_ClearBuffer (void)
@@ -841,7 +841,7 @@ void GetSoundtime(void)
 		{	// time to chop things off to avoid 32 bit limits
 			buffers = 0;
 			paintedtime = fullsamples;
-			S_StopAllSounds (true);
+			S_StopAllSounds (true_);
 		}
 	}
 	oldsamplepos = samplepos;

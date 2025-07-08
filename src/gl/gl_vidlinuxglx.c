@@ -55,19 +55,19 @@ unsigned short	d_8to16table[256];
 unsigned		d_8to24table[256];
 unsigned char	d_15to8table[65536];
 
-cvar_t	vid_mode = {"vid_mode","0",false};
+cvar_t	vid_mode = {"vid_mode","0",false_};
  
 static qboolean        mouse_avail;
 static qboolean        mouse_active;
 static int   mx, my;
 static int	old_mouse_x, old_mouse_y;
 
-static cvar_t in_mouse = {"in_mouse", "1", false};
-static cvar_t in_dgamouse = {"in_dgamouse", "1", false};
+static cvar_t in_mouse = {"in_mouse", "1", false_};
+static cvar_t in_dgamouse = {"in_dgamouse", "1", false_};
 static cvar_t m_filter = {"m_filter", "0"};
 
-qboolean dgamouse = false;
-qboolean vidmode_ext = false;
+qboolean dgamouse = false_;
+qboolean vidmode_ext = false_;
 
 static int win_x, win_y;
 
@@ -76,7 +76,7 @@ static int scr_width, scr_height;
 static XF86VidModeModeInfo **vidmodes;
 static int default_dotclock_vidmode;
 static int num_vidmodes;
-static qboolean vidmode_active = false;
+static qboolean vidmode_active = false_;
 
 /*-----------------------------------------------------------------------*/
 
@@ -103,9 +103,9 @@ void (*qgl3DfxSetPaletteEXT) (GLuint *);
 
 static float vid_gamma = 1.0;
 
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
+qboolean is8bit = false_;
+qboolean isPermedia = false_;
+qboolean gl_mtexable = false_;
 
 /*-----------------------------------------------------------------------*/
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
@@ -275,7 +275,7 @@ static void install_grabs(void)
 	XDefineCursor(dpy, win, CreateNullCursor(dpy, win));
 
 	XGrabPointer(dpy, win,
-				 True,
+				 true_,
 				 0,
 				 GrabModeAsync, GrabModeAsync,
 				 win,
@@ -290,7 +290,7 @@ static void install_grabs(void)
 			Con_Printf( "Failed to detect XF86DGA Mouse\n" );
 			in_dgamouse.value = 0;
 		} else {
-			dgamouse = true;
+			dgamouse = true_;
 			XF86DGADirectVideo(dpy, DefaultScreen(dpy), XF86DGADirectMouse);
 			XWarpPointer(dpy, None, win, 0, 0, 0, 0, 0, 0);
 		}
@@ -301,13 +301,13 @@ static void install_grabs(void)
 	}
 
 	XGrabKeyboard(dpy, win,
-				  False,
+				  false_,
 				  GrabModeAsync, GrabModeAsync,
 				  CurrentTime);
 
-	mouse_active = true;
+	mouse_active = true_;
 
-//	XSync(dpy, True);
+//	XSync(dpy, true_);
 }
 
 static void uninstall_grabs(void)
@@ -316,7 +316,7 @@ static void uninstall_grabs(void)
 		return;
 
 	if (dgamouse) {
-		dgamouse = false;
+		dgamouse = false_;
 		XF86DGADirectVideo(dpy, DefaultScreen(dpy), 0);
 	}
 
@@ -326,7 +326,7 @@ static void uninstall_grabs(void)
 // inviso cursor
 	XUndefineCursor(dpy, win);
 
-	mouse_active = false;
+	mouse_active = false_;
 }
 
 static void HandleEvents(void)
@@ -334,7 +334,7 @@ static void HandleEvents(void)
 	XEvent event;
 	KeySym ks;
 	int b;
-	qboolean dowarp = false;
+	qboolean dowarp = false_;
 	int mwx = vid.width/2;
 	int mwy = vid.height/2;
 
@@ -364,7 +364,7 @@ static void HandleEvents(void)
 					mwy = event.xmotion.y;
 
 					if (mx || my)
-						dowarp = true;
+						dowarp = true_;
 				}
 			}
 			break;
@@ -380,7 +380,7 @@ static void HandleEvents(void)
 			else if (event.xbutton.button == 3)
 				b = 1;
 			if (b>=0)
-				Key_Event(K_MOUSE1 + b, true);
+				Key_Event(K_MOUSE1 + b, true_);
 			break;
 
 		case ButtonRelease:
@@ -392,7 +392,7 @@ static void HandleEvents(void)
 			else if (event.xbutton.button == 3)
 				b = 1;
 			if (b>=0)
-				Key_Event(K_MOUSE1 + b, false);
+				Key_Event(K_MOUSE1 + b, false_);
 			break;
 
 		case CreateNotify :
@@ -421,7 +421,7 @@ static void IN_DeactivateMouse( void )
 
 	if (mouse_active) {
 		uninstall_grabs();
-		mouse_active = false;
+		mouse_active = false_;
 	}
 }
 
@@ -433,7 +433,7 @@ static void IN_ActivateMouse( void )
 	if (!mouse_active) {
 		mx = my = 0; // don't spazz
 		install_grabs();
-		mouse_active = true;
+		mouse_active = true_;
 	}
 }
 
@@ -452,7 +452,7 @@ void VID_Shutdown(void)
 			XF86VidModeSwitchToMode(dpy, scrnum, vidmodes[0]);
 		XCloseDisplay(dpy);
 	}
-	vidmode_active = false;
+	vidmode_active = false_;
 	dpy = NULL;
 	win = 0;
 	ctx = NULL;
@@ -556,7 +556,7 @@ void CheckMultiTextureExtensions(void)
 
 		if (qglMTexCoord2fSGIS && qglSelectTextureSGIS) {
 			Con_Printf("Multitexture extensions found.\n");
-			gl_mtexable = true;
+			gl_mtexable = true_;
 		} else
 			Con_Printf("Symbol not found, disabled.\n");
 
@@ -665,7 +665,7 @@ void VID_Init8bitPalette(void)
 			oldpal++;
 		}
 		qgl3DfxSetPaletteEXT((GLuint *)table);
-		is8bit = true;
+		is8bit = true_;
 
 	} else if (strstr(gl_extensions, "GL_EXT_shared_texture_palette") &&
 		(qglColorTableEXT = dlsym(prjobj, "glColorTableEXT")) != NULL) {
@@ -683,7 +683,7 @@ void VID_Init8bitPalette(void)
 			oldPalette++;
 		}
 		qglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-		is8bit = true;
+		is8bit = true_;
 	}
 	
 	dlclose(prjobj);
@@ -736,7 +736,7 @@ void VID_Init(unsigned char *palette)
 	unsigned long mask;
 	Window root;
 	XVisualInfo *visinfo;
-	qboolean fullscreen = true;
+	qboolean fullscreen = true_;
 	int MajorVersion, MinorVersion;
 	int actualWidth, actualHeight;
 
@@ -755,7 +755,7 @@ void VID_Init(unsigned char *palette)
 
 // set vid parameters
 	if ((i = COM_CheckParm("-window")) != 0)
-		fullscreen = false;
+		fullscreen = false_;
 
 	if ((i = COM_CheckParm("-width")) != 0)
 		width = atoi(com_argv[i+1]);
@@ -792,10 +792,10 @@ void VID_Init(unsigned char *palette)
 	// Get video mode list
 	MajorVersion = MinorVersion = 0;
 	if (!XF86VidModeQueryVersion(dpy, &MajorVersion, &MinorVersion)) { 
-		vidmode_ext = false;
+		vidmode_ext = false_;
 	} else {
 		Con_Printf("Using XFree86-VidModeExtension Version %d.%d\n", MajorVersion, MinorVersion);
-		vidmode_ext = true;
+		vidmode_ext = true_;
 	}
 
 	visinfo = glXChooseVisual(dpy, scrnum, attrib);
@@ -834,7 +834,7 @@ void VID_Init(unsigned char *palette)
 
 				// change to the mode
 				XF86VidModeSwitchToMode(dpy, scrnum, vidmodes[best_fit]);
-				vidmode_active = true;
+				vidmode_active = true_;
 
 				// Move the viewport to top left
 				XF86VidModeSetViewPort(dpy, scrnum, 0, 0);
@@ -851,9 +851,9 @@ void VID_Init(unsigned char *palette)
 	if (vidmode_active) {
 		mask = CWBackPixel | CWColormap | CWSaveUnder | CWBackingStore | 
 			CWEventMask | CWOverrideRedirect;
-		attr.override_redirect = True;
+		attr.override_redirect = true_;
 		attr.backing_store = NotUseful;
-		attr.save_under = False;
+		attr.save_under = false_;
 	} else
 		mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
@@ -873,7 +873,7 @@ void VID_Init(unsigned char *palette)
 
 	XFlush(dpy);
 
-	ctx = glXCreateContext(dpy, visinfo, NULL, True);
+	ctx = glXCreateContext(dpy, visinfo, NULL, true_);
 
 	glXMakeCurrent(dpy, win, ctx);
 

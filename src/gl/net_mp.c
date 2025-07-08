@@ -35,7 +35,7 @@ extern cvar_t hostname;
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;
 static int net_broadcastsocket = 0;
-//static qboolean ifbcastinit = false;
+//static qboolean ifbcastinit = false_;
 static struct qsockaddr broadcastaddr;
 
 static unsigned long myAddr;
@@ -110,7 +110,7 @@ int MPATH_Init (void)
 		*p = 0;
 
 	Con_Printf("MPath Initialized\n");
-	tcpipAvailable = true;
+	tcpipAvailable = true_;
 
 	return net_controlsocket;
 }
@@ -119,7 +119,7 @@ int MPATH_Init (void)
 
 void MPATH_Shutdown (void)
 {
-	MPATH_Listen (false);
+	MPATH_Listen (false_);
 	MPATH_CloseSocket (net_controlsocket);
 }
 
@@ -155,7 +155,7 @@ int MPATH_OpenSocket (int port)
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		return -1;
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, &_true_) == -1)
 		goto ErrorReturn;
 
 	address.sin_family = AF_INET;

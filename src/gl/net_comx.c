@@ -204,7 +204,7 @@ static void ISR_8250 (ComPort *p)
 				else
 				{
 					p->lineStatus |= LSR_OVERRUN_ERROR;
-					p->statusUpdated = true;
+					p->statusUpdated = true_;
 				}
 				break;
 
@@ -218,12 +218,12 @@ static void ISR_8250 (ComPort *p)
 
 			case IIR_MODEM_STATUS_INTERRUPT:
 				p->modemStatus = (inportb (p->uart + MODEM_STATUS_REGISTER) & MODEM_STATUS_MASK) | p->modemStatusIgnore;
-				p->statusUpdated = true;
+				p->statusUpdated = true_;
 				break;
 
 			case IIR_LINE_STATUS_INTERRUPT:
 				p->lineStatus = inportb (p->uart + LINE_STATUS_REGISTER);
-				p->statusUpdated = true;
+				p->statusUpdated = true_;
 				break;
 		}
 		source = inportb (p->uart + INTERRUPT_ID_REGISTER) & 0x07;
@@ -265,7 +265,7 @@ static void ISR_16550 (ComPort *p)
 					else
 					{
 						p->lineStatus |= LSR_OVERRUN_ERROR;
-						p->statusUpdated = true;
+						p->statusUpdated = true_;
 					}
 				} while (inportb (p->uart + LINE_STATUS_REGISTER) & LSR_DATA_READY);
 				break;
@@ -281,12 +281,12 @@ static void ISR_16550 (ComPort *p)
 
 			case IIR_MODEM_STATUS_INTERRUPT:
 				p->modemStatus = (inportb (p->uart + MODEM_STATUS_REGISTER) & MODEM_STATUS_MASK) | p->modemStatusIgnore;
-				p->statusUpdated = true;
+				p->statusUpdated = true_;
 				break;
 
 			case IIR_LINE_STATUS_INTERRUPT:
 				p->lineStatus = inportb (p->uart + LINE_STATUS_REGISTER);
-				p->statusUpdated = true;
+				p->statusUpdated = true_;
 				break;
 		}
 		source = inportb (p->uart + INTERRUPT_ID_REGISTER) & 0x07;
@@ -379,7 +379,7 @@ void TTY_SetModemConfig (int portNumber, char *dialType, char *clear, char *init
 	Q_strcpy(p->startup, init);
 	Q_strcpy(p->shutdown, hangup);
 
-	p->modemInitialized = false;
+	p->modemInitialized = false_;
 
 	Cvar_Set ("_config_modem_dialtype", dialType);
 	Cvar_Set ("_config_modem_clear", clear);
@@ -390,7 +390,7 @@ void TTY_SetModemConfig (int portNumber, char *dialType, char *clear, char *init
 
 static void ResetComPortConfig (ComPort *p)
 {
-	p->useModem = false;
+	p->useModem = false_;
 	p->uartType = UART_AUTO;
 	p->uart = ISA_uarts[p->portNumber];
 	p->irq = ISA_IRQs[p->portNumber];
@@ -400,9 +400,9 @@ static void ResetComPortConfig (ComPort *p)
 	Q_strcpy(p->clear, "ATZ");
 	Q_strcpy(p->startup, "");
 	Q_strcpy(p->shutdown, "AT H");
-	p->modemRang = false;
-	p->modemConnected = false;
-	p->statusUpdated = false;
+	p->modemRang = false_;
+	p->modemConnected = false_;
+	p->statusUpdated = false_;
 	p->outputQueue.head = p->outputQueue.tail = 0;
 	p->inputQueue.head = p->inputQueue.tail = 0;
 }
@@ -505,7 +505,7 @@ static void ComPort_Enable(ComPort *p)
 	// enable the individual interrupts at the uart
 	outportb (p->uart + INTERRUPT_ENABLE_REGISTER, IER_RX_DATA_READY | IER_TX_HOLDING_REGISTER_EMPTY | IER_LINE_STATUS | IER_MODEM_STATUS);
 
-	p->enabled = true;
+	p->enabled = true_;
 }
 
 
@@ -533,7 +533,7 @@ static void ComPort_Disable(ComPort *p)
 	// enable interrupts at the processor
 	enable();
 
-	p->enabled = false;
+	p->enabled = false_;
 }
 
 
@@ -543,7 +543,7 @@ static int CheckStatus (ComPort *p)
 
 	if (p->statusUpdated)
 	{
-		p->statusUpdated = false;
+		p->statusUpdated = false_;
 
 		if (p->lineStatus & (LSR_OVERRUN_ERROR | LSR_PARITY_ERROR | LSR_FRAMING_ERROR | LSR_BREAK_DETECT))
 		{
@@ -601,7 +601,7 @@ static void Modem_Init(ComPort *p)
 			if ((Sys_FloatTime() - start) > 3.0)
 			{
 				Con_Printf("No response - clear failed\n");
-				p->enabled = false;
+				p->enabled = false_;
 				goto failed;
 			}
 			response = Modem_Response(p);
@@ -611,7 +611,7 @@ static void Modem_Init(ComPort *p)
 				break;
 			if (Q_strncmp(response, "ERROR", 5) == 0)
 			{
-				p->enabled = false;
+				p->enabled = false_;
 				goto failed;
 			}
 		}
@@ -626,7 +626,7 @@ static void Modem_Init(ComPort *p)
 			if ((Sys_FloatTime() - start) > 3.0)
 			{
 				Con_Printf("No response - init failed\n");
-				p->enabled = false;
+				p->enabled = false_;
 				goto failed;
 			}
 			response = Modem_Response(p);
@@ -636,13 +636,13 @@ static void Modem_Init(ComPort *p)
 				break;
 			if (Q_strncmp(response, "ERROR", 5) == 0)
 			{
-				p->enabled = false;
+				p->enabled = false_;
 				goto failed;
 			}
 		}
 	}
 
-	p->modemInitialized = true;
+	p->modemInitialized = true_;
 	return;
 
 failed:
@@ -650,7 +650,7 @@ failed:
 	{
 		key_dest = key_menu;
 		m_state = m_return_state;
-		m_return_onerror = false;
+		m_return_onerror = false_;
 		Q_strcpy(m_return_reason, "Initialization Failed");
 	}
 	return;
@@ -822,14 +822,14 @@ int TTY_Connect(int handle, char *host)
 			if (Q_strncmp(response, "CONNECT", 7) == 0)
 			{
 				disable();
-				p->modemRang = true;
-				p->modemConnected = true;
+				p->modemRang = true_;
+				p->modemConnected = true_;
 				p->outputQueue.head = p->outputQueue.tail = 0;
 				p->inputQueue.head = p->inputQueue.tail = 0;
 				enable();
 				key_dest = save_key_dest;
 				key_count = 0;
-				m_return_onerror = false;
+				m_return_onerror = false_;
 				return 0;
 			}
 			if (Q_strncmp(response, "NO CARRIER", 10) == 0)
@@ -851,12 +851,12 @@ int TTY_Connect(int handle, char *host)
 		{
 			key_dest = key_menu;
 			m_state = m_return_state;
-			m_return_onerror = false;
+			m_return_onerror = false_;
 			Q_strncpy(m_return_reason, response, 31);
 		}
 		return -1;
 	}
-	m_return_onerror = false;
+	m_return_onerror = false_;
 	return 0;
 }
 
@@ -885,46 +885,46 @@ qboolean TTY_CheckForConnection(int handle)
 		if (!p->modemRang)
 		{
 			if (!Modem_Response(p))
-				return false;
+				return false_;
 
 			if (Q_strncmp(p->buffer, "RING", 4) == 0)
 			{
 				Modem_Command (p, "ATA");
-				p->modemRang = true;
+				p->modemRang = true_;
 				p->timestamp = net_time;
 			}
-			return false;
+			return false_;
 		}
 		if (!p->modemConnected)
 		{
 			if ((net_time - p->timestamp) > 35.0)
 			{
 				Con_Printf("Unable to establish modem connection\n");
-				p->modemRang = false;
-				return false;
+				p->modemRang = false_;
+				return false_;
 			}
 
 			if (!Modem_Response(p))
-				return false;
+				return false_;
 
 			if (Q_strncmp (p->buffer, "CONNECT", 7) != 0)
-				return false;
+				return false_;
 
 			disable();
-			p->modemConnected = true;
+			p->modemConnected = true_;
 			p->outputQueue.head = p->outputQueue.tail = 0;
 			p->inputQueue.head = p->inputQueue.tail = 0;
 			enable();
 			Con_Printf("Modem Connect\n");
-			return true;
+			return true_;
 		}
-		return true;
+		return true_;
 	}
 
 	// direct connect case
 	if (EMPTY (p->inputQueue))
-		return false;
-	return true;
+		return false_;
+	return true_;
 }
 
 
@@ -994,7 +994,7 @@ void Com_f (void)
 	{
 		if (p->enabled)
 			ComPort_Disable(p);
-		p->modemInitialized = false;
+		p->modemInitialized = false_;
 		return;
 	}
 
@@ -1073,9 +1073,9 @@ void Com_f (void)
 		p->dialType = 'T';
 
 	if (Cmd_CheckParm ("direct"))
-		p->useModem = false;
+		p->useModem = false_;
 	if (Cmd_CheckParm ("modem"))
-		p->useModem = true;
+		p->useModem = true_;
 
 	if ((i = Cmd_CheckParm ("clear")) != 0)
 	{
@@ -1085,7 +1085,7 @@ void Com_f (void)
 	if ((i = Cmd_CheckParm ("startup")) != 0)
 	{
 		Q_strncpy (p->startup, Cmd_Argv (i+1), 32);
-		p->modemInitialized = false;
+		p->modemInitialized = false_;
 	}
 
 	if ((i = Cmd_CheckParm ("shutdown")) != 0)
@@ -1252,7 +1252,7 @@ static void Modem_Hangup(ComPort *p)
 {
 	Con_Printf("Hanging up modem...\n");
 	disable();
-	p->modemRang = false;
+	p->modemRang = false_;
 	p->outputQueue.head = p->outputQueue.tail = 0;
 	p->inputQueue.head = p->inputQueue.tail = 0;
 	outportb(p->uart + MODEM_CONTROL_REGISTER, inportb(p->uart + MODEM_CONTROL_REGISTER) & ~MCR_DTR);
@@ -1281,5 +1281,5 @@ static void Modem_Hangup4(ComPort *p)
 {
 	Modem_Response(p);
 	Con_Printf("Hangup complete\n");
-	p->modemConnected = false;
+	p->modemConnected = false_;
 }

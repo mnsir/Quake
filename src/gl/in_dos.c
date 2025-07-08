@@ -86,7 +86,7 @@ float	old_mouse_x, old_mouse_y;
 
 
 cvar_t	in_joystick = {"joystick","1"};
-cvar_t	joy_numbuttons = {"joybuttons","4", true};
+cvar_t	joy_numbuttons = {"joybuttons","4", true_};
 
 qboolean	joy_avail;
 int		joy_oldbuttonstate;
@@ -101,7 +101,7 @@ qboolean		extern_avail;
 int				extern_buttons;
 int				extern_oldbuttonstate;
 int				extern_buttonstate;
-cvar_t	aux_look = {"auxlook","1", true};
+cvar_t	aux_look = {"auxlook","1", true_};
 externControl_t	*extern_control;
 void IN_StartupExternal (void);
 void IN_ExternalMove (usercmd_t *cmd);
@@ -210,12 +210,12 @@ void IN_Commands (void)
 			if ( (mouse_buttonstate & (1<<i)) &&
 			!(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, true);
+				Key_Event (K_MOUSE1 + i, true_);
 			}
 			if ( !(mouse_buttonstate & (1<<i)) &&
 			(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, false);
+				Key_Event (K_MOUSE1 + i, false_);
 			}
 		}	
 		
@@ -231,12 +231,12 @@ void IN_Commands (void)
 			if ( (joy_buttonstate & (1<<i)) &&
 			!(joy_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_JOY1 + i, true);
+				Key_Event (K_JOY1 + i, true_);
 			}
 			if ( !(joy_buttonstate & (1<<i)) &&
 			(joy_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_JOY1 + i, false);
+				Key_Event (K_JOY1 + i, false_);
 			}
 		}
 		
@@ -253,12 +253,12 @@ void IN_Commands (void)
 			if ( (extern_buttonstate & (1<<i)) &&
 			!(extern_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_AUX1 + i, true);
+				Key_Event (K_AUX1 + i, true_);
 			}
 			if ( !(extern_buttonstate & (1<<i)) &&
 			(extern_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_AUX1 + i, false);
+				Key_Event (K_AUX1 + i, false_);
 			}
 		}	
 		
@@ -428,12 +428,12 @@ qboolean IN_ReadJoystick (void)
 		joystickx += b&1;
 		joysticky += (b&2)>>1;
 		if ( !(b&3) )
-			return true;
+			return true_;
 	}
 	
 	Con_Printf ("IN_ReadJoystick: no response\n");
-	joy_avail = false;
-	return false;
+	joy_avail = false_;
+	return false_;
 }
 
 /*
@@ -454,7 +454,7 @@ qboolean WaitJoyButton (void)
 		if (key_lastpress == K_ESCAPE)
 		{
 			Con_Printf ("aborted.\n");
-			return false;
+			return false_;
 		}
 		key_lastpress = 0;
 		SCR_UpdateScreen ();
@@ -474,7 +474,7 @@ qboolean WaitJoyButton (void)
 		if (key_lastpress == K_ESCAPE)
 		{
 			Con_Printf ("aborted.\n");
-			return false;
+			return false_;
 		}
 		key_lastpress = 0;
 		SCR_UpdateScreen ();
@@ -486,7 +486,7 @@ qboolean WaitJoyButton (void)
 		} 
 	} while ( buttons); 
  
-	return true; 
+	return true_; 
 } 
  
  
@@ -502,13 +502,13 @@ void IN_StartupJoystick (void)
  
  	Con_Printf ("\n");
 
-	joy_avail = false; 
+	joy_avail = false_; 
 	if ( COM_CheckParm ("-nojoy") ) 
 		return; 
  
 	if (!IN_ReadJoystick ()) 
 	{ 
-		joy_avail = false; 
+		joy_avail = false_; 
 		Con_Printf ("joystick not found\n"); 
 		return; 
 	} 
@@ -536,7 +536,7 @@ void IN_StartupJoystick (void)
 	joyxh = (centerx + joystickx)/2; 
 	joyyh = (centery + joysticky)/2; 
 
-	joy_avail = true; 
+	joy_avail = true_; 
 	Con_Printf ("joystick configured.\n"); 
 
  	Con_Printf ("\n");
@@ -565,7 +565,7 @@ void IN_StartupExternal (void)
 	Con_Printf("%s Initialized\n", extern_control->deviceName);
 	Con_Printf("  %u axes  %u buttons\n", extern_control->numAxes, extern_control->numButtons);
 
-	extern_avail = true;
+	extern_avail = true_;
 	extern_buttons = extern_control->numButtons;
 }
 

@@ -66,7 +66,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ESCAPE_COMMAND			0xe0
 #define ESCAPE_EOM				0x19
 
-static qboolean listening = false;
+static qboolean listening = false_;
 
 
 typedef struct SerialLine_s
@@ -108,8 +108,8 @@ static void Serial_SendACK (SerialLine *p, byte sequence);
 
 static void ResetSerialLineProtocol (SerialLine *p)
 {
-	p->connected = false;
-	p->connecting = false;
+	p->connected = false_;
+	p->connecting = false_;
 	p->currState = STATE_READY;
 	p->prevState = STATE_READY;
 	p->lengthFound = 0;
@@ -188,7 +188,7 @@ static int ProcessInQueue(SerialLine *p)
 						if (p->sequence == p->sock->sendSequence)
 						{
 							p->sock->sendSequence = (p->sock->sendSequence + 1) & 0xff;
-							p->sock->canSend = true;
+							p->sock->canSend = true_;
 						}
 						else
 							Con_DPrintf("Serial: ack out of order; got %u wanted %u\n",p->sequence, p->sock->sendSequence);
@@ -371,7 +371,7 @@ int Serial_Init (void)
 	}
 
 	Con_Printf("Serial driver initialized\n");
-	serialAvailable = true;
+	serialAvailable = true_;
 
 	return 0;
 }
@@ -472,7 +472,7 @@ int Serial_SendMessage (qsocket_t *sock, sizebuf_t *message)
 	TTY_Flush(p->tty);
 
 	// mark sock as busy and save the message for possible retransmit
-	sock->canSend = false;
+	sock->canSend = false_;
 	Q_memcpy(sock->sendMessage, message->data, message->cursize);
 	sock->sendMessageLength = message->cursize;
 	sock->lastSendTime = net_time;
@@ -767,7 +767,7 @@ static qsocket_t *_Serial_Connect (char *host, SerialLine *p)
 	double	start_time;
 	double	last_time;
 
-	p->client = true;
+	p->client = true_;
 	if (TTY_Connect(p->tty, host))
 		return NULL;
 
@@ -825,7 +825,7 @@ static qsocket_t *_Serial_Connect (char *host, SerialLine *p)
 		goto ErrorReturn;
 	}
 
-	p->connected = true;
+	p->connected = true_;
 	p->sock->lastMessageTime = net_time;
 
 	Con_Printf ("Connection accepted\n");
@@ -861,7 +861,7 @@ static qsocket_t *_Serial_CheckNewConnections (SerialLine *p)
 {
 	int	command;
 
-	p->client = false;
+	p->client = false_;
 	if (!TTY_CheckForConnection(p->tty))
 		return NULL;
 
@@ -869,12 +869,12 @@ static qsocket_t *_Serial_CheckNewConnections (SerialLine *p)
 	{
 		if (!p->connecting)
 		{
-			p->connecting = true;
+			p->connecting = true_;
 			p->connect_time = net_time;
 		}
 		else if ((net_time - p->connect_time) > 15.0)
 		{
-			p->connecting = false;
+			p->connecting = false_;
 			TTY_Disconnect(p->tty);
 			return NULL;
 		}
@@ -930,8 +930,8 @@ static qsocket_t *_Serial_CheckNewConnections (SerialLine *p)
 	Serial_SendControlMessage (p, &net_message);
 	SZ_Clear(&net_message);
 
-	p->connected = true;
-	p->connecting = false;
+	p->connected = true_;
+	p->connecting = false_;
 	p->sock->lastMessageTime = net_time;
 	sprintf(p->sock->address, "COM%u", (int)((p - serialLine) + 1));
 

@@ -74,9 +74,9 @@ int		UseKeyboard = 1;
 
 int		mouserate = MOUSE_DEFAULTSAMPLERATE;
 
-cvar_t		vid_mode = {"vid_mode","5",false};
-cvar_t		vid_redrawfull = {"vid_redrawfull","0",false};
-cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true};
+cvar_t		vid_mode = {"vid_mode","5",false_};
+cvar_t		vid_redrawfull = {"vid_redrawfull","0",false_};
+cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true_};
  
 char	*framebuffer_ptr;
 
@@ -893,24 +893,24 @@ void IN_Commands (void)
 		// perform button actions
 		if ((mouse_buttonstate & MOUSE_LEFTBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, true);
+			Key_Event (K_MOUSE1, true_);
 		else if (!(mouse_buttonstate & MOUSE_LEFTBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, false);
+			Key_Event (K_MOUSE1, false_);
 
 		if ((mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, true);
+			Key_Event (K_MOUSE2, true_);
 		else if (!(mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, false);
+			Key_Event (K_MOUSE2, false_);
 
 		if ((mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, true);
+			Key_Event (K_MOUSE3, true_);
 		else if (!(mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, false);
+			Key_Event (K_MOUSE3, false_);
 
 		mouse_oldbuttonstate = mouse_buttonstate;
 	}

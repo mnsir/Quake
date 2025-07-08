@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 qboolean	dibonly;
 
-extern int		Minimized;
+//extern int		Minimized;
 
 HWND		mainwindow;
 
@@ -60,7 +60,7 @@ RECT		window_rect;
 static DEVMODE	gdevmode;
 static qboolean	startwindowed = 0, windowed_mode_set;
 static int		firstupdate = 1;
-static qboolean	vid_initialized = false, vid_palettized;
+static qboolean	vid_initialized = false_, vid_palettized;
 static int		lockcount;
 static int		vid_fulldib_on_focus_mode;
 static qboolean	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
@@ -76,23 +76,23 @@ extern viddef_t	vid;				// global video state
 #define MODE_FULLSCREEN_DEFAULT	(MODE_WINDOWED + 3)
 
 // Note that 0 is MODE_WINDOWED
-cvar_t		vid_mode = {"vid_mode","0", false};
+cvar_t		vid_mode = {"vid_mode","0", false_};
 // Note that 0 is MODE_WINDOWED
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
+cvar_t		_vid_default_mode = {"_vid_default_mode","0", true_};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
+cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true_};
 cvar_t		vid_wait = {"vid_wait","0"};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
-cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
-cvar_t		vid_config_x = {"vid_config_x","800", true};
-cvar_t		vid_config_y = {"vid_config_y","600", true};
-cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","0", true};
-cvar_t		vid_fullscreen_mode = {"vid_fullscreen_mode","3", true};
-cvar_t		vid_windowed_mode = {"vid_windowed_mode","0", true};
-cvar_t		block_switch = {"block_switch","0", true};
-cvar_t		vid_window_x = {"vid_window_x", "0", true};
-cvar_t		vid_window_y = {"vid_window_y", "0", true};
+cvar_t		vid_nopageflip = {"vid_nopageflip","0", true_};
+cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true_};
+cvar_t		vid_config_x = {"vid_config_x","800", true_};
+cvar_t		vid_config_y = {"vid_config_y","600", true_};
+cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true_};
+cvar_t		_windowed_mouse = {"_windowed_mouse","0", true_};
+cvar_t		vid_fullscreen_mode = {"vid_fullscreen_mode","3", true_};
+cvar_t		vid_windowed_mode = {"vid_windowed_mode","0", true_};
+cvar_t		block_switch = {"block_switch","0", true_};
+cvar_t		vid_window_x = {"vid_window_x", "0", true_};
+cvar_t		vid_window_y = {"vid_window_y", "0", true_};
 
 typedef struct {
 	int		width;
@@ -124,7 +124,7 @@ unsigned short	d_8to16table[256];
 unsigned	d_8to24table[256];
 
 int mode;
-qboolean    useWinDirect = true, useDirectDraw = true;
+qboolean    useWinDirect = true_, useDirectDraw = true_;
 HDC hdcWin = NULL;
 HDC hdcDib = NULL;
 HBITMAP hbmDib = NULL;
@@ -150,7 +150,7 @@ static vmode_t	*pcurrentmode;
 
 int		aPage;					// Current active display page
 int		vPage;					// Current visible display page
-int		waitVRT = true;			// True to wait for retrace on flip
+int		waitVRT = true_;			// True to wait for retrace on flip
 
 static vmode_t	badmode;
 
@@ -307,7 +307,7 @@ void ClearAllStates (void)
 // send an up event for each key, to make sure the server clears them all
 	for (i=0 ; i<256 ; i++)
 	{
-		Key_Event (i, false);
+		Key_Event (i, false_);
 	}
 
 	Key_ClearStates ();
@@ -333,10 +333,10 @@ qboolean VID_CheckAdequateMem (int width, int height)
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 		 0x10000 * 3) < minimum_memory)
 	{
-		return false;		// not enough memory for mode
+		return false_;		// not enough memory for mode
 	}
 
-	return true;
+	return true_;
 }
 
 
@@ -361,7 +361,7 @@ qboolean VID_AllocBuffers (int width, int height)
 		 0x10000 * 3) < minimum_memory)
 	{
 		Con_SafePrintf ("Not enough memory for video mode\n");
-		return false;		// not enough memory for mode
+		return false_;		// not enough memory for mode
 	}
 
 	vid_surfcachesize = tsize;
@@ -380,7 +380,7 @@ qboolean VID_AllocBuffers (int width, int height)
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
 	
-	return true;
+	return true_;
 }
 
 
@@ -1022,7 +1022,7 @@ qboolean VID_SetWindowedMode (int modenum)
 				  WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS |
 				  WS_CLIPCHILDREN;
 	ExWindowStyle = 0;
-	AdjustWindowRectEx(&WindowRect, WindowStyle, FALSE, 0);
+	AdjustWindowRectEx(&WindowRect, WindowStyle, false_, 0);
 
 // the first time we're called to set the mode, create the window we'll use
 // for the rest of the session
@@ -1044,7 +1044,7 @@ qboolean VID_SetWindowedMode (int modenum)
 		if (!mainwindow)
 			Sys_Error ("Couldn't create DIB window");
 
-		vid_mode_set = true;
+		vid_mode_set = true_;
 	}
 	else
 	{
@@ -1064,7 +1064,7 @@ qboolean VID_SetWindowedMode (int modenum)
 	}
 
 	if (hide_window)
-		return true;
+		return true_;
 
 // position and show the DIB window
 	VID_CheckWindowXY ();
@@ -1103,10 +1103,10 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	vid_stretched = stretched;
 
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)true_, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)false_, (LPARAM)hIcon);
 
-	return true;
+	return true_;
 }
 
 
@@ -1143,9 +1143,9 @@ qboolean VID_SetFullscreenMode (int modenum)
 
 // shouldn't be needed, but Kendall needs to let us get the activation
 // message for this not to be needed on NT
-	AppActivate (true, false);
+	AppActivate (true_, false_);
 
-	return true;
+	return true_;
 }
 
 
@@ -1190,7 +1190,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 	WindowStyle = WS_POPUP | WS_SYSMENU | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	ExWindowStyle = 0;
-	AdjustWindowRectEx(&WindowRect, WindowStyle, FALSE, 0);
+	AdjustWindowRectEx(&WindowRect, WindowStyle, false_, 0);
 
 	SetWindowLong(mainwindow, GWL_STYLE, WindowStyle | WS_VISIBLE);
 	SetWindowLong(mainwindow, GWL_EXSTYLE, ExWindowStyle);
@@ -1236,19 +1236,19 @@ qboolean VID_SetFullDIBMode (int modenum)
 	window_x = 0;
 	window_y = 0;
 
-	return true;
+	return true_;
 }
 
 
 void VID_RestoreOldMode (int original_mode)
 {
-	static qboolean	inerror = false;
+	static qboolean	inerror = false_;
 
 	if (inerror)
 		return;
 
-	in_mode_set = false;
-	inerror = true;
+	in_mode_set = false_;
+	inerror = true_;
 
 // make sure mode set happens (video mode changes)
 	vid_modenum = original_mode - 1;
@@ -1261,7 +1261,7 @@ void VID_RestoreOldMode (int original_mode)
 			Sys_Error ("Can't set any video mode");
 	}
 
-	inerror = false;
+	inerror = false_;
 }
 
 
@@ -1305,12 +1305,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	}
 
 	if (!force_mode_set && (modenum == vid_modenum))
-		return true;
+		return true_;
 
 // so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-	in_mode_set = true;
+	scr_disabled_for_loading = true_;
+	in_mode_set = true_;
 
 	CDAudio_Pause ();
 	S_ClearBuffer ();
@@ -1359,11 +1359,11 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	if (!stat)
 	{
 		VID_RestoreOldMode (original_mode);
-		return false;
+		return false_;
 	}
 
 	if (hide_window)
-		return true;
+		return true_;
 
 // now we try to make sure we get the focus on the mode switch, because
 // sometimes in some systems we don't.  We grab the foreground, then
@@ -1377,9 +1377,9 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	hdc = GetDC(NULL);
 
 	if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-		vid_palettized = true;
+		vid_palettized = true_;
 	else
-		vid_palettized = false;
+		vid_palettized = false_;
 
 	VID_SetPalette (palette);
 
@@ -1392,7 +1392,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	{
 	// couldn't get memory for this mode; try to fall back to previous mode
 		VID_RestoreOldMode (original_mode);
-		return false;
+		return false_;
 	}
 
 	D_InitCaches (vid_surfcache, vid_surfcachesize);
@@ -1422,10 +1422,10 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	VID_SetPalette (palette);
 
-	in_mode_set = false;
+	in_mode_set = false_;
 	vid.recalc_refdef = 1;
 
-	return true;
+	return true_;
 }
 
 void VID_LockBuffer (void)
@@ -1511,7 +1511,7 @@ void	VID_SetPalette (unsigned char *palette)
 {
 	if (!Minimized)
 	{
-		palette_changed = true;
+		palette_changed = true_;
 
 	// make sure we have the static colors if we're the active app
 		HDC hdc = GetDC(NULL);
@@ -1522,8 +1522,8 @@ void	VID_SetPalette (unsigned char *palette)
 			{
 			// switch to SYSPAL_NOSTATIC and remap the colors
 				SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
-				syscolchg = true;
-				pal_is_nostatic = true;
+				syscolchg = true_;
+				pal_is_nostatic = true_;
 			}
 		}
 
@@ -1554,7 +1554,7 @@ void	VID_SetPalette (unsigned char *palette)
 	if (syscolchg)
 	{
 		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
-		syscolchg = false;
+		syscolchg = false_;
 	}
 }
 
@@ -1618,7 +1618,7 @@ void VID_DescribeModes_f (void)
 	qboolean	na;
 	vmode_t		*pv;
 
-	na = false;
+	na = false_;
 
 	lnummodes = VID_NumModes ();
 
@@ -1634,7 +1634,7 @@ void VID_DescribeModes_f (void)
 		else
 		{
 			Con_Printf ("**: %s\n", pinfo);
-			na = true;
+			na = true_;
 		}
 	}
 
@@ -1765,7 +1765,7 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
 
 	if (COM_CheckParm ("-dibonly"))
-		dibonly = true;
+		dibonly = true_;
 
 	VID_InitMGLDIB (global_hInstance);
 
@@ -1833,16 +1833,16 @@ void	VID_Init (unsigned char *palette)
 // gets displayed
 
 // keep the window minimized until we're ready for the first real mode set
-	hide_window = true;
+	hide_window = true_;
 	VID_SetMode (MODE_WINDOWED, palette);
-	hide_window = false;
+	hide_window = false_;
 	S_Init ();
 
-	vid_initialized = true;
+	vid_initialized = true_;
 
-	force_mode_set = true;
+	force_mode_set = true_;
 	VID_SetMode (vid_default, palette);
-	force_mode_set = false;
+	force_mode_set = false_;
 
 	vid_realmode = vid_modenum;
 
@@ -1868,7 +1868,7 @@ void	VID_Shutdown (void)
 		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
 		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
 
-		AppActivate(false, false);
+		AppActivate(false_, false_);
 		DestroyDIBWindow ();
 		DestroyFullscreenWindow ();
 		DestroyFullDIBWindow ();
@@ -1936,7 +1936,7 @@ void	VID_Update (vrect_t *rects)
 
 	if (!vid_palettized && palette_changed)
 	{
-		palette_changed = false;
+		palette_changed = false_;
 		rect.x = 0;
 		rect.y = 0;
 		rect.width = vid.width;
@@ -2214,7 +2214,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 		Minimized = minimize;
 
 		if (Minimized)
-			ActiveApp = false;
+			ActiveApp = false_;
 	}
 
 	if (vid_initialized)
@@ -2232,8 +2232,8 @@ void AppActivate(BOOL fActive, BOOL minimize)
 					{
 					// switch to SYSPAL_NOSTATIC and remap the colors
 						SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
-						syscolchg = true;
-						pal_is_nostatic = true;
+						syscolchg = true_;
+						pal_is_nostatic = true_;
 					}
 				}
 			}
@@ -2243,10 +2243,10 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				{
 				// switch back to SYSPAL_STATIC and the old mapping
 					SetSystemPaletteUse(hdc, SYSPAL_STATIC);
-					syscolchg = true;
+					syscolchg = true_;
 				}
 
-				pal_is_nostatic = false;
+				pal_is_nostatic = false_;
 			}
 		}
 
@@ -2263,13 +2263,13 @@ void AppActivate(BOOL fActive, BOOL minimize)
 	{
 		S_BlockSound ();
 		S_ClearBuffer ();
-		sound_active = false;
+		sound_active = false_;
 	}
 	else if (ActiveApp && !sound_active)
 	{
 		S_UnblockSound ();
 		S_ClearBuffer ();
-		sound_active = true;
+		sound_active = true_;
 	}
 
 // minimize/restore fulldib windows/mouse-capture normal windows on demand
@@ -2281,13 +2281,13 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			{
 				if (vid_initialized)
 				{
-					msg_suppress_1 = true;	// don't want to see normal mode set message
+					msg_suppress_1 = true_;	// don't want to see normal mode set message
 					VID_SetMode (vid_fulldib_on_focus_mode, vid_curpal);
-					msg_suppress_1 = false;
+					msg_suppress_1 = false_;
 
 					t = in_mode_set;
-					in_mode_set = true;
-					AppActivate (true, false);
+					in_mode_set = true_;
+					AppActivate (true_, false_);
 					in_mode_set = t;
 				}
 
@@ -2307,19 +2307,19 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			{
 				if (vid_initialized)
 				{
-					force_minimized = true;
+					force_minimized = true_;
 					i = vid_fulldib_on_focus_mode;
-					msg_suppress_1 = true;	// don't want to see normal mode set message
+					msg_suppress_1 = true_;	// don't want to see normal mode set message
 					VID_SetMode (windowed_default, vid_curpal);
-					msg_suppress_1 = false;
+					msg_suppress_1 = false_;
 					vid_fulldib_on_focus_mode = i;
-					force_minimized = false;
+					force_minimized = false_;
 
 				// we never seem to get WM_ACTIVATE inactive from this mode set, so we'll
 				// do it manually
 					t = in_mode_set;
-					in_mode_set = true;
-					AppActivate (false, true);
+					in_mode_set = true_;
+					AppActivate (false_, true_);
 					in_mode_set = t;
 				}
 
@@ -2398,9 +2398,9 @@ LONG WINAPI MainWndProc (
 				// so MGL will have the right state to restore
 					if (Minimized)
 					{
-						force_mode_set = true;
+						force_mode_set = true_;
 						VID_SetMode (vid_modenum, vid_curpal);
-						force_mode_set = false;
+						force_mode_set = false_;
 					}
 
 					VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
@@ -2444,12 +2444,12 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case WM_SIZE:
-			Minimized = false;
+			Minimized = false_;
 			
 			if (!(wParam & SIZE_RESTORED))
 			{
 				if (wParam & SIZE_MINIMIZED)
-					Minimized = true;
+					Minimized = true_;
 			}
 			break;
 
@@ -2484,13 +2484,13 @@ LONG WINAPI MainWndProc (
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 			if (!in_mode_set)
-				Key_Event (MapKey(lParam), true);
+				Key_Event (MapKey(lParam), true_);
 			break;
 
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 			if (!in_mode_set)
-				Key_Event (MapKey(lParam), false);
+				Key_Event (MapKey(lParam), false_);
 			break;
 
 	// this is complicated because Win32 seems to pack multiple mouse events into
@@ -2524,11 +2524,11 @@ LONG WINAPI MainWndProc (
 		// Event.
 		case WM_MOUSEWHEEL: 
 			if ((short) HIWORD(wParam) > 0) {
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
+				Key_Event(K_MWHEELUP, true_);
+				Key_Event(K_MWHEELUP, false_);
 			} else {
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
+				Key_Event(K_MWHEELDOWN, true_);
+				Key_Event(K_MWHEELDOWN, false_);
 			}
 			break;
 		// KJB: Added these new palette functions
@@ -2540,9 +2540,9 @@ LONG WINAPI MainWndProc (
 			hdc = GetDC(NULL);
 
 			if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-				vid_palettized = true;
+				vid_palettized = true_;
 			else
-				vid_palettized = false;
+				vid_palettized = false_;
 
 			ReleaseDC(NULL,hdc);
 
@@ -2551,19 +2551,19 @@ LONG WINAPI MainWndProc (
 			if (vid_initialized && !in_mode_set && !Minimized)
 			{
 				VID_SetPalette (vid_curpal);
-				InvalidateRect (mainwindow, NULL, false);
+				InvalidateRect (mainwindow, NULL, false_);
 
 			// specifically required if WM_QUERYNEWPALETTE realizes a new palette
-				lRet = TRUE;
+				lRet = true_;
 			}
 			break;
 
 		case WM_DISPLAYCHANGE:
 			if (!in_mode_set && (modestate == MS_WINDOWED) && !vid_fulldib_on_focus_mode)
 			{
-				force_mode_set = true;
+				force_mode_set = true_;
 				VID_SetMode (vid_modenum, vid_curpal);
-				force_mode_set = false;
+				force_mode_set = false_;
 			}
 			break;
 

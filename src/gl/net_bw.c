@@ -346,7 +346,7 @@ int BW_Init(void)
 		*colon = 0;
 
 	Con_Printf("BW_Init: UDP initialized\n");
-	tcpipAvailable = true;
+	tcpipAvailable = true_;
 
 	return net_controlsocket;
 }
@@ -355,7 +355,7 @@ int BW_Init(void)
 
 void BW_Shutdown(void)
 {
-	BW_Listen (false);
+	BW_Listen (false_);
 	BW_CloseSocket (net_controlsocket);
 	dos_freememory(lowmem_buffer);
 }

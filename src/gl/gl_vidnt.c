@@ -94,10 +94,10 @@ static vmode_t	*pcurrentmode;
 static vmode_t	badmode;
 
 static DEVMODE	gdevmode;
-static qboolean	vid_initialized = false;
+static qboolean	vid_initialized = false_;
 static qboolean	windowed, leavecurrentmode;
-static qboolean vid_canalttab = false;
-static qboolean vid_wassuspended = false;
+static qboolean vid_canalttab = false_;
+static qboolean vid_wassuspended = false_;
 static int		windowed_mouse;
 extern qboolean	mouseactive;  // from in_win.c
 static HICON	hIcon;
@@ -113,7 +113,7 @@ int			vid_realmode;
 int			vid_default = MODE_WINDOWED;
 static int	windowed_default;
 unsigned char	vid_curpal[256*3];
-static qboolean fullsbardraw = false;
+static qboolean fullsbardraw = false_;
 
 static float vid_gamma = 1.0;
 
@@ -153,24 +153,24 @@ PROC glVertexPointerEXT;
 
 typedef void (APIENTRY *lp3DFXFUNC) (int, int, int, int, int, const void*);
 lp3DFXFUNC glColorTableEXT;
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
+qboolean is8bit = false_;
+qboolean isPermedia = false_;
+qboolean gl_mtexable = false_;
 
 //====================================
 
-cvar_t		vid_mode = {"vid_mode","0", false};
+cvar_t		vid_mode = {"vid_mode","0", false_};
 // Note that 0 is MODE_WINDOWED
-cvar_t		_vid_default_mode = {"_vid_default_mode","0", true};
+cvar_t		_vid_default_mode = {"_vid_default_mode","0", true_};
 // Note that 3 is MODE_FULLSCREEN_DEFAULT
-cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true};
+cvar_t		_vid_default_mode_win = {"_vid_default_mode_win","3", true_};
 cvar_t		vid_wait = {"vid_wait","0"};
-cvar_t		vid_nopageflip = {"vid_nopageflip","0", true};
-cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true};
-cvar_t		vid_config_x = {"vid_config_x","800", true};
-cvar_t		vid_config_y = {"vid_config_y","600", true};
-cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true};
-cvar_t		_windowed_mouse = {"_windowed_mouse","1", true};
+cvar_t		vid_nopageflip = {"vid_nopageflip","0", true_};
+cvar_t		_vid_wait_override = {"_vid_wait_override", "0", true_};
+cvar_t		vid_config_x = {"vid_config_x","800", true_};
+cvar_t		vid_config_y = {"vid_config_y","600", true_};
+cvar_t		vid_stretch_by_2 = {"vid_stretch_by_2","1", true_};
+cvar_t		_windowed_mouse = {"_windowed_mouse","1", true_};
 
 int			window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -254,7 +254,7 @@ qboolean VID_SetWindowedMode (int modenum)
 	ExWindowStyle = 0;
 
 	rect = WindowRect;
-	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
+	AdjustWindowRectEx(&rect, WindowStyle, false_, 0);
 
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
@@ -278,7 +278,7 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	// Center and show the DIB window
 	CenterWindow(dibwindow, WindowRect.right - WindowRect.left,
-				 WindowRect.bottom - WindowRect.top, false);
+				 WindowRect.bottom - WindowRect.top, false_);
 
 	ShowWindow (dibwindow, SW_SHOWDEFAULT);
 	UpdateWindow (dibwindow);
@@ -304,10 +304,10 @@ qboolean VID_SetWindowedMode (int modenum)
 
 	mainwindow = dibwindow;
 
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)true_, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)false_, (LPARAM)hIcon);
 
-	return true;
+	return true_;
 }
 
 
@@ -345,7 +345,7 @@ qboolean VID_SetFullDIBMode (int modenum)
 	ExWindowStyle = 0;
 
 	rect = WindowRect;
-	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
+	AdjustWindowRectEx(&rect, WindowStyle, false_, 0);
 
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
@@ -393,10 +393,10 @@ qboolean VID_SetFullDIBMode (int modenum)
 
 	mainwindow = dibwindow;
 
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)true_, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)false_, (LPARAM)hIcon);
 
-	return true;
+	return true_;
 }
 
 
@@ -415,7 +415,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 // so Con_Printfs don't mess us up by forcing vid and snd updates
 	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
+	scr_disabled_for_loading = true_;
 
 	CDAudio_Pause ();
 
@@ -498,7 +498,7 @@ int VID_SetMode (int modenum, unsigned char *palette)
 
 	vid.recalc_refdef = 1;
 
-	return true;
+	return true_;
 }
 
 
@@ -533,13 +533,13 @@ void CheckTextureExtensions (void)
 	qboolean	texture_ext;
 	HINSTANCE	hInstGL;
 
-	texture_ext = FALSE;
+	texture_ext = false_;
 	/* check for texture extension */
 	unsigned char* tmp = (unsigned char *)glGetString(GL_EXTENSIONS);
 	while (*tmp)
 	{
 		if (strncmp((const char*)tmp, TEXTURE_EXT_STRING, strlen(TEXTURE_EXT_STRING)) == 0)
-			texture_ext = TRUE;
+			texture_ext = true_;
 		tmp++;
 	}
 
@@ -607,13 +607,13 @@ void CheckMultiTextureExtensions(void)
 		Con_Printf("Multitexture extensions found.\n");
 		qglMTexCoord2fSGIS = (void *) wglGetProcAddress("glMTexCoord2fSGIS");
 		qglSelectTextureSGIS = (void *) wglGetProcAddress("glSelectTextureSGIS");
-		gl_mtexable = true;
+		gl_mtexable = true_;
 	}
 }
 #else
 void CheckMultiTextureExtensions(void) 
 {
-		gl_mtexable = true;
+		gl_mtexable = true_;
 }
 #endif
 
@@ -637,10 +637,10 @@ void GL_Init (void)
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
 
     if (strnicmp(gl_renderer,"PowerVR",7)==0)
-         fullsbardraw = true;
+         fullsbardraw = true_;
 
     if (strnicmp(gl_renderer,"Permedia",8)==0)
-         isPermedia = true;
+         isPermedia = true_;
 
 	CheckTextureExtensions ();
 	CheckMultiTextureExtensions ();
@@ -709,10 +709,10 @@ void GL_EndRendering (void)
 			if (windowed_mouse)	{
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
-				windowed_mouse = false;
+				windowed_mouse = false_;
 			}
 		} else {
-			windowed_mouse = true;
+			windowed_mouse = true_;
 			if (key_dest == key_game && !mouseactive && ActiveApp) {
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -808,7 +808,7 @@ void	VID_Shutdown (void)
 
 	if (vid_initialized)
 	{
-		vid_canalttab = false;
+		vid_canalttab = false_;
 		hRC = wglGetCurrentContext();
     	hDC = wglGetCurrentDC();
 
@@ -826,7 +826,7 @@ void	VID_Shutdown (void)
 		if (maindc && dibwindow)
 			ReleaseDC (dibwindow, maindc);
 
-		AppActivate(false, false);
+		AppActivate(false_, false_);
 	}
 }
 
@@ -861,16 +861,16 @@ BOOL bSetupPixelFormat(HDC hDC)
     if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
     {
         MessageBox(NULL, "ChoosePixelFormat failed", "Error", MB_OK);
-        return FALSE;
+        return false_;
     }
 
-    if (SetPixelFormat(hDC, pixelformat, &pfd) == FALSE)
+    if (SetPixelFormat(hDC, pixelformat, &pfd) == false_)
     {
         MessageBox(NULL, "SetPixelFormat failed", "Error", MB_OK);
-        return FALSE;
+        return false_;
     }
 
-    return TRUE;
+    return true_;
 }
 
 
@@ -957,7 +957,7 @@ void ClearAllStates (void)
 // send an up event for each key, to make sure the server clears them all
 	for (i=0 ; i<256 ; i++)
 	{
-		Key_Event (i, false);
+		Key_Event (i, false_);
 	}
 
 	Key_ClearStates ();
@@ -985,12 +985,12 @@ void AppActivate(BOOL fActive, BOOL minimize)
 	if (!ActiveApp && sound_active)
 	{
 		S_BlockSound ();
-		sound_active = false;
+		sound_active = false_;
 	}
 	else if (ActiveApp && !sound_active)
 	{
 		S_UnblockSound ();
-		sound_active = true;
+		sound_active = true_;
 	}
 
 	if (fActive)
@@ -1000,7 +1000,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 			if (vid_canalttab && vid_wassuspended) {
-				vid_wassuspended = false;
+				vid_wassuspended = false_;
 				ChangeDisplaySettings (&gdevmode, CDS_FULLSCREEN);
 				ShowWindow(mainwindow, SW_SHOWNORMAL);
 			}
@@ -1020,7 +1020,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 			IN_ShowMouse ();
 			if (vid_canalttab) { 
 				ChangeDisplaySettings (NULL, 0);
-				vid_wassuspended = true;
+				vid_wassuspended = true_;
 			}
 		}
 		else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
@@ -1064,12 +1064,12 @@ LONG WINAPI MainWndProc (
 
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
-			Key_Event (MapKey(lParam), true);
+			Key_Event (MapKey(lParam), true_);
 			break;
 			
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
-			Key_Event (MapKey(lParam), false);
+			Key_Event (MapKey(lParam), false_);
 			break;
 
 		case WM_SYSCHAR:
@@ -1105,11 +1105,11 @@ LONG WINAPI MainWndProc (
 		// Event.
 		case WM_MOUSEWHEEL: 
 			if ((short) HIWORD(wParam) > 0) {
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
+				Key_Event(K_MWHEELUP, true_);
+				Key_Event(K_MWHEELUP, false_);
 			} else {
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
+				Key_Event(K_MWHEELDOWN, true_);
+				Key_Event(K_MWHEELDOWN, false_);
 			}
 			break;
 
@@ -1552,7 +1552,7 @@ void VID_Init8bitPalette()
 	}
 	glColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE,
 		(void *) thePalette);
-	is8bit = TRUE;
+	is8bit = true_;
 }
 
 static void Check_Gamma (unsigned char *pal)
@@ -1636,7 +1636,7 @@ void	VID_Init (unsigned char *palette)
 
 		ReleaseDC (NULL, hdc);
 
-		windowed = true;
+		windowed = true_;
 
 		vid_default = MODE_WINDOWED;
 	}
@@ -1645,7 +1645,7 @@ void	VID_Init (unsigned char *palette)
 		if (nummodes == 1)
 			Sys_Error ("No RGB fullscreen modes available");
 
-		windowed = false;
+		windowed = false_;
 
 		if (COM_CheckParm("-mode"))
 		{
@@ -1787,7 +1787,7 @@ void	VID_Init (unsigned char *palette)
 		}
 	}
 
-	vid_initialized = true;
+	vid_initialized = true_;
 
 	if ((i = COM_CheckParm("-conwidth")) != 0)
 		vid.conwidth = Q_atoi(com_argv[i+1]);
@@ -1842,10 +1842,10 @@ void	VID_Init (unsigned char *palette)
 	vid_menukeyfn = VID_MenuKey;
 
 	strcpy (badmode.modedesc, "Bad mode");
-	vid_canalttab = true;
+	vid_canalttab = true_;
 
 	if (COM_CheckParm("-fullsbar"))
-		fullsbardraw = true;
+		fullsbardraw = true_;
 }
 
 

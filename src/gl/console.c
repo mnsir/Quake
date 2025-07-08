@@ -143,7 +143,7 @@ extern qboolean team_message;
 void Con_MessageMode_f (void)
 {
 	key_dest = key_message;
-	team_message = false;
+	team_message = false_;
 }
 
 						
@@ -155,7 +155,7 @@ Con_MessageMode2_f
 void Con_MessageMode2_f (void)
 {
 	key_dest = key_message;
-	team_message = true;
+	team_message = true_;
 }
 
 						
@@ -258,7 +258,7 @@ void Con_Init (void)
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
-	con_initialized = true;
+	con_initialized = true_;
 }
 
 
@@ -325,7 +325,7 @@ void Con_Print (char *txt)
 		if (cr)
 		{
 			con_current--;
-			cr = false;
+			cr = false_;
 		}
 
 		
@@ -423,9 +423,9 @@ void Con_Printf (char *fmt, ...)
 	// Con_Printd
 		if (!inupdate)
 		{
-			inupdate = true;
+			inupdate = true_;
 			SCR_UpdateScreen ();
-			inupdate = false;
+			inupdate = false_;
 		}
 	}
 }
@@ -471,7 +471,7 @@ void Con_SafePrintf (char *fmt, ...)
 	va_end (argptr);
 
 	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
+	scr_disabled_for_loading = true_;
 	Con_Printf ("%s", msg);
 	scr_disabled_for_loading = temp;
 }

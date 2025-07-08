@@ -91,7 +91,7 @@ PDWORD	pdwRawValue[JOY_MAX_AXES];
 // each time.  this avoids any problems with getting back to a default usage
 // or when changing from one controller to another.  this way at least something
 // works.
-cvar_t	in_joystick = {"joystick","0", true};
+cvar_t	in_joystick = {"joystick","0", true_};
 cvar_t	joy_name = {"joyname", "joystick"};
 cvar_t	joy_advanced = {"joyadvanced", "0"};
 cvar_t	joy_advaxisx = {"joyadvaxisx", "0"};
@@ -200,7 +200,7 @@ void IN_ShowMouse (void)
 
 	if (!mouseshowtoggle)
 	{
-		ShowCursor (TRUE);
+		ShowCursor (true_);
 		mouseshowtoggle = 1;
 	}
 }
@@ -216,7 +216,7 @@ void IN_HideMouse (void)
 
 	if (mouseshowtoggle)
 	{
-		ShowCursor (FALSE);
+		ShowCursor (false_);
 		mouseshowtoggle = 0;
 	}
 }
@@ -230,7 +230,7 @@ IN_ActivateMouse
 void IN_ActivateMouse (void)
 {
 
-	mouseactivatetoggle = true;
+	mouseactivatetoggle = true_;
 
 	if (mouseinitialized)
 	{
@@ -241,7 +241,7 @@ void IN_ActivateMouse (void)
 				if (!dinput_acquired)
 				{
 					IDirectInputDevice_Acquire(g_pMouse);
-					dinput_acquired = true;
+					dinput_acquired = true_;
 				}
 			}
 			else
@@ -259,7 +259,7 @@ void IN_ActivateMouse (void)
 			ClipCursor (&window_rect);
 		}
 
-		mouseactive = true;
+		mouseactive = true_;
 	}
 }
 
@@ -284,7 +284,7 @@ IN_DeactivateMouse
 void IN_DeactivateMouse (void)
 {
 
-	mouseactivatetoggle = false;
+	mouseactivatetoggle = false_;
 
 	if (mouseinitialized)
 	{
@@ -295,7 +295,7 @@ void IN_DeactivateMouse (void)
 				if (dinput_acquired)
 				{
 					IDirectInputDevice_Unacquire(g_pMouse);
-					dinput_acquired = false;
+					dinput_acquired = false_;
 				}
 			}
 		}
@@ -308,7 +308,7 @@ void IN_DeactivateMouse (void)
 			ReleaseCapture ();
 		}
 
-		mouseactive = false;
+		mouseactive = false_;
 	}
 }
 
@@ -323,13 +323,13 @@ void IN_RestoreOriginalMouseState (void)
 	if (mouseactivatetoggle)
 	{
 		IN_DeactivateMouse ();
-		mouseactivatetoggle = true;
+		mouseactivatetoggle = true_;
 	}
 
 // try to redraw the cursor so it gets reinitialized, because sometimes it
 // has garbage after the mode switch
-	ShowCursor (TRUE);
-	ShowCursor (FALSE);
+	ShowCursor (true_);
+	ShowCursor (false_);
 }
 
 
@@ -358,7 +358,7 @@ qboolean IN_InitDInput (void)
 		if (hInstDI == NULL)
 		{
 			Con_SafePrintf ("Couldn't load dinput.dll\n");
-			return false;
+			return false_;
 		}
 	}
 
@@ -369,7 +369,7 @@ qboolean IN_InitDInput (void)
 		if (!pDirectInputCreate)
 		{
 			Con_SafePrintf ("Couldn't get DI proc addr\n");
-			return false;
+			return false_;
 		}
 	}
 
@@ -378,7 +378,7 @@ qboolean IN_InitDInput (void)
 
 	if (FAILED(hr))
 	{
-		return false;
+		return false_;
 	}
 
 // obtain an interface to the system mouse device.
@@ -387,7 +387,7 @@ qboolean IN_InitDInput (void)
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't open DI mouse device\n");
-		return false;
+		return false_;
 	}
 
 // set the data format to "mouse format".
@@ -396,7 +396,7 @@ qboolean IN_InitDInput (void)
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI mouse format\n");
-		return false;
+		return false_;
 	}
 
 // set the cooperativity level.
@@ -406,7 +406,7 @@ qboolean IN_InitDInput (void)
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI coop level\n");
-		return false;
+		return false_;
 	}
 
 
@@ -417,10 +417,10 @@ qboolean IN_InitDInput (void)
 	if (FAILED(hr))
 	{
 		Con_SafePrintf ("Couldn't set DI buffersize\n");
-		return false;
+		return false_;
 	}
 
-	return true;
+	return true_;
 }
 
 
@@ -434,7 +434,7 @@ void IN_StartupMouse (void)
 	if ( COM_CheckParm ("-nomouse") ) 
 		return; 
 
-	mouseinitialized = true;
+	mouseinitialized = true_;
 
 	if (COM_CheckParm ("-dinput"))
 	{
@@ -565,13 +565,13 @@ void IN_MouseEvent (int mstate)
 			if ( (mstate & (1<<i)) &&
 				!(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, true);
+				Key_Event (K_MOUSE1 + i, true_);
 			}
 
 			if ( !(mstate & (1<<i)) &&
 				(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, false);
+				Key_Event (K_MOUSE1 + i, false_);
 			}
 		}	
 			
@@ -610,7 +610,7 @@ void IN_MouseMove (usercmd_t *cmd)
 
 			if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
 			{
-				dinput_acquired = true;
+				dinput_acquired = true_;
 				IDirectInputDevice_Acquire(g_pMouse);
 				break;
 			}
@@ -662,13 +662,13 @@ void IN_MouseMove (usercmd_t *cmd)
 			if ( (mstate_di & (1<<i)) &&
 				!(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, true);
+				Key_Event (K_MOUSE1 + i, true_);
 			}
 
 			if ( !(mstate_di & (1<<i)) &&
 				(mouse_oldbuttonstate & (1<<i)) )
 			{
-				Key_Event (K_MOUSE1 + i, false);
+				Key_Event (K_MOUSE1 + i, false_);
 			}
 		}	
 			
@@ -804,7 +804,7 @@ void IN_StartupJoystick (void)
 	MMRESULT	mmr;
  
  	// assume no joystick
-	joy_avail = false; 
+	joy_avail = false_; 
 
 	// abort startup if user requests no joystick
 	if ( COM_CheckParm ("-nojoy") ) 
@@ -854,8 +854,8 @@ void IN_StartupJoystick (void)
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
 
-	joy_avail = true; 
-	joy_advancedinit = false;
+	joy_avail = true_; 
+	joy_advancedinit = false_;
 
 	Con_Printf ("\njoystick detected\n\n"); 
 }
@@ -982,13 +982,13 @@ void IN_Commands (void)
 		if ( (buttonstate & (1<<i)) && !(joy_oldbuttonstate & (1<<i)) )
 		{
 			key_index = (i < 4) ? K_JOY1 : K_AUX1;
-			Key_Event (key_index + i, true);
+			Key_Event (key_index + i, true_);
 		}
 
 		if ( !(buttonstate & (1<<i)) && (joy_oldbuttonstate & (1<<i)) )
 		{
 			key_index = (i < 4) ? K_JOY1 : K_AUX1;
-			Key_Event (key_index + i, false);
+			Key_Event (key_index + i, false_);
 		}
 	}
 	joy_oldbuttonstate = buttonstate;
@@ -1015,12 +1015,12 @@ void IN_Commands (void)
 		{
 			if ( (povstate & (1<<i)) && !(joy_oldpovstate & (1<<i)) )
 			{
-				Key_Event (K_AUX29 + i, true);
+				Key_Event (K_AUX29 + i, true_);
 			}
 
 			if ( !(povstate & (1<<i)) && (joy_oldpovstate & (1<<i)) )
 			{
-				Key_Event (K_AUX29 + i, false);
+				Key_Event (K_AUX29 + i, false_);
 			}
 		}
 		joy_oldpovstate = povstate;
@@ -1049,7 +1049,7 @@ qboolean IN_ReadJoystick (void)
 		{
 			ji.dwUpos += 100;
 		}
-		return true;
+		return true_;
 	}
 	else
 	{
@@ -1057,8 +1057,8 @@ qboolean IN_ReadJoystick (void)
 		// turning off the joystick seems too harsh for 1 read error,\
 		// but what should be done?
 		// Con_Printf ("IN_ReadJoystick: no response\n");
-		// joy_avail = false;
-		return false;
+		// joy_avail = false_;
+		return false_;
 	}
 }
 
@@ -1076,10 +1076,10 @@ void IN_JoyMove (usercmd_t *cmd)
 
 	// complete initialization if first time in
 	// this is needed as cvars are not available at initialization time
-	if( joy_advancedinit != true )
+	if( joy_advancedinit != true_ )
 	{
 		Joy_AdvancedUpdate_f();
-		joy_advancedinit = true;
+		joy_advancedinit = true_;
 	}
 
 	// verify joystick is available and that the user wants to use it
@@ -1089,7 +1089,7 @@ void IN_JoyMove (usercmd_t *cmd)
 	}
  
 	// collect the joystick data, if possible
-	if (IN_ReadJoystick () != true)
+	if (IN_ReadJoystick () != true_)
 	{
 		return;
 	}
@@ -1136,7 +1136,7 @@ void IN_JoyMove (usercmd_t *cmd)
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
 				{		
 					// if mouse invert is on, invert the joystick pitch value
-					// only absolute control support here (joy_advanced is false)
+					// only absolute control support here (joy_advanced is false_)
 					if (m_pitch.value < 0.0)
 					{
 						cl.viewangles[PITCH] -= (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;

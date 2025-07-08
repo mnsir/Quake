@@ -77,7 +77,7 @@ void *Mod_Extradata (model_t *mod)
 	if (r)
 		return r;
 
-	Mod_LoadModel (mod, true);
+	Mod_LoadModel (mod, true_);
 	
 	if (!mod->cache.data)
 		Sys_Error ("Mod_Extradata: caching failed");

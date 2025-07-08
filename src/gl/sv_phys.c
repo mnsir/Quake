@@ -48,9 +48,9 @@ solid_edge items only clip against bsp models.
 
 */
 
-cvar_t	sv_friction = {"sv_friction","4",false,true};
+cvar_t	sv_friction = {"sv_friction","4",false_,true_};
 cvar_t	sv_stopspeed = {"sv_stopspeed","100"};
-cvar_t	sv_gravity = {"sv_gravity","800",false,true};
+cvar_t	sv_gravity = {"sv_gravity","800",false_,true_};
 cvar_t	sv_maxvelocity = {"sv_maxvelocity","2000"};
 cvar_t	sv_nostep = {"sv_nostep","0"};
 
@@ -138,7 +138,7 @@ qboolean SV_RunThink (edict_t *ent)
 
 	thinktime = ent->v.nextthink;
 	if (thinktime <= 0 || thinktime > sv.time + host_frametime)
-		return true;
+		return true_;
 		
 	if (thinktime < sv.time)
 		thinktime = sv.time;	// don't let things stay in the past.
@@ -266,7 +266,7 @@ int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 		for (i=0 ; i<3 ; i++)
 			end[i] = ent->v.origin[i] + time_left * ent->v.velocity[i];
 
-		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, false, ent);
+		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, false_, ent);
 
 		if (trace.allsolid)
 		{	// entity is trapped in another solid
@@ -430,7 +430,7 @@ trace_t SV_PushEntity (edict_t *ent, vec3_t push)
 		trace = SV_Move (ent->v.origin, ent->v.mins, ent->v.maxs, end, MOVE_NORMAL, ent);	
 	
 	VectorCopy (trace.endpos, ent->v.origin);
-	SV_LinkEdict (ent, true);
+	SV_LinkEdict (ent, true_);
 
 	if (trace.ent)
 		SV_Impact (ent, trace.ent);		
@@ -474,7 +474,7 @@ void SV_PushMove (edict_t *pusher, float movetime)
 
 	VectorAdd (pusher->v.origin, move, pusher->v.origin);
 	pusher->v.ltime += movetime;
-	SV_LinkEdict (pusher, false);
+	SV_LinkEdict (pusher, false_);
 
 
 // see if any solid entities are inside the final position
@@ -537,10 +537,10 @@ void SV_PushMove (edict_t *pusher, float movetime)
 			}
 			
 			VectorCopy (entorig, check->v.origin);
-			SV_LinkEdict (check, true);
+			SV_LinkEdict (check, true_);
 
 			VectorCopy (pushorig, pusher->v.origin);
-			SV_LinkEdict (pusher, false);
+			SV_LinkEdict (pusher, false_);
 			pusher->v.ltime -= movetime;
 
 			// if the pusher has a "blocked" function, call it
@@ -556,7 +556,7 @@ void SV_PushMove (edict_t *pusher, float movetime)
 			for (i=0 ; i<num_moved ; i++)
 			{
 				VectorCopy (moved_from[i], moved_edict[i]->v.origin);
-				SV_LinkEdict (moved_edict[i], false);
+				SV_LinkEdict (moved_edict[i], false_);
 			}
 			return;
 		}	
@@ -602,7 +602,7 @@ void SV_PushRotate (edict_t *pusher, float movetime)
 
 	VectorAdd (pusher->v.angles, amove, pusher->v.angles);
 	pusher->v.ltime += movetime;
-	SV_LinkEdict (pusher, false);
+	SV_LinkEdict (pusher, false_);
 
 
 // see if any solid entities are inside the final position
@@ -670,10 +670,10 @@ void SV_PushRotate (edict_t *pusher, float movetime)
 			}
 			
 			VectorCopy (entorig, check->v.origin);
-			SV_LinkEdict (check, true);
+			SV_LinkEdict (check, true_);
 
 			VectorCopy (pushorig, pusher->v.angles);
-			SV_LinkEdict (pusher, false);
+			SV_LinkEdict (pusher, false_);
 			pusher->v.ltime -= movetime;
 
 			// if the pusher has a "blocked" function, call it
@@ -690,7 +690,7 @@ void SV_PushRotate (edict_t *pusher, float movetime)
 			{
 				VectorCopy (moved_from[i], moved_edict[i]->v.origin);
 				VectorSubtract (moved_edict[i]->v.angles, amove, moved_edict[i]->v.angles);
-				SV_LinkEdict (moved_edict[i], false);
+				SV_LinkEdict (moved_edict[i], false_);
 			}
 			return;
 		}
@@ -785,7 +785,7 @@ void SV_CheckStuck (edict_t *ent)
 	if (!SV_TestEntityPosition(ent))
 	{
 		Con_DPrintf ("Unstuck.\n");
-		SV_LinkEdict (ent, true);
+		SV_LinkEdict (ent, true_);
 		return;
 	}
 	
@@ -799,7 +799,7 @@ void SV_CheckStuck (edict_t *ent)
 				if (!SV_TestEntityPosition(ent))
 				{
 					Con_DPrintf ("Unstuck.\n");
-					SV_LinkEdict (ent, true);
+					SV_LinkEdict (ent, true_);
 					return;
 				}
 			}
@@ -1132,7 +1132,7 @@ void SV_Physics_Client (edict_t	*ent, int num)
 //
 // call standard player post-think
 //		
-	SV_LinkEdict (ent, true);
+	SV_LinkEdict (ent, true_);
 
 	pr_global_struct->time = sv.time;
 	pr_global_struct->self = EDICT_TO_PROG(ent);
@@ -1167,7 +1167,7 @@ void SV_Physics_Follow (edict_t *ent)
 // regular thinking
 	SV_RunThink (ent);
 	VectorAdd (PROG_TO_EDICT(ent->v.aiment)->v.origin, ent->v.v_angle, ent->v.origin);
-	SV_LinkEdict (ent, true);
+	SV_LinkEdict (ent, true_);
 }
 #endif
 
@@ -1187,7 +1187,7 @@ void SV_Physics_Noclip (edict_t *ent)
 	VectorMA (ent->v.angles, host_frametime, ent->v.avelocity, ent->v.angles);
 	VectorMA (ent->v.origin, host_frametime, ent->v.velocity, ent->v.origin);
 
-	SV_LinkEdict (ent, false);
+	SV_LinkEdict (ent, false_);
 }
 
 /*
@@ -1373,7 +1373,7 @@ void SV_Physics_Step (edict_t *ent)
 {
 	qboolean	wasonground;
 	qboolean	inwater;
-	qboolean	hitsound = false;
+	qboolean	hitsound = false_;
 	float		*vel;
 	float		speed, newspeed, control;
 	float		friction;
@@ -1403,7 +1403,7 @@ void SV_Physics_Step (edict_t *ent)
 			if (!(((int)ent->v.flags & FL_SWIM) && (ent->v.waterlevel > 0)))
 			{
 				if (ent->v.velocity[2] < sv_gravity.value*-0.1)
-					hitsound = true;
+					hitsound = true_;
 				if (!inwater)
 					SV_AddGravity (ent);
 			}
@@ -1461,7 +1461,7 @@ void SV_Physics_Step (edict_t *ent)
 
 		}
 
-		SV_LinkEdict (ent, true);
+		SV_LinkEdict (ent, true_);
 
 		if ((int)ent->v.flags & FL_ONGROUND)
 			if (!wasonground)
@@ -1482,14 +1482,14 @@ void SV_Physics_Step (edict_t *ent)
 	if ( ! ((int)ent->v.flags & (FL_ONGROUND | FL_FLY | FL_SWIM) ) )
 	{
 		if (ent->v.velocity[2] < sv_gravity.value*-0.1)
-			hitsound = true;
+			hitsound = true_;
 		else
-			hitsound = false;
+			hitsound = false_;
 
 		SV_AddGravity (ent);
 		SV_CheckVelocity (ent);
 		SV_FlyMove (ent, host_frametime, NULL);
-		SV_LinkEdict (ent, true);
+		SV_LinkEdict (ent, true_);
 
 		if ( (int)ent->v.flags & FL_ONGROUND )	// just hit ground
 		{
@@ -1537,7 +1537,7 @@ void SV_Physics (void)
 
 		if (pr_global_struct->force_retouch)
 		{
-			SV_LinkEdict (ent, true);	// force retouch even for stationary
+			SV_LinkEdict (ent, true_);	// force retouch even for stationary
 		}
 
 		if (i > 0 && i <= svs.maxclients)

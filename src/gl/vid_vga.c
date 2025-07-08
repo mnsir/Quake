@@ -272,7 +272,7 @@ qboolean VGA_FreeAndAllocVidbuffer (viddef_t *lvid, int allocnewbuffer)
 		Con_Printf ("Not enough memory for video mode\n");
 		VGA_pcurmode = NULL;	// so no further accesses to the buffer are
 								//  attempted, particularly when clearing
-		return false;		// not enough memory for mode
+		return false_;		// not enough memory for mode
 	}
 
 	VGA_buffersize = tbuffersize;
@@ -298,7 +298,7 @@ qboolean VGA_FreeAndAllocVidbuffer (viddef_t *lvid, int allocnewbuffer)
 		lvid->conbuffer = lvid->buffer;
 	}
 
-	return true;
+	return true_;
 }
 
 
@@ -327,10 +327,10 @@ qboolean VGA_CheckAdequateMem (int width, int height, int rowbytes,
 	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
 		 0x10000 * 3) < minimum_memory)
 	{
-		return false;		// not enough memory for mode
+		return false_;		// not enough memory for mode
 	}
 
-	return true;
+	return true_;
 }
 
 

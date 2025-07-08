@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "world.h"
 #include "zone.h"
 
+#include <QuakeTests/test.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -56,11 +58,11 @@ cvar_t	scratch1 = {"scratch1", "0"};
 cvar_t	scratch2 = {"scratch2", "0"};
 cvar_t	scratch3 = {"scratch3", "0"};
 cvar_t	scratch4 = {"scratch4", "0"};
-cvar_t	savedgamecfg = {"savedgamecfg", "0", true};
-cvar_t	saved1 = {"saved1", "0", true};
-cvar_t	saved2 = {"saved2", "0", true};
-cvar_t	saved3 = {"saved3", "0", true};
-cvar_t	saved4 = {"saved4", "0", true};
+cvar_t	savedgamecfg = {"savedgamecfg", "0", true_};
+cvar_t	saved1 = {"saved1", "0", true_};
+cvar_t	saved2 = {"saved2", "0", true_};
+cvar_t	saved3 = {"saved3", "0", true_};
+cvar_t	saved4 = {"saved4", "0", true_};
 
 #define	MAX_FIELD_LEN	64
 #define GEFV_CACHESIZE	2
@@ -82,7 +84,7 @@ Sets everything to NULL
 void ED_ClearEdict (edict_t *e)
 {
 	memset (&e->v, 0, progs->entityfields * 4);
-	e->free = false;
+	e->free = false_;
 }
 
 /*
@@ -135,7 +137,7 @@ void ED_Free (edict_t *ed)
 {
 	SV_UnlinkEdict (ed);		// unlink from world bsp
 
-	ed->free = true;
+	ed->free = true_;
 	ed->v.model = 0;
 	ed->v.takedamage = 0;
 	ed->v.modelindex = 0;
@@ -555,6 +557,27 @@ void ED_PrintEdicts (void)
 		ED_PrintNum (i);
 }
 
+void ED_RunTests_f (void)
+{
+	int* arr = malloc(progs->numfunctions * sizeof(int));
+	char** arr2 = malloc(progs->numfunctions * sizeof(char*));
+
+	for (int i = 0; i < progs->numfunctions; i++)
+	{
+		dfunction_t* func = &pr_functions[i];
+		arr[i] = G_FUNCTION(func->first_statement);
+		char* p = pr_strings + func->s_name;
+		arr2[i] = p;
+	}
+
+	RunTests(progs->numfunctions, arr, arr2, PR_ExecuteProgram);
+
+	free(arr);
+	free(arr2);
+
+	Con_Printf("RunTests called\n");
+}
+
 /*
 =============
 ED_PrintEdict_f
@@ -781,7 +804,7 @@ qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 		if (!def)
 		{
 			Con_Printf ("Can't find field %s\n", s);
-			return false;
+			return false_;
 		}
 		*(int *)d = G_INT(def->ofs);
 		break;
@@ -791,7 +814,7 @@ qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 		if (!func)
 		{
 			Con_Printf ("Can't find function %s\n", s);
-			return false;
+			return false_;
 		}
 		*(func_t *)d = func - pr_functions;
 		break;
@@ -799,7 +822,7 @@ qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s)
 	default:
 		break;
 	}
-	return true;
+	return true_;
 }
 
 /*
@@ -819,7 +842,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 	char		keyname[256];
 	int			n;
 
-	init = false;
+	init = false_;
 
 // clear it
 	if (ent != sv.edicts)	// hack
@@ -840,10 +863,10 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 if (!strcmp(com_token, "angle"))
 {
 	strcpy (com_token, "angles");
-	anglehack = true;
+	anglehack = true_;
 }
 else
-	anglehack = false;
+	anglehack = false_;
 
 // FIXME: change light to _light to get rid of this hack
 if (!strcmp(com_token, "light"))
@@ -867,7 +890,7 @@ if (!strcmp(com_token, "light"))
 		if (com_token[0] == '}')
 			Sys_Error ("ED_ParseEntity: closing brace without data");
 
-		init = true;	
+		init = true_;	
 
 // keynames with a leading underscore are used for utility comments,
 // and are immediately discarded by quake
@@ -893,7 +916,7 @@ sprintf (com_token, "0 %s 0", temp);
 	}
 
 	if (!init)
-		ent->free = true;
+		ent->free = true_;
 
 	return data;
 }
@@ -1079,6 +1102,7 @@ PR_Init
 */
 void PR_Init (void)
 {
+	Cmd_AddCommand ("run_tests", ED_RunTests_f);
 	Cmd_AddCommand ("edict", ED_PrintEdict_f);
 	Cmd_AddCommand ("edicts", ED_PrintEdicts);
 	Cmd_AddCommand ("edictcount", ED_Count);

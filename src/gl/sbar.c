@@ -86,7 +86,7 @@ void Sbar_ShowScores (void)
 {
 	if (sb_showscores)
 		return;
-	sb_showscores = true;
+	sb_showscores = true_;
 	sb_updates = 0;
 }
 
@@ -99,7 +99,7 @@ Tab key up
 */
 void Sbar_DontShowScores (void)
 {
-	sb_showscores = false;
+	sb_showscores = false_;
 	sb_updates = 0;
 }
 

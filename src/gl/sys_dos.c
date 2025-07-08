@@ -184,9 +184,9 @@ void Sys_DetectWin95 (void)
 	if(r.x.ax || r.h.bh < 4)	/* Not windows or earlier than Win95 */
 	{
 		win95 = 0;
-		lockmem = true;
-		lockunlockmem = false;
-		unlockmem = true;
+		lockmem = true_;
+		lockunlockmem = false_;
+		unlockmem = true_;
 	}
 	else
 	{
@@ -194,7 +194,7 @@ void Sys_DetectWin95 (void)
 		lockunlockmem = COM_CheckParm ("-winlockunlock");
 
 		if (lockunlockmem)
-			lockmem = true;
+			lockmem = true_;
 		else
 			lockmem = COM_CheckParm ("-winlock");
 
@@ -501,7 +501,7 @@ void Sys_SendKeyEvents (void)
 			continue;                               // pause key bullshit
 		if (k==0xc5 && next == 0x9d) 
 		{ 
-			Key_Event (K_PAUSE, true);
+			Key_Event (K_PAUSE, true_);
 			continue; 
 		} 
 
@@ -520,9 +520,9 @@ void Sys_SendKeyEvents (void)
 		outkey = scantokey[k & 0x7f];
 
 		if (k & 0x80)
-			Key_Event (outkey, false);
+			Key_Event (outkey, false_);
 		else
-			Key_Event (outkey, true);
+			Key_Event (outkey, true_);
 
 	}
 

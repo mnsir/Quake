@@ -442,7 +442,7 @@ qboolean BLASTER_Init(void)
 	if (!dma_buffer)
 	{
 		Con_Printf("Couldn't allocate sound dma buffer");
-		return false;
+		return false_;
 	}
 
 	realaddr = ptr2real(dma_buffer);
@@ -452,8 +452,8 @@ qboolean BLASTER_Init(void)
 
 	memset(dma_buffer, 0, dma_size);
 
-	shm->soundalive = true;
-	shm->splitbuffer = false;
+	shm->soundalive = true_;
+	shm->splitbuffer = false_;
 
 	shm->samples = size/(shm->samplebits/8);
 	shm->samplepos = 0;
@@ -464,7 +464,7 @@ qboolean BLASTER_Init(void)
 	StartDMA();
 	StartSB();
 
-	return true;
+	return true_;
 }
 
 
@@ -577,17 +577,17 @@ qboolean SNDDMA_Init(void)
 	if (GUS_Init ())
 	{
 		dmacard = dma_gus;
-		return true;
+		return true_;
 	}
 	if (BLASTER_Init ())
 	{
 		dmacard = dma_blaster;
-		return true;
+		return true_;
 	}
 	
 	dmacard = dma_none;
 	
-	return false;
+	return false_;
 }
 
 

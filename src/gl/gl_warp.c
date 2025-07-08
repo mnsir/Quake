@@ -846,19 +846,19 @@ void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 		return;
 	}
 
-	front = back = false;
+	front = back = false_;
 	norm = skyclip[stage];
 	for (i=0, v = vecs ; i<nump ; i++, v+=3)
 	{
 		d = DotProduct (v, norm);
 		if (d > ON_EPSILON)
 		{
-			front = true;
+			front = true_;
 			sides[i] = SIDE_FRONT;
 		}
 		else if (d < ON_EPSILON)
 		{
-			back = true;
+			back = true_;
 			sides[i] = SIDE_BACK;
 		}
 		else

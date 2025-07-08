@@ -58,7 +58,7 @@ extern int			global_dx, global_dy;
 // globals
 //
 
-cvar_t					_windowed_mouse = {"_windowed_mouse","1", true};
+cvar_t					_windowed_mouse = {"_windowed_mouse","1", true_};
 int					x_root, y_root;
 int					x_root_old, y_root_old;
 //
@@ -68,7 +68,7 @@ int					x_root_old, y_root_old;
 static int				x_mouse_num, x_mouse_denom, x_mouse_thresh;
 
 
-static qboolean x_grabbed = false;
+static qboolean x_grabbed = false_;
 
 //
 // IN_CenterMouse - center the mouse in the screen
@@ -94,7 +94,7 @@ void IN_CenterMouse( void )
 static void CheckMouseState(void)
 {
 	if (x_focus && _windowed_mouse.value && !x_grabbed) {
-		x_grabbed = true;
+		x_grabbed = true_;
 		printf("fooling with mouse!\n");
 		if (XGetPointerControl( x_disp, &x_mouse_num, &x_mouse_denom, &x_mouse_thresh ))
 			printf( "XGetPointerControl failed!\n" );
@@ -102,12 +102,12 @@ static void CheckMouseState(void)
 
 		// make input rawer
 		XAutoRepeatOff(x_disp);
-		XGrabKeyboard(x_disp, x_win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
-		XGrabPointer(x_disp, x_win, True, 
+		XGrabKeyboard(x_disp, x_win, true_, GrabModeAsync, GrabModeAsync, CurrentTime);
+		XGrabPointer(x_disp, x_win, true_, 
 			     PointerMotionMask | ButtonPressMask | ButtonReleaseMask, 
 			     GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
 
-//		if (XChangePointerControl( x_disp, True, True, 1, MOUSE_SCALE, x_mouse_thresh ))
+//		if (XChangePointerControl( x_disp, true_, true_, 1, MOUSE_SCALE, x_mouse_thresh ))
 //			printf( "XChangePointerControl failed!\n" );
 
 		IN_CenterMouse();
@@ -117,9 +117,9 @@ static void CheckMouseState(void)
 		y_root = y_root_old = vid.height >> 1;
 	} else if (x_grabbed && (!_windowed_mouse.value || !x_focus)) {
 		printf("fooling with mouse!\n");
-		x_grabbed = false;
+		x_grabbed = false_;
 		// undo mouse warp
-		if (XChangePointerControl( x_disp, True, True, x_mouse_num, x_mouse_denom, x_mouse_thresh ))
+		if (XChangePointerControl( x_disp, true_, true_, x_mouse_num, x_mouse_denom, x_mouse_thresh ))
 			printf( "XChangePointerControl failed!\n" );
 
 		XUngrabPointer( x_disp, CurrentTime );
@@ -152,7 +152,7 @@ void IN_Shutdown (void)
     if (!x_disp) return;
 
 	// undo mouse warp
-	if (XChangePointerControl( x_disp, True, True, x_mouse_num, x_mouse_denom, x_mouse_thresh ))
+	if (XChangePointerControl( x_disp, true_, true_, x_mouse_num, x_mouse_denom, x_mouse_thresh ))
 		printf( "XChangePointerControl failed!\n" );
 
 	XUngrabPointer( x_disp, CurrentTime );

@@ -153,7 +153,7 @@ void SV_UserFriction (void)
 	start[2] = origin[2] + sv_player->v.mins[2];
 	stop[2] = start[2] - 34;
 
-	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true, sv_player);
+	trace = SV_Move (start, vec3_origin, vec3_origin, stop, true_, sv_player);
 
 	if (trace.fraction == 1.0)
 		friction = sv_friction.value*sv_edgefriction.value;
@@ -178,7 +178,7 @@ void SV_UserFriction (void)
 SV_Accelerate
 ==============
 */
-cvar_t	sv_maxspeed = {"sv_maxspeed", "320", false, true};
+cvar_t	sv_maxspeed = {"sv_maxspeed", "320", false_, true_};
 cvar_t	sv_accelerate = {"sv_accelerate", "10"};
 #if 0
 void SV_Accelerate (vec3_t wishvel)
@@ -506,22 +506,22 @@ nextmsg:
 		if (ret == -1)
 		{
 			Sys_Printf ("SV_ReadClientMessage: NET_GetMessage failed\n");
-			return false;
+			return false_;
 		}
 		if (!ret)
-			return true;
+			return true_;
 					
 		MSG_BeginReading ();
 		
 		while (1)
 		{
 			if (!host_client->active)
-				return false;	// a command caused an error
+				return false_;	// a command caused an error
 
 			if (msg_badread)
 			{
 				Sys_Printf ("SV_ReadClientMessage: badread\n");
-				return false;
+				return false_;
 			}	
 	
 			cmd = MSG_ReadChar ();
@@ -533,7 +533,7 @@ nextmsg:
 				
 			default:
 				Sys_Printf ("SV_ReadClientMessage: unknown command char\n");
-				return false;
+				return false_;
 							
 			case clc_nop:
 //				Sys_Printf ("clc_nop\n");
@@ -593,7 +593,7 @@ nextmsg:
 				
 			case clc_disconnect:
 //				Sys_Printf ("SV_ReadClientMessage: client disconnected\n");
-				return false;
+				return false_;
 			
 			case clc_move:
 				SV_ReadClientMove (&host_client->cmd);
@@ -602,7 +602,7 @@ nextmsg:
 		}
 	} while (ret == 1);
 	
-	return true;
+	return true_;
 }
 
 
@@ -624,7 +624,7 @@ void SV_RunClients (void)
 
 		if (!SV_ReadClientMessage ())
 		{
-			SV_DropClient (false);	// client misbehaved...
+			SV_DropClient (false_);	// client misbehaved...
 			continue;
 		}
 

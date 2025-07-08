@@ -149,13 +149,13 @@ surfcache_t     *D_SCAlloc (int width, int size)
 		Sys_Error ("D_SCAlloc: %i > cache size",size);
 
 // if there is not size bytes after the rover, reset to the start
-	wrapped_this_time = false;
+	wrapped_this_time = false_;
 
 	if ( !sc_rover || (byte *)sc_rover - (byte *)sc_base > sc_size - size)
 	{
 		if (sc_rover)
 		{
-			wrapped_this_time = true;
+			wrapped_this_time = true_;
 		}
 		sc_rover = sc_base;
 	}
@@ -202,11 +202,11 @@ surfcache_t     *D_SCAlloc (int width, int size)
 	if (d_roverwrapped)
 	{
 		if (wrapped_this_time || (sc_rover >= d_initial_rover))
-			r_cache_thrash = true;
+			r_cache_thrash = true_;
 	}
 	else if (wrapped_this_time)
 	{       
-		d_roverwrapped = true;
+		d_roverwrapped = true_;
 	}
 
 D_CheckCacheGuard ();   // DEBUG

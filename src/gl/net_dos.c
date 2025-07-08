@@ -27,7 +27,7 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {
 	{
 	"Loopback",
-	false,
+	false_,
 	Loop_Init,
 	Loop_Listen,
 	Loop_SearchForHosts,
@@ -44,7 +44,7 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	,
 	{
 	"Datagram",
-	false,
+	false_,
 	Datagram_Init,
 	Datagram_Listen,
 	Datagram_SearchForHosts,
@@ -61,7 +61,7 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	,
 	{
 	"Serial",
-	false,
+	false_,
 	Serial_Init,
 	Serial_Listen,
 	Serial_SearchForHosts,
@@ -88,7 +88,7 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 {
 	{
 	"Beame & Whiteside TCP/IP",
-	false,
+	false_,
 	0,
 	BW_Init,
 	BW_Shutdown,
@@ -112,7 +112,7 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 ,
 	{
 	"IPX",
-	false,
+	false_,
 	0,
 	IPX_Init,
 	IPX_Shutdown,
@@ -136,7 +136,7 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 ,
 	{
 	"Win95 TCP/IP",
-	false,
+	false_,
 	0,
 	MPATH_Init,
 	MPATH_Shutdown,

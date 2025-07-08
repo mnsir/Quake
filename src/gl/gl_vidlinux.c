@@ -73,9 +73,9 @@ int		UseKeyboard = 1;
 
 int		mouserate = MOUSE_DEFAULTSAMPLERATE;
 
-cvar_t		vid_mode = {"vid_mode","5",false};
-cvar_t		vid_redrawfull = {"vid_redrawfull","0",false};
-cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true};
+cvar_t		vid_mode = {"vid_mode","5",false_};
+cvar_t		vid_redrawfull = {"vid_redrawfull","0",false_};
+cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true_};
  
 char	*framebuffer_ptr;
 
@@ -122,9 +122,9 @@ void (*qglColorTableEXT) (int, int, int, int, int, const void *);
 
 static float vid_gamma = 1.0;
 
-qboolean is8bit = false;
-qboolean isPermedia = false;
-qboolean gl_mtexable = false;
+qboolean is8bit = false_;
+qboolean isPermedia = false_;
+qboolean gl_mtexable = false_;
 
 /*-----------------------------------------------------------------------*/
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
@@ -223,7 +223,7 @@ void	VID_SetPalette (unsigned char *palette)
 	FILE *f;
 	char s[255];
 	int dist, bestdist;
-	static qboolean palflag = false;
+	static qboolean palflag = false_;
 
 //
 // 8 8 8 encoding
@@ -285,7 +285,7 @@ void CheckMultiTextureExtensions(void)
 
 		if (qglMTexCoord2fSGIS && qglSelectTextureSGIS) {
 			Con_Printf("Multitexture extensions found.\n");
-			gl_mtexable = true;
+			gl_mtexable = true_;
 		} else
 			Con_Printf("Symbol not found, disabled.\n");
 
@@ -551,7 +551,7 @@ void VID_Init8bitPalette(void)
 			oldpal++;
 		}
 		qgl3DfxSetPaletteEXT((GLuint *)table);
-		is8bit = true;
+		is8bit = true_;
 
 	} else if (strstr(gl_extensions, "GL_EXT_shared_texture_palette") &&
 		(qglColorTableEXT = dlsym(prjobj, "glColorTableEXT")) != NULL) {
@@ -569,7 +569,7 @@ void VID_Init8bitPalette(void)
 			oldPalette++;
 		}
 		qglColorTableEXT(GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256, GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-		is8bit = true;
+		is8bit = true_;
 	
 	}
 
@@ -778,24 +778,24 @@ void IN_Commands (void)
 		// perform button actions
 		if ((mouse_buttonstate & MOUSE_LEFTBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, true);
+			Key_Event (K_MOUSE1, true_);
 		else if (!(mouse_buttonstate & MOUSE_LEFTBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, false);
+			Key_Event (K_MOUSE1, false_);
 
 		if ((mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, true);
+			Key_Event (K_MOUSE2, true_);
 		else if (!(mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, false);
+			Key_Event (K_MOUSE2, false_);
 
 		if ((mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
 			!(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, true);
+			Key_Event (K_MOUSE3, true_);
 		else if (!(mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
 			(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, false);
+			Key_Event (K_MOUSE3, false_);
 
 		mouse_oldbuttonstate = mouse_buttonstate;
 	}

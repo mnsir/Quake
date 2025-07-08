@@ -665,12 +665,12 @@ static qboolean GUS_GetIWData(void)
 
    Interwave=getenv("INTERWAVE");
    if (Interwave==NULL)
-      return(false);
+      return(false_);
 
    // Open IW.INI
    IwFile=ini_fopen(Interwave,"rt");
    if (IwFile==NULL)
-      return(false);
+      return(false_);
 
    // Read codec base and codec DMA
    ini_fgets(IwFile,"setup 0","CodecBase",s);
@@ -682,7 +682,7 @@ static qboolean GUS_GetIWData(void)
 
    // Make sure numbers OK
    if (CodecBase==0 || CodecDma==0)
-      return(false);
+      return(false_);
 
    CodecRegisterSelect=CodecBase;
    CodecData=CodecBase+1;
@@ -700,18 +700,18 @@ static qboolean GUS_GetIWData(void)
       if ((dos_inportb(CodecRegisterSelect) & 0x80) == 0)
          break;
    if (i==0xFFFF)
-      return(false);
+      return(false_);
 
    // Get chip revision - can not be zero
    dos_outportb(CodecRegisterSelect,CODEC_MODE_AND_ID);
    if ((dos_inportb(CodecRegisterSelect) & 0x7F) != CODEC_MODE_AND_ID)
-      return(false);
+      return(false_);
    if ((dos_inportb(CodecData) & 0x0F) == 0)
-      return(false);
+      return(false_);
 
    HaveCodec=1;
    Con_Printf("Sound Card is UltraSound PnP\n");
-   return(true);
+   return(true_);
 }
 
 //=============================================================================
@@ -728,7 +728,7 @@ static qboolean GUS_GetMAXData(void)
    Ultrasnd=getenv("ULTRASND");
    Ultra16=getenv("ULTRA16");
    if (Ultrasnd==NULL || Ultra16==NULL)
-      return(false);
+      return(false_);
 
    sscanf(Ultrasnd,"%x,%i,%i,%i,%i",&GusBase,&Dma1,&Dma2,&Irq1,&Irq2);
    sscanf(Ultra16,"%x,%i,%i,%i",&CodecBase,&CodecDma,&CodecIrq,&CodecType);
@@ -741,10 +741,10 @@ static qboolean GUS_GetMAXData(void)
    // Make sure there is a GUS at GUS base
    dos_outportb(GusBase+0x08,0x55);
    if (dos_inportb(GusBase+0x0A)!=0x55)
-      return(false);
+      return(false_);
    dos_outportb(GusBase+0x08,0xAA);
    if (dos_inportb(GusBase+0x0A)!=0xAA)
-      return(false);
+      return(false_);
 
    // Program CODEC control register
    MaxVal=((CodecBase & 0xF0)>>4) | 0x40;
@@ -769,18 +769,18 @@ static qboolean GUS_GetMAXData(void)
       if ((dos_inportb(CodecRegisterSelect) & 0x80) == 0)
          break;
    if (i==0xFFFF)
-      return(false);
+      return(false_);
 
    // Get chip revision - can not be zero
    dos_outportb(CodecRegisterSelect,CODEC_MODE_AND_ID);
    if ((dos_inportb(CodecRegisterSelect) & 0x7F) != CODEC_MODE_AND_ID)
-      return(false);
+      return(false_);
    if ((dos_inportb(CodecData) & 0x0F) == 0)
-      return(false);
+      return(false_);
 
    HaveCodec=1;
    Con_Printf("Sound Card is UltraSound MAX\n");
-   return(true);
+   return(true_);
 }
 
 //=============================================================================
@@ -793,7 +793,7 @@ static qboolean GUS_GetGUSData(void)
 
    Ultrasnd=getenv("ULTRASND");
    if (Ultrasnd==NULL)
-      return(false);
+      return(false_);
 
    sscanf(Ultrasnd,"%x,%i,%i,%i,%i",&GusBase,&Dma1,&Dma2,&Irq1,&Irq2);
 
@@ -802,10 +802,10 @@ static qboolean GUS_GetGUSData(void)
    // Make sure there is a GUS at GUS base
    dos_outportb(GusBase+0x08,0x55);
    if (dos_inportb(GusBase+0x0A)!=0x55)
-      return(false);
+      return(false_);
    dos_outportb(GusBase+0x08,0xAA);
    if (dos_inportb(GusBase+0x0A)!=0xAA)
-      return(false);
+      return(false_);
 
    Gf1TimerControl   = GusBase+0x008;
    Gf1PageRegister   = GusBase+0x102;
@@ -859,7 +859,7 @@ static qboolean GUS_GetGUSData(void)
 
    HaveCodec=0;
    Con_Printf("Sound Card is UltraSound\n");
-   return(true);
+   return(true_);
 }
 
 
@@ -1079,10 +1079,10 @@ qboolean GUS_Init(void)
 	struct Gf1RateStruct *Gf1Rate;
 
 	// See what kind of UltraSound we have, if any
-	if (GUS_GetIWData()==false)
-		if (GUS_GetMAXData()==false)
-			if (GUS_GetGUSData()==false)
-				return(false);
+	if (GUS_GetIWData()==false_)
+		if (GUS_GetMAXData()==false_)
+			if (GUS_GetGUSData()==false_)
+				return(false_);
 
 	shm = &sn;
 
@@ -1122,7 +1122,7 @@ qboolean GUS_Init(void)
 		if (dma_buffer==NULL)
 		{
 			Con_Printf("Couldn't allocate sound dma buffer");
-			return false;
+			return false_;
 		}
 
 		RealAddr = ptr2real(dma_buffer);
@@ -1132,8 +1132,8 @@ qboolean GUS_Init(void)
 		// Zero off DMA buffer
 		memset(dma_buffer, 0, BUFFER_SIZE);
 
-		shm->soundalive = true;
-		shm->splitbuffer = false;
+		shm->soundalive = true_;
+		shm->splitbuffer = false_;
 
 		shm->samplepos = 0;
 		shm->submission_chunk = 1;
@@ -1178,7 +1178,7 @@ qboolean GUS_Init(void)
 		if (dma_buffer==NULL)
 		{
 			Con_Printf("Couldn't allocate sound dma buffer");
-			return false;
+			return false_;
 		}
 
 		RealAddr = ptr2real(dma_buffer);
@@ -1188,8 +1188,8 @@ qboolean GUS_Init(void)
 		// Zero off DMA buffer
 		memset(dma_buffer, 0, BUFFER_SIZE);
 
-		shm->soundalive = true;
-		shm->splitbuffer = false;
+		shm->soundalive = true_;
+		shm->splitbuffer = false_;
 
 		shm->samplepos = 0;
 		shm->submission_chunk = 1;
@@ -1204,7 +1204,7 @@ qboolean GUS_Init(void)
 			SetGf18(DMA_CONTROL,0x45);
 		GUS_StartGf1(BUFFER_SIZE,Voices);
 	}
-	return(true);
+	return(true_);
 }
 
 //=============================================================================

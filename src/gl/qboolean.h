@@ -3,4 +3,4 @@
 #undef true
 #undef false
 
-typedef enum { false, true } qboolean;
+typedef enum { false_, true_ } qboolean;

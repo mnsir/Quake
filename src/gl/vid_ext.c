@@ -255,13 +255,13 @@ qboolean VID_ExtraVidLookForState (unsigned state, unsigned mask)
 		for (i=0 ; i<100000 ; i++)
 		{
 			if ((inportb (0x3DA) & mask) == state)
-				return true;
+				return true_;
 		}
 
 		time = Sys_FloatTime ();
 	} while ((time - starttime) < 0.1);
 
-	return false;
+	return false_;
 }
 
 
@@ -280,13 +280,13 @@ qboolean VID_ExtraStateFound (unsigned state)
 	{
 		if (!VID_ExtraVidLookForState(workingstate, state))
 		{
-			return false;
+			return false_;
 		}
 
 		workingstate ^= state;
 	}
 
-	return true;
+	return true_;
 }
 
 
@@ -456,7 +456,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 	dos_int86(0x10);
 	if (regs.x.ax != 0x4f)
 	{
-		return false;
+		return false_;
 	}
 	else
 	{
@@ -472,7 +472,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 			(modeinfo.width > MAXWIDTH) ||
 			(modeinfo.height > MAXHEIGHT))
 		{
-			return false;
+			return false_;
 		}
 
 		modeinfo.mode_attributes = *(short*)infobuf;
@@ -482,7 +482,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 			 (MODE_SUPPORTED_IN_HW | COLOR_MODE | GRAPHICS_MODE)) !=
 			(MODE_SUPPORTED_IN_HW | COLOR_MODE | GRAPHICS_MODE))
 		{
-			return false;
+			return false_;
 		}
 
 	// we only work with linear frame buffers, except for 320x200, which can
@@ -490,7 +490,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 		if (!(modeinfo.mode_attributes & LINEAR_FRAME_BUFFER))
 		{
 			if ((modeinfo.width != 320) || (modeinfo.height != 200))
-				return false;
+				return false_;
 		}
 
 		modeinfo.bytes_per_scanline = *(short*)(infobuf+16);
@@ -498,7 +498,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 		modeinfo.pagesize = modeinfo.bytes_per_scanline * modeinfo.height;
 
 		if (modeinfo.pagesize > totalvidmem)
-			return false;
+			return false_;
 
 	// force to one page if the adapter reports it doesn't support more pages
 	// than that, no matter how much memory it has--it may not have hardware
@@ -575,7 +575,7 @@ qboolean VID_ExtraGetModeInfo(int modenum)
 
 	dos_freememory(infobuf);
 
-	return true;
+	return true_;
 }
 
 

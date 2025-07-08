@@ -56,9 +56,9 @@ void D_Init (void)
 	Cvar_RegisterVariable (&d_mipcap);
 	Cvar_RegisterVariable (&d_mipscale);
 
-	r_drawpolys = false;
-	r_worldpolysbacktofront = false;
-	r_recursiveaffinetriangles = true;
+	r_drawpolys = false_;
+	r_worldpolysbacktofront = false_;
+	r_recursiveaffinetriangles = true_;
 	r_pixbytes = 1;
 	r_aliasuvscale = 1.0;
 }
@@ -135,7 +135,7 @@ void D_SetupFrame (void)
 	else
 		screenwidth = vid.rowbytes;
 
-	d_roverwrapped = false;
+	d_roverwrapped = false_;
 	d_initial_rover = sc_rover;
 
 	d_minmip = d_mipcap.value;

@@ -25,7 +25,7 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 {
 	{
 	"Loopback",
-	false,
+	false_,
 	Loop_Init,
 	Loop_Listen,
 	Loop_SearchForHosts,

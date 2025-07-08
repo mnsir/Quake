@@ -98,7 +98,7 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
-cvar_t		scr_viewsize = {"viewsize","100", true};
+cvar_t		scr_viewsize = {"viewsize","100", true_};
 cvar_t		scr_fov = {"fov","90"};	// 10 - 170
 cvar_t		scr_conspeed = {"scr_conspeed","300"};
 cvar_t		scr_centertime = {"scr_centertime","2"};
@@ -106,7 +106,7 @@ cvar_t		scr_showram = {"showram","1"};
 cvar_t		scr_showturtle = {"showturtle","0"};
 cvar_t		scr_showpause = {"showpause","1"};
 cvar_t		scr_printspeed = {"scr_printspeed","8"};
-cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", true };
+cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", true_ };
 
 extern	cvar_t	crosshair;
 
@@ -270,7 +270,7 @@ static void SCR_CalcRefdef (void)
 {
 	float		size;
 	int		h;
-	qboolean		full = false;
+	qboolean		full = false_;
 
 
 	scr_fullupdate = 0;		// force a background redraw
@@ -307,13 +307,13 @@ static void SCR_CalcRefdef (void)
 		sb_lines = 24+16+8;
 
 	if (scr_viewsize.value >= 100.0) {
-		full = true;
+		full = true_;
 		size = 100.0;
 	} else
 		size = scr_viewsize.value;
 	if (cl.intermission)
 	{
-		full = true;
+		full = true_;
 		size = 100;
 		sb_lines = 0;
 	}
@@ -404,7 +404,7 @@ void SCR_Init (void)
 	scr_net = Draw_PicFromWad ("net");
 	scr_turtle = Draw_PicFromWad ("turtle");
 
-	scr_initialized = true;
+	scr_initialized = true_;
 }
 
 
@@ -569,7 +569,7 @@ void SCR_DrawConsole (void)
 	if (scr_con_current)
 	{
 		scr_copyeverything = 1;
-		Con_DrawConsole (scr_con_current, true);
+		Con_DrawConsole (scr_con_current, true_);
 		clearconsole = 0;
 	}
 	else
@@ -665,7 +665,7 @@ SCR_BeginLoadingPlaque
 */
 void SCR_BeginLoadingPlaque (void)
 {
-	S_StopAllSounds (true);
+	S_StopAllSounds (true_);
 
 	if (cls.state != ca_connected)
 		return;
@@ -677,13 +677,13 @@ void SCR_BeginLoadingPlaque (void)
 	scr_centertime_off = 0;
 	scr_con_current = 0;
 
-	scr_drawloading = true;
+	scr_drawloading = true_;
 	scr_fullupdate = 0;
 	Sbar_Changed ();
 	SCR_UpdateScreen ();
-	scr_drawloading = false;
+	scr_drawloading = false_;
 
-	scr_disabled_for_loading = true;
+	scr_disabled_for_loading = true_;
 	scr_disabled_time = realtime;
 	scr_fullupdate = 0;
 }
@@ -696,7 +696,7 @@ SCR_EndLoadingPlaque
 */
 void SCR_EndLoadingPlaque (void)
 {
-	scr_disabled_for_loading = false;
+	scr_disabled_for_loading = false_;
 	scr_fullupdate = 0;
 	Con_ClearNotify ();
 }
@@ -749,15 +749,15 @@ keypress.
 int SCR_ModalMessage (char *text)
 {
 	if (cls.state == ca_dedicated)
-		return true;
+		return true_;
 
 	scr_notifystring = text;
  
 // draw a fresh screen
 	scr_fullupdate = 0;
-	scr_drawdialog = true;
+	scr_drawdialog = true_;
 	SCR_UpdateScreen ();
-	scr_drawdialog = false;
+	scr_drawdialog = false_;
 	
 	S_ClearBuffer ();		// so dma doesn't loop current sound
 
@@ -847,7 +847,7 @@ void SCR_UpdateScreen (void)
 	{
 		if (realtime - scr_disabled_time > 60)
 		{
-			scr_disabled_for_loading = false;
+			scr_disabled_for_loading = false_;
 			Con_Printf ("load failed.\n");
 		}
 		else
@@ -866,13 +866,13 @@ void SCR_UpdateScreen (void)
 	if (oldfov != scr_fov.value)
 	{
 		oldfov = scr_fov.value;
-		vid.recalc_refdef = true;
+		vid.recalc_refdef = true_;
 	}
 
 	if (oldscreensize != scr_viewsize.value)
 	{
 		oldscreensize = scr_viewsize.value;
-		vid.recalc_refdef = true;
+		vid.recalc_refdef = true_;
 	}
 
 	if (vid.recalc_refdef)
@@ -897,7 +897,7 @@ void SCR_UpdateScreen (void)
 		Sbar_Draw ();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
-		scr_copyeverything = true;
+		scr_copyeverything = true_;
 	}
 	else if (scr_drawloading)
 	{

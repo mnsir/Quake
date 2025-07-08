@@ -320,6 +320,6 @@ int main (int argc, char **argv)
 	}
 
     /* return success of application */
-    return TRUE;
+    return true_;
 }
 

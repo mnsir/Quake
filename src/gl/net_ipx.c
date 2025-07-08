@@ -296,7 +296,7 @@ int IPX_Init(void)
 		*colon = 0;
 
 	Con_Printf("IPX initialized\n");
-	ipxAvailable = true;
+	ipxAvailable = true_;
 	return net_controlsocket;
 }
 
@@ -304,7 +304,7 @@ int IPX_Init(void)
 
 void IPX_Shutdown(void)
 {
-	IPX_Listen (false);
+	IPX_Listen (false_);
 	IPX_CloseSocket (net_controlsocket);
 	dos_freememory(lowmem_buffer);
 }

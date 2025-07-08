@@ -122,7 +122,7 @@ int WIPX_Init (void)
 		*p = 0;
 
 	Con_Printf("Winsock IPX Initialized\n");
-	ipxAvailable = true;
+	ipxAvailable = true_;
 
 	return net_controlsocket;
 }
@@ -131,7 +131,7 @@ int WIPX_Init (void)
 
 void WIPX_Shutdown (void)
 {
-	WIPX_Listen (false);
+	WIPX_Listen (false_);
 	WIPX_CloseSocket (net_controlsocket);
 	if (--winsock_initialized == 0)
 		pWSACleanup ();

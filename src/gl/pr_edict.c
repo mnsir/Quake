@@ -28,8 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "world.h"
 #include "zone.h"
 
-#include <QuakeTests/test.h>
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -557,27 +555,6 @@ void ED_PrintEdicts (void)
 		ED_PrintNum (i);
 }
 
-void ED_RunTests_f (void)
-{
-	int* arr = malloc(progs->numfunctions * sizeof(int));
-	char** arr2 = malloc(progs->numfunctions * sizeof(char*));
-
-	for (int i = 0; i < progs->numfunctions; i++)
-	{
-		dfunction_t* func = &pr_functions[i];
-		arr[i] = G_FUNCTION(func->first_statement);
-		char* p = pr_strings + func->s_name;
-		arr2[i] = p;
-	}
-
-	RunTests(progs->numfunctions, arr, arr2, PR_ExecuteProgram);
-
-	free(arr);
-	free(arr2);
-
-	Con_Printf("RunTests called\n");
-}
-
 /*
 =============
 ED_PrintEdict_f
@@ -1102,7 +1079,6 @@ PR_Init
 */
 void PR_Init (void)
 {
-	Cmd_AddCommand ("run_tests", ED_RunTests_f);
 	Cmd_AddCommand ("edict", ED_PrintEdict_f);
 	Cmd_AddCommand ("edicts", ED_PrintEdicts);
 	Cmd_AddCommand ("edictcount", ED_Count);

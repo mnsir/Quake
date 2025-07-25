@@ -417,7 +417,7 @@ int NUM_FOR_EDICT(edict_t *e);
 
 #define	G_FLOAT(o) (pr_globals[o])
 #define	G_INT(o) (*(int *)&pr_globals[o])
-#define	G_EDICT(o) ((edict_t *)((byte *)sv.edicts+ *(int *)&pr_globals[o]))
+#define	G_EDICT(o) PROG_TO_EDICT(G_INT(o))
 #define G_EDICTNUM(o) NUM_FOR_EDICT(G_EDICT(o))
 #define	G_VECTOR(o) (&pr_globals[o])
 #define	G_STRING(o) (pr_strings + *(string_t *)&pr_globals[o])
@@ -442,7 +442,7 @@ extern	int			pr_xstatement;
 
 extern	unsigned short		pr_crc;
 
-void PR_RunError (char *error, ...);
+void PR_RunError (const char *error, ...);
 
 void ED_PrintEdicts (void);
 void ED_PrintNum (int ent);

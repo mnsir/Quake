@@ -73,8 +73,7 @@ void PF_error (void)
 	edict_t	*ed;
 	
 	s = PF_VarString(0);
-	Con_Printf ("======SERVER ERROR in %s:\n%s\n"
-	,pr_strings + pr_xfunction->s_name,s);
+	Con_Printf ("======SERVER ERROR:\n%s\n", s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 
@@ -97,8 +96,7 @@ void PF_objerror (void)
 	edict_t	*ed;
 	
 	s = PF_VarString(0);
-	Con_Printf ("======OBJECT ERROR in %s:\n%s\n"
-	,pr_strings + pr_xfunction->s_name,s);
+	Con_Printf ("======OBJECT ERROR:\n%s\n", s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 	ED_Free (ed);
@@ -1136,12 +1134,10 @@ void PF_coredump (void)
 
 void PF_traceon (void)
 {
-	pr_trace = true_;
 }
 
 void PF_traceoff (void)
 {
-	pr_trace = false_;
 }
 
 void PF_eprint (void)
@@ -1161,7 +1157,6 @@ void PF_walkmove (void)
 	edict_t	*ent;
 	float	yaw, dist;
 	vec3_t	move;
-	dfunction_t	*oldf;
 	int 	oldself;
 	
 	ent = PROG_TO_EDICT(pr_global_struct->self);
@@ -1181,14 +1176,12 @@ void PF_walkmove (void)
 	move[2] = 0;
 
 // save program state, because SV_movestep may call other progs
-	oldf = pr_xfunction;
 	oldself = pr_global_struct->self;
 	
 	G_FLOAT(OFS_RETURN) = SV_movestep(ent, move, true_);
 	
 	
 // restore program state
-	pr_xfunction = oldf;
 	pr_global_struct->self = oldself;
 }
 

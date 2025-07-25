@@ -383,61 +383,6 @@ char *PR_UglyValueString (etype_t type, eval_t *val)
 }
 
 /*
-============
-PR_GlobalString
-
-Returns a string with a description and the contents of a global,
-padded to 20 field width
-============
-*/
-char *PR_GlobalString (int ofs)
-{
-	char	*s;
-	int		i;
-	ddef_t	*def;
-	void	*val;
-	static char	line[128];
-	
-	val = (void *)&pr_globals[ofs];
-	def = ED_GlobalAtOfs(ofs);
-	if (!def)
-		sprintf (line,"%i(???)", ofs);
-	else
-	{
-		s = PR_ValueString (def->type, val);
-		sprintf (line,"%i(%s)%s", ofs, pr_strings + def->s_name, s);
-	}
-	
-	i = strlen(line);
-	for ( ; i<20 ; i++)
-		strcat (line," ");
-	strcat (line," ");
-		
-	return line;
-}
-
-char *PR_GlobalStringNoContents (int ofs)
-{
-	int		i;
-	ddef_t	*def;
-	static char	line[128];
-	
-	def = ED_GlobalAtOfs(ofs);
-	if (!def)
-		sprintf (line,"%i(???)", ofs);
-	else
-		sprintf (line,"%i(%s)", ofs, pr_strings + def->s_name);
-	
-	i = strlen(line);
-	for ( ; i<20 ; i++)
-		strcat (line," ");
-	strcat (line," ");
-		
-	return line;
-}
-
-
-/*
 =============
 ED_Print
 
@@ -1082,7 +1027,6 @@ void PR_Init (void)
 	Cmd_AddCommand ("edict", ED_PrintEdict_f);
 	Cmd_AddCommand ("edicts", ED_PrintEdicts);
 	Cmd_AddCommand ("edictcount", ED_Count);
-	Cmd_AddCommand ("profile", PR_Profile_f);
 	Cvar_RegisterVariable (&nomonsters);
 	Cvar_RegisterVariable (&gamecfg);
 	Cvar_RegisterVariable (&scratch1);

@@ -385,8 +385,6 @@ void PR_Init (void);
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
 
-void PR_Profile_f (void);
-
 edict_t *ED_Alloc (void);
 void ED_Free (edict_t *ed);
 
@@ -435,10 +433,6 @@ extern	builtin_t *pr_builtins;
 extern int pr_numbuiltins;
 
 extern int		pr_argc;
-
-extern	qboolean	pr_trace;
-extern	dfunction_t	*pr_xfunction;
-extern	int			pr_xstatement;
 
 extern	unsigned short		pr_crc;
 

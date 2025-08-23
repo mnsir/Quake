@@ -164,7 +164,7 @@ void Q_memset (void *dest, int fill, int count)
 			((byte *)dest)[i] = fill;
 }
 
-void Q_memcpy (void *dest, void *src, int count)
+void Q_memcpy (void *dest, const void *src, int count)
 {
 	int             i;
 	
@@ -209,7 +209,7 @@ void Q_strncpy (char *dest, char *src, int count)
 		*dest++ = 0;
 }
 
-int Q_strlen (char *str)
+int Q_strlen (const char *str)
 {
 	int             count;
 	
@@ -235,7 +235,7 @@ void Q_strcat (char *dest, char *src)
 	Q_strcpy (dest, src);
 }
 
-int Q_strcmp (char *s1, char *s2)
+int Q_strcmp (const char *s1, const char *s2)
 {
 	while (1)
 	{
@@ -361,7 +361,7 @@ int Q_atoi (char *str)
 }
 
 
-float Q_atof (char *str)
+float Q_atof (const char *str)
 {
 	double			val;
 	int             sign;
@@ -586,7 +586,7 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 	SZ_Write (sb, &dat.l, 4);
 }
 
-void MSG_WriteString (sizebuf_t *sb, char *s)
+void MSG_WriteString (sizebuf_t *sb, const char *s)
 {
 	if (!s)
 		SZ_Write (sb, "", 1);
@@ -787,7 +787,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	return data;
 }
 
-void SZ_Write (sizebuf_t *buf, void *data, int length)
+void SZ_Write (sizebuf_t *buf, const void *data, int length)
 {
 	Q_memcpy (SZ_GetSpace(buf,length),data,length);         
 }

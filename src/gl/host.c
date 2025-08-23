@@ -341,7 +341,7 @@ Host_ClientCommands
 Send text over to the client to be executed
 =================
 */
-void Host_ClientCommands (char *fmt, ...)
+void Host_ClientCommands (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		string[1024];

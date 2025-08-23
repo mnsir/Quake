@@ -79,7 +79,7 @@ void 	Cvar_Set (char *var_name, char *value);
 void	Cvar_SetValue (char *var_name, float value);
 // expands value to a string and calls Cvar_Set
 
-float	Cvar_VariableValue (char *var_name);
+float	Cvar_VariableValue (const char *var_name);
 // returns 0 if not defined or non numeric
 
 char	*Cvar_VariableString (char *var_name);
@@ -98,6 +98,6 @@ void 	Cvar_WriteVariables (FILE *f);
 // Writes lines containing "set variable value" for all variables
 // with the archive flag set to true.
 
-cvar_t *Cvar_FindVar (char *var_name);
+cvar_t *Cvar_FindVar (const char *var_name);
 
 extern cvar_t	*cvar_vars;
